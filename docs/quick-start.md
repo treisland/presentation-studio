@@ -8,6 +8,8 @@ In the editor, choose **Check readiness**. Choose all visible slides or a named 
 
 ## Create and edit
 
+For keyboard workflows and current verification status, see the [accessibility audit](accessibility-audit.md). Slide movement controls have descriptive accessible names, tabs identify their panels, and readiness/backup dialogs keep Tab navigation inside until dismissed. Manual NVDA verification remains pending.
+
 To inspect an existing portable backup, choose **Project → Export → Verify backup ZIP**. Select an editable ZIP. The verifier checks supported project data, every referenced asset (including Trash/checkpoints/history/baseline), safe paths, entry sizes and CRC integrity. It never runs the archived HTML or imports into your active project or draft database. Cancel or Escape returns to the editor; ordinary editing remains unchanged.
 
 A pass means structure and archive integrity checks passed, not that rendering, media codecs or actual playback were verified. For stronger assurance, import the ZIP in a separate browser profile and test your presentation before clearing any original profile. Verification does not mark the active project as backed up: it may be a different presentation. Playback-only ZIPs and JSON files are not complete editable backups. Limits are 256 MiB compressed, 512 MiB expanded, 256 MiB per file, 8 MiB project JSON and 10,000 archive entries. Larger archives require another verification workflow; keep the original file.

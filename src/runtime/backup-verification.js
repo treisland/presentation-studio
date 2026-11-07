@@ -184,7 +184,11 @@ projectInit = function () {
   };
   $("bv-close").onclick = () => dialog.close();
   dialog.addEventListener("cancel", event => { event.preventDefault(); event.stopPropagation(); dialog.close(); });
-  dialog.addEventListener("keydown", event => { event.stopPropagation(); if (event.key === "Escape") { event.preventDefault(); dialog.close(); } });
+  dialog.addEventListener("keydown", event => {
+    event.stopPropagation();
+    projectTrapDialogTab(event, dialog);
+    if (event.key === "Escape") { event.preventDefault(); dialog.close(); }
+  });
   dialog.addEventListener("close", () => {
     if (!dialog.open) { $("hub-project-menu").open = true; $("hub-export-menu").open = true; button.focus(); }
   });

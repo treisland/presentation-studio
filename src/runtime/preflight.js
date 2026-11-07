@@ -130,6 +130,7 @@ projectInit = function () {
   dialog.addEventListener("cancel", event => { event.preventDefault(); event.stopPropagation(); dialog.close(); });
   dialog.addEventListener("keydown", event => {
     event.stopPropagation();
+    projectTrapDialogTab(event, dialog);
     if (event.key === "Escape") {
       event.preventDefault();
       dialog.close();
