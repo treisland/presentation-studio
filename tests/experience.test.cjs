@@ -1,10 +1,14 @@
 const { chromium } = require("playwright"),
   assert = require("assert"),
   fs = require("fs"),
-  path = require("path");
+  path = require("path"),
+  os = require("os");
 (async () => {
   const {click,reveal,addSlide,selectTab} = await import("./ui.mjs");
-  const b = await chromium.launch({
+  const downloads = fs.mkdtempSync(path.join(os.tmpdir(), "studio-experience-"));
+  let b;
+  try {
+  b = await chromium.launch({
     ...(process.env.CHROMIUM_EXECUTABLE_PATH
       ? { executablePath: process.env.CHROMIUM_EXECUTABLE_PATH }
       : {}),
@@ -25,8 +29,8 @@ const { chromium } = require("playwright"),
   const download = async (sel, name) => {
     const d = p.waitForEvent("download");
     await click(p,sel);
-    await (await d).saveAs("/tmp/" + name);
-    return JSON.parse(fs.readFileSync("/tmp/" + name));
+    await (await d).saveAs(path.join(downloads, name));
+    return JSON.parse(fs.readFileSync(path.join(downloads, name)));
   };
   await p.goto("file://" + root + "dist/presentation-studio.html");
   await p.locator("#open-full-editor").click();
@@ -92,7 +96,7 @@ const { chromium } = require("playwright"),
   assert.equal(await p.locator("#fe-accent").inputValue(), "#78adff");
   await p
     .locator("#nx-preset-file")
-    .setInputFiles("/tmp/experience-brand.json");
+    .setInputFiles(path.join(downloads, "experience-brand.json"));
   await p.waitForTimeout(300);
   assert.equal(await p.locator("#nx-preset option").count(), 3);
   await click(p,"#studio-new-open");
@@ -127,5 +131,8 @@ const { chromium } = require("playwright"),
   console.log(
     "PASS new wizard/custom header/theme/layout; logo upload/size/placement; preset save/apply/import/export; custom colors/theme reset; rapid transitions/reduced motion.",
   );
-  await b.close();
+  } finally {
+    await b?.close();
+    fs.rmSync(downloads, { recursive: true, force: true });
+  }
 })();

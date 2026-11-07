@@ -114,12 +114,14 @@ function weCloseSettings() {
   projectTab = "content";
   weBaseTab("content");
   weInspect(weContext);
+  if ($("full-editor").open) $("we-settings-open").focus();
 }
 function weOpenSettings(tab = "brand") {
   if (!weEditing()) return;
   vbEnd(false);
   if (!$("we-settings").open) $("we-settings").show();
   projectSelectTab(tab);
+  $("we-settings-close").focus();
 }
 const weBaseTab = projectSelectTab;
 projectSelectTab = function (tab) {
@@ -629,6 +631,18 @@ function weBind() {
   document.querySelector("#full-editor .fe-top-actions").prepend(projectButton);
   $("we-settings-close").onclick = weCloseSettings;
   settings.addEventListener("keydown", (event) => {
+    if (event.key === "Tab") {
+      const controls = [...settings.querySelectorAll('button,input,select,textarea,a[href],[tabindex="0"]')]
+        .filter((element) => !element.disabled && element.getClientRects().length);
+      const first = controls[0], last = controls[controls.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
     if (event.key === "Escape") {
       event.preventDefault();
       event.stopPropagation();

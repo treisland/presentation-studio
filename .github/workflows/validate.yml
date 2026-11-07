@@ -8,7 +8,10 @@ permissions:
   contents: read
 jobs:
   validate:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
@@ -22,7 +25,7 @@ jobs:
       - run: npm run package
       - uses: actions/upload-artifact@v4
         with:
-          name: presentation-studio
+          name: presentation-studio-${{ matrix.os }}
           path: |
             dist/presentation-studio*.html
             release/*.zip

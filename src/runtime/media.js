@@ -214,6 +214,7 @@
     );
     asset.className = "media-asset";
     if (cfg.kind === "video") {
+      asset.setAttribute("aria-label", cfg.alt || cfg.caption || cfg.name || "Slide video");
       asset.controls = true;
       asset.preload = "metadata";
       asset.playsInline = true;
@@ -236,9 +237,12 @@
     const fallback = document.createElement("div");
     fallback.className = "media-fallback";
     fallback.hidden = true;
+    fallback.setAttribute("role", "status");
     fallback.textContent =
       cfg.kind === "video" ? "Video unavailable" : "Image unavailable";
     asset.addEventListener("error", () => {
+      if (cfg.kind === "video")
+        fallback.textContent = "Video unavailable. Check that the complete ZIP was extracted and that this browser supports the video's codec. Try a supported MP4 or WebM file.";
       box.classList.add("is-missing");
       fallback.hidden = false;
       if (cfg.kind === "video" && cfg.poster) {

@@ -6,6 +6,14 @@ import { readFile, readdir } from 'node:fs/promises';
 import { execFileSync } from 'node:child_process';
 import vm from 'node:vm';
 const read = path => readFile(new URL('../' + path, import.meta.url), 'utf8');
+
+test('public version agrees with lockfile and documentation', async () => {
+  const packageInfo = JSON.parse(await read('package.json'));
+  const lock = JSON.parse(await read('package-lock.json'));
+  assert.equal(lock.version, packageInfo.version);
+  assert.equal(lock.packages[''].version, packageInfo.version);
+  assert((await read('README.md')).includes('Version ' + packageInfo.version + '.'));
+});
 test('all distributions contain executable inline code, no build tokens or external runtime dependencies', async () => {
   for (const name of ['presentation-studio.html', 'presentation-studio-blank.html']) {
     const html = await read('dist/' + name);

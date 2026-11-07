@@ -1,4 +1,5 @@
 import { selectTab } from './ui.mjs';
+import { waitForVideo } from './media-diagnostics.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createRequire} from 'node:module';
@@ -38,7 +39,7 @@ test('Video keeps its element, position, and user pause decision through focus',
  await p.locator('#fe-preview .media-box').click();await p.locator('#vb-panel').click();
  const bytes=await p.evaluate(async()=>{const c=document.createElement('canvas');c.width=320;c.height=180;const g=c.getContext('2d'),stream=c.captureStream(10),r=new MediaRecorder(stream,{mimeType:'video/webm'}),chunks=[];r.ondataavailable=e=>chunks.push(e.data);const stopped=new Promise(resolve=>r.onstop=resolve);r.start();let n=0;const draw=setInterval(()=>{g.fillStyle=n++%2?'blue':'cyan';g.fillRect(0,0,320,180);},50);await new Promise(r=>setTimeout(r,1200));clearInterval(draw);r.stop();await stopped;stream.getTracks().forEach(t=>t.stop());return [...new Uint8Array(await new Blob(chunks,{type:'video/webm'}).arrayBuffer())];});
  await p.locator('#me-file').setInputFiles({name:'focus.webm',mimeType:'video/webm',buffer:Buffer.from(bytes)});await p.waitForTimeout(350);await p.locator('#me-close').click();await p.locator('#open-full-editor').click();await p.locator('.fe-slide-button').filter({hasText:'Bring your content to life'}).click();await p.locator('#vb-preview-mode').click();
- await p.waitForFunction(()=>document.querySelector('#fe-preview video')?.readyState>=2,{timeout:5000});
+ await waitForVideo(p, '#fe-preview video');
  await p.locator('#fe-preview video').evaluate(async v=>{window.savedVideo=v;v.loop=true;await v.play();v.currentTime=.4;});
  await p.locator('#fe-preview .mf-expand').click();await p.waitForSelector('#media-focus video');await p.waitForTimeout(450);
  assert.equal(await p.locator('#media-focus video').evaluate(v=>v===window.savedVideo&&!v.paused),true);

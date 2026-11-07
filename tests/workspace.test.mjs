@@ -35,6 +35,34 @@ async function media(p) {
   await slide(p, "studio-media").click();
 }
 
+test("Compact editor keeps actions reachable and settings returns keyboard focus", async () => {
+  const { p, context } = await setup();
+  try {
+    for (const size of [{ width: 1366, height: 768 }, { width: 1280, height: 720 }]) {
+      await p.setViewportSize(size);
+      for (const id of ['we-settings-open', 'fe-close', 'vb-preview-mode']) {
+        const bounds = await p.locator('#' + id).boundingBox();
+        assert(bounds && bounds.x >= 0 && bounds.y >= 0 && bounds.x + bounds.width <= size.width && bounds.y + bounds.height <= size.height);
+      }
+      await p.locator('#we-settings-open').click();
+      assert.equal(await p.evaluate(() => document.activeElement.id), 'we-settings-close');
+      await p.keyboard.press('Shift+Tab');
+      assert(await p.evaluate(() => !!document.activeElement.closest('#we-settings')));
+      await p.keyboard.press('Escape');
+      assert.equal(await p.evaluate(() => document.activeElement.id), 'we-settings-open');
+    }
+    const downloaded = p.waitForEvent('download');
+    await click(p, '#fe-export');
+    await downloaded;
+    await p.waitForFunction(() => document.querySelector('#fe-status').textContent.includes('Editable ZIP created'));
+    await p.locator('#fe-slide-title').fill('Changed after backup');
+    await p.locator('#fe-slide-title').press('Tab');
+    await p.waitForFunction(() => document.querySelector('#fe-status').textContent.includes('Changes need an editable ZIP'));
+  } finally {
+    await context.close();
+  }
+});
+
 test("Context inspector follows text, table and media selection and preserves media context after changes", async () => {
   const { p, context, errors } = await setup();
   try {
