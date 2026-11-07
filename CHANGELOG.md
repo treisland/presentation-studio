@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.2.0-alpha.1 — 2026-11-07
+
 - Add a read-only Presentation readiness report with missing asset and overflow blockers, loop/visibility advisories, portable backup freshness, browser video capability guidance, and direct editor navigation.
 - Preserve slide/settings destination focus after navigating from readiness findings; ordinary dismissal restores focus to Check readiness.
 

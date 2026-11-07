@@ -2,12 +2,17 @@
 
 ## Current delivery plan
 
-Public releases currently use the 0.1.x-alpha series. See [release stages and contribution flow](release-process.md). GitHub milestones and linked issues hold acceptance criteria and delivery state; this document summarizes direction.
+The 0.2 series is in alpha development. See [release stages and contribution flow](release-process.md). GitHub milestones and linked issues hold acceptance criteria and delivery state; this document summarizes direction.
 
-- **Now — 0.1.4-alpha:** align Apache 2.0 licensing; establish contribution rules, required checks, automatic merging, and explicitly planned releases.
-- **Next — 0.2.0:** presentation preflight, media reliability, backup verification, and keyboard/accessibility validation. Deliver alpha.N increments, freeze scope for beta, then RC and stable after documented gates.
+- **Now — 0.2.0-alpha.1:** release merged presentation preflight. The SDLC foundation and Apache 2.0 alignment shipped in 0.1.4-alpha.
+- **Next — 0.2.0:** alpha.2 targets media reliability (#7); alpha.3 targets backup verification (#8). Beta requires committed features and keyboard/screen-reader audit (#9), followed by RC package verification and stable evidence. These are scope gates, not delivery dates. Release tracking: #29 and #30.
 - **Later — canvas enhancements:** screen-adaptive workspace, collapsible/resizable panels, additive media beside existing content, draggable blocks, snapping/layering and keyboard placement. Track separately under 0.3.0 unless deliberately promoted into 0.2 during alpha. Live timers/counters follow basic blocks.
 - **Deferred:** camera overlays, template publishing, accounts and collaboration until the core workflow is dependable.
+
+- **0.4.0 — AI assistance:** architecture/privacy decisions, OpenRouter/Ollama connections, selected-text rewriting, proposal acceptance and evaluation. Notes and editorial review remain stretch scope.
+- **0.5.0 — File-based MCP:** optional companion, transactional editing, previews/readiness, separate ZIP exports and Hermes integration. Live session editing is deferred to discovery #23.
+
+Backup verification design: inspect/validate the selected ZIP without importing it into the active project or draft database. Prove restoration separately in a clean profile. Accessibility baseline: Windows with Chrome and NVDA; record exact tested versions before claiming support. Automated matching-Chromium checks are distinct from these manual checks. Other browsers and OBS remain unverified until evidence is recorded.
 
 Track delivery in the [0.2.0 milestone](https://github.com/treisland/presentation-studio/milestone/1) and [0.3.0 milestone](https://github.com/treisland/presentation-studio/milestone/2).
 
