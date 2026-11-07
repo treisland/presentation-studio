@@ -6,7 +6,7 @@ function pfPack() {
   return projectCopy({ state: projectState, checkpoints: projectCheckpoints, history: { past: projectPast, future: projectFuture } });
 }
 function pfNavigate(finding) {
-  $("pf-dialog").close();
+  $("pf-dialog").close("navigate");
   if (!pfAllowed()) return;
   if (finding.slideId && projectModel(finding.slideId)) {
     projectSelected = finding.slideId;
@@ -119,6 +119,7 @@ projectInit = function () {
     loops.replaceChildren(new Option("All visible slides", ""));
     for (const [id, loop] of Object.entries(projectState.loops)) loops.append(new Option(loop.name, id));
     loops.value = projectState.loops[deck] ? deck : "";
+    dialog.returnValue = "";
     dialog.showModal();
     $("pf-close").focus();
     pfScan();
@@ -134,5 +135,9 @@ projectInit = function () {
       dialog.close();
     }
   });
-  dialog.addEventListener("close", () => { pfRun++; $("pf-scan").disabled = false; button.focus(); });
+  dialog.addEventListener("close", () => {
+    pfRun++;
+    $("pf-scan").disabled = false;
+    if (dialog.returnValue !== "navigate") button.focus();
+  });
 };

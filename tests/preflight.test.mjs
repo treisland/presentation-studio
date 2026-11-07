@@ -81,12 +81,21 @@ test('synthetic missing media, recovery assets, overflow, visibility and video f
     assert.match(await page.locator('[data-kind="video"]').innerText(), /does not verify/);
     await mkdir('test-results', { recursive: true });
     await page.screenshot({ path: 'test-results/preflight.png' });
+    const slideFocus = page.evaluate(() => new Promise(resolve => document.querySelector('#pf-dialog').addEventListener('close', () => requestAnimationFrame(() => resolve(document.activeElement.id)), { once: true })));
     await page.locator('[data-kind="overflow"] button').first().click();
+    assert.equal(await slideFocus, 'fe-slide-title');
     assert.equal(await page.locator('#fe-slide-title').inputValue(), pack.state.slides[0].title);
     assert.deepEqual(JSON.parse(await exported(page)), before);
     await scan(page);
+    const settingsFocus = page.evaluate(() => new Promise(resolve => document.querySelector('#pf-dialog').addEventListener('close', () => requestAnimationFrame(() => resolve(document.activeElement.id)), { once: true })));
     await page.locator('[data-kind="missing-asset"]').filter({ hasText: 'assets/recovery.png' }).getByRole('button').click();
+    assert.equal(await settingsFocus, 'we-settings-close');
     assert.equal(await page.locator('#we-settings').evaluate(element => element.open), true);
     assert.equal(await page.getByRole('tab', { name: 'Recovery & reset' }).getAttribute('aria-selected'), 'true');
+    await page.locator('#we-settings-close').click();
+    await scan(page);
+    const dismissFocus = page.evaluate(() => new Promise(resolve => document.querySelector('#pf-dialog').addEventListener('close', () => requestAnimationFrame(() => resolve(document.activeElement.id)), { once: true })));
+    await page.locator('#pf-close').click();
+    assert.equal(await dismissFocus, 'pf-open');
   } finally { await page.close(); }
 });
