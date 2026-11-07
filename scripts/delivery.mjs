@@ -40,17 +40,25 @@ export function createGitHubAPI(run = gh) {
     return JSON.parse(run(['api', endpoint, '--method', method, ...(body ? ['--input', '-'] : [])], body) || 'null');
   };
 }
-const api = createGitHubAPI();
-function optional(path) {
-  try { return api(path); } catch (error) {
-    if (String(error.stderr).includes('(HTTP 404)')) return null;
-    throw error;
+export function deliver(apply = false, { api = createGitHubAPI(), run = gh } = {}) {
+  function optional(path) {
+    try { return api(path); } catch (error) {
+      if (String(error.stderr).includes('(HTTP 404)')) return null;
+      throw error;
+    }
   }
-}
-function content(path, ref) {
-  return Buffer.from(api(`contents/${path}?ref=${encodeURIComponent(ref)}`).content, 'base64').toString('utf8');
-}
-export function deliver(apply = false) {
+  function content(path, ref) {
+    return Buffer.from(api(`contents/${path}?ref=${encodeURIComponent(ref)}`).content, 'base64').toString('utf8');
+  }
+  function list(path, key) {
+    const values = [];
+    for (let page = 1; ; page++) {
+      const result = api(`${path}${path.includes('?') ? '&' : '?'}per_page=100&page=${page}`);
+      const items = key ? result[key] : result;
+      values.push(...items);
+      if (items.length < 100) return values;
+    }
+  }
   const changes = [];
   if (apply) {
     const settings = api('');
@@ -58,11 +66,11 @@ export function deliver(apply = false) {
     if (!protectedDelivery(settings, protection))
       throw new Error('Automatic delivery blocked: approved repository auto-merge and main protection configuration must be enabled first');
   }
-  const prs = JSON.parse(gh(['pr', 'list', '--repo', repository, '--base', 'main', '--state', 'open', '--limit', '100', '--json', 'number,isDraft,author,labels,headRefOid,isCrossRepository,reviewDecision,autoMergeRequest,mergeStateStatus']));
+  const prs = JSON.parse(run(['pr', 'list', '--repo', repository, '--base', 'main', '--state', 'open', '--limit', '100', '--json', 'number,isDraft,author,labels,headRefOid,isCrossRepository,reviewDecision,autoMergeRequest,mergeStateStatus']));
   for (const pr of prs) {
     if (!eligiblePR(pr)) continue;
     changes.push(`Queue PR #${pr.number} at ${pr.headRefOid}`);
-    if (apply) gh(['pr', 'merge', String(pr.number), '--repo', repository, '--auto', '--merge', '--match-head-commit', pr.headRefOid]);
+    if (apply) run(['pr', 'merge', String(pr.number), '--repo', repository, '--auto', '--merge', '--match-head-commit', pr.headRefOid]);
   }
   const main = api('commits/main').sha;
   const version = JSON.parse(content('package.json', main)).version;
@@ -71,29 +79,38 @@ export function deliver(apply = false) {
   const plan = JSON.parse(Buffer.from(planFile.content, 'base64').toString('utf8'));
   if (!validPlan(plan, version)) return changes;
   const tag = `v${version}`;
-  const release = optional(`releases/tags/${tag}`);
+  const matches = list('releases').filter(release => release.tag_name === tag);
+  if (matches.length > 1) throw new Error(`Multiple releases found for ${tag}; review before publication`);
+  const release = matches.length ? api(`releases/${matches[0].id}`) : null;
   if (release && !release.draft) return changes;
-  const checkRuns = api(`commits/${main}/check-runs?per_page=100`).check_runs.map(check => ({ name: check.name, status: check.status.toUpperCase(), conclusion: (check.conclusion || '').toUpperCase() }));
-  if (checkRuns.some(check => check.status === 'COMPLETED' && !['SUCCESS', 'SKIPPED', 'NEUTRAL'].includes(check.conclusion))) throw new Error('Main validation failed; release remains blocked');
+  const ref = optional(`git/ref/tags/${tag}`);
+  const tagged = ref ? (ref.object.type === 'tag' ? api(`git/tags/${ref.object.sha}`).object.sha : ref.object.sha) : main;
+  if (ref) {
+    if (tagged !== main && !['ahead', 'identical'].includes(api(`compare/${tagged}...${main}`).status)) throw new Error('Release tag is not an ancestor of main');
+    const taggedPlan = JSON.parse(content('release-plan.json', tagged));
+    const taggedVersion = JSON.parse(content('package.json', tagged)).version;
+    if (!validPlan(taggedPlan, taggedVersion) || JSON.stringify(taggedPlan) !== JSON.stringify(plan)) throw new Error('Tagged release plan differs from current authorization');
+  }
+  const checkRuns = list(`commits/${tagged}/check-runs`, 'check_runs').map(check => ({ name: check.name, status: check.status.toUpperCase(), conclusion: (check.conclusion || '').toUpperCase() }));
+  if (checkRuns.some(check => check.status === 'COMPLETED' && !['SUCCESS', 'SKIPPED', 'NEUTRAL'].includes(check.conclusion))) throw new Error(`Release commit ${tagged} validation failed; release remains blocked`);
   if (!validated(checkRuns)) return changes;
-  const statuses = api(`commits/${main}/status`);
+  const statuses = api(`commits/${tagged}/status`);
   if (statuses.total_count && statuses.state !== 'success') return changes;
   if (api('issues?state=open&labels=release-blocker&per_page=100').length) return changes;
-  const notes = content(plan.notes, main);
+  const notes = content(plan.notes, tagged);
   if (!notes.trim()) throw new Error('Empty release notes');
-  const ref = optional(`git/ref/tags/${tag}`);
   if (!ref) {
+    if (release) throw new Error('Draft exists without its release tag; review before tagging');
     changes.push(`Tag ${tag} on validated main ${main}`);
     if (apply) api('git/refs', 'POST', { ref: `refs/tags/${tag}`, sha: main });
     return changes;
   }
-  const tagged = ref.object.type === 'tag' ? api(`git/tags/${ref.object.sha}`).object.sha : ref.object.sha;
-  if (tagged !== main) throw new Error(`${tag} does not point to current validated main; review the pending release without moving the tag`);
-  const runs = api(`actions/workflows/release.yml/runs?head_sha=${main}&per_page=100`).workflow_runs.filter(run => run.head_branch === tag && run.event === 'push');
+  const runs = list(`actions/workflows/release.yml/runs?head_sha=${tagged}`, 'workflow_runs').filter(run => run.head_sha === tagged && run.head_branch === tag && run.event === 'push').sort((left, right) => right.id - left.id);
   if (!runs.length || runs[0].status !== 'completed') return changes;
   if (runs[0].conclusion !== 'success') throw new Error('Release workflow failed; draft remains unpublished');
-  if (!release || !validAssets(release.assets, version)) throw new Error('Release artifacts are incomplete or missing digests');
-  changes.push(`Publish ${tag} from ${main} with four verified assets`);
+  if (!release) throw new Error('Release workflow succeeded but no matching draft release was found');
+  if (!validAssets(release.assets, version)) throw new Error(`Draft release ${release.id} artifacts are incomplete or missing digests`);
+  changes.push(`Publish ${tag} from ${tagged} with four verified assets`);
   if (apply) api(`releases/${release.id}`, 'PATCH', { name: `Presentation Studio ${tag}`, body: notes, draft: false, prerelease: version.includes('-'), make_latest: version.includes('-') ? 'false' : 'true' });
   return changes;
 }
