@@ -13,6 +13,9 @@ test('public version agrees with lockfile and documentation', async () => {
   assert.equal(lock.version, packageInfo.version);
   assert.equal(lock.packages[''].version, packageInfo.version);
   assert((await read('README.md')).includes('Version ' + packageInfo.version + '.'));
+  assert.equal(packageInfo.license, 'Apache-2.0');
+  assert.equal(lock.packages[''].license, packageInfo.license);
+  assert((await read('LICENSE')).includes('Apache License'));
 });
 test('all distributions contain executable inline code, no build tokens or external runtime dependencies', async () => {
   for (const name of ['presentation-studio.html', 'presentation-studio-blank.html']) {

@@ -1,6 +1,6 @@
 # Publishing the neutral release
 
-Version 0.7.0 is the neutral open-source baseline. Original studio code and original sample assets use the MIT license; bundled dependencies keep their own notices.
+Version 0.7.0 is the neutral open-source baseline. Original studio code and original sample assets use the Apache License 2.0; bundled dependencies keep their own notices.
 
 ## Clean history
 

@@ -21,6 +21,12 @@ async function addAssets(directory = 'assets') {
   }
 }
 await addAssets();
+for (const file of ['AGENTS.md', 'docs/release-process.md', 'release-plan.json']) {
+  zip.file(file, new Uint8Array(await readFile(resolve(root, file))), { date: new Date('2026-01-01T00:00:00Z') });
+}
+for (const name of (await readdir(resolve(root, 'docs/releases'))).sort()) {
+  zip.file('docs/releases/' + name, new Uint8Array(await readFile(resolve(root, 'docs/releases', name))), { date: new Date('2026-01-01T00:00:00Z') });
+}
 for (const name of (await readdir(resolve(root, 'vendor/licenses'))).sort()) zip.file('vendor/licenses/' + name, new Uint8Array(await readFile(resolve(root, 'vendor/licenses', name))), { date: new Date('2026-01-01T00:00:00Z') });
 const demo = JSON.parse(await readFile(resolve(root, 'templates/studio/presentation.json'), 'utf8'));
 const demoZip = new sandbox.JSZip();
