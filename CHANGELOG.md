@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add original H.264 MP4 and VP8 WebM fixtures with playback, focus continuity, editable import and editable/playback export/reopen regressions.
+
 ## 0.2.0-alpha.1 — 2026-11-07
 
 - Add a read-only Presentation readiness report with missing asset and overflow blockers, loop/visibility advisories, portable backup freshness, browser video capability guidance, and direct editor navigation.

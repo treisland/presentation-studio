@@ -21,7 +21,7 @@ async function addAssets(directory = 'assets') {
   }
 }
 await addAssets();
-for (const file of ['AGENTS.md', 'docs/release-process.md', 'release-plan.json']) {
+for (const file of ['AGENTS.md', 'docs/release-process.md', 'docs/media-compatibility.md', 'release-plan.json']) {
   zip.file(file, new Uint8Array(await readFile(resolve(root, file))), { date: new Date('2026-01-01T00:00:00Z') });
 }
 for (const name of (await readdir(resolve(root, 'docs/releases'))).sort()) {

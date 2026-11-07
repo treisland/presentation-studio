@@ -1,5 +1,7 @@
 # Troubleshooting
 
+See [media compatibility evidence](media-compatibility.md) for exact fixture encodings, tested browser workflows, reproduction commands and pending manual checks.
+
 | Symptom | Action |
 | --- | --- |
 | Changes disappeared in another browser | Browser drafts are local. Export/import an editable ZIP for handoff. |
