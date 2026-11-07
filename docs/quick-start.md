@@ -8,6 +8,12 @@ In the editor, choose **Check readiness**. Choose all visible slides or a named 
 
 ## Create and edit
 
+To inspect an existing portable backup, choose **Project → Export → Verify backup ZIP**. Select an editable ZIP. The verifier checks supported project data, every referenced asset (including Trash/checkpoints/history/baseline), safe paths, entry sizes and CRC integrity. It never runs the archived HTML or imports into your active project or draft database. Cancel or Escape returns to the editor; ordinary editing remains unchanged.
+
+A pass means structure and archive integrity checks passed, not that rendering, media codecs or actual playback were verified. For stronger assurance, import the ZIP in a separate browser profile and test your presentation before clearing any original profile. Verification does not mark the active project as backed up: it may be a different presentation. Playback-only ZIPs and JSON files are not complete editable backups. Limits are 256 MiB compressed, 512 MiB expanded, 256 MiB per file, 8 MiB project JSON and 10,000 archive entries. Larger archives require another verification workflow; keep the original file.
+
+Original ZIP directory members are checked before filename decoding/deduplication. Duplicate or unsafe paths, overlapping members, inconsistent local headers, multi-disk/ZIP64 archives and Unicode filename-override extra fields are rejected. Use ordinary single-disk ZIP32 archives with plain UTF-8 names, as produced by Studio; verification supports stored or deflated entries.
+
 1. Open `presentation-studio.html` for the generic Studio demo, or `presentation-studio-blank.html` for an empty starter.
 2. Select **Edit** or press **J**. **Project → New presentation** opens the setup wizard: choose Blank, Studio demo, or Import; name and brand it; choose a starter layout; then select theme and transitions. **Skip setup / use defaults** creates the selected starting template immediately. New projects receive independent IDs and browser drafts.
 3. Choose **Add slide** to preview Hero, Comparison, Workflow, Table, Q&A, Commands, or Media.
