@@ -32,6 +32,59 @@ vm.runInNewContext(
   await readFile(resolve(root, "vendor/jszip-3.10.1.min.js"), "utf8"),
   sandbox,
 );
+test('distributions have no external runtime scripts or stylesheets', async () => {
+  const page = await browser.newPage();
+  try {
+    for (const file of ['presentation-studio.html', 'presentation-studio-blank.html']) {
+      await page.goto('file://' + resolve(root, 'dist', file));
+      assert.equal(await page.locator('script[src], link[rel~="stylesheet"]').count(), 0, file);
+    }
+    await page.setContent('<SCRIPT SRC = "data:text/javascript,"></SCRIPT><LINK REL="alternate StyleSheet" href="data:text/css,">');
+    assert.equal(await page.locator('script[src], link[rel~="stylesheet"]').count(), 2);
+  } finally {
+    await page.close();
+  }
+});
+
+test('path-like text saves and script delimiters survive editable and playback exports', async () => {
+  const page = await browser.newPage({ acceptDownloads: true });
+  const payload = '</script><script>globalThis.exportInjection=true</script>';
+  const pack = JSON.parse(await readFile(resolve(root, 'templates/blank/presentation.json'), 'utf8'));
+  pack.meta.name = 'assets/project.txt';
+  pack.state.slides[0].title = payload;
+  pack.state.slides[0].notes = 'assets/notes.txt';
+  pack.state.slides[0].tree = [{ tag: 'p', children: [{ text: 'assets/example.png' }, { text: payload }] }];
+  try {
+    await page.goto('file://' + resolve(root, 'dist/presentation-studio-blank.html'));
+    await page.locator('#hub-presentations').click();
+    await page.locator('#hub-file').setInputFiles({ name: 'text-only.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(pack)) });
+    await page.waitForFunction(() => document.getElementById('fe-status').dataset.saveState === 'saved');
+    await page.locator('#open-full-editor').click();
+    for (const [selector, name] of [['#fe-export', 'escaping-editable'], ['#fe-playback', 'escaping-playback']]) {
+      const event = page.waitForEvent('download');
+      await click(page, selector);
+      const archive = resolve(root, 'test-results', name + '.zip');
+      await mkdir(dirname(archive), { recursive: true });
+      await (await event).saveAs(archive);
+      const destination = resolve(root, 'test-results', name);
+      const exported = await unpack(archive, destination);
+      const reopened = await browser.newPage();
+      try {
+        await reopened.goto('file://' + resolve(destination, 'index.html'));
+        assert.equal(await reopened.evaluate(() => globalThis.exportInjection), undefined);
+        const embedded = await reopened.locator('#project-config').textContent();
+        assert.equal(JSON.parse(embedded).state.slides[0].title, payload);
+        assert.equal(exported.state.slides[0].title, payload);
+        assert((await reopened.locator('#stage .slide').first().textContent()).includes(payload));
+      } finally {
+        await reopened.close();
+      }
+    }
+  } finally {
+    await page.close();
+  }
+});
+
 async function unpack(file, destination) {
   const zip = await sandbox.JSZip.loadAsync(
     new Uint8Array(await readFile(file)),
