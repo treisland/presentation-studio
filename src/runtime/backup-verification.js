@@ -9,6 +9,57 @@ function bvSafeName(name) {
   return typeof name === "string" && name.length > 0 && !/^[\\/]|[\\:\x00-\x1f\x7f]/.test(name) &&
     !name.split("/").some(part => part === "." || part === ".." || part === "");
 }
+function bvInspectArchive(buffer) {
+  const bytes = new Uint8Array(buffer), view = new DataView(buffer);
+  const invalid = () => { throw new Error("Unsupported or corrupt ZIP directory. Use a single-disk ZIP32 editable backup with UTF-8 filenames."); };
+  let end = -1;
+  for (let offset = bytes.length - 22; offset >= Math.max(0, bytes.length - 65557); offset--) {
+    if (view.getUint32(offset, true) === 0x06054b50 && offset + 22 + view.getUint16(offset + 20, true) === bytes.length) { end = offset; break; }
+  }
+  if (end < 0) return invalid();
+  const count = view.getUint16(end + 10, true), directorySize = view.getUint32(end + 12, true), directory = view.getUint32(end + 16, true);
+  if (view.getUint16(end + 4, true) || view.getUint16(end + 6, true) || view.getUint16(end + 8, true) !== count || count === 65535 || directory + directorySize !== end) return invalid();
+  if (count > bvLimits.entries) throw new Error("Archive contains too many entries to verify safely.");
+  const names = new Set(), ranges = [];
+  let position = directory, total = 0;
+  for (let index = 0; index < count; index++) {
+    if (position + 46 > end || view.getUint32(position, true) !== 0x02014b50) return invalid();
+    const flags = view.getUint16(position + 8, true), method = view.getUint16(position + 10, true);
+    const compressed = view.getUint32(position + 20, true), expanded = view.getUint32(position + 24, true);
+    const nameLength = view.getUint16(position + 28, true), extraLength = view.getUint16(position + 30, true), commentLength = view.getUint16(position + 32, true);
+    const local = view.getUint32(position + 42, true), next = position + 46 + nameLength + extraLength + commentLength;
+    if (next > end || view.getUint16(position + 34, true) || flags & 0x41 || ![0, 8].includes(method) || compressed === 0xffffffff || expanded === 0xffffffff) return invalid();
+    const rawName = bytes.subarray(position + 46, position + 46 + nameLength);
+    let name;
+    try { name = new TextDecoder("utf-8", { fatal: true }).decode(rawName); } catch { return invalid(); }
+    const canonical = name.endsWith("/") ? name.slice(0, -1) : name;
+    if (!bvSafeName(canonical) || names.has(canonical)) throw new Error("Unsafe or duplicate archive path: " + name);
+    names.add(canonical);
+    if ((name.endsWith("/") || (view.getUint32(position + 38, true) & 0x10)) && (expanded || compressed || view.getUint32(position + 16, true))) return invalid();
+    if (expanded > bvLimits.entry || (name === "presentation.json" && expanded > bvLimits.config)) throw new Error("Archive entry exceeds the verification limit: " + name);
+    total += expanded;
+    if (total > bvLimits.total) throw new Error("Archive expands beyond the 512 MiB verification limit.");
+    for (let extra = position + 46 + nameLength; extra < position + 46 + nameLength + extraLength;) {
+      if (extra + 4 > position + 46 + nameLength + extraLength) return invalid();
+      const type = view.getUint16(extra, true), length = view.getUint16(extra + 2, true);
+      if (type === 1 || type === 0x7075) return invalid();
+      extra += 4 + length;
+      if (extra > position + 46 + nameLength + extraLength) return invalid();
+    }
+    if (local + 30 > directory || view.getUint32(local, true) !== 0x04034b50) return invalid();
+    const localNameLength = view.getUint16(local + 26, true), localExtraLength = view.getUint16(local + 28, true);
+    const data = local + 30 + localNameLength + localExtraLength;
+    if (localNameLength !== nameLength || data + compressed > directory || view.getUint16(local + 6, true) !== flags || view.getUint16(local + 8, true) !== method) return invalid();
+    if (!rawName.every((byte, offset) => byte === bytes[local + 30 + offset])) return invalid();
+    if (!(flags & 8) && (view.getUint32(local + 14, true) !== view.getUint32(position + 16, true) || view.getUint32(local + 18, true) !== compressed || view.getUint32(local + 22, true) !== expanded)) return invalid();
+    ranges.push({ start: local, end: data + compressed });
+    position = next;
+  }
+  if (position !== end) return invalid();
+  ranges.sort((left, right) => left.start - right.start);
+  if (ranges.some((range, index) => index && range.start < ranges[index - 1].end)) return invalid();
+  return count;
+}
 function bvRead(entry, limit, alive, keep = false) {
   return new Promise((resolve, reject) => {
     let size = 0, crc = 0xffffffff, failed = false;
@@ -42,11 +93,15 @@ function bvRead(entry, limit, alive, keep = false) {
 async function bvVerify(file, alive, progress) {
   if (!file.name.toLowerCase().endsWith(".zip")) throw new Error("Choose an editable project ZIP, not JSON or a playback export.");
   if (file.size > bvLimits.archive) throw new Error("ZIP exceeds the 256 MiB verification limit. Keep the original and verify it outside this browser workflow.");
+  const buffer = await file.arrayBuffer();
+  if (!alive()) throw new Error("Verification cancelled.");
+  const originalCount = bvInspectArchive(buffer);
   let zip;
-  try { zip = await JSZip.loadAsync(await file.arrayBuffer()); }
+  try { zip = await JSZip.loadAsync(buffer); }
   catch { throw new Error("Cannot read ZIP archive. Choose a complete, uncorrupted editable project ZIP."); }
   if (!alive()) throw new Error("Verification cancelled.");
   const entries = Object.values(zip.files);
+  if (entries.length !== originalCount) throw new Error("Archive member count changed while decoding paths; backup cannot be verified.");
   if (entries.length > bvLimits.entries) throw new Error("Archive contains too many entries to verify safely.");
   let declared = 0;
   const originals = new Set();

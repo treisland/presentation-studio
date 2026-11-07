@@ -122,13 +122,15 @@ test('invalid, missing-recovery, corrupt, unsafe and playback-only archives fail
     const corrupt = Buffer.from(valid);
     const central = corrupt.indexOf(Buffer.from([0x50, 0x4b, 0x01, 0x02]));
     corrupt[central + 16] ^= 1;
+    const local = corrupt.readUInt32LE(central + 42);
+    corrupt[local + 14] ^= 1;
     cases.push([corrupt, /Corrupt archive entry/]);
     const oversized = Buffer.from(valid);
     oversized.writeUInt32LE(257 * 1024 * 1024, central + 24);
     cases.push([oversized, /verification limit/]);
     zip.file('../outside.txt', 'untrusted');
-    cases.push([await zip.generateAsync({ type: 'uint8array' }), /Unsafe or ambiguous/]);
-    cases.push([Buffer.from('not a zip'), /Cannot read ZIP archive/]);
+    cases.push([await zip.generateAsync({ type: 'uint8array' }), /Unsafe or (ambiguous|duplicate)/]);
+    cases.push([Buffer.from('not a zip'), /corrupt ZIP directory/]);
     for (const [bytes, expected] of cases) {
       assert.match(await verify(page, bytes), expected);
       assert.equal(await page.evaluate(() => globalThis.backupExecuted), undefined);
@@ -138,6 +140,32 @@ test('invalid, missing-recovery, corrupt, unsafe and playback-only archives fail
     assert.deepEqual(JSON.parse(await download(page, '#fe-export-json')), before);
     assert.match(await verify(page, valid), /checks passed/);
     assert.equal(await page.evaluate(() => globalThis.backupExecuted), undefined);
+  } finally { await page.close(); }
+});
+
+test('original duplicate ZIP members are rejected before deduplication, including a corrupt overwritten member', async () => {
+  const page = await setup();
+  try {
+    const { zip } = await fixture(page);
+    zip.file('extra-a.txt', 'first member');
+    zip.file('extra-b.txt', 'last member');
+    const duplicate = Buffer.from(await zip.generateAsync({ type: 'uint8array', compression: 'STORE' }));
+    const oldName = Buffer.from('extra-b.txt'), newName = Buffer.from('extra-a.txt');
+    for (let position = duplicate.indexOf(oldName); position !== -1; position = duplicate.indexOf(oldName, position + oldName.length)) newName.copy(duplicate, position);
+    assert.match(await verify(page, duplicate), /duplicate archive path: extra-a.txt/);
+    await page.locator('#bv-close').click();
+    await page.waitForFunction(() => document.activeElement.id === 'bv-open');
+    const corrupt = Buffer.from(duplicate);
+    const firstName = corrupt.indexOf(newName);
+    corrupt[firstName + newName.length] ^= 1;
+    assert.match(await verify(page, corrupt), /duplicate archive path: extra-a.txt/);
+    await page.locator('#bv-close').click();
+    await page.waitForFunction(() => document.activeElement.id === 'bv-open');
+    const excessive = Buffer.from(duplicate);
+    const end = excessive.lastIndexOf(Buffer.from([0x50, 0x4b, 0x05, 0x06]));
+    excessive.writeUInt16LE(10001, end + 8);
+    excessive.writeUInt16LE(10001, end + 10);
+    assert.match(await verify(page, excessive), /too many entries/);
   } finally { await page.close(); }
 });
 
