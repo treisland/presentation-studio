@@ -1,7 +1,7 @@
 {
-  "version": "0.1.4-alpha",
+  "version": "0.2.0-alpha.1",
   "publish": true,
-  "notes": "docs/releases/0.1.4-alpha.md",
+  "notes": "docs/releases/0.2.0-alpha.1.md",
   "manualGatesPassed": false,
   "evidence": []
 }
