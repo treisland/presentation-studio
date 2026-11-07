@@ -1,5 +1,21 @@
 # Changelog
 
+## Unreleased
+
+## 0.1.2-alpha — 2026-11-07
+
+### Fixed
+
+- Escape project text safely in editable and playback exports so script delimiters cannot break embedded JSON or execute scripts when exported HTML is opened.
+- Collect assets from media and logo fields, including recovery history and reset baselines. Ordinary slide text and presenter notes such as `assets/example.png` no longer block saving or exporting.
+- Replace the HTML dependency test's regular expression with browser DOM checks that handle attribute spacing, case, and stylesheet token lists.
+
+### Added
+
+- Regression coverage for safe export/reopen behavior, path-like text, and recovery asset references.
+
+The entries below retain the earlier development milestones and numbering.
+
 ## Unreleased — Editor workspace
 
 Added a three-column editor with a contextual inspector, sectioned lazy-rendered thumbnails, lock/hidden indicators, within-section drag reordering, block font-size controls, and a separate project settings dialog. Added Fit and 50–200% editor zoom, pointer-centered wheel zoom, keyboard shortcuts and Space/middle-button panning. Transient view state does not enter project data or playback. Existing editing, booth and legacy import flows remain supported.
