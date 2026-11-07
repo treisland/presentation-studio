@@ -1,0 +1,35 @@
+#pf-dialog {
+  width: min(780px, 90vw);
+  max-height: 85vh;
+  overflow: auto;
+  padding: 24px;
+  border: 1px solid #526b8c;
+  border-radius: 14px;
+  background: #fff;
+  color: #101c2f;
+}
+#pf-dialog::backdrop { background: #07112199; }
+#pf-dialog .pf-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+#pf-dialog h2 { margin: 0; font-size: 24px; }
+#pf-dialog label { display: block; margin-top: 16px; }
+#pf-dialog select { max-width: 100%; margin: 8px 12px 8px 0; }
+#pf-findings { padding-left: 24px; }
+#pf-findings li { margin: 16px 0; padding: 12px; border-left: 4px solid #526b8c; overflow-wrap: anywhere; }
+#pf-findings [data-severity="blocker"] { border-color: #b42318; }
+#pf-findings p { margin: 8px 0; }
+.editor-dark #pf-dialog { background: #101f33; color: #edf4ff; }
+#pf-dialog :focus-visible { outline: 3px solid #0066ff; outline-offset: 2px; }
+#full-editor .pf-measure {
+  position: fixed;
+  left: -10000px;
+  top: 0;
+  width: 1920px;
+  height: 1080px;
+  transform: none;
+  visibility: hidden;
+  pointer-events: none;
+}
+.pf-measure *, .pf-measure *::before, .pf-measure *::after {
+  animation: none !important;
+  transition: none !important;
+}
