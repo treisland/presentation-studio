@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Add a read-only Presentation readiness report with missing asset and overflow blockers, loop/visibility advisories, portable backup freshness, browser video capability guidance, and direct editor navigation.
+- Preserve slide/settings destination focus after navigating from readiness findings; ordinary dismissal restores focus to Check readiness.
+
 - Discover draft releases through authenticated paginated listings and verify their immutable tagged commit after main advances. Add full delivery lifecycle regression coverage and distinguish discovery errors from artifact errors.
 
 - Fix automatic delivery failing with HTTP 404 when checking repository settings; preserve protection and release gates.

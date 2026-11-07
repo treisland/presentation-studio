@@ -1,5 +1,11 @@
 # Quick start
 
+## Check readiness before presenting
+
+In the editor, choose **Check readiness**. Choose all visible slides or a named playback loop, then review the findings. Missing active/recovery media or logos and content reaching the slide edge/footer are blockers. Hidden slides, slides outside the selected loop, backup freshness and video capability are advisories; these can be intentional or require manual verification.
+
+**Edit slide** opens the relevant slide; project findings open Branding or Recovery & reset. Export and keep a complete editable ZIP for backup. Rerun checks after changes. The scan does not edit content, project settings or undo history. Escape returns to the editor and restores focus. Video capability reports are hints, not proof that an actual codec, autoplay policy, delivery browser or OBS setup will work.
+
 ## Create and edit
 
 1. Open `presentation-studio.html` for the generic Studio demo, or `presentation-studio-blank.html` for an empty starter.

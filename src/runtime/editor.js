@@ -1219,13 +1219,12 @@
       projectCheckLayout();
     }
   }
-  function projectCheckLayout() {
-    if (!$("full-editor").open || !projectPreviewNode) return;
-    const slide = projectPreviewNode.querySelector(".slide"),
-      footer = projectPreviewNode.querySelector("footer"),
+  function projectLayoutOverflow(root) {
+    const slide = root.querySelector(".slide"),
+      footer = root.querySelector("footer"),
       r = slide.getBoundingClientRect(),
       f = footer.getBoundingClientRect();
-    const overflow = [
+    return [
       ...slide.querySelectorAll(
         "h1,h2,h3,p,pre,table,.card,.terminal,.media-box",
       ),
@@ -1234,9 +1233,13 @@
       return (
         x.width > 0 &&
         x.height > 0 &&
-        (x.bottom > f.top - 2 || x.left < r.left - 1 || x.right > r.right + 1)
+        (x.bottom > f.top - 2 || x.top < r.top - 1 || x.left < r.left - 1 || x.right > r.right + 1)
       );
     });
+  }
+  function projectCheckLayout() {
+    if (!$("full-editor").open || !projectPreviewNode) return;
+    const overflow = projectLayoutOverflow(projectPreviewNode);
     $("fe-layout-warning").hidden = !overflow;
     $("fe-layout-warning").textContent = overflow
       ? "Some content reaches the slide edge or footer. Shorten the text, reduce table rows, or choose another layout."
