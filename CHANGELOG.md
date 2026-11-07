@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Discover draft releases through authenticated paginated listings and verify their immutable tagged commit after main advances. Add full delivery lifecycle regression coverage and distinguish discovery errors from artifact errors.
+
 - Fix automatic delivery failing with HTTP 404 when checking repository settings; preserve protection and release gates.
 
 ## 0.1.4-alpha — 2026-11-07
