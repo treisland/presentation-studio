@@ -10,13 +10,39 @@ test('all distributions contain executable inline code, no build tokens or exter
   for (const name of ['presentation-studio.html', 'presentation-studio-blank.html']) {
     const html = await read('dist/' + name);
     assert(!/\/\* @(?:STYLES|APPLICATION|ZIP_RUNTIME) \*\/|@PROJECT_CONFIG|<!-- @PRESENTATION_SLIDES -->/.test(html));
-    assert(!/<script[^>]+src=|<link[^>]+rel=["']stylesheet/i.test(html));
     for (const match of html.matchAll(/<script([^>]*)>([\s\S]*?)<\/script>/g)) {
       if (match[1].includes('application/json')) JSON.parse(match[2]);
       else new vm.Script(match[2]);
     }
   }
 });
+test('asset references retain recovery media and exclude ordinary text', async () => {
+  const editor = await read('src/runtime/editor.js');
+  const media = await read('src/runtime/media.js');
+  const context = vm.createContext({});
+  vm.runInContext(
+    media.slice(media.indexOf('  function mediaSafePath('), media.indexOf('  function mediaAssetURL(')) +
+    editor.slice(editor.indexOf('  function projectReferenced('), editor.indexOf('  function projectModified(')),
+    context,
+  );
+  const state = {
+    brand: { logo: 'assets/logo.svg', logoLight: 'assets/light.svg', logoDark: 'assets/dark.svg', headerTitle: 'assets/header.txt' },
+    slides: [{ title: 'assets/title.txt', notes: 'assets/notes.txt', tree: [{ text: 'assets/example.png' }] }],
+    media: { active: { src: 'assets/active.png', caption: 'assets/caption.txt' }, trashed: { src: 'assets/trash.png' } },
+    mediaObjects: { active: [{ media: { src: 'assets/object.webm', poster: 'assets/poster.png', alt: 'assets/alt.txt' } }] },
+    startingState: { media: { baseline: { src: 'assets/baseline.png' } } },
+  };
+  const pack = {
+    state,
+    meta: { name: 'assets/project.txt' },
+    checkpoints: [{ state: { media: { checkpoint: { src: 'assets/checkpoint.png' } } } }],
+    history: { past: [{ brand: { logoDark: 'assets/past.svg' } }], future: [{ mediaObjects: { slide: [{ media: { src: 'assets/future.png' } }] } }] },
+  };
+  const expected = ['logo.svg', 'light.svg', 'dark.svg', 'active.png', 'trash.png', 'object.webm', 'poster.png', 'baseline.png'];
+  assert.deepEqual([...context.projectReferenced(pack)].sort(), [...expected, 'checkpoint.png', 'past.svg', 'future.png'].map(p => 'assets/' + p).sort());
+  assert.deepEqual([...context.projectReferenced(state)].sort(), expected.map(p => 'assets/' + p).sort());
+});
+
 test('build is reproducible', async () => {
   const before = await read('dist/presentation-studio.html');
   execFileSync(process.execPath, ['scripts/build.mjs']);

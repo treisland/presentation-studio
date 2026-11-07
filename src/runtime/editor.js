@@ -604,13 +604,30 @@
   }
   function projectReferenced(pack = projectPack()) {
     const refs = new Set();
-    function walk(x) {
-      if (typeof x === "string") {
-        if (mediaSafePath(x)) refs.add(x);
-      } else if (Array.isArray(x)) x.forEach(walk);
-      else if (x && typeof x === "object") Object.values(x).forEach(walk);
+    function add(path) {
+      if (mediaSafePath(path)) refs.add(path);
     }
-    walk(pack);
+    function state(value) {
+      if (!value) return;
+      for (const key of ["logo", "logoLight", "logoDark"])
+        add(value.brand?.[key]);
+      const media = [
+        ...Object.values(value.media || {}),
+        ...Object.values(value.mediaObjects || {}).flatMap((objects) =>
+          objects.map((object) => object.media),
+        ),
+      ];
+      for (const cfg of media) {
+        add(cfg.src);
+        add(cfg.poster);
+      }
+      state(value.startingState);
+    }
+    // Booth exports pass a state-shaped payload rather than a project pack.
+    state(pack.state || pack);
+    for (const checkpoint of pack.checkpoints || []) state(checkpoint.state);
+    for (const value of pack.history?.past || []) state(value);
+    for (const value of pack.history?.future || []) state(value);
     return refs;
   }
   function projectModified() {
@@ -1859,11 +1876,11 @@
     );
     try {
       const json = JSON.stringify(pack, null, 2),
-        escaped = json.replace(/</g, "\u003c"),
+        escaped = json.replace(/</g, "\\u003c"),
         media = JSON.stringify({
           schemaVersion: 1,
           slides: pack.state.media,
-        }).replace(/</g, "\u003c");
+        }).replace(/</g, "\\u003c");
       const projectPattern =
           /<script\b(?=[^>]*\bid=["']project-config["'])[^>]*>[\s\S]*?<\/script>/i,
         mediaPattern =
