@@ -9,3 +9,5 @@ test-results/
 customer-projects/
 *.mp4
 *.webm
+!tests/fixtures/media/*.mp4
+!tests/fixtures/media/*.webm
