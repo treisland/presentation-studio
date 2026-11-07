@@ -34,9 +34,13 @@ const repository = 'treisland/presentation-studio';
 function gh(args, input) {
   return execFileSync('gh', args, { encoding: 'utf8', input: input && JSON.stringify(input), stdio: ['pipe', 'pipe', 'pipe'] }).trim();
 }
-function api(path, method = 'GET', body) {
-  return JSON.parse(gh(['api', `repos/${repository}/${path}`, '--method', method, ...(body ? ['--input', '-'] : [])], body) || 'null');
+export function createGitHubAPI(run = gh) {
+  return (path, method = 'GET', body) => {
+    const endpoint = `repos/${repository}` + (path ? `/${path}` : '');
+    return JSON.parse(run(['api', endpoint, '--method', method, ...(body ? ['--input', '-'] : [])], body) || 'null');
+  };
 }
+const api = createGitHubAPI();
 function optional(path) {
   try { return api(path); } catch (error) {
     if (String(error.stderr).includes('(HTTP 404)')) return null;

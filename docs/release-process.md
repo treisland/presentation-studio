@@ -34,6 +34,8 @@ Local heartbeat runs need the Codex app's scheduling environment, GitHub CLI aut
 
 Use hold on a PR to stop future queuing and disable any already-enabled auto-merge with gh pr merge --disable-auto. Pause the heartbeat to stop release processing. To cancel an unpublished release, merge a plan with publish=false before tagging; if already tagged, leave the tag immutable and keep the release draft. Never overwrite published artifacts: fix forward with a patch version. If checks fail, investigate and submit a focused PR; do not repeatedly rerun deterministic failures.
 
+If delivery reports HTTP 404 while reading repository settings, distinguish an invalid API path from missing authentication or repository access. The repository-root endpoint has no trailing slash. Verify a read-only request before retrying delivery; keep all protection and publication gates enabled.
+
 ## Manual release gates
 
 Record evidence links and results for supported browsers/OS, a real delivery video, OBS if claimed supported, keyboard authoring, screen-reader review, clean-profile editable ZIP restore, offline playback, and legacy import. Do not imply these passed from CI alone. Beta/RC/stable plans must list evidence for each gate and mark manualGatesPassed=true only after completion. Any unsupported environment must be stated in notes.

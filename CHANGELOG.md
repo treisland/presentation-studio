@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Fix automatic delivery failing with HTTP 404 when checking repository settings; preserve protection and release gates.
+
 ## 0.1.4-alpha — 2026-11-07
 
 - Establish contribution and release policies, agent instructions, issue/PR acceptance templates, protected validation, and monitored automatic delivery.

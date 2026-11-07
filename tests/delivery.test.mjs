@@ -1,6 +1,25 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { requiredChecks, validated, validPlan, validAssets, eligiblePR, protectedDelivery } from '../scripts/delivery.mjs';
+import { requiredChecks, validated, validPlan, validAssets, eligiblePR, protectedDelivery, createGitHubAPI } from '../scripts/delivery.mjs';
+
+test('GitHub API requests omit the repository-root slash and preserve nested requests', () => {
+  const requests = [];
+  const api = createGitHubAPI((args, body) => {
+    requests.push({ args, body });
+    return '{"ok":true}';
+  });
+  assert.deepEqual(api(''), { ok: true });
+  api('branches/main/protection');
+  api('commits/main/check-runs?per_page=100');
+  const body = { ref: 'refs/tags/v0.1.4-alpha', sha: 'validated-sha' };
+  api('git/refs', 'POST', body);
+  assert.deepEqual(requests, [
+    { args: ['api', 'repos/treisland/presentation-studio', '--method', 'GET'], body: undefined },
+    { args: ['api', 'repos/treisland/presentation-studio/branches/main/protection', '--method', 'GET'], body: undefined },
+    { args: ['api', 'repos/treisland/presentation-studio/commits/main/check-runs?per_page=100', '--method', 'GET'], body: undefined },
+    { args: ['api', 'repos/treisland/presentation-studio/git/refs', '--method', 'POST', '--input', '-'], body },
+  ]);
+});
 
 test('drafts, held PRs, requested changes and unapproved contributors cannot queue', () => {
   const pr = { labels: [], author: { login: 'treisland' }, isDraft: false };
