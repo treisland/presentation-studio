@@ -1,3 +1,7 @@
+[![CodeQL](https://github.com/treisland/presentation-studio/actions/workflows/github-code-scanning/codeql/badge.svg?branch=main)](https://github.com/treisland/presentation-studio/actions/workflows/github-code-scanning/codeql)
+[![Validate and build](https://github.com/treisland/presentation-studio/actions/workflows/validate.yml/badge.svg)](https://github.com/treisland/presentation-studio/actions/workflows/validate.yml)
+[![Draft release](https://github.com/treisland/presentation-studio/actions/workflows/release.yml/badge.svg)](https://github.com/treisland/presentation-studio/actions/workflows/release.yml)
+
 # Presentation Studio
 
 ![Presentation Studio icon](assets/logo_light.png)
