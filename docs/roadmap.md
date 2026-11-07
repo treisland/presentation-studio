@@ -1,6 +1,19 @@
 # Roadmap
 
-Public releases use the 0.1.x-alpha series. The numbered sections below record historical development milestones, not published release versions.
+## Current delivery plan
+
+Public releases currently use the 0.1.x-alpha series. See [release stages and contribution flow](release-process.md). GitHub milestones and linked issues hold acceptance criteria and delivery state; this document summarizes direction.
+
+- **Now — 0.1.4-alpha:** align Apache 2.0 licensing; establish contribution rules, required checks, automatic merging, and explicitly planned releases.
+- **Next — 0.2.0:** presentation preflight, media reliability, backup verification, and keyboard/accessibility validation. Deliver alpha.N increments, freeze scope for beta, then RC and stable after documented gates.
+- **Later — canvas enhancements:** screen-adaptive workspace, collapsible/resizable panels, additive media beside existing content, draggable blocks, snapping/layering and keyboard placement. Track separately under 0.3.0 unless deliberately promoted into 0.2 during alpha. Live timers/counters follow basic blocks.
+- **Deferred:** camera overlays, template publishing, accounts and collaboration until the core workflow is dependable.
+
+Track delivery in the [0.2.0 milestone](https://github.com/treisland/presentation-studio/milestone/1) and [0.3.0 milestone](https://github.com/treisland/presentation-studio/milestone/2).
+
+## Historical development milestones
+
+The numbered sections below record historical development milestones, not published release versions.
 
 ## 0.1.0 — Repository foundation
 
@@ -62,7 +75,7 @@ Public releases use the 0.1.x-alpha series. The numbered sections below record h
 
 - [x] Vendor archives, product content, documentation links, and archive output removed.
 - [x] Neutral identifiers with import-only compatibility and browser draft copy migration.
-- [x] Synthetic regression fixtures, original icon, MIT license, and independence statement.
+- [x] Synthetic regression fixtures, original icon, Apache License 2.0, and independence statement.
 - [x] Clean public source snapshot with an initial Git commit.
 
 ## Next candidates

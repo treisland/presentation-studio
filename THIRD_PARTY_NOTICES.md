@@ -6,4 +6,4 @@ The application embeds JSZip 3.10.1, used under its MIT option, and its bundled 
 - pako: https://github.com/nodeca/pako
 - Playwright: https://github.com/microsoft/playwright
 
-The studio's original code and included original assets use the MIT license in LICENSE. User-imported materials and third-party marks are not relicensed by this project.
+The studio's original code and included original assets use the Apache License 2.0 in LICENSE. User-imported materials and third-party marks are not relicensed by this project.

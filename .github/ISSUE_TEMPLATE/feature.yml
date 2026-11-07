@@ -9,6 +9,27 @@ body:
     validations:
       required: true
   - type: textarea
+    id: scope
+    attributes:
+      label: Scope and exclusions
+      description: What belongs in this change, and what should remain unchanged?
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: Observable behaviors that define completion; use a checklist.
+    validations:
+      required: true
+  - type: textarea
+    id: validation
+    attributes:
+      label: Validation, compatibility, and dependencies
+      description: Tests, manual checks, saved-project/export impact, and blockers.
+    validations:
+      required: true
+  - type: textarea
     id: proposal
     attributes:
       label: Proposed behavior and example

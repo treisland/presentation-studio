@@ -19,3 +19,8 @@ body:
     attributes:
       label: Area
       options: [Player, Editor, Media, Import/export, Recovery, Template, Other]
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Expected behavior and regression check
+      description: What would demonstrate the problem is fixed? Include recovery/export risks where relevant.

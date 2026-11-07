@@ -2,7 +2,7 @@
 
 Presentation Studio is an independent community project maintained under the se-appsec-sandbox organization. It is not an official product, endorsed presentation tool, or authorized representative of any software vendor.
 
-The studio source, original icon, neutral templates, and original examples are provided under the MIT license. Third-party components retain the notices in THIRD_PARTY_NOTICES.md. The license does not grant rights to third-party trademarks or user-imported content.
+The studio source, original icon, neutral templates, and original examples are provided under the Apache License 2.0. Third-party components retain the notices in THIRD_PARTY_NOTICES.md. The license does not grant rights to third-party trademarks or user-imported content.
 
 ## Included examples
 

@@ -4,6 +4,10 @@
 
 # Presentation Studio
 
+[![Release](https://img.shields.io/github/v/release/treisland/presentation-studio?include_prereleases)](https://github.com/treisland/presentation-studio/releases)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![Contributing](https://img.shields.io/badge/Contributions-welcome-brightgreen.svg)](CONTRIBUTING.md)
+
 ![Presentation Studio icon](assets/logo_light.png)
 
 A portable HTML presentation player and editor. Start with a short, generic demo or a blank presentation, then add your own content, branding, questions, and media. No application server or database is required.
@@ -72,7 +76,11 @@ For a localhost preview, run `npm run serve`, then open `http://127.0.0.1:4173`.
 
 [Quick start](docs/quick-start.md) · [Architecture](docs/architecture.md) · [Contributing](CONTRIBUTING.md) · [Content and branding](docs/content-and-branding.md) · [Open-source release](docs/open-source-release.md) · [Roadmap](docs/roadmap.md) · [Troubleshooting](docs/troubleshooting.md)
 
-Version 0.1.3-alpha. Released under the [MIT license](LICENSE). Third-party notices remain applicable. Chromium workflows are tested; OBS and other browsers require manual validation.
+Version 0.1.4-alpha. Released under the [Apache License 2.0](LICENSE). Third-party notices remain applicable. Chromium workflows are tested; OBS and other browsers require manual validation.
+
+## Development process
+
+See the [release process](docs/release-process.md), [contributor guide](CONTRIBUTING.md), and [roadmap](docs/roadmap.md). Approved issues define work; protected PRs must pass Windows/Linux validation. Automatic delivery merges eligible PRs and publishes explicitly planned versions after release checks and artifact verification.
 
 Presentation Studio is an independent community project maintained under **se-appsec-sandbox**, with no implied vendor affiliation or endorsement. Users supply and are responsible for their own presentation content and branding.
 

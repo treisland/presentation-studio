@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 0.1.4-alpha — 2026-11-07
+
+- Establish contribution and release policies, agent instructions, issue/PR acceptance templates, protected validation, and monitored automatic delivery.
+- Add tested release gates for exact-commit Windows/Linux checks, explicit release plans, stage evidence, and four verified artifacts.
+- Align project licensing metadata, documentation, and in-app help with Apache License 2.0. Third-party licenses remain unchanged.
+
 ### 0.1.3-alpha preparation
 
 - Use isolated operating-system temporary directories for experience-test downloads.
