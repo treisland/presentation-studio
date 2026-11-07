@@ -1245,6 +1245,20 @@
       ? "Some content reaches the slide edge or footer. Shorten the text, reduce table rows, or choose another layout."
       : "";
   }
+  function projectTrapDialogTab(event, dialog) {
+    if (event.key !== "Tab") return;
+    const controls = [...dialog.querySelectorAll('button,input,select,textarea,a[href],summary,[tabindex]')]
+      .filter(element => !element.disabled && element.tabIndex >= 0 && element.getClientRects().length && !element.closest('[inert]'));
+    const first = controls[0], last = controls.at(-1);
+    if (!first) return;
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
   function projectSelectTab(tab) {
     projectTab = tab;
     document.querySelectorAll("[data-fe-tab]").forEach((b) => {

@@ -173,6 +173,7 @@ function weInspect(context = weContext, select = true) {
     }[context] || "Slide";
   $("ce-panel").hidden = context !== "media";
   $("fe-content-panel").hidden = !["slide", "text"].includes(context);
+  $("fe-content-panel").setAttribute("aria-labelledby", context === "text" ? document.querySelector('[data-fe-tab="content"]').id : "we-context-slide");
   $("we-font-controls").hidden = context !== "text";
   $("vb-toolbar").hidden =
     !vbSelected ||
@@ -556,6 +557,8 @@ function weEndPan(cancel = false) {
   weView();
 }
 function weBind() {
+  $("fe-up").setAttribute("aria-label", "Move selected slide up");
+  $("fe-down").setAttribute("aria-label", "Move selected slide down");
   const body = document.querySelector("#full-editor .fe-body"),
     work = document.querySelector("#full-editor .fe-work");
   body.classList.add("we-body");
@@ -612,6 +615,14 @@ function weBind() {
   }
   for (const tab of ["content", "table", "commands", "notes"])
     inspector.append($("fe-" + tab + "-panel"));
+  for (const button of document.querySelectorAll("[data-fe-tab]")) {
+    const panel = $("fe-" + button.dataset.feTab + "-panel");
+    button.id ||= "we-tab-" + button.dataset.feTab;
+    button.setAttribute("aria-controls", panel.id);
+    panel.setAttribute("aria-labelledby", button.id);
+  }
+  $("we-context-slide").setAttribute("aria-controls", "fe-content-panel");
+  $("we-context-media").setAttribute("aria-controls", "ce-panel");
   const extra = document.createElement("label");
   extra.htmlFor = "we-slide-transition";
   extra.textContent = "Slide transition";

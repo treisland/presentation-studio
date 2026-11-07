@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Name slide movement controls and editor/settings tab panels for assistive technology; keep Tab navigation within readiness/backup dialogs. Add keyboard authoring/import/export regressions and a manual accessibility evidence checklist.
+
 - Inspect original ZIP directory members before JSZip deduplicates paths, rejecting duplicate/ambiguous entries and enforcing limits against all original members.
 
 - Add isolated editable ZIP verification for project structure, active/recovery asset completeness, archive CRC integrity and safe paths, without importing HTML or changing the active project/draft. Include limits and cancellable verification.
