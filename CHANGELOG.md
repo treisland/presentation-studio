@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+### 0.1.3-alpha preparation
+
+- Use isolated operating-system temporary directories for experience-test downloads.
+- Track editable ZIP freshness separately from browser-local saving, including text changes.
+- Restore settings focus, contain keyboard navigation within settings, and improve compact editor controls and focus indicators.
+- Add media readiness diagnostics and Windows validation alongside Linux.
+- Align package, lockfile, README and roadmap release identity with automated checks.
+
 ## 0.1.2-alpha — 2026-11-07
 
 ### Fixed

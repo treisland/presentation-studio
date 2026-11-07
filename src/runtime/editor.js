@@ -1929,6 +1929,7 @@
         ".zip";
       mediaDownload(blob, filename);
       if (!playback) {
+        hubBackupContent = hubContent(pack);
         mediaDirty = false;
         mediaSaved = projectCopy(projectState.media);
         projectStatus();

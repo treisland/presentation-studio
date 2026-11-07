@@ -6,6 +6,7 @@ const hubContent = (pack) =>
     history: pack.history,
   });
 let hubRecords = [],
+  hubBackupContent = null,
   hubSaveState = "opened",
   hubSavedAt = "",
   hubSwitchAction = null,
@@ -24,19 +25,21 @@ function hubStatus() {
   const status = projectDraftPending
     ? "Recovery draft available"
     : {
-        opened: "Opened project · export a ZIP for a backup",
+        opened: "Opened project",
         pending: "Changes pending · saving locally…",
         saving: "Saving locally…",
         saved:
           "Saved locally" +
           (hubSavedAt
             ? " · " + new Date(hubSavedAt).toLocaleTimeString()
-            : "") +
-          (mediaDirty ? " · ZIP backup not updated" : ""),
+            : ""),
         failed: "Local save failed · export a backup",
         unavailable: "Local storage unavailable · export a backup",
       }[hubSaveState];
-  $("fe-status").textContent = status || "Project ready";
+  $("fe-status").textContent = (status || "Project ready") +
+    (hubBackupContent === hubContent(projectPack())
+      ? " · Editable ZIP created this session; keep the downloaded file"
+      : " · Changes need an editable ZIP backup");
   $("fe-status").dataset.saveState = hubSaveState;
   $("open-full-editor").textContent = "Edit";
   $("open-full-editor").title = projectDraftPending ? "Review draft recovery (J)" : "Edit presentation (J)";
@@ -117,6 +120,7 @@ projectSaveDraft = async function () {
 };
 const hubAccept = projectAcceptPack;
 projectAcceptPack = function (pack) {
+  hubBackupContent = null;
   hubSaveState = "opened";
   hubSavedAt = "";
   return hubAccept(pack);

@@ -1,4 +1,5 @@
 import { selectTab } from './ui.mjs';
+import { waitForVideo } from './media-diagnostics.mjs';
 import { archivePath } from './archive-path.mjs';
 import {legacyHTML} from './legacy-fixture.mjs';
 import test from "node:test";
@@ -401,9 +402,7 @@ test("media selection, preview interaction, and muted video remain separate from
       .filter({ hasText: "Bring your content to life" })
       .click();
     await p.locator("#vb-preview-mode").click();
-    await p.waitForFunction(
-      () => document.querySelector("#fe-preview video")?.readyState >= 2,
-    );
+    await waitForVideo(p, '#fe-preview video');
     assert.equal(
       await p
         .locator("#fe-preview video")

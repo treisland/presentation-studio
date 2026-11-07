@@ -1,5 +1,7 @@
 # Roadmap
 
+Public releases use the 0.1.x-alpha series. The numbered sections below record historical development milestones, not published release versions.
+
 ## 0.1.0 — Repository foundation
 
 - [x] Preserve the working standalone HTML experience.
@@ -9,8 +11,8 @@
 - [x] Document editing, presenting, recovery, sharing, architecture, and contributions.
 - [x] Add automated validation, browser tests, and release packaging.
 - [x] Prepare private-first content review guidance and third-party notices.
-- [ ] Create the private GitHub repository and push the prepared foundation.
-- [ ] Verify hosted Actions and attach the first draft release.
+- [x] Publish the repository and prepared foundation.
+- [x] Verify hosted Actions and publish alpha release artifacts.
 
 ## 0.2.0 — Guided setup and presentation identity
 

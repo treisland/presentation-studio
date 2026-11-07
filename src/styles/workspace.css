@@ -332,7 +332,7 @@
 .editor-dark #we-inspector #vb-toolbar {
   background: #1d3554;
 }
-@media (max-width: 1150px) {
+@media (max-width: 1366px) {
   #full-editor .we-body {
     grid-template-columns: 175px minmax(0, 1fr) 285px;
   }
@@ -351,6 +351,18 @@
   #we-view-status {
     display: none;
   }
+}
+#full-editor :is(button, input, select, textarea, summary):focus-visible {
+  outline: 3px solid #0066ff;
+  outline-offset: 2px;
+}
+#full-editor .fe-top-actions,
+#we-center .vb-mode-row {
+  flex-wrap: wrap;
+}
+#we-inspector {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 @media (max-width: 760px) {
   #full-editor .we-body {
