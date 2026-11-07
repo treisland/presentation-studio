@@ -1,0 +1,18 @@
+#bv-dialog {
+  width: min(680px, 90vw);
+  max-height: 85vh;
+  overflow: auto;
+  padding: 24px;
+  border: 1px solid #526b8c;
+  border-radius: 14px;
+  background: #fff;
+  color: #101c2f;
+}
+#bv-dialog::backdrop { background: #07112199; }
+#bv-dialog h2 { margin-top: 0; }
+#bv-dialog p { line-height: 1.5; overflow-wrap: anywhere; }
+#bv-dialog label { display: block; margin: 16px 0 8px; }
+#bv-file { max-width: 100%; }
+#bv-status { font-weight: bold; }
+#bv-dialog :focus-visible { outline: 3px solid #0066ff; outline-offset: 2px; }
+.editor-dark #bv-dialog { background: #101f33; color: #edf4ff; }

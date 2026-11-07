@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add isolated editable ZIP verification for project structure, active/recovery asset completeness, archive CRC integrity and safe paths, without importing HTML or changing the active project/draft. Include limits and cancellable verification.
+
 - Add original H.264 MP4 and VP8 WebM fixtures with playback, focus continuity, editable import and editable/playback export/reopen regressions.
 
 ## 0.2.0-alpha.1 — 2026-11-07
