@@ -102,7 +102,15 @@ function dbAttach() {
   if (!projectPreviewNode || !$("db-list")) return;
   for (const block of projectPreviewNode.querySelectorAll(".db-block")) {
     block.querySelectorAll(":scope > .db-handle").forEach(el => el.remove());
+    const content = block.querySelector(':scope > .db-circle-content');
+    if (content && vbMode !== 'edit') content.replaceWith(...content.childNodes);
     if (vbMode !== "edit") continue;
+    if (block.classList.contains('db-circle') && !content) {
+      const clip = document.createElement('div');
+      clip.className = 'db-circle-content';
+      clip.append(...block.childNodes);
+      block.append(clip);
+    }
     block.tabIndex = 0;
     for (const kind of ["move", "resize"]) {
       const button = document.createElement("button");

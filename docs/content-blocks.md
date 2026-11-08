@@ -1,5 +1,7 @@
 # Freely placed content blocks
 
+Circle editing handles sit above the rounded content clip so Move and Resize remain reachable. This editing decoration is absent from saved projects and audience views.
+
 Choose **Add block** above the canvas for Text, Rectangle, Circle or Callout. Media opens the existing additive uploader. Existing slide layouts are not converted. New content uses the slide's theme, and text inside each block remains editable using the normal text tools. Timers/counters and Media Grid are separate work.
 
 Select blocks from **Content blocks** in the inspector, including overlapping blocks. Drag **Move** or the bottom-right resize handle. Movement snaps to edges, margins and center; resize dimensions snap near 5% increments. Hold Alt to bypass snapping. Escape, pointer cancellation, capture loss or window blur cancels a drag without an undo entry. The preview changes during the gesture; model placement commits once on release.

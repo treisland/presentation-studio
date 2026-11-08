@@ -73,6 +73,28 @@ test('palette and keyboard arrangement preserve original content and unique IDs 
     assert.deepEqual(await pack(p), locked);
   } finally { await p.close(); }
 });
+test('circle Move and resize handles are hittable above curved clipping and preserve model content', async () => {
+  const p = await setup();
+  try {
+    await add(p, 'circle');
+    const before = await pack(p), node = blocks(before.state)[0], id = idOf(node);
+    for (const name of ['db-move', 'db-resize']) {
+      const handle = p.locator('#fe-preview .' + id + ' .' + name);
+      assert.equal(await handle.evaluate(el => { const r=el.getBoundingClientRect(); return el.contains(document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)); }), true, name + ' must receive pointer hits');
+    }
+    const handle = p.locator('#fe-preview .' + id + ' .db-move'), r = await handle.boundingBox();
+    await p.mouse.move(r.x+r.width/2,r.y+r.height/2);await p.mouse.down();await p.mouse.move(r.x+r.width/2-25,r.y+r.height/2,{steps:4});await p.mouse.up();
+    const moved=await pack(p);assert.notEqual(blocks(moved.state)[0].attrs.style,node.attrs.style);assert.equal(moved.history.past.length,before.history.past.length+1);
+    await p.locator('#fe-undo').click();assert.deepEqual((await read(p)).state,before.state);
+    await p.locator('#fe-preview .' + id + ' .db-resize').press('ArrowRight');
+    assert.notEqual(blocks((await read(p)).state)[0].attrs.style,node.attrs.style);
+    assert.equal(JSON.stringify((await read(p)).state).includes('db-circle-content'),false);
+    await p.locator('#vb-preview-mode').click();
+    assert.equal(await p.locator('#fe-preview .db-handle').count(),0);
+    assert.equal(await p.locator('#fe-preview .' + id).evaluate(el=>getComputedStyle(el).overflow),'hidden');
+  } finally { await p.close(); }
+});
+
 test('scaled pointer placement previews/cancels safely and commits one undo entry with snapping', async () => {
   const p = await setup();
   try {
