@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Preserve complete retained tables, including empty cells/rows, and other protected structures during collection layout changes.
 - Begin layout collections with a theme-independent Portfolio case-study composition, a prompt starter and a finished fictional example with an original offline diagram.
 - Preview text/image mapping before a collection layout change; keep unmatched content, media identities and recovery, respect locks and apply as one Undo step. Flag long text and title/body overlap without shrinking text.
 - Document 0.5.0 layout/example planning and rename future AI/MCP milestones to 0.6.0/0.7.0.
