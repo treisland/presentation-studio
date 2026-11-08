@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add Media Grid templates with named file-drop cells, presets/custom row and column counts, fit/crop, safe overflow retention, cell swaps and pointer/keyboard divider resizing.
+
 - Remove the redundant visible Expand control; a named Media Focus keyboard action appears on focus in presentation, Preview and portable booth playback.
 
 - Add a text/shape/callout palette with stable content-block IDs, slide-relative dragging/resizing, snapping, alignment/layers and keyboard arrangement through atomic editing operations. Existing content, media and recovery/export behavior are preserved.

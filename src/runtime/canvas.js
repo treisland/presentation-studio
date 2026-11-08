@@ -990,6 +990,7 @@ function ceBind() {
   window.addEventListener(
     "keydown",
     (e) => {
+      if (e.target.closest?.('.mg-divider,[data-mg-cell]')) return;
       if (
         !ceRelocate &&
         ["Enter", " "].includes(e.key) &&
@@ -1072,6 +1073,7 @@ function ceBind() {
           return;
         }
         if (!e.target.closest?.("#fe-preview")) return;
+        if (typeof mgHandleDrop === 'function' && mgHandleDrop(e, event)) return;
         e.stopImmediatePropagation();
         if (event !== "drop") {
           ceDropZones();

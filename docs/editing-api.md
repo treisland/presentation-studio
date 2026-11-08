@@ -1,5 +1,7 @@
 # Local editing API v1
 
+Media Grid adds bounded cell and divider operations described in [Media Grid](media-grid.md), using the same atomic revision/lock contract.
+
 `window.presentationStudioEditing` is a local authoring API inside the standalone page. It exposes `version`, `read()` and synchronous `apply(request, {signal})`. It adds no network listener, MCP transport, model calls or credential handling. It is not an authentication/security boundary against other code already executing in the page. Only editable projects outside booth/recovery mode are available. Read results include project content/notes; future transports must add explicit scope and permission checks before exposing them.
 
 ## Contract
