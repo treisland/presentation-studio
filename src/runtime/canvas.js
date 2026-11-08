@@ -225,10 +225,7 @@ mediaApply = function (slide) {
       slide.append(figure);
       ceStyle(figure, item.media, slide);
       if (mfSettings().enabled && !figure.querySelector(".mf-expand")) {
-        const b = document.createElement("button");
-        b.className = "mf-expand";
-        b.textContent = "Expand";
-        b.setAttribute("aria-label", "Expand media to focus");
+        const b = mfAction(figure);
         figure.append(b);
       }
     }

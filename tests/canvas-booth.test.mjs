@@ -281,7 +281,7 @@ test("Floating placement, scaled dragging, undo, crop, multiple objects and expo
       .locator("#fe-preview .media-box")
       .nth(1)
       .locator(".mf-expand")
-      .click();
+      .press("Enter");
     assert.equal(await q.locator("#media-focus").count(), 1);
     await q.keyboard.press("Escape");
     assert.deepEqual(errors, []);
