@@ -63,10 +63,24 @@ test('Portfolio media, reading order and editable identity survive offline edita
   const q=await browser.newPage();try{q.on('pageerror',e=>errors.push(e.message));await q.context().setOffline(true);await q.goto('file://'+resolve(folder,'index.html'));
    const image=q.locator('#stage [data-media-id="'+slide.id+'"] .media-box img');await image.waitFor({state:'attached'});assert.equal(await image.evaluate(img=>img.complete&&img.naturalWidth>0),true);
    assert.equal(await q.locator('#stage .mg-guides,#stage .lc-example-image').count(),0);
-   if(selector==='#fe-export'){await q.locator('#open-full-editor').click();const restored=await read(q);assert.equal(restored.projectId,original.projectId);assert.deepEqual(restored.state.slides,original.state.slides);assert.deepEqual(restored.state.media,original.state.media);}
+   const images=q.locator('#stage .lc-case .media-box img');assert.equal(await images.count(),8);assert.equal(await images.evaluateAll(nodes=>nodes.every(img=>img.complete&&img.naturalWidth>0)),true);
+   if(selector==='#fe-export'){await q.locator('#open-full-editor').click();const restored=await read(q);assert.equal(restored.projectId,original.projectId);assert.deepEqual(restored.state.slides,original.state.slides);assert.deepEqual(restored.state.media,original.state.media);assert.deepEqual(restored.state.mediaObjects,original.state.mediaObjects);}
   }finally{await q.close();}
  }
  assert.deepEqual(errors,[]);
+}finally{await p.close();}});
+
+test('all five Portfolio compositions fit both review viewports and gallery crops remain independent',async()=>{const{p,errors}=await setup();try{
+ await example(p,'portfolio-demo');const snapshot=await read(p);assert.equal(snapshot.state.slides.length,5);
+ for(const size of [{width:1366,height:768},{width:1920,height:1080}]){
+  await p.setViewportSize(size);
+  for(const slide of snapshot.state.slides){await p.locator('.fe-slide-button[data-slide-id="'+slide.id+'"]').click();assert.equal(await p.locator('#fe-layout-warning').isVisible(),false,slide.template+' at '+size.width);await p.screenshot({path:'test-results/'+slide.template+'-'+size.width+'.png'});}
+ }
+ const gallery=snapshot.state.slides.find(s=>s.template==='portfolio-gallery');await p.locator('.fe-slide-button[data-slide-id="'+gallery.id+'"]').click();
+ const grid=gallery.tree.find(n=>n.attrs?.class?.startsWith('mg-grid')),cell=grid.children[1].attrs.class.match(/cell-[\w-]+/)[0],before=await read(p);
+ assert.equal((await apply(p,[{type:'grid.appearance',slideId:gallery.id,cellId:cell,fit:'cover',x:20,y:80}])).ok,true);
+ const after=await read(p);assert.deepEqual(after.state.media[gallery.id],before.state.media[gallery.id]);assert.equal(after.state.mediaObjects[gallery.id][0].media.fit,'cover');assert.deepEqual(after.state.mediaObjects[gallery.id].slice(1),before.state.mediaObjects[gallery.id].slice(1));
+ await p.locator('#fe-undo').click();assert.deepEqual((await read(p)).state,before.state);assert.deepEqual(errors,[]);
 }finally{await p.close();}});
 
 test('table, command and Grid slides retain original structures through collection changes and back',async()=>{const{p,errors}=await setup();try{

@@ -1,4 +1,11 @@
 // Collections describe composition, never a theme or a new document format.
+function lcComposition(name,purpose,body,images=1,gallery=false) {
+  return {name,purpose,collection:'Portfolio',format:'16:9 slides',body,images,gallery,
+    imageBounds:gallery?{x:.05,y:.34,w:.9,h:.48}:{x:.55,y:.24,w:.4,h:.59},
+    imageSlots:Array.from({length:images},(_,i)=>({id:'visual-'+(i+1),label:'Project visual '+(i+1),description:'Independent Fit/Fill, crop and alternative description.'})),
+    readingOrder:['title',...body.map(s=>s.label),'visuals','credits'],
+    slots:[{id:'title',label:'Project title',tag:'h2',limit:85},...body.map(s=>({...s,tag:'p',limit:210})),{id:'credits',label:'Credits / image context',tag:'p',limit:140}]};
+}
 const lcLayouts = Object.freeze({
   'portfolio-case': {
     name: 'Portfolio · Case study',
@@ -15,6 +22,24 @@ const lcLayouts = Object.freeze({
       {id:'credits',label:'Credits / image description',tag:'p',limit:140},
     ],
   },
+  'portfolio-process':lcComposition('Portfolio · Process','Show the decisions and tests behind your work.',[
+    {id:'discover',label:'1. Discover',prompt:'Describe what you learned from the people or problem.'},
+    {id:'decide',label:'2. Decide',prompt:'Explain a key design decision and the alternatives you considered.'},
+    {id:'test',label:'3. Test',prompt:'Show how feedback changed your next iteration.'},
+  ]),
+  'portfolio-results':lcComposition('Portfolio · Results','Separate evidence, limitations and next steps.',[
+    {id:'evidence',label:'Evidence',prompt:'Describe the result you can support. Include the source and period for any metric.'},
+    {id:'limits',label:'Limitations',prompt:'State the size of the trial and what the result does not establish.'},
+    {id:'next',label:'Next steps',prompt:'Explain what you would test or improve next.'},
+  ]),
+  'portfolio-gallery':lcComposition('Portfolio · Image gallery','Compare four independently editable project visuals.',[
+    {id:'intro',label:'Visual story',prompt:'Introduce the images and explain the order in which to read them.'},
+  ],4,true),
+  'portfolio-details':lcComposition('Portfolio · Details and credits','Record roles, deliverables, collaborators and image credits.',[
+    {id:'role',label:'Role',prompt:'Describe your own contribution and the people you worked with.'},
+    {id:'deliverables',label:'Deliverables',prompt:'List what was produced and the constraints that shaped it.'},
+    {id:'credits',label:'Acknowledgements',prompt:'Credit collaborators, image sources and licenses.'},
+  ].map(s=>s.id==='credits'?{...s,id:'acknowledgements'}:s)),
 });
 function lcBounds(model) {
   return lcLayouts[model?.template]?.imageBounds || {x:.05,y:.23,w:.9,h:.72};
@@ -26,6 +51,13 @@ const lcTemplate = projectCreateTemplate;
 projectCreateTemplate = function(type,title) {
   const layout=lcLayouts[type];if(!layout)return lcTemplate(type,title);
   const text=(id,value)=>{const slot=layout.slots.find(s=>s.id===id);return projectNode(slot.tag,'lc-slot-'+id,[value]);};
+  if(layout.body){
+    const root=projectNode('div','mg-grid',Array.from({length:layout.images},mgNewCell));
+    mgWrite(root,{rows:mgEqual(layout.gallery?2:1),cols:mgEqual(layout.gallery?2:1),gap:2});
+    return {classes:'wide mg-slide lc-case lc-'+type,tree:[text('title',title||layout.name),
+      projectNode('div','lc-copy',layout.body.flatMap(slot=>[projectNode('h3','lc-label',[slot.label]),text(slot.id,slot.prompt)])),
+      root,text('credits','Add image descriptions, source credits and relevant project context.')]};
+  }
   const root=projectNode('div','mg-grid',[mgNewCell()]);
   mgWrite(root,{rows:[10000],cols:[10000],gap:2});
   return {classes:'wide mg-slide lc-case',tree:[
@@ -56,7 +88,7 @@ function lcMapped(original,type) {
     }
   }
   walk(source.tree);
-  if(layout&&lcLayouts[original.template]){
+  if(layout&&type===original.template){
     const labels=projectFind(source,n=>mgHas(n,'lc-label')),targets=projectFind(next,n=>mgHas(n,'lc-label'));
     labels.forEach(({node},i)=>{const target=targets[i];if(!target)return;used.add(node);const parts=target.path.split('.');let parent=next.tree;for(const key of parts.slice(0,-1))parent=parent[key];parent[parts.at(-1)]=node;});
   }
@@ -158,7 +190,33 @@ function lcExampleState(choice,name){
   }
   slide.templateBase=projectCopy(slide.tree);state.brand.headerTitle='CASE STUDY';state.brand.headerSubtitle=name;
   slide.notes=demo?'Fictional demonstration. Explain the problem, approach and outcome, then describe the image. Replace this content with your own work.':'Walk through the problem, approach and result. Add a visual with a meaningful image description. Keep contributor credits.';
+  lcPortfolioPages(state,demo);
   state.origin='imported';state.startingState=projectCopy(state);return state;
+}
+function lcPortfolioPages(state,demo){
+  const pages=[
+    {type:'portfolio-process',title:demo?'From observations to a testable guide':'How you approached the work',copy:{discover:'A fictional volunteer workshop mapped where visitors stopped to ask for directions.',decide:'The team chose plain-language zone names and a compact floor guide instead of adding more signs.',test:'Participants walked through the draft guide, marked unclear labels and suggested changes.'},assets:['workshop']},
+    {type:'portfolio-results',title:demo?'What the workshop taught us':'Your evidence and next steps',copy:{evidence:'The workshop identified unclear labels before any permanent signs were made.',limits:'This is a fictional small concept study. It is not evidence of improved visitor outcomes or staff time saved.',next:'Revise the guide, run an accessible wayfinding trial and record how visitors use it.'},assets:['plan']},
+    {type:'portfolio-gallery',title:demo?'Four views of the concept':'Your project in images',copy:{intro:'Read left to right, then top to bottom: visitor journey, sign concept, workshop steps and planned follow-up.'},assets:['library','signs','workshop','plan']},
+    {type:'portfolio-details',title:demo?'Roles, deliverables and credits':'Your role and project details',copy:{role:'Fictional volunteer team: journey mapping, plain-language copy and a reusable sign concept.',deliverables:'A visitor journey, a sign sketch, a workshop outline and a plan for a larger trial.',acknowledgements:'All four diagrams are original Presentation Studio assets under Apache 2.0. No real library or participant data is used.'},assets:['signs']},
+  ];
+  for(const page of pages){
+    const model=editingCreateModel(page.type,page.title,state.sections[0].id,projectID());
+    if(demo){
+      for(const [id,text]of Object.entries(page.copy))projectSetText(lcSlot(model,id).node,text);
+      projectSetText(lcSlot(model,'credits').node,'Fictional concept study · Original diagrams: Presentation Studio · Apache 2.0.');
+      const grid=mgRoot(model);
+      for(const [i,name]of page.assets.entries()){
+        const object=i===0?'primary':projectID('object'),media={...mediaDefaults,kind:'image',src:'assets/portfolio-'+name+'.svg',name:'Library '+name+' diagram',alt:{library:'Arrival, discovery and quiet reading form a visitor journey with a feedback loop.',signs:'A sign concept uses plain-language zones: Welcome, Find a book and Quiet spaces.',workshop:'Workshop steps are Observe, Sketch, Walk through and Revise.',plan:'Follow-up plan: revise wording, test access, observe use and share findings.'}[name],fit:'contain'};
+        if(i===0)state.media[model.id]=media;else{state.mediaObjects??={};(state.mediaObjects[model.id]??=[]).push({id:object,media});}
+        mgMark(grid.children[i],object);
+      }
+      mgArrange(state,model);
+    }
+    model.notes=demo?'Fictional example: describe what is shown, distinguish evidence from proposals, and read visual context aloud when needed.':'Replace prompts with your own work. Describe images and credit collaborators. Keep claims tied to evidence.';
+    model.templateBase=projectCopy(model.tree);state.slides.push(model);
+  }
+  Object.values(state.loops)[0].slideIds=state.slides.map(s=>s.id);
 }
 const lcInit=projectInit;
 projectInit=function(){
@@ -169,8 +227,8 @@ projectInit=function(){
   for(const id of Object.keys(lcLayouts))for(const select of [$('fe-slide-template'),$('fe-new-template'),$('nx-wizard-layout')])if(select&&!Array.from(select.options).some(o=>o.value===id))select.add(new Option(lcLayouts[id].name,id));
   const options=document.querySelector('#nx-wizard .studio-start-options');
   if(options)for(const [value,title,description]of [
-    ['portfolio-starter','Portfolio starter','One editable case-study slide with prompts and an image slot. 16:9 slide format.'],
-    ['portfolio-demo','Portfolio finished example','A complete fictional library case study with an original offline diagram. 16:9 slide format.'],
+    ['portfolio-starter','Portfolio starter','Five editable slides: case study, process, results, image gallery and credits. 16:9 slide format.'],
+    ['portfolio-demo','Portfolio finished example','A five-slide fictional library case study with original offline diagrams. 16:9 slide format.'],
   ]){const label=document.createElement('label'),input=document.createElement('input'),b=document.createElement('b'),span=document.createElement('span');input.type='radio';input.name='nx-start';input.value=value;input.onchange=()=>{$('nx-wizard-header').value='CASE STUDY';nxWizardPage();};b.textContent=title;span.textContent=description;label.append(input,b,span);options.append(label);}
 };
 

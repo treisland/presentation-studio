@@ -9,3 +9,7 @@
 #lc-mapping { font:13px/1.5 Arial;overflow-wrap:anywhere; }
 #lc-mapping ul { padding-left:22px; }
 #lc-mapping-status { font:13px/1.5 Arial; }
+.lc-portfolio-gallery .lc-copy { width:90%;top:22%; }
+.lc-portfolio-gallery .lc-copy .lc-label { display:none; }
+.lc-portfolio-gallery .lc-copy p { font-size:26px;margin:0; }
+.lc-portfolio-gallery .lc-slot-credits { left:5%;width:90%;top:85%; }

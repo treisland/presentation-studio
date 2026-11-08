@@ -1843,6 +1843,920 @@
         "topic": "General",
         "commands": null,
         "templateCommands": null
+      },
+      {
+        "id": "slide-sampler-portfolio-process",
+        "title": "Portfolio process",
+        "group": "section-405df504-7de5-40ca-b7f3-720ddf2e1864",
+        "template": "portfolio-process",
+        "classes": "wide mg-slide lc-case lc-portfolio-process",
+        "tree": [
+          {
+            "tag": "h2",
+            "attrs": {
+              "class": "lc-slot-title"
+            },
+            "children": [
+              {
+                "text": "Portfolio process"
+              }
+            ]
+          },
+          {
+            "tag": "div",
+            "attrs": {
+              "class": "lc-copy"
+            },
+            "children": [
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "1. Discover"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-discover"
+                },
+                "children": [
+                  {
+                    "text": "Describe what you learned from the people or problem."
+                  }
+                ]
+              },
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "2. Decide"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-decide"
+                },
+                "children": [
+                  {
+                    "text": "Explain a key design decision and the alternatives you considered."
+                  }
+                ]
+              },
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "3. Test"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-test"
+                },
+                "children": [
+                  {
+                    "text": "Show how feedback changed your next iteration."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "tag": "div",
+            "attrs": {
+              "class": "mg-grid mg-r-10000 mg-c-10000 mg-g-2"
+            },
+            "children": [
+              {
+                "tag": "div",
+                "attrs": {
+                  "class": "mg-cell cell-sampler-portfolio-process-1"
+                },
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "p",
+            "attrs": {
+              "class": "lc-slot-credits"
+            },
+            "children": [
+              {
+                "text": "Add image descriptions, source credits and relevant project context."
+              }
+            ]
+          }
+        ],
+        "templateBase": [
+          {
+            "tag": "h2",
+            "attrs": {
+              "class": "lc-slot-title"
+            },
+            "children": [
+              {
+                "text": "Portfolio process"
+              }
+            ]
+          },
+          {
+            "tag": "div",
+            "attrs": {
+              "class": "lc-copy"
+            },
+            "children": [
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "1. Discover"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-discover"
+                },
+                "children": [
+                  {
+                    "text": "Describe what you learned from the people or problem."
+                  }
+                ]
+              },
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "2. Decide"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-decide"
+                },
+                "children": [
+                  {
+                    "text": "Explain a key design decision and the alternatives you considered."
+                  }
+                ]
+              },
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "3. Test"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-test"
+                },
+                "children": [
+                  {
+                    "text": "Show how feedback changed your next iteration."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "tag": "div",
+            "attrs": {
+              "class": "mg-grid mg-r-10000 mg-c-10000 mg-g-2"
+            },
+            "children": [
+              {
+                "tag": "div",
+                "attrs": {
+                  "class": "mg-cell cell-sampler-portfolio-process-1"
+                },
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "p",
+            "attrs": {
+              "class": "lc-slot-credits"
+            },
+            "children": [
+              {
+                "text": "Add image descriptions, source credits and relevant project context."
+              }
+            ]
+          }
+        ],
+        "templateClasses": "wide mg-slide lc-case lc-portfolio-process",
+        "duration": 12,
+        "hidden": false,
+        "notes": "",
+        "topic": "General",
+        "commands": null,
+        "templateCommands": null
+      },
+      {
+        "id": "slide-sampler-portfolio-results",
+        "title": "Portfolio results",
+        "group": "section-405df504-7de5-40ca-b7f3-720ddf2e1864",
+        "template": "portfolio-results",
+        "classes": "wide mg-slide lc-case lc-portfolio-results",
+        "tree": [
+          {
+            "tag": "h2",
+            "attrs": {
+              "class": "lc-slot-title"
+            },
+            "children": [
+              {
+                "text": "Portfolio results"
+              }
+            ]
+          },
+          {
+            "tag": "div",
+            "attrs": {
+              "class": "lc-copy"
+            },
+            "children": [
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "Evidence"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-evidence"
+                },
+                "children": [
+                  {
+                    "text": "Describe the result you can support. Include the source and period for any metric."
+                  }
+                ]
+              },
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "Limitations"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-limits"
+                },
+                "children": [
+                  {
+                    "text": "State the size of the trial and what the result does not establish."
+                  }
+                ]
+              },
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "Next steps"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-next"
+                },
+                "children": [
+                  {
+                    "text": "Explain what you would test or improve next."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "tag": "div",
+            "attrs": {
+              "class": "mg-grid mg-r-10000 mg-c-10000 mg-g-2"
+            },
+            "children": [
+              {
+                "tag": "div",
+                "attrs": {
+                  "class": "mg-cell cell-sampler-portfolio-results-1"
+                },
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "p",
+            "attrs": {
+              "class": "lc-slot-credits"
+            },
+            "children": [
+              {
+                "text": "Add image descriptions, source credits and relevant project context."
+              }
+            ]
+          }
+        ],
+        "templateBase": [
+          {
+            "tag": "h2",
+            "attrs": {
+              "class": "lc-slot-title"
+            },
+            "children": [
+              {
+                "text": "Portfolio results"
+              }
+            ]
+          },
+          {
+            "tag": "div",
+            "attrs": {
+              "class": "lc-copy"
+            },
+            "children": [
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "Evidence"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-evidence"
+                },
+                "children": [
+                  {
+                    "text": "Describe the result you can support. Include the source and period for any metric."
+                  }
+                ]
+              },
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "Limitations"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-limits"
+                },
+                "children": [
+                  {
+                    "text": "State the size of the trial and what the result does not establish."
+                  }
+                ]
+              },
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "Next steps"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-next"
+                },
+                "children": [
+                  {
+                    "text": "Explain what you would test or improve next."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "tag": "div",
+            "attrs": {
+              "class": "mg-grid mg-r-10000 mg-c-10000 mg-g-2"
+            },
+            "children": [
+              {
+                "tag": "div",
+                "attrs": {
+                  "class": "mg-cell cell-sampler-portfolio-results-1"
+                },
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "p",
+            "attrs": {
+              "class": "lc-slot-credits"
+            },
+            "children": [
+              {
+                "text": "Add image descriptions, source credits and relevant project context."
+              }
+            ]
+          }
+        ],
+        "templateClasses": "wide mg-slide lc-case lc-portfolio-results",
+        "duration": 12,
+        "hidden": false,
+        "notes": "",
+        "topic": "General",
+        "commands": null,
+        "templateCommands": null
+      },
+      {
+        "id": "slide-sampler-portfolio-gallery",
+        "title": "Portfolio gallery",
+        "group": "section-405df504-7de5-40ca-b7f3-720ddf2e1864",
+        "template": "portfolio-gallery",
+        "classes": "wide mg-slide lc-case lc-portfolio-gallery",
+        "tree": [
+          {
+            "tag": "h2",
+            "attrs": {
+              "class": "lc-slot-title"
+            },
+            "children": [
+              {
+                "text": "Portfolio gallery"
+              }
+            ]
+          },
+          {
+            "tag": "div",
+            "attrs": {
+              "class": "lc-copy"
+            },
+            "children": [
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "Visual story"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-intro"
+                },
+                "children": [
+                  {
+                    "text": "Introduce the images and explain the order in which to read them."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "tag": "div",
+            "attrs": {
+              "class": "mg-grid mg-r-5000-5000 mg-c-5000-5000 mg-g-2"
+            },
+            "children": [
+              {
+                "tag": "div",
+                "attrs": {
+                  "class": "mg-cell cell-sampler-portfolio-gallery-1"
+                },
+                "children": []
+              },
+              {
+                "tag": "div",
+                "attrs": {
+                  "class": "mg-cell cell-sampler-portfolio-gallery-2"
+                },
+                "children": []
+              },
+              {
+                "tag": "div",
+                "attrs": {
+                  "class": "mg-cell cell-sampler-portfolio-gallery-3"
+                },
+                "children": []
+              },
+              {
+                "tag": "div",
+                "attrs": {
+                  "class": "mg-cell cell-sampler-portfolio-gallery-4"
+                },
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "p",
+            "attrs": {
+              "class": "lc-slot-credits"
+            },
+            "children": [
+              {
+                "text": "Add image descriptions, source credits and relevant project context."
+              }
+            ]
+          }
+        ],
+        "templateBase": [
+          {
+            "tag": "h2",
+            "attrs": {
+              "class": "lc-slot-title"
+            },
+            "children": [
+              {
+                "text": "Portfolio gallery"
+              }
+            ]
+          },
+          {
+            "tag": "div",
+            "attrs": {
+              "class": "lc-copy"
+            },
+            "children": [
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "Visual story"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-intro"
+                },
+                "children": [
+                  {
+                    "text": "Introduce the images and explain the order in which to read them."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "tag": "div",
+            "attrs": {
+              "class": "mg-grid mg-r-5000-5000 mg-c-5000-5000 mg-g-2"
+            },
+            "children": [
+              {
+                "tag": "div",
+                "attrs": {
+                  "class": "mg-cell cell-sampler-portfolio-gallery-1"
+                },
+                "children": []
+              },
+              {
+                "tag": "div",
+                "attrs": {
+                  "class": "mg-cell cell-sampler-portfolio-gallery-2"
+                },
+                "children": []
+              },
+              {
+                "tag": "div",
+                "attrs": {
+                  "class": "mg-cell cell-sampler-portfolio-gallery-3"
+                },
+                "children": []
+              },
+              {
+                "tag": "div",
+                "attrs": {
+                  "class": "mg-cell cell-sampler-portfolio-gallery-4"
+                },
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "p",
+            "attrs": {
+              "class": "lc-slot-credits"
+            },
+            "children": [
+              {
+                "text": "Add image descriptions, source credits and relevant project context."
+              }
+            ]
+          }
+        ],
+        "templateClasses": "wide mg-slide lc-case lc-portfolio-gallery",
+        "duration": 12,
+        "hidden": false,
+        "notes": "",
+        "topic": "General",
+        "commands": null,
+        "templateCommands": null
+      },
+      {
+        "id": "slide-sampler-portfolio-details",
+        "title": "Portfolio details",
+        "group": "section-405df504-7de5-40ca-b7f3-720ddf2e1864",
+        "template": "portfolio-details",
+        "classes": "wide mg-slide lc-case lc-portfolio-details",
+        "tree": [
+          {
+            "tag": "h2",
+            "attrs": {
+              "class": "lc-slot-title"
+            },
+            "children": [
+              {
+                "text": "Portfolio details"
+              }
+            ]
+          },
+          {
+            "tag": "div",
+            "attrs": {
+              "class": "lc-copy"
+            },
+            "children": [
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "Role"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-role"
+                },
+                "children": [
+                  {
+                    "text": "Describe your own contribution and the people you worked with."
+                  }
+                ]
+              },
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "Deliverables"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-deliverables"
+                },
+                "children": [
+                  {
+                    "text": "List what was produced and the constraints that shaped it."
+                  }
+                ]
+              },
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "Acknowledgements"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-acknowledgements"
+                },
+                "children": [
+                  {
+                    "text": "Credit collaborators, image sources and licenses."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "tag": "div",
+            "attrs": {
+              "class": "mg-grid mg-r-10000 mg-c-10000 mg-g-2"
+            },
+            "children": [
+              {
+                "tag": "div",
+                "attrs": {
+                  "class": "mg-cell cell-sampler-portfolio-details-1"
+                },
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "p",
+            "attrs": {
+              "class": "lc-slot-credits"
+            },
+            "children": [
+              {
+                "text": "Add image descriptions, source credits and relevant project context."
+              }
+            ]
+          }
+        ],
+        "templateBase": [
+          {
+            "tag": "h2",
+            "attrs": {
+              "class": "lc-slot-title"
+            },
+            "children": [
+              {
+                "text": "Portfolio details"
+              }
+            ]
+          },
+          {
+            "tag": "div",
+            "attrs": {
+              "class": "lc-copy"
+            },
+            "children": [
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "Role"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-role"
+                },
+                "children": [
+                  {
+                    "text": "Describe your own contribution and the people you worked with."
+                  }
+                ]
+              },
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "Deliverables"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-deliverables"
+                },
+                "children": [
+                  {
+                    "text": "List what was produced and the constraints that shaped it."
+                  }
+                ]
+              },
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "Acknowledgements"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-acknowledgements"
+                },
+                "children": [
+                  {
+                    "text": "Credit collaborators, image sources and licenses."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "tag": "div",
+            "attrs": {
+              "class": "mg-grid mg-r-10000 mg-c-10000 mg-g-2"
+            },
+            "children": [
+              {
+                "tag": "div",
+                "attrs": {
+                  "class": "mg-cell cell-sampler-portfolio-details-1"
+                },
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "p",
+            "attrs": {
+              "class": "lc-slot-credits"
+            },
+            "children": [
+              {
+                "text": "Add image descriptions, source credits and relevant project context."
+              }
+            ]
+          }
+        ],
+        "templateClasses": "wide mg-slide lc-case lc-portfolio-details",
+        "duration": 12,
+        "hidden": false,
+        "notes": "",
+        "topic": "General",
+        "commands": null,
+        "templateCommands": null
       }
     ],
     "trash": [],
@@ -1858,7 +2772,11 @@
           "slide-46b2ddc6-2746-45b2-b1b1-c1066ef230ce",
           "slide-0d9aa9fc-9468-4f56-bbe7-550965cc0677",
           "slide-media-grid-sampler",
-          "slide-sampler-portfolio-case"
+          "slide-sampler-portfolio-case",
+          "slide-sampler-portfolio-process",
+          "slide-sampler-portfolio-results",
+          "slide-sampler-portfolio-gallery",
+          "slide-sampler-portfolio-details"
         ]
       }
     },
@@ -2417,6 +3335,920 @@
           "topic": "General",
           "commands": null,
           "templateCommands": null
+        },
+        {
+          "id": "slide-sampler-portfolio-process",
+          "title": "Portfolio process",
+          "group": "section-405df504-7de5-40ca-b7f3-720ddf2e1864",
+          "template": "portfolio-process",
+          "classes": "wide mg-slide lc-case lc-portfolio-process",
+          "tree": [
+            {
+              "tag": "h2",
+              "attrs": {
+                "class": "lc-slot-title"
+              },
+              "children": [
+                {
+                  "text": "Portfolio process"
+                }
+              ]
+            },
+            {
+              "tag": "div",
+              "attrs": {
+                "class": "lc-copy"
+              },
+              "children": [
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "1. Discover"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-discover"
+                  },
+                  "children": [
+                    {
+                      "text": "Describe what you learned from the people or problem."
+                    }
+                  ]
+                },
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "2. Decide"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-decide"
+                  },
+                  "children": [
+                    {
+                      "text": "Explain a key design decision and the alternatives you considered."
+                    }
+                  ]
+                },
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "3. Test"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-test"
+                  },
+                  "children": [
+                    {
+                      "text": "Show how feedback changed your next iteration."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "tag": "div",
+              "attrs": {
+                "class": "mg-grid mg-r-10000 mg-c-10000 mg-g-2"
+              },
+              "children": [
+                {
+                  "tag": "div",
+                  "attrs": {
+                    "class": "mg-cell cell-sampler-portfolio-process-1"
+                  },
+                  "children": []
+                }
+              ]
+            },
+            {
+              "tag": "p",
+              "attrs": {
+                "class": "lc-slot-credits"
+              },
+              "children": [
+                {
+                  "text": "Add image descriptions, source credits and relevant project context."
+                }
+              ]
+            }
+          ],
+          "templateBase": [
+            {
+              "tag": "h2",
+              "attrs": {
+                "class": "lc-slot-title"
+              },
+              "children": [
+                {
+                  "text": "Portfolio process"
+                }
+              ]
+            },
+            {
+              "tag": "div",
+              "attrs": {
+                "class": "lc-copy"
+              },
+              "children": [
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "1. Discover"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-discover"
+                  },
+                  "children": [
+                    {
+                      "text": "Describe what you learned from the people or problem."
+                    }
+                  ]
+                },
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "2. Decide"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-decide"
+                  },
+                  "children": [
+                    {
+                      "text": "Explain a key design decision and the alternatives you considered."
+                    }
+                  ]
+                },
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "3. Test"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-test"
+                  },
+                  "children": [
+                    {
+                      "text": "Show how feedback changed your next iteration."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "tag": "div",
+              "attrs": {
+                "class": "mg-grid mg-r-10000 mg-c-10000 mg-g-2"
+              },
+              "children": [
+                {
+                  "tag": "div",
+                  "attrs": {
+                    "class": "mg-cell cell-sampler-portfolio-process-1"
+                  },
+                  "children": []
+                }
+              ]
+            },
+            {
+              "tag": "p",
+              "attrs": {
+                "class": "lc-slot-credits"
+              },
+              "children": [
+                {
+                  "text": "Add image descriptions, source credits and relevant project context."
+                }
+              ]
+            }
+          ],
+          "templateClasses": "wide mg-slide lc-case lc-portfolio-process",
+          "duration": 12,
+          "hidden": false,
+          "notes": "",
+          "topic": "General",
+          "commands": null,
+          "templateCommands": null
+        },
+        {
+          "id": "slide-sampler-portfolio-results",
+          "title": "Portfolio results",
+          "group": "section-405df504-7de5-40ca-b7f3-720ddf2e1864",
+          "template": "portfolio-results",
+          "classes": "wide mg-slide lc-case lc-portfolio-results",
+          "tree": [
+            {
+              "tag": "h2",
+              "attrs": {
+                "class": "lc-slot-title"
+              },
+              "children": [
+                {
+                  "text": "Portfolio results"
+                }
+              ]
+            },
+            {
+              "tag": "div",
+              "attrs": {
+                "class": "lc-copy"
+              },
+              "children": [
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "Evidence"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-evidence"
+                  },
+                  "children": [
+                    {
+                      "text": "Describe the result you can support. Include the source and period for any metric."
+                    }
+                  ]
+                },
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "Limitations"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-limits"
+                  },
+                  "children": [
+                    {
+                      "text": "State the size of the trial and what the result does not establish."
+                    }
+                  ]
+                },
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "Next steps"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-next"
+                  },
+                  "children": [
+                    {
+                      "text": "Explain what you would test or improve next."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "tag": "div",
+              "attrs": {
+                "class": "mg-grid mg-r-10000 mg-c-10000 mg-g-2"
+              },
+              "children": [
+                {
+                  "tag": "div",
+                  "attrs": {
+                    "class": "mg-cell cell-sampler-portfolio-results-1"
+                  },
+                  "children": []
+                }
+              ]
+            },
+            {
+              "tag": "p",
+              "attrs": {
+                "class": "lc-slot-credits"
+              },
+              "children": [
+                {
+                  "text": "Add image descriptions, source credits and relevant project context."
+                }
+              ]
+            }
+          ],
+          "templateBase": [
+            {
+              "tag": "h2",
+              "attrs": {
+                "class": "lc-slot-title"
+              },
+              "children": [
+                {
+                  "text": "Portfolio results"
+                }
+              ]
+            },
+            {
+              "tag": "div",
+              "attrs": {
+                "class": "lc-copy"
+              },
+              "children": [
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "Evidence"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-evidence"
+                  },
+                  "children": [
+                    {
+                      "text": "Describe the result you can support. Include the source and period for any metric."
+                    }
+                  ]
+                },
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "Limitations"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-limits"
+                  },
+                  "children": [
+                    {
+                      "text": "State the size of the trial and what the result does not establish."
+                    }
+                  ]
+                },
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "Next steps"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-next"
+                  },
+                  "children": [
+                    {
+                      "text": "Explain what you would test or improve next."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "tag": "div",
+              "attrs": {
+                "class": "mg-grid mg-r-10000 mg-c-10000 mg-g-2"
+              },
+              "children": [
+                {
+                  "tag": "div",
+                  "attrs": {
+                    "class": "mg-cell cell-sampler-portfolio-results-1"
+                  },
+                  "children": []
+                }
+              ]
+            },
+            {
+              "tag": "p",
+              "attrs": {
+                "class": "lc-slot-credits"
+              },
+              "children": [
+                {
+                  "text": "Add image descriptions, source credits and relevant project context."
+                }
+              ]
+            }
+          ],
+          "templateClasses": "wide mg-slide lc-case lc-portfolio-results",
+          "duration": 12,
+          "hidden": false,
+          "notes": "",
+          "topic": "General",
+          "commands": null,
+          "templateCommands": null
+        },
+        {
+          "id": "slide-sampler-portfolio-gallery",
+          "title": "Portfolio gallery",
+          "group": "section-405df504-7de5-40ca-b7f3-720ddf2e1864",
+          "template": "portfolio-gallery",
+          "classes": "wide mg-slide lc-case lc-portfolio-gallery",
+          "tree": [
+            {
+              "tag": "h2",
+              "attrs": {
+                "class": "lc-slot-title"
+              },
+              "children": [
+                {
+                  "text": "Portfolio gallery"
+                }
+              ]
+            },
+            {
+              "tag": "div",
+              "attrs": {
+                "class": "lc-copy"
+              },
+              "children": [
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "Visual story"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-intro"
+                  },
+                  "children": [
+                    {
+                      "text": "Introduce the images and explain the order in which to read them."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "tag": "div",
+              "attrs": {
+                "class": "mg-grid mg-r-5000-5000 mg-c-5000-5000 mg-g-2"
+              },
+              "children": [
+                {
+                  "tag": "div",
+                  "attrs": {
+                    "class": "mg-cell cell-sampler-portfolio-gallery-1"
+                  },
+                  "children": []
+                },
+                {
+                  "tag": "div",
+                  "attrs": {
+                    "class": "mg-cell cell-sampler-portfolio-gallery-2"
+                  },
+                  "children": []
+                },
+                {
+                  "tag": "div",
+                  "attrs": {
+                    "class": "mg-cell cell-sampler-portfolio-gallery-3"
+                  },
+                  "children": []
+                },
+                {
+                  "tag": "div",
+                  "attrs": {
+                    "class": "mg-cell cell-sampler-portfolio-gallery-4"
+                  },
+                  "children": []
+                }
+              ]
+            },
+            {
+              "tag": "p",
+              "attrs": {
+                "class": "lc-slot-credits"
+              },
+              "children": [
+                {
+                  "text": "Add image descriptions, source credits and relevant project context."
+                }
+              ]
+            }
+          ],
+          "templateBase": [
+            {
+              "tag": "h2",
+              "attrs": {
+                "class": "lc-slot-title"
+              },
+              "children": [
+                {
+                  "text": "Portfolio gallery"
+                }
+              ]
+            },
+            {
+              "tag": "div",
+              "attrs": {
+                "class": "lc-copy"
+              },
+              "children": [
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "Visual story"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-intro"
+                  },
+                  "children": [
+                    {
+                      "text": "Introduce the images and explain the order in which to read them."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "tag": "div",
+              "attrs": {
+                "class": "mg-grid mg-r-5000-5000 mg-c-5000-5000 mg-g-2"
+              },
+              "children": [
+                {
+                  "tag": "div",
+                  "attrs": {
+                    "class": "mg-cell cell-sampler-portfolio-gallery-1"
+                  },
+                  "children": []
+                },
+                {
+                  "tag": "div",
+                  "attrs": {
+                    "class": "mg-cell cell-sampler-portfolio-gallery-2"
+                  },
+                  "children": []
+                },
+                {
+                  "tag": "div",
+                  "attrs": {
+                    "class": "mg-cell cell-sampler-portfolio-gallery-3"
+                  },
+                  "children": []
+                },
+                {
+                  "tag": "div",
+                  "attrs": {
+                    "class": "mg-cell cell-sampler-portfolio-gallery-4"
+                  },
+                  "children": []
+                }
+              ]
+            },
+            {
+              "tag": "p",
+              "attrs": {
+                "class": "lc-slot-credits"
+              },
+              "children": [
+                {
+                  "text": "Add image descriptions, source credits and relevant project context."
+                }
+              ]
+            }
+          ],
+          "templateClasses": "wide mg-slide lc-case lc-portfolio-gallery",
+          "duration": 12,
+          "hidden": false,
+          "notes": "",
+          "topic": "General",
+          "commands": null,
+          "templateCommands": null
+        },
+        {
+          "id": "slide-sampler-portfolio-details",
+          "title": "Portfolio details",
+          "group": "section-405df504-7de5-40ca-b7f3-720ddf2e1864",
+          "template": "portfolio-details",
+          "classes": "wide mg-slide lc-case lc-portfolio-details",
+          "tree": [
+            {
+              "tag": "h2",
+              "attrs": {
+                "class": "lc-slot-title"
+              },
+              "children": [
+                {
+                  "text": "Portfolio details"
+                }
+              ]
+            },
+            {
+              "tag": "div",
+              "attrs": {
+                "class": "lc-copy"
+              },
+              "children": [
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "Role"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-role"
+                  },
+                  "children": [
+                    {
+                      "text": "Describe your own contribution and the people you worked with."
+                    }
+                  ]
+                },
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "Deliverables"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-deliverables"
+                  },
+                  "children": [
+                    {
+                      "text": "List what was produced and the constraints that shaped it."
+                    }
+                  ]
+                },
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "Acknowledgements"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-acknowledgements"
+                  },
+                  "children": [
+                    {
+                      "text": "Credit collaborators, image sources and licenses."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "tag": "div",
+              "attrs": {
+                "class": "mg-grid mg-r-10000 mg-c-10000 mg-g-2"
+              },
+              "children": [
+                {
+                  "tag": "div",
+                  "attrs": {
+                    "class": "mg-cell cell-sampler-portfolio-details-1"
+                  },
+                  "children": []
+                }
+              ]
+            },
+            {
+              "tag": "p",
+              "attrs": {
+                "class": "lc-slot-credits"
+              },
+              "children": [
+                {
+                  "text": "Add image descriptions, source credits and relevant project context."
+                }
+              ]
+            }
+          ],
+          "templateBase": [
+            {
+              "tag": "h2",
+              "attrs": {
+                "class": "lc-slot-title"
+              },
+              "children": [
+                {
+                  "text": "Portfolio details"
+                }
+              ]
+            },
+            {
+              "tag": "div",
+              "attrs": {
+                "class": "lc-copy"
+              },
+              "children": [
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "Role"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-role"
+                  },
+                  "children": [
+                    {
+                      "text": "Describe your own contribution and the people you worked with."
+                    }
+                  ]
+                },
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "Deliverables"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-deliverables"
+                  },
+                  "children": [
+                    {
+                      "text": "List what was produced and the constraints that shaped it."
+                    }
+                  ]
+                },
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "Acknowledgements"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-acknowledgements"
+                  },
+                  "children": [
+                    {
+                      "text": "Credit collaborators, image sources and licenses."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "tag": "div",
+              "attrs": {
+                "class": "mg-grid mg-r-10000 mg-c-10000 mg-g-2"
+              },
+              "children": [
+                {
+                  "tag": "div",
+                  "attrs": {
+                    "class": "mg-cell cell-sampler-portfolio-details-1"
+                  },
+                  "children": []
+                }
+              ]
+            },
+            {
+              "tag": "p",
+              "attrs": {
+                "class": "lc-slot-credits"
+              },
+              "children": [
+                {
+                  "text": "Add image descriptions, source credits and relevant project context."
+                }
+              ]
+            }
+          ],
+          "templateClasses": "wide mg-slide lc-case lc-portfolio-details",
+          "duration": 12,
+          "hidden": false,
+          "notes": "",
+          "topic": "General",
+          "commands": null,
+          "templateCommands": null
         }
       ],
       "trash": [],
@@ -2426,7 +4258,11 @@
           "slideIds": [
             "slide-7a07607d-3f73-4827-90a3-2021ab481474",
             "slide-media-grid-sampler",
-            "slide-sampler-portfolio-case"
+            "slide-sampler-portfolio-case",
+            "slide-sampler-portfolio-process",
+            "slide-sampler-portfolio-results",
+            "slide-sampler-portfolio-gallery",
+            "slide-sampler-portfolio-details"
           ]
         }
       },

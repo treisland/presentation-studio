@@ -4,6 +4,8 @@ The maintainer approved this milestone plan after 0.4.0-rc.1 publication and aut
 
 ## First review slice
 
+The maintainer passed the first Portfolio manual review and authorized merge/continued development. PR #77 merged at `189212dc60c2874172c7be9bd318f195d76ccb92`; the explicit sign-off was “manual testing passed. PR is good to be merged and continue with the dev process”. This clears the initial expansion checkpoint, not the later release gates. A subsequently identified empty-table retention regression is tracked in #78 with a focused fix and ZIP round-trip test.
+
 Choose **Project → New presentation → Portfolio starter** or **Portfolio finished example**, then use defaults or continue setup. Each use creates fresh project and slide identities through the existing save-before-switch guard. The finished one-slide library case study is fictional, makes no measured-impact claim, and embeds an original Apache-2.0 diagram. The library factory remains unchanged when a user customizes a copy. **Project settings → Recovery & reset → Reset entire presentation** confirms replacement, checkpoints changes and supports Undo.
 
 **Add slide → Portfolio · Case study** adds the same composition to a project without changing its theme or swatches. Use the slide Layout control to preview a change. The mapping lists source text for each slot, image handling and unmatched material. Unmatched text/tables/commands stay on the slide; identified/free blocks and existing Grid cells retain identity. Extra material may overflow and must be shortened or rearranged before sharing. Locked slide contents block layout changes. Replacing prompts is explicitly confirmed; accepted changes preserve notes, IDs and media and create one Undo step plus a recovery checkpoint.
@@ -11,6 +13,12 @@ Choose **Project → New presentation → Portfolio starter** or **Portfolio fin
 The image slot uses existing Media Grid controls for upload, Fit/Fill, independent crop and Media inspector descriptions/captions. Missing images remain editable drop targets. Retained tables preserve the complete subtree, including empty cells and rows, so column meaning stays unchanged; lists and command structures are also retained intact. Text never shrinks automatically: long-slot guidance and the readiness/layout overflow check flag excessive content and title/body overlap. All output remains 16:9 slides.
 
 Automated checks cover layout mapping, lock rejection, Undo/checkpoints, fresh IDs, confirmed reset, long-content warnings and editable/playback ZIP reopening offline. These do not establish a real screen-reader, OBS or delivery-video pass. Complete [the checkpoint checklist](0.5.0-manual-test-plan.md) before broadening the collection.
+
+## Expanded Portfolio collection
+
+The collection now offers five editable 16:9 compositions: **Case study**, **Process**, **Results**, **Image gallery**, and **Details and credits**. Both Portfolio choices in New presentation use all five slides. The finished fictional library example moves from problem/context through decisions, evidence/limitations, a four-image gallery and contribution/source credits. Its four original diagrams are bundled offline under Apache 2.0; no real participant data or measured impact is claimed.
+
+The gallery is a two-by-two Media Grid with independent Fit/Fill, crop and image descriptions. Each collection retains theme/swatches, ID/recovery behavior and content-mapping protections. The layout sampler includes all five Portfolio compositions. Long copy, additional retained content and missing images remain explicit editing/review tasks rather than being hidden or auto-shrunk.
 
 ## Scope and delivery order
 
