@@ -71,6 +71,14 @@ function wpAct(action) {
   wpPaint();if(!button.disabled)button.focus();else $('wp-selection-title').focus();
 }
 const wpInspect=weInspect;
+const wpSelectMedia=ceSelect;
+ceSelect=function(...args){
+  const cell=mgMember(args[0]);
+  if(cell)mgSelected=mgCellID(cell);
+  const result=wpSelectMedia(...args);
+  if(cell)mgPanel();
+  return result;
+};
 weInspect=function(context,select=true){wpInspect(context,select);if(select)wpKind=context==='media'?(mgMember(ceSelected)?'grid':'media'):context==='slide'?'slide':dbSelected&&dbNode()?'block':'text';wpPaint();};
 const wpSelectText=vbSetSelection;
 vbSetSelection=function(selection){wpSelectText(selection);if(selection){wpKind=selection.kind==='media'?(mgMember(ceSelected)?'grid':'media'):dbSelected&&dbNode()?'block':'text';wpPaint();}};
