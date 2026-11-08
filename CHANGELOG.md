@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Add three Flyer compositions and a lightweight starter for events, announcements and portfolio covers, with original replaceable artwork, readable calls to action and explicit 16:9 slide-format labeling.
 - Add four Newsletter compositions and a lightweight prompt starter with lead story, recurring updates, curated resources and closing action. Output is explicitly newsletter-style slides, without email HTML or sending.
 - Add five Editorial compositions with newspaper masthead/columns and blog-style lead/image/closing treatments, a complete fictional starter/demo pair, deliberate column reading order and long-article overflow checks.
 - Add four Comic compositions and an original seed-sharing starter/demo with editable speech, numbered captions and independently cropped panels. Composition colors and typography inherit the project theme.

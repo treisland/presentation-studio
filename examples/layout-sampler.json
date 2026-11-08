@@ -5743,6 +5743,726 @@
         "topic": "General",
         "commands": null,
         "templateCommands": null
+      },
+      {
+        "id": "slide-sampler-flyer-event",
+        "title": "flyer event",
+        "group": "section-405df504-7de5-40ca-b7f3-720ddf2e1864",
+        "template": "flyer-event",
+        "classes": "wide mg-slide lc-case lc-flyer-event",
+        "tree": [
+          {
+            "tag": "h2",
+            "attrs": {
+              "class": "lc-slot-title"
+            },
+            "children": [
+              {
+                "text": "flyer event"
+              }
+            ]
+          },
+          {
+            "tag": "div",
+            "attrs": {
+              "class": "lc-copy"
+            },
+            "children": [
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "What is happening"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-what"
+                },
+                "children": [
+                  {
+                    "text": "Describe the event and who it is for. Replace this prompt with a concise invitation."
+                  }
+                ]
+              },
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "When and where"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-details"
+                },
+                "children": [
+                  {
+                    "text": "Add confirmed date, time, location and access details. Check all placeholders before sharing."
+                  }
+                ]
+              },
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "Next step"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-action"
+                },
+                "children": [
+                  {
+                    "text": "State how to attend or learn more. This call to action is editable slide text."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "tag": "div",
+            "attrs": {
+              "class": "mg-grid mg-r-10000 mg-c-10000 mg-g-2"
+            },
+            "children": [
+              {
+                "tag": "div",
+                "attrs": {
+                  "class": "mg-cell cell-sampler-flyer-event-1"
+                },
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "p",
+            "attrs": {
+              "class": "lc-slot-credits"
+            },
+            "children": [
+              {
+                "text": "Add image descriptions, source credits and relevant project context."
+              }
+            ]
+          }
+        ],
+        "templateBase": [
+          {
+            "tag": "h2",
+            "attrs": {
+              "class": "lc-slot-title"
+            },
+            "children": [
+              {
+                "text": "flyer event"
+              }
+            ]
+          },
+          {
+            "tag": "div",
+            "attrs": {
+              "class": "lc-copy"
+            },
+            "children": [
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "What is happening"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-what"
+                },
+                "children": [
+                  {
+                    "text": "Describe the event and who it is for. Replace this prompt with a concise invitation."
+                  }
+                ]
+              },
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "When and where"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-details"
+                },
+                "children": [
+                  {
+                    "text": "Add confirmed date, time, location and access details. Check all placeholders before sharing."
+                  }
+                ]
+              },
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "Next step"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-action"
+                },
+                "children": [
+                  {
+                    "text": "State how to attend or learn more. This call to action is editable slide text."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "tag": "div",
+            "attrs": {
+              "class": "mg-grid mg-r-10000 mg-c-10000 mg-g-2"
+            },
+            "children": [
+              {
+                "tag": "div",
+                "attrs": {
+                  "class": "mg-cell cell-sampler-flyer-event-1"
+                },
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "p",
+            "attrs": {
+              "class": "lc-slot-credits"
+            },
+            "children": [
+              {
+                "text": "Add image descriptions, source credits and relevant project context."
+              }
+            ]
+          }
+        ],
+        "templateClasses": "wide mg-slide lc-case lc-flyer-event",
+        "duration": 12,
+        "hidden": false,
+        "notes": "",
+        "topic": "General",
+        "commands": null,
+        "templateCommands": null
+      },
+      {
+        "id": "slide-sampler-flyer-announcement",
+        "title": "flyer announcement",
+        "group": "section-405df504-7de5-40ca-b7f3-720ddf2e1864",
+        "template": "flyer-announcement",
+        "classes": "wide mg-slide lc-case lc-flyer-announcement",
+        "tree": [
+          {
+            "tag": "h2",
+            "attrs": {
+              "class": "lc-slot-title"
+            },
+            "children": [
+              {
+                "text": "flyer announcement"
+              }
+            ]
+          },
+          {
+            "tag": "div",
+            "attrs": {
+              "class": "lc-copy"
+            },
+            "children": [
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "The announcement"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-message"
+                },
+                "children": [
+                  {
+                    "text": "Write the main message in plain language."
+                  }
+                ]
+              },
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "Essential details"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-details"
+                },
+                "children": [
+                  {
+                    "text": "Explain who it affects and where to find the complete information."
+                  }
+                ]
+              },
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "What to do next"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-action"
+                },
+                "children": [
+                  {
+                    "text": "Give one clear next step and replace any placeholder contact details."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "tag": "div",
+            "attrs": {
+              "class": "mg-grid mg-r-10000 mg-c-10000 mg-g-2"
+            },
+            "children": [
+              {
+                "tag": "div",
+                "attrs": {
+                  "class": "mg-cell cell-sampler-flyer-announcement-1"
+                },
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "p",
+            "attrs": {
+              "class": "lc-slot-credits"
+            },
+            "children": [
+              {
+                "text": "Add image descriptions, source credits and relevant project context."
+              }
+            ]
+          }
+        ],
+        "templateBase": [
+          {
+            "tag": "h2",
+            "attrs": {
+              "class": "lc-slot-title"
+            },
+            "children": [
+              {
+                "text": "flyer announcement"
+              }
+            ]
+          },
+          {
+            "tag": "div",
+            "attrs": {
+              "class": "lc-copy"
+            },
+            "children": [
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "The announcement"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-message"
+                },
+                "children": [
+                  {
+                    "text": "Write the main message in plain language."
+                  }
+                ]
+              },
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "Essential details"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-details"
+                },
+                "children": [
+                  {
+                    "text": "Explain who it affects and where to find the complete information."
+                  }
+                ]
+              },
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "What to do next"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-action"
+                },
+                "children": [
+                  {
+                    "text": "Give one clear next step and replace any placeholder contact details."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "tag": "div",
+            "attrs": {
+              "class": "mg-grid mg-r-10000 mg-c-10000 mg-g-2"
+            },
+            "children": [
+              {
+                "tag": "div",
+                "attrs": {
+                  "class": "mg-cell cell-sampler-flyer-announcement-1"
+                },
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "p",
+            "attrs": {
+              "class": "lc-slot-credits"
+            },
+            "children": [
+              {
+                "text": "Add image descriptions, source credits and relevant project context."
+              }
+            ]
+          }
+        ],
+        "templateClasses": "wide mg-slide lc-case lc-flyer-announcement",
+        "duration": 12,
+        "hidden": false,
+        "notes": "",
+        "topic": "General",
+        "commands": null,
+        "templateCommands": null
+      },
+      {
+        "id": "slide-sampler-flyer-cover",
+        "title": "flyer cover",
+        "group": "section-405df504-7de5-40ca-b7f3-720ddf2e1864",
+        "template": "flyer-cover",
+        "classes": "wide mg-slide lc-case lc-flyer-cover",
+        "tree": [
+          {
+            "tag": "h2",
+            "attrs": {
+              "class": "lc-slot-title"
+            },
+            "children": [
+              {
+                "text": "flyer cover"
+              }
+            ]
+          },
+          {
+            "tag": "div",
+            "attrs": {
+              "class": "lc-copy"
+            },
+            "children": [
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "The project"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-project"
+                },
+                "children": [
+                  {
+                    "text": "Name the project, your role and the audience it serves."
+                  }
+                ]
+              },
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "Why it matters"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-value"
+                },
+                "children": [
+                  {
+                    "text": "Describe the value without inventing measured results."
+                  }
+                ]
+              },
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "Explore"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-action"
+                },
+                "children": [
+                  {
+                    "text": "Point to the next slide, a case study or a display link for more detail."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "tag": "div",
+            "attrs": {
+              "class": "mg-grid mg-r-10000 mg-c-10000 mg-g-2"
+            },
+            "children": [
+              {
+                "tag": "div",
+                "attrs": {
+                  "class": "mg-cell cell-sampler-flyer-cover-1"
+                },
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "p",
+            "attrs": {
+              "class": "lc-slot-credits"
+            },
+            "children": [
+              {
+                "text": "Add image descriptions, source credits and relevant project context."
+              }
+            ]
+          }
+        ],
+        "templateBase": [
+          {
+            "tag": "h2",
+            "attrs": {
+              "class": "lc-slot-title"
+            },
+            "children": [
+              {
+                "text": "flyer cover"
+              }
+            ]
+          },
+          {
+            "tag": "div",
+            "attrs": {
+              "class": "lc-copy"
+            },
+            "children": [
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "The project"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-project"
+                },
+                "children": [
+                  {
+                    "text": "Name the project, your role and the audience it serves."
+                  }
+                ]
+              },
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "Why it matters"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-value"
+                },
+                "children": [
+                  {
+                    "text": "Describe the value without inventing measured results."
+                  }
+                ]
+              },
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "Explore"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-action"
+                },
+                "children": [
+                  {
+                    "text": "Point to the next slide, a case study or a display link for more detail."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "tag": "div",
+            "attrs": {
+              "class": "mg-grid mg-r-10000 mg-c-10000 mg-g-2"
+            },
+            "children": [
+              {
+                "tag": "div",
+                "attrs": {
+                  "class": "mg-cell cell-sampler-flyer-cover-1"
+                },
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "p",
+            "attrs": {
+              "class": "lc-slot-credits"
+            },
+            "children": [
+              {
+                "text": "Add image descriptions, source credits and relevant project context."
+              }
+            ]
+          }
+        ],
+        "templateClasses": "wide mg-slide lc-case lc-flyer-cover",
+        "duration": 12,
+        "hidden": false,
+        "notes": "",
+        "topic": "General",
+        "commands": null,
+        "templateCommands": null
       }
     ],
     "trash": [],
@@ -5775,7 +6495,10 @@
           "slide-sampler-newsletter-lead",
           "slide-sampler-newsletter-updates",
           "slide-sampler-newsletter-curated",
-          "slide-sampler-newsletter-closing"
+          "slide-sampler-newsletter-closing",
+          "slide-sampler-flyer-event",
+          "slide-sampler-flyer-announcement",
+          "slide-sampler-flyer-cover"
         ]
       }
     },
@@ -10234,6 +10957,726 @@
           "topic": "General",
           "commands": null,
           "templateCommands": null
+        },
+        {
+          "id": "slide-sampler-flyer-event",
+          "title": "flyer event",
+          "group": "section-405df504-7de5-40ca-b7f3-720ddf2e1864",
+          "template": "flyer-event",
+          "classes": "wide mg-slide lc-case lc-flyer-event",
+          "tree": [
+            {
+              "tag": "h2",
+              "attrs": {
+                "class": "lc-slot-title"
+              },
+              "children": [
+                {
+                  "text": "flyer event"
+                }
+              ]
+            },
+            {
+              "tag": "div",
+              "attrs": {
+                "class": "lc-copy"
+              },
+              "children": [
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "What is happening"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-what"
+                  },
+                  "children": [
+                    {
+                      "text": "Describe the event and who it is for. Replace this prompt with a concise invitation."
+                    }
+                  ]
+                },
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "When and where"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-details"
+                  },
+                  "children": [
+                    {
+                      "text": "Add confirmed date, time, location and access details. Check all placeholders before sharing."
+                    }
+                  ]
+                },
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "Next step"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-action"
+                  },
+                  "children": [
+                    {
+                      "text": "State how to attend or learn more. This call to action is editable slide text."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "tag": "div",
+              "attrs": {
+                "class": "mg-grid mg-r-10000 mg-c-10000 mg-g-2"
+              },
+              "children": [
+                {
+                  "tag": "div",
+                  "attrs": {
+                    "class": "mg-cell cell-sampler-flyer-event-1"
+                  },
+                  "children": []
+                }
+              ]
+            },
+            {
+              "tag": "p",
+              "attrs": {
+                "class": "lc-slot-credits"
+              },
+              "children": [
+                {
+                  "text": "Add image descriptions, source credits and relevant project context."
+                }
+              ]
+            }
+          ],
+          "templateBase": [
+            {
+              "tag": "h2",
+              "attrs": {
+                "class": "lc-slot-title"
+              },
+              "children": [
+                {
+                  "text": "flyer event"
+                }
+              ]
+            },
+            {
+              "tag": "div",
+              "attrs": {
+                "class": "lc-copy"
+              },
+              "children": [
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "What is happening"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-what"
+                  },
+                  "children": [
+                    {
+                      "text": "Describe the event and who it is for. Replace this prompt with a concise invitation."
+                    }
+                  ]
+                },
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "When and where"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-details"
+                  },
+                  "children": [
+                    {
+                      "text": "Add confirmed date, time, location and access details. Check all placeholders before sharing."
+                    }
+                  ]
+                },
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "Next step"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-action"
+                  },
+                  "children": [
+                    {
+                      "text": "State how to attend or learn more. This call to action is editable slide text."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "tag": "div",
+              "attrs": {
+                "class": "mg-grid mg-r-10000 mg-c-10000 mg-g-2"
+              },
+              "children": [
+                {
+                  "tag": "div",
+                  "attrs": {
+                    "class": "mg-cell cell-sampler-flyer-event-1"
+                  },
+                  "children": []
+                }
+              ]
+            },
+            {
+              "tag": "p",
+              "attrs": {
+                "class": "lc-slot-credits"
+              },
+              "children": [
+                {
+                  "text": "Add image descriptions, source credits and relevant project context."
+                }
+              ]
+            }
+          ],
+          "templateClasses": "wide mg-slide lc-case lc-flyer-event",
+          "duration": 12,
+          "hidden": false,
+          "notes": "",
+          "topic": "General",
+          "commands": null,
+          "templateCommands": null
+        },
+        {
+          "id": "slide-sampler-flyer-announcement",
+          "title": "flyer announcement",
+          "group": "section-405df504-7de5-40ca-b7f3-720ddf2e1864",
+          "template": "flyer-announcement",
+          "classes": "wide mg-slide lc-case lc-flyer-announcement",
+          "tree": [
+            {
+              "tag": "h2",
+              "attrs": {
+                "class": "lc-slot-title"
+              },
+              "children": [
+                {
+                  "text": "flyer announcement"
+                }
+              ]
+            },
+            {
+              "tag": "div",
+              "attrs": {
+                "class": "lc-copy"
+              },
+              "children": [
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "The announcement"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-message"
+                  },
+                  "children": [
+                    {
+                      "text": "Write the main message in plain language."
+                    }
+                  ]
+                },
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "Essential details"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-details"
+                  },
+                  "children": [
+                    {
+                      "text": "Explain who it affects and where to find the complete information."
+                    }
+                  ]
+                },
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "What to do next"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-action"
+                  },
+                  "children": [
+                    {
+                      "text": "Give one clear next step and replace any placeholder contact details."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "tag": "div",
+              "attrs": {
+                "class": "mg-grid mg-r-10000 mg-c-10000 mg-g-2"
+              },
+              "children": [
+                {
+                  "tag": "div",
+                  "attrs": {
+                    "class": "mg-cell cell-sampler-flyer-announcement-1"
+                  },
+                  "children": []
+                }
+              ]
+            },
+            {
+              "tag": "p",
+              "attrs": {
+                "class": "lc-slot-credits"
+              },
+              "children": [
+                {
+                  "text": "Add image descriptions, source credits and relevant project context."
+                }
+              ]
+            }
+          ],
+          "templateBase": [
+            {
+              "tag": "h2",
+              "attrs": {
+                "class": "lc-slot-title"
+              },
+              "children": [
+                {
+                  "text": "flyer announcement"
+                }
+              ]
+            },
+            {
+              "tag": "div",
+              "attrs": {
+                "class": "lc-copy"
+              },
+              "children": [
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "The announcement"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-message"
+                  },
+                  "children": [
+                    {
+                      "text": "Write the main message in plain language."
+                    }
+                  ]
+                },
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "Essential details"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-details"
+                  },
+                  "children": [
+                    {
+                      "text": "Explain who it affects and where to find the complete information."
+                    }
+                  ]
+                },
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "What to do next"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-action"
+                  },
+                  "children": [
+                    {
+                      "text": "Give one clear next step and replace any placeholder contact details."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "tag": "div",
+              "attrs": {
+                "class": "mg-grid mg-r-10000 mg-c-10000 mg-g-2"
+              },
+              "children": [
+                {
+                  "tag": "div",
+                  "attrs": {
+                    "class": "mg-cell cell-sampler-flyer-announcement-1"
+                  },
+                  "children": []
+                }
+              ]
+            },
+            {
+              "tag": "p",
+              "attrs": {
+                "class": "lc-slot-credits"
+              },
+              "children": [
+                {
+                  "text": "Add image descriptions, source credits and relevant project context."
+                }
+              ]
+            }
+          ],
+          "templateClasses": "wide mg-slide lc-case lc-flyer-announcement",
+          "duration": 12,
+          "hidden": false,
+          "notes": "",
+          "topic": "General",
+          "commands": null,
+          "templateCommands": null
+        },
+        {
+          "id": "slide-sampler-flyer-cover",
+          "title": "flyer cover",
+          "group": "section-405df504-7de5-40ca-b7f3-720ddf2e1864",
+          "template": "flyer-cover",
+          "classes": "wide mg-slide lc-case lc-flyer-cover",
+          "tree": [
+            {
+              "tag": "h2",
+              "attrs": {
+                "class": "lc-slot-title"
+              },
+              "children": [
+                {
+                  "text": "flyer cover"
+                }
+              ]
+            },
+            {
+              "tag": "div",
+              "attrs": {
+                "class": "lc-copy"
+              },
+              "children": [
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "The project"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-project"
+                  },
+                  "children": [
+                    {
+                      "text": "Name the project, your role and the audience it serves."
+                    }
+                  ]
+                },
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "Why it matters"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-value"
+                  },
+                  "children": [
+                    {
+                      "text": "Describe the value without inventing measured results."
+                    }
+                  ]
+                },
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "Explore"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-action"
+                  },
+                  "children": [
+                    {
+                      "text": "Point to the next slide, a case study or a display link for more detail."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "tag": "div",
+              "attrs": {
+                "class": "mg-grid mg-r-10000 mg-c-10000 mg-g-2"
+              },
+              "children": [
+                {
+                  "tag": "div",
+                  "attrs": {
+                    "class": "mg-cell cell-sampler-flyer-cover-1"
+                  },
+                  "children": []
+                }
+              ]
+            },
+            {
+              "tag": "p",
+              "attrs": {
+                "class": "lc-slot-credits"
+              },
+              "children": [
+                {
+                  "text": "Add image descriptions, source credits and relevant project context."
+                }
+              ]
+            }
+          ],
+          "templateBase": [
+            {
+              "tag": "h2",
+              "attrs": {
+                "class": "lc-slot-title"
+              },
+              "children": [
+                {
+                  "text": "flyer cover"
+                }
+              ]
+            },
+            {
+              "tag": "div",
+              "attrs": {
+                "class": "lc-copy"
+              },
+              "children": [
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "The project"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-project"
+                  },
+                  "children": [
+                    {
+                      "text": "Name the project, your role and the audience it serves."
+                    }
+                  ]
+                },
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "Why it matters"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-value"
+                  },
+                  "children": [
+                    {
+                      "text": "Describe the value without inventing measured results."
+                    }
+                  ]
+                },
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "Explore"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-action"
+                  },
+                  "children": [
+                    {
+                      "text": "Point to the next slide, a case study or a display link for more detail."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "tag": "div",
+              "attrs": {
+                "class": "mg-grid mg-r-10000 mg-c-10000 mg-g-2"
+              },
+              "children": [
+                {
+                  "tag": "div",
+                  "attrs": {
+                    "class": "mg-cell cell-sampler-flyer-cover-1"
+                  },
+                  "children": []
+                }
+              ]
+            },
+            {
+              "tag": "p",
+              "attrs": {
+                "class": "lc-slot-credits"
+              },
+              "children": [
+                {
+                  "text": "Add image descriptions, source credits and relevant project context."
+                }
+              ]
+            }
+          ],
+          "templateClasses": "wide mg-slide lc-case lc-flyer-cover",
+          "duration": 12,
+          "hidden": false,
+          "notes": "",
+          "topic": "General",
+          "commands": null,
+          "templateCommands": null
         }
       ],
       "trash": [],
@@ -10260,7 +11703,10 @@
             "slide-sampler-newsletter-lead",
             "slide-sampler-newsletter-updates",
             "slide-sampler-newsletter-curated",
-            "slide-sampler-newsletter-closing"
+            "slide-sampler-newsletter-closing",
+            "slide-sampler-flyer-event",
+            "slide-sampler-flyer-announcement",
+            "slide-sampler-flyer-cover"
           ]
         }
       },

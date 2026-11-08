@@ -45,6 +45,7 @@
     "src/runtime/comic-layouts.js",
     "src/runtime/editorial-layouts.js",
     "src/runtime/newsletter-layouts.js",
+    "src/runtime/flyer-layouts.js",
     "src/runtime/boot.js"
   ],
   "vendor": "vendor/jszip-3.10.1.min.js"

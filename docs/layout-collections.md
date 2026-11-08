@@ -22,6 +22,12 @@ The gallery is a two-by-two Media Grid with independent Fit/Fill, crop and image
 
 ## Scope and delivery order
 
+### Flyer collection
+
+**Flyer starter** has event, announcement and portfolio-cover slides. A neutral original gathering illustration is included as replaceable placeholder artwork; its credits and descriptions travel with the editable ZIP. Event/contact details and calls to action remain editable text, with no sending or execution behavior. Missing image targets, independent crops, locks, confirmed replacement and recovery use the existing editor controls.
+
+Output remains 16:9 slides. This does not promise print-ready dimensions, portrait formats, bleed, CMYK or PDF output. Long headlines/details stay readable and are flagged for shortening or rearrangement. Review all date/location/contact placeholders and artwork credits before sharing.
+
 ### Newsletter collection
 
 **Newsletter starter** provides lead story, update cards, curated reading and closing-action slides. Recurring labels and short editable prompts help build a consistent edition; resource titles/URLs are display/navigation content, not commands. All four inherit project themes and keep the same image/description, mapping, lock and Undo controls. The starter has empty image targets rather than a finished-demo claim.

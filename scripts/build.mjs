@@ -41,6 +41,7 @@ const assets = {
 };
 for(const name of ['signs','workshop','plan'])assets['assets/portfolio-'+name+'.svg']={type:'image/svg+xml',data:Buffer.from(await read('examples/portfolio-'+name+'.svg')).toString('base64')};
 for(const n of [1,2,3])assets['assets/comic-seed-'+n+'.svg']={type:'image/svg+xml',data:Buffer.from(await read('examples/comic-seed-'+n+'.svg')).toString('base64')};
+assets['assets/flyer-gathering.svg']={type:'image/svg+xml',data:Buffer.from(await read('examples/flyer-gathering.svg')).toString('base64')};
 for (const [name, kind, project] of [
   ["presentation-studio.html", "generic", demo],
   ["presentation-studio-blank.html", "generic", blank],
