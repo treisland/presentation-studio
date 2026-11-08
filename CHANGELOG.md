@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## 0.2.0 — 2026-11-07
+
+- Promote the tested release candidate to stable after maintainer sign-off. Includes readiness checks, isolated backup verification, media round-trip coverage and keyboard/accessibility improvements. No runtime or project-format changes since rc.1.
+- Document support limitations, complete editable backups and recovery guidance; retain unknown manual environment versions as unknown.
+
 ## 0.2.0-rc.1 — 2026-11-07
 
 - Prepare the first release candidate after maintainer confirmation that the published beta.1 package passed testing. No runtime or project-format changes since beta.1.

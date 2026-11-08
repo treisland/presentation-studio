@@ -76,7 +76,7 @@ For a localhost preview, run `npm run serve`, then open `http://127.0.0.1:4173`.
 
 [Quick start](docs/quick-start.md) · [Architecture](docs/architecture.md) · [Contributing](CONTRIBUTING.md) · [Content and branding](docs/content-and-branding.md) · [Open-source release](docs/open-source-release.md) · [Roadmap](docs/roadmap.md) · [Troubleshooting](docs/troubleshooting.md)
 
-Version 0.2.0-rc.1. Release candidate following maintainer validation of the published beta. Released under the [Apache License 2.0](LICENSE). Third-party notices remain applicable. See the [0.2 release evidence](docs/releases/0.2.0-evidence.md) for tested workflows and environment limitations.
+Version 0.2.0. Stable release authorized after maintainer validation of the published RC. Released under the [Apache License 2.0](LICENSE). Third-party notices remain applicable. See the [release notes](docs/releases/0.2.0.md) for support scope, recovery guidance and evidence limitations.
 
 ## Development process
 
