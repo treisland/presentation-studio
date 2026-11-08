@@ -53,6 +53,15 @@ test('divider drag uses scaled coordinates, cancellation is read-only, keyboard 
  assert.deepEqual(errors,[]);
  }finally{await p.close();}});
 
+test('stale image-crop mode cannot move grid video outside its saved cell',async()=>{const{p,errors}=await setup();try{
+ await drop(p,0);await choose(p,1);await upload(p,'pattern.webm',await readFile('tests/fixtures/media/pattern.webm'),'video/webm');
+ await choose(p,0);await p.locator('#we-context-media').click();await click(p,'#ce-crop');
+ await p.locator('#we-context-slide').click();await choose(p,1);const before=await pack(p);
+ const video=p.locator('#fe-preview video.media-asset'),r=await video.boundingBox();
+ await p.mouse.move(r.x+r.width/2,r.y+r.height/2);await p.mouse.down();await p.mouse.move(r.x+r.width/2+25,r.y+r.height/2+10,{steps:5});await p.mouse.up();
+ assert.deepEqual(await pack(p),before,'Video drag in crop mode must not mutate placement or history');assert.deepEqual(errors,[]);
+ }finally{await p.close();}});
+
 test('legacy projects, mixed media grid focus and recovery survive offline editable/playback ZIP reopening',async()=>{const{p,errors,original}=await setup(true);try{
  await drop(p,0,'diagram.svg');await choose(p,1);await upload(p,'pattern.webm',await readFile('tests/fixtures/media/pattern.webm'),'video/webm');
  const added=await read(p),slide=model(added.state),ids=root(added.state).children.map(cellID);
