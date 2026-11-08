@@ -67,6 +67,8 @@ The sequence reads left to right. Each panel has its own Fit/Fill/crop and capti
 
 ## Product rules
 
+The three core pairs and both lightweight starters are documented in [Starting from an example](examples.md), including original assets, fresh identities, repeated-reset recovery and format boundaries. Their implementation is in the draft review stack; final manual review and protected merges remain pending.
+
 Layouts define structure; project themes/swatches define appearance. Text remains editable, each image slot supports sensible Fit/Fill/crop and descriptions, and reading order is deliberate. Long headings, missing images and additional paragraphs need explicit overflow/empty-slot handling. Never silently discard content or shrink text below useful sizes.
 
 Preview layout changes and show how content maps. Retain unused content for recovery, respect locks, preserve IDs and make accepted changes one Undo step. Use this starter creates a fresh project identity without replacing another draft; library examples remain immutable and Reset example confirms replacement of the user's example copy. Keep save-before-switch and complete backup behavior.

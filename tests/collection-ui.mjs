@@ -5,9 +5,12 @@ export const snapshot=page=>page.evaluate(()=>window.presentationStudioEditing.r
 export const operations=(page,ops)=>page.evaluate(operations=>{const api=window.presentationStudioEditing,s=api.read();return api.apply({apiVersion:1,projectId:s.projectId,expectedRevision:s.revision,operations});},ops);
 export async function openExample(browser,choice,dark=false){
  const page=await browser.newPage({acceptDownloads:true,viewport:{width:1366,height:768}}),errors=[];page.setDefaultTimeout(10000);page.on('pageerror',e=>errors.push(e.message));
- await page.goto('file://'+resolve('dist/presentation-studio.html'));await page.locator('#open-full-editor').click();await click(page,'#studio-new-open');await page.locator('[name=nx-start][value='+choice+']').check();
+ await page.goto('file://'+resolve('dist/presentation-studio.html'));await page.locator('#open-full-editor').click();await chooseExample(page,choice,dark);return{page,errors};
+}
+export async function chooseExample(page,choice,dark=false){
+ await click(page,'#studio-new-open');if(await page.locator('#hub-switch').evaluate(d=>d.open))await page.locator('#hub-save-switch').click();await page.locator('#nx-wizard').waitFor({state:'visible'});await page.locator('[name=nx-start][value='+choice+']').check();
  if(dark){for(let i=0;i<3;i++)await page.locator('#nx-wizard-next').click();await page.locator('#nx-wizard-theme').selectOption('dark');await page.locator('#nx-wizard-next').click();}else await page.locator('#nx-wizard-defaults').click();
- await page.locator('#nx-wizard').waitFor({state:'hidden'});return{page,errors};
+ await page.locator('#nx-wizard').waitFor({state:'hidden'});
 }
 export async function exportZip(page,selector='#fe-export'){const event=page.waitForEvent('download');await click(page,selector);return readFile(await(await event).path());}
 export async function importZip(browser,bytes,projectId){

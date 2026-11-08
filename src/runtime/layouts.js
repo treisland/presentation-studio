@@ -42,6 +42,20 @@ const lcLayouts = {
   ].map(s=>s.id==='credits'?{...s,id:'acknowledgements'}:s)),
 };
 const lcExamples={portfolio:{label:'Portfolio',starterDescription:'Five editable slides: case study, process, results, image gallery and credits.',demoDescription:'A five-slide fictional library case study with original offline diagrams.'}};
+const lcLibraryAssets=JSON.parse($('studio-template-assets')?.textContent||'{}');
+function lcLibraryAsset(path){
+  const asset=Object.hasOwn(lcLibraryAssets,path)&&lcLibraryAssets[path];
+  if(!mediaSafePath(path)||!asset||!['image/svg+xml','image/png'].includes(asset.type)||typeof asset.data!=='string')throw Error('Example artwork is unavailable: '+path.split('/').at(-1));
+  const bytes=Uint8Array.from(atob(asset.data),c=>c.charCodeAt(0));if(!bytes.length)throw Error('Example artwork is empty.');
+  return {blob:new Blob([bytes],{type:asset.type}),url:'data:'+asset.type+';base64,'+asset.data};
+}
+function lcExampleMedia(state){return [...Object.values(state.media||{}),...Object.values(state.mediaObjects||{}).flatMap(items=>items.map(o=>o.media))];}
+function lcMaterializeExample(state){
+  // Decode all original resources first. Never overwrite a current project's path.
+  const assets=new Map();for(const cfg of lcExampleMedia(state))if(!assets.has(cfg.src))assets.set(cfg.src,{path:'assets/'+projectID('example')+'-'+mediaFilename(cfg.src.split('/').at(-1)),...lcLibraryAsset(cfg.src)});
+  for(const asset of assets.values())mediaRemember(asset.path,asset.blob);
+  for(const value of [state,state.startingState].filter(Boolean))for(const cfg of lcExampleMedia(value))if(assets.has(cfg.src))cfg.src=assets.get(cfg.src).path;
+}
 function lcExampleInfo(choice){const match=String(choice).match(/^([a-z]+)-(starter|demo)$/);return match&&Object.hasOwn(lcExamples,match[1])?{...lcExamples[match[1]],id:match[1],demo:match[2]==='demo'}:null;}
 function lcExampleLabel(choice){const info=lcExampleInfo(choice);return info?info.label+(info.demo?' finished example':' starter'):null;}
 function lcRegister(entries){for(const [id,layout]of Object.entries(entries)){if(Object.hasOwn(lcLayouts,id))throw Error('Duplicate composition '+id);lcLayouts[id]=layout;studioTemplateInfo[id]=[layout.name,layout.purpose];}}

@@ -725,6 +725,7 @@ async function nxFinishWizard(defaults = false) {
           ? projectCopy(studioDefaultTemplate)
           : studioBlankState(name));
       state.projectName = name;
+      if (lcExampleInfo(choice) || choice === 'template') lcMaterializeExample(state);
       if (!defaults) {
         const selected = nxPresets.find(
           (p) => p.id === $("nx-wizard-preset").value,
@@ -780,7 +781,8 @@ async function nxFinishWizard(defaults = false) {
         sectionTransition: "inherit",
         disableMotion: false,
       };
-      if (choice !== "template") { delete state.startingState; state.startingState = projectCopy(state); }
+      delete state.startingState;
+      state.startingState = projectCopy(state);
       projectDraftPending = null;
       projectAcceptPack({
         schemaVersion: 2,
