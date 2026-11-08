@@ -78,7 +78,7 @@ test('keyboard authoring edits, reorders, undoes, exports, verifies backups and 
     }
     await page.keyboard.press('Escape');
     await page.waitForFunction(() => document.activeElement.id === 'pf-open');
-    const activeTabName = await page.locator('#we-inspector [role="tab"][aria-selected="true"]').innerText();
+    const activeTabName = await page.locator('#wp-tabs [role="tab"][aria-selected="true"]').innerText();
     assert.equal(await page.getByRole('tabpanel', { name: activeTabName, exact: true }).isVisible(), true);
     const after = JSON.parse(await keyboardDownload(page, '#fe-export-json'));
     assert.deepEqual(after, pack);

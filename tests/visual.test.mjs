@@ -241,10 +241,13 @@ test("inline text, formatting, cards, lists, safe paste, tables, and commands us
       "Hello visual editor!",
     );
     await selectText(p, "#fe-preview h1", 0, 5);
+    await reveal(p,"#vb-bold");
     await p.locator("#vb-bold").click();
     assert.equal(await p.locator("#fe-preview h1 strong").innerText(), "Hello");
+    await reveal(p,"#vb-italic");
     await p.locator("#vb-italic").click();
     assert.equal(await p.locator("#fe-preview h1 i").innerText(), "Hello");
+    await reveal(p,"#vb-align");
     await p.locator("#vb-align").selectOption("center");
     await heading.press("Escape");
     assert.equal(await p.locator("#full-editor").isVisible(), true);
@@ -262,6 +265,7 @@ test("inline text, formatting, cards, lists, safe paste, tables, and commands us
     );
     await p.locator("#fe-preview h1").click();
     await selectText(p, "#fe-preview h1 strong", 1, 4);
+    await reveal(p,"#vb-bold");
     await p.locator("#vb-bold").click();
     await p.locator("#vb-done").click();
     assert.deepEqual(
@@ -292,6 +296,7 @@ test("inline text, formatting, cards, lists, safe paste, tables, and commands us
     });
     assert.equal(await p.evaluate(() => window.visualInjected), undefined);
     assert.equal(await p.locator("#fe-preview .lead img").count(), 0);
+    await reveal(p,"#vb-bullets");
     await p.locator("#vb-bullets").click();
     assert.equal(await p.locator("#fe-preview .editor-bullets li").count(), 2);
     await p.locator("#fe-preview .editor-bullets li").first().click();
@@ -317,6 +322,7 @@ test("inline text, formatting, cards, lists, safe paste, tables, and commands us
     await first.fill("Edited cell");
     await first.press("Tab");
     await p.keyboard.type("Updated detail");
+    await reveal(p,"#vb-bold");
     await p.locator("#vb-bold").click();
     await p.locator("#vb-done").click();
     await tab(p, "Tables");
@@ -335,7 +341,7 @@ test("inline text, formatting, cards, lists, safe paste, tables, and commands us
     assert(
       (await p.locator("#vb-selection-label").innerText()).includes("Commands"),
     );
-    await p.locator("#vb-panel").click();
+    await reveal(p,"#vb-panel");await p.locator("#vb-panel").click();
     assert.equal(await p.locator("#fe-commands-panel").isVisible(), true);
     const data = await pack(p, "blocks-project.json");
     assert(!JSON.stringify(data.state.slides).includes("data-vb-"));
@@ -356,7 +362,7 @@ test("media selection, preview interaction, and muted video remain separate from
     await p.locator("#fe-preview .media-box").click();
     assert.equal(await p.locator("#vb-selection-label").innerText(), "Media");
     assert.equal(await p.locator("#vb-bold").isDisabled(), true);
-    await p.locator("#vb-panel").click();
+    await reveal(p,"#vb-panel");await p.locator("#vb-panel").click();
     assert.equal(await p.locator("#media-editor").isVisible(), true);
     const bytes = await p.evaluate(async () => {
       const c = document.createElement("canvas");
@@ -461,7 +467,9 @@ test("legacy ZIP supports theme and block editing through export and reopen", as
     await h.click();
     await h.fill("Customer security workshop");
     await selectText(p, "#fe-preview h1");
+    await reveal(p,"#vb-bold");
     await p.locator("#vb-bold").click();
+    await reveal(p,"#vb-align");
     await p.locator("#vb-align").selectOption("center");
     await h.press("Escape");
     await tab(p, "Branding");

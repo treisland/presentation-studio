@@ -5,7 +5,7 @@ import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { resolve, dirname } from 'node:path';
 import vm from 'node:vm';
 import { archivePath } from './archive-path.mjs';
-import { click } from './ui.mjs';
+import { click, reveal } from './ui.mjs';
 import { waitForVideo, mediaDiagnostics } from './media-diagnostics.mjs';
 
 const sandbox = { setImmediate, clearImmediate, setTimeout, clearTimeout, Uint8Array, ArrayBuffer, TextEncoder, TextDecoder };
@@ -31,7 +31,7 @@ for (const name of ['pattern.mp4', 'pattern.webm']) {
       await page.locator('#open-full-editor').click();
       await page.locator('.fe-slide-button[data-slide-id="studio-media"]').click();
       await page.locator('#fe-preview .media-box').click();
-      await page.locator('#vb-panel').click();
+      await reveal(page,'#vb-panel');await page.locator('#vb-panel').click();
       await page.locator('#me-file').setInputFiles(resolve('tests/fixtures/media', name));
       await page.locator('#me-close').click();
       await page.locator('#open-full-editor').click();

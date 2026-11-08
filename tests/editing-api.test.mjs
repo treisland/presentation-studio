@@ -1,3 +1,4 @@
+import { reveal } from './ui.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { chromium } from 'playwright';
@@ -74,6 +75,7 @@ test('invalid title input does not open or strand a typing transaction', async (
   const page = await setup();
   try {
     const before = await pack(page), snapshot = await read(page);
+    await reveal(page,"#fe-slide-title");
     await page.locator('#fe-slide-title').fill('x'.repeat(501));
     assert.equal((await page.locator('#fe-slide-title').inputValue()).length, 501);
     assert.equal((await read(page)).revision, snapshot.revision);
@@ -82,7 +84,9 @@ test('invalid title input does not open or strand a typing transaction', async (
     assert.equal(noOp.changed, false);
     assert.deepEqual(await pack(page), before);
     assert.equal((await apply(page, [{ type: 'slide.update', slideId: 'studio-welcome', changes: { notes: 'Still available' } }])).ok, true);
+    await reveal(page,"#fe-slide-title");
     await page.locator('#fe-slide-title').fill('Valid pending title');
+    await reveal(page,"#fe-slide-title");
     await page.locator('#fe-slide-title').fill('x'.repeat(501));
     await page.waitForFunction(() => document.querySelector('#fe-status').dataset.saveState === 'saved');
     assert.equal((await read(page)).state.slides[0].title, 'Valid pending title');
@@ -103,24 +107,31 @@ test('partial failure, cancellation, locks and stale UI edits leave batches unap
     }, await read(page));
     assert.equal(cancelled.code, 'CANCELLED');
     assert.deepEqual(await pack(page), before);
+    await reveal(page,"#ce-slide-lock");
     await page.locator('#ce-slide-lock').click();
     const locked = await pack(page);
     assert.equal((await apply(page, [{ type: 'slide.update', slideId: 'studio-welcome', changes: { title: 'Forbidden' } }])).code, 'LOCKED');
     assert.deepEqual(await pack(page), locked);
+    await reveal(page,"#ce-slide-lock");
     await page.locator('#ce-slide-lock').click();
     const stale = await read(page);
+    await reveal(page,"#fe-slide-title");
     await page.locator('#fe-slide-title').fill('UI edit');
     await page.waitForTimeout(400);
     assert.equal((await apply(page, [create], stale)).code, 'CONFLICT');
     assert.equal((await read(page)).state.slides.some(s => s.id === create.slideId), false);
     assert.equal((await apply(page, [{ type: 'media.place', slideId: 'studio-media', placement: { x: 0.9, y: 0, w: 0.4, h: 0.4 } }])).code, 'INVALID');
     await page.locator('.fe-slide-button[data-slide-id="studio-media"]').click();
+    await reveal(page,"#we-context-media");
     await page.locator('#we-context-media').click();
+    await reveal(page,"#ce-object-lock");
     await page.locator('#ce-object-lock').click();
     const lockedObject = await pack(page);
     assert.equal((await apply(page, [{ type: 'media.place', slideId: 'studio-media', placement: { x: 0.1, y: 0.1, w: 0.4, h: 0.4 } }])).code, 'LOCKED');
     assert.deepEqual(await pack(page), lockedObject);
+    await reveal(page,"#ce-object-lock");
     await page.locator('#ce-object-lock').click();
+    await reveal(page,"#ce-project-lock");
     await page.locator('#ce-project-lock').click();
     assert.equal((await apply(page, [create])).code, 'LOCKED');
   } finally { await page.close(); }

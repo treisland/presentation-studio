@@ -1,3 +1,4 @@
+import { reveal } from './ui.mjs';
 import { selectTab, addSlide } from './ui.mjs';
 import test from "node:test";
 import assert from "node:assert/strict";
@@ -54,6 +55,7 @@ async function json(p) {
   return JSON.parse(await readFile(await file.path(), "utf8"));
 }
 async function upload(p, name = "second.svg", zone = "floating") {
+  await reveal(p,'#ce-zone');
   if (zone !== "replace") await p.locator("#ce-zone").selectOption(zone);
   await p.locator(zone === "replace" ? "#ce-replace-file" : "#ce-file").setInputFiles({
     name,
@@ -95,6 +97,7 @@ test("Default addition preserves table/text, existing media and IDs with one-ste
   const { p, context, errors } = await setup();
   try {
     await addSlide(p, 'table');
+    await reveal(p,"#we-context-media");
     await p.locator('#we-context-media').click();
     const id = await p.locator('.fe-slide-button[aria-current=true]').getAttribute('data-slide-id');
     const before = await json(p), model = before.state.slides.find(s => s.id === id);
@@ -153,6 +156,7 @@ test("Background additions keep text foreground stacking in edit, Preview and of
   });
   try {
     const before = await json(p);
+    await reveal(p,"#we-context-media");
     await p.locator('#we-context-media').click();
     await upload(p, 'background.svg', 'background');
     const after = await json(p);
@@ -218,6 +222,7 @@ test("Floating placement, scaled dragging, undo, crop, multiple objects and expo
   const { p, context, errors } = await setup();
   try {
     await mediaSlide(p);
+    await reveal(p,"#ce-float");
     await p.locator("#ce-float").click();
     const initial = (await json(p)).state.media["studio-media"].canvas
       .placement;
@@ -243,7 +248,9 @@ test("Floating placement, scaled dragging, undo, crop, multiple objects and expo
     );
     await upload(p);
     assert.equal(await p.locator("#fe-preview .media-box").count(), 2);
+    await reveal(p,"#ce-fit");
     await p.locator("#ce-fit").selectOption("cover");
+    await reveal(p,"#ce-crop");
     await p.locator("#ce-crop").check();
     const extra = p.locator("#fe-preview .ce-selected");
     const bounds = await extra.boundingBox();
@@ -294,6 +301,7 @@ test("Drop replacement retains placement; design locks prevent direct and indire
   const { p, context, errors } = await setup();
   try {
     await mediaSlide(p);
+    await reveal(p,"#ce-float");
     await p.locator("#ce-float").click();
     const original = (await json(p)).state.media["studio-media"].canvas
       .placement;
@@ -302,15 +310,19 @@ test("Drop replacement retains placement; design locks prevent direct and indire
       (await json(p)).state.media["studio-media"].canvas.placement,
       original,
     );
+    await reveal(p,"#ce-object-lock");
     await p.locator("#ce-object-lock").click();
     await confirmedUpload(p, "blocked.svg", "replace");
     assert.equal(
       (await json(p)).state.media["studio-media"].name,
       "replacement.svg",
     );
+    await reveal(p,"#ce-object-lock");
     await p.locator("#ce-object-lock").click();
+    await reveal(p,"#ce-slide-lock");
     await p.locator("#ce-slide-lock").click();
     const locked = await json(p);
+    await reveal(p,"#fe-slide-title");
     await p.locator("#fe-slide-title").fill("Must not persist");
     await p.waitForTimeout(400);
     assert.equal(
@@ -331,11 +343,15 @@ test("Drop replacement retains placement; design locks prevent direct and indire
       "Demonstration",
     );
     await selectTab(p, "Content");
+    await reveal(p,"#ce-slide-lock");
     await p.locator("#ce-slide-lock").click();
+    await reveal(p,"#ce-project-lock");
     await p.locator("#ce-project-lock").click();
+    await reveal(p,"#fe-slide-title");
     await p.locator("#fe-slide-title").fill("No edits");
     await p.waitForTimeout(400);
     assert.equal((await json(p)).state.editLocked, true);
+    await reveal(p,"#ce-project-lock");
     await p.locator("#ce-project-lock").click();
     assert.equal((await json(p)).state.editLocked, false);
     assert.deepEqual(errors, []);
@@ -502,10 +518,15 @@ test("Resize and keyboard nudges are undoable; Escape cancels a drag", async () 
   const { p, context, errors } = await setup();
   try {
     await mediaSlide(p);
+    await reveal(p,"#ce-float");
     await p.locator("#ce-float").click();
+    await reveal(p,"#ce-w");
     await p.locator("#ce-w").fill("35");
+    await reveal(p,"#ce-w");
     await p.locator("#ce-w").press("Tab");
+    await reveal(p,"#ce-h");
     await p.locator("#ce-h").fill("35");
+    await reveal(p,"#ce-h");
     await p.locator("#ce-h").press("Tab");
     const before = (await json(p)).state.media["studio-media"].canvas.placement;
     const handle = p.locator("#fe-preview .ce-se");
@@ -644,6 +665,7 @@ test("A persistence failure refuses booth activation rather than losing the lock
 test("New presentation keeps the existing save-before-switch guard", async () => {
   const { p, context, errors } = await setup();
   try {
+    await reveal(p,"#fe-slide-title");
     await p.locator("#fe-slide-title").fill("Unsaved conference draft");
     await click(p, "#studio-new-open");
     await p.locator("#hub-switch").waitFor({ state: "visible" });
@@ -716,6 +738,7 @@ test("Placement grid cancels on Escape and outside release; normal floating drag
   const { p, context, errors } = await setup();
   try {
     await mediaSlide(p);
+    await reveal(p,"#ce-float");
     await p.locator("#ce-float").click();
     const before = (await json(p)).state.media["studio-media"];
     await p.locator("#fe-preview .ce-placement-handle").click();
@@ -745,6 +768,7 @@ test("Placement grid cancels on Escape and outside release; normal floating drag
       (await json(p)).state.media["studio-media"].canvas.placement,
       before.canvas.placement,
     );
+    await reveal(p,"#ce-object-lock");
     await p.locator("#ce-object-lock").click();
     assert.equal(
       await p.locator("#fe-preview .ce-placement-handle").count(),
@@ -778,6 +802,7 @@ test("Structured placement of additional media keeps both assets and respects pr
     await p.locator("#fe-undo").click();
     assert.deepEqual((await json(p)).state.mediaObjects, before.mediaObjects);
     await p.locator("#ce-objects button").first().click();
+    await reveal(p,"#ce-object-lock");
     await p.locator("#ce-object-lock").click();
     await p.locator("#ce-objects button").nth(1).click();
     await p.locator("#fe-preview .ce-placement-handle").focus();

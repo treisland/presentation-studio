@@ -16,5 +16,5 @@ export async function legacyHTML(root) {
   const second=structuredClone(question);second.id='synthetic-second-question';second.group='remqa';second.title='How do I prepare for a workshop?';
   pack.state.slides.push(second);pack.state.sections.push({id:'remqa',name:'Workshop questions',kind:'qa',product:'generic',hidden:false,headerLabel:'WORKSHOP'});
   const html=(await readFile(resolve(root,'dist/presentation-studio.html'),'utf8')).replace(/(<script id="project-config" type="application\/json">)[\s\S]*?(<\/script>)/,(_,a,b)=>a+JSON.stringify(pack).replace(/</g,'\\u003c')+b);
-  const file=resolve(root,'test-results/synthetic-legacy.html');await mkdir(resolve(root,'test-results'),{recursive:true});await writeFile(file,html);return file;
+  const file=resolve(root,`test-results/synthetic-legacy-${process.pid}.html`);await mkdir(resolve(root,'test-results'),{recursive:true});await writeFile(file,html);return file;
 }

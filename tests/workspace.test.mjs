@@ -1,3 +1,4 @@
+import { reveal } from './ui.mjs';
 import test from "node:test";
 import assert from "node:assert/strict";
 import { createRequire } from "node:module";
@@ -104,7 +105,9 @@ test("Compact editor keeps actions reachable and settings returns keyboard focus
     await click(p, '#fe-export');
     await downloaded;
     await p.waitForFunction(() => document.querySelector('#fe-status').textContent.includes('Editable ZIP created'));
+    await reveal(p,"#fe-slide-title");
     await p.locator('#fe-slide-title').fill('Changed after backup');
+    await reveal(p,"#fe-slide-title");
     await p.locator('#fe-slide-title').press('Tab');
     await p.waitForFunction(() => document.querySelector('#fe-status').textContent.includes('Changes need an editable ZIP'));
   } finally {
@@ -120,7 +123,9 @@ test("Context inspector follows text, table and media selection and preserves me
       await p.locator("#we-inspector").getAttribute("data-context"),
       "text",
     );
+    await reveal(p,"#we-font-size");
     await p.locator("#we-font-size").fill("68");
+    await reveal(p,"#we-font-size");
     await p.locator("#we-font-size").press("Tab");
     await p.waitForTimeout(100);
     assert.equal(
@@ -131,16 +136,20 @@ test("Context inspector follows text, table and media selection and preserves me
     );
     await media(p);
     assert.equal(await p.locator("#ce-panel").isVisible(), true);
+    await reveal(p,"#ce-float");
     await p.locator("#ce-float").click();
     assert.equal(await p.locator("#ce-panel").isVisible(), true);
     await slide(p, "studio-table").click();
     await p.locator("#fe-preview tbody td").first().click();
+    await p.locator('#wp-tab-content').click();
     assert.equal(
       await p.locator("#we-inspector").getAttribute("data-context"),
       "table",
     );
     assert.equal(await p.locator("#fe-table-panel").isVisible(), true);
+    await reveal(p,"#we-context-slide");
     await p.locator("#we-context-slide").click();
+    await reveal(p,"#fe-slide-title");
     await p.locator("#fe-slide-title").fill("Updated table title");
     await p.waitForTimeout(400);
     assert.equal(
@@ -255,8 +264,10 @@ test("Thumbnails are inert previews, sections collapse/search, and indicators re
     assert.equal(await slide(p, "studio-story").isVisible(), true);
     await p.locator("#fe-search").fill("");
     await overview.click();
+    await reveal(p,"#we-context-slide");
     await p.locator("#we-context-slide").click();
     await p.locator("#fe-hidden").check();
+    await reveal(p,"#ce-slide-lock");
     await p.locator("#ce-slide-lock").click();
     assert((await slide(p, "studio-welcome").innerText()).includes("Locked"));
     assert((await slide(p, "studio-welcome").innerText()).includes("Hidden"));
@@ -288,6 +299,7 @@ test("Thumbnail drops reorder within a section in one undo step and refuse locke
       (await pack(p)).state.slides.map((s) => s.id),
       before,
     );
+    await reveal(p,"#ce-slide-lock");
     await p.locator("#ce-slide-lock").click();
     assert.equal(
       await slide(p, "studio-welcome").getAttribute("draggable"),
@@ -354,6 +366,7 @@ test("Dragging media while zoomed uses slide coordinates, and view state is abse
   const { p, context, errors } = await setup();
   try {
     await media(p);
+    await reveal(p,"#ce-float");
     await p.locator("#ce-float").click();
     for (const [key, value] of [
       ["x", "35"],
@@ -429,6 +442,7 @@ test("Interactive Preview fits the canvas and keeps Media Focus controls visible
 test("Inspector and settings tabs support keyboard navigation without leaving their tablist", async () => {
   const { p, context, errors } = await setup();
   try {
+    await reveal(p,"#we-context-slide");
     await p.locator("#we-context-slide").focus();
     await p.keyboard.press("ArrowRight");
     assert.equal(
