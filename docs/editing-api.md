@@ -14,7 +14,20 @@ Call `apply({apiVersion:1, projectId, expectedRevision, operations})`. Operation
 - `slide.create`: existing `sectionId`, supported gallery `template`, optional unique stable `slideId`, and `title`. Creates a template-backed slide without changing existing IDs. Unlike the gallery's Q&A convenience action, this contract does not silently create or change sections. It appends to the requested section's loop where applicable.
 - `media.place`: `slideId`, optional `objectId` (default `primary`), and normalized `{x,y,w,h}` inside the slide, with minimum width/height 0.05. Moves existing media only; no asset creation/deletion or replacement.
 
-The template set is hero, comparison, workflow, table, qa, code and media. Unsupported operations/fields, invalid bounds and unknown IDs fail rather than being silently applied. Same project/slide/object locks and validators are used by UI and API. Title entry reuses metadata validation, gallery creation reuses template model construction, and Free placement uses the batch operation. Remaining legacy editing paths retain their existing lock/undo guards and are migrated incrementally as future operations are added.
+The template set is hero, comparison, workflow, table, qa, code, media, media-grid and blank. Unsupported operations/fields, invalid bounds and unknown IDs fail rather than being silently applied. Same project/slide/object locks and validators are used by UI and API. Title entry reuses metadata validation, gallery creation reuses template model construction, and Free placement uses the batch operation. Remaining legacy editing paths retain their existing lock/undo guards and are migrated incrementally as future operations are added.
+
+## Styling and Layers operations
+
+The additive [styling and precision](styling-and-precision.md) operations use the same version-1 transaction contract. Each accepts `slideId`. Object operations take `keys` (1–100): stable `block-*`/`layer-*` content-root IDs or `media-primary`/`media-object-*` keys. An unedited original root can be addressed by its current `node-N` tree index, bound to the request revision; the operation assigns a stable layer ID without changing the slide ID. Grid media stays within its Grid's identity and cell operations.
+
+- `design.appearance`: `style` with optional `text`, `fill`, `border`, `borderWidth` (0–24). Color values are `null` (inherit), `"transparent"`, `{role,opacity?}` or `{hex,opacity?}`. Roles: background, surface, ink, muted, accent, accentInk, border, secondary. Hex is six digits; opacity is 0–1. One batch can style several roots atomically.
+- `design.background`: `color` using the same bounded color representation.
+- `design.meta`: `changes` containing `name` (max 80), `hidden`, `locked`, `rotation` (-180–180). Locked targets accept lock-only changes; all other edits are rejected. Grid rotation requires detaching individual media first.
+- `design.reorder`: one key, with `direction` forward/backward or `target` key. Background media is pinned; locked layers prevent order changes that would affect them.
+- `design.remove`: selected keys. `design.clear`: all current slide contents/media, retaining slide identity, section and background. Recovery checkpoints and Undo retain removed references; clear rejects locked contents.
+- `design.palette`: `colors`, up to 24 `{name,hex}` project swatches (name max 40). Palette entries are reusable custom values rather than theme roles.
+
+Safe normalized `state.design` data is additive to schema-v2 packs. Unknown/unsafe color CSS cannot be executed. API session/revision and view selections/snapping preferences remain outside portable artifacts.
 
 The additive [content-block operations](content-blocks.md) support block.create/place/duplicate/remove for palette-created top-level nodes. They use the same transaction contract and stable IDs scoped to each slide. Active block gestures return BUSY; existing original-layout nodes are not silently converted.
 

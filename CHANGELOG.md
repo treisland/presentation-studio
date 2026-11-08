@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Add theme-linked/custom text, fill, border and slide-background colors with opacity, named project swatches, contrast estimates, presets and copy/paste appearance.
+- Add a blank slide template and lock-aware clear-selected/confirmed clear-slide actions with atomic Undo and recovery retention.
+- Add a Layers tab with synchronized selection, batch appearance, object naming, hide/lock and keyboard/pointer ordering. Grid cells remain nested; background media stays pinned.
+- Extend block/media snapping with object edges/centers, equal-spacing guides, a session toggle, Alt bypass and screen-pixel tolerance. Add validated rotation and preserve styling/layers in portable exports.
+
 ## 0.3.0 — 2026-11-08
 
 - Promote the tested release candidate to stable after maintainer sign-off. Includes the canvas workspace, additive media, draggable blocks, Media Grid, local editing API and panel polish. No runtime, dependency or project-format changes since rc.1.

@@ -24,7 +24,7 @@ function ceObject(raw = {}) {
     placement: cePlacement(raw.placement),
     locked: !!raw.locked,
     hidden: !!raw.hidden,
-    z: Math.round(ceClamp(raw.z, 0, 40, 3)),
+    z: Math.round(ceClamp(raw.z, 0, 1000, 3)),
     crop: {
       x: ceClamp(raw.crop?.x, 0, 100, 50),
       y: ceClamp(raw.crop?.y, 0, 100, 50),
@@ -496,17 +496,8 @@ function ceMove(e) {
   } else {
     p.x += dx;
     p.y += dy;
-    if (!e.altKey) {
-      const snap = (value, size) => {
-        for (const guide of [0, 0.025, 0.5 - size / 2, 0.975 - size, 1 - size])
-          if (Math.abs(value - guide) < 0.012) return guide;
-        return value;
-      };
-      p.x = snap(p.x, p.w);
-      p.y = snap(p.y, p.h);
-    }
   }
-  d.next = cePlacement(p);
+  d.next = cePlacement(spSnap(p,d.figure.closest('.slide'),'media-'+d.object,!!d.corner,e.altKey));
   ceStyle(
     d.figure,
     {
@@ -520,6 +511,7 @@ function ceMove(e) {
   );
 }
 function ceEnd(cancel = false) {
+  spClearGuides();
   if (ceRelocate) {
     if (cancel) ceCancelPlacement();
     else if (ceRelocate.pointer !== null) {
@@ -965,7 +957,7 @@ function ceBind() {
         (cfg) =>
           (cfg.canvas = {
             ...ceObject(cfg.canvas),
-            z: ceClamp((cfg.canvas?.z ?? 3) + delta, 0, 40, 3),
+            z: ceClamp((cfg.canvas?.z ?? 3) + delta, 0, 1000, 3),
           }),
       ),
     );

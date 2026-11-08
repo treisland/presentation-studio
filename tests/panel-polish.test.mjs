@@ -27,7 +27,7 @@ test('Inspector media-list selection targets the matching Grid cell for removal 
 test('edge rails, sticky panel controls and keyboard tabs preserve project/history and session view state',async()=>{const{p,errors}=await setup();try{
  const before=await pack(p);
  await p.locator('#wp-tab-content').focus();await p.keyboard.press('ArrowRight');assert.equal(await p.locator('#wp-tab-arrange').getAttribute('aria-selected'),'true');
- await p.keyboard.press('End');assert.equal(await p.locator('#wp-tab-style').getAttribute('aria-selected'),'true');await p.keyboard.press('Home');
+ await p.keyboard.press('End');assert.equal(await p.locator('#wp-tab-layers').getAttribute('aria-selected'),'true');await p.keyboard.press('ArrowLeft');assert.equal(await p.locator('#wp-tab-style').getAttribute('aria-selected'),'true');await p.keyboard.press('Home');
  const header=await p.locator('#wp-selection-header').boundingBox(),search=await p.locator('#fe-search').boundingBox();
  await p.locator('#wp-fields').evaluate(el=>el.scrollTop=el.scrollHeight);await p.locator('#fe-slide-list').evaluate(el=>el.scrollTop=el.scrollHeight);
  assert.equal((await p.locator('#wp-selection-header').boundingBox()).y,header.y);assert.equal((await p.locator('#fe-search').boundingBox()).y,search.y);

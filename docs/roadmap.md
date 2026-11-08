@@ -2,18 +2,18 @@
 
 ## Current delivery plan
 
-Stable 0.2.0 is published after maintainer RC validation and protected release gates; see the [manual evidence record](releases/0.2.0-evidence.md). The maintainer assigned 0.3.0 implementation, starting with responsive workspace #10. Feature PRs do not select a new release version. See [release stages and contribution flow](release-process.md). GitHub milestones and linked issues hold acceptance criteria and delivery state; this document summarizes direction.
+Stable 0.3.0 is published after maintainer RC validation and protected release gates; see the [manual evidence record](releases/0.3.0-evidence.md). The maintainer assigned 0.4.0 styling and precision implementation in #57, with manual review after completion. Feature PRs do not select a release version. See [release stages and contribution flow](release-process.md). GitHub milestones and linked issues hold acceptance criteria and delivery state; this document summarizes direction.
 
-- **Now — 0.2.0 stable delivery:** promote the tested RC with no runtime changes; verify actual publication before closing release readiness #30. Detailed media/accessibility environment follow-ups #7/#9 stay visible; see the stable release notes for support limitations and recovery guidance.
-- **Next — 0.3.0 canvas enhancements:** responsive workspace #10, shared validated editing API #14, additive media #11, draggable blocks #12, Media Grid presets/drop zones/adjustable dividers #38, and removal of the redundant visible Expand control with accessible activation retained #39. Design/compatibility review precedes scoped implementation. Live timers/counters follow basic blocks.
+- **Now — 0.4.0 styling and precision:** theme/project swatches, text/fill/border/background styling, appearance reuse, blank/clear slides, alignment/equal-spacing snapping and accessible Layers. See [scope and design](styling-and-precision.md) and #57. Manual review precedes release preparation.
+- **Completed — 0.3.0 canvas enhancements:** responsive workspace, shared editing API, additive media, draggable blocks, Media Grid, accessible Media Focus and Inspector polish. Detailed environment follow-ups #7/#9 remain visible.
 - **Deferred:** camera overlays, template publishing, accounts and collaboration until the core workflow is dependable.
 
-- **0.4.0 — AI assistance:** architecture/privacy decisions, OpenRouter/Ollama connections, selected-text rewriting, proposal acceptance and evaluation. Notes and editorial review remain stretch scope.
-- **0.5.0 — File-based MCP:** optional companion, transactional editing, previews/readiness, separate ZIP exports and Hermes integration. Live session editing is deferred to discovery #23.
+- **0.5.0 — AI assistance:** architecture/privacy decisions, OpenRouter/Ollama connections, selected-text rewriting, proposal acceptance and evaluation. Notes and editorial review remain stretch scope. Existing issues #15–#19 remain assigned to this renamed milestone.
+- **0.6.0 — File-based MCP:** optional companion, transactional editing, previews/readiness, separate ZIP exports and Hermes integration. Existing issues #20–#22 remain assigned to this renamed milestone. Live session editing is deferred to discovery #23.
 
 Backup verification design: inspect/validate the selected ZIP without importing it into the active project or draft database. Prove restoration separately in a clean profile. Accessibility baseline: Windows with Chrome and NVDA; record exact tested versions before claiming support. Automated matching-Chromium checks are distinct from these manual checks. Other browsers and OBS remain unverified until evidence is recorded.
 
-Track delivery in the [0.2.0 milestone](https://github.com/treisland/presentation-studio/milestone/1) and [0.3.0 milestone](https://github.com/treisland/presentation-studio/milestone/2).
+Track current delivery in [0.4.0](https://github.com/treisland/presentation-studio/milestone/5), followed by [0.5.0 AI](https://github.com/treisland/presentation-studio/milestone/3) and [0.6.0 MCP](https://github.com/treisland/presentation-studio/milestone/4).
 
 ## Historical development milestones
 

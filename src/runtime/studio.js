@@ -943,6 +943,7 @@
     return next;
   }
   const studioTemplateInfo = {
+    blank: ["Blank", "An empty slide using the presentation theme."],
     hero: ["Hero", "A strong opening with a supporting card."],
     comparison: ["Comparison", "Two options side by side."],
     workflow: ["Workflow", "Three sequential steps."],
@@ -1068,6 +1069,7 @@
     $("studio-gallery-cards").replaceChildren();
     studioGalleryRoots = [];
     const templates = [
+      "blank",
       "hero",
       "comparison",
       "workflow",

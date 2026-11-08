@@ -65,7 +65,7 @@ function editingUpdate(state, id, changes) {
   }
 }
 function editingCreateModel(template, title, group, id) {
-  if (!["hero", "comparison", "workflow", "table", "qa", "code", "media", "media-grid"].includes(template) ||
+  if (!["hero", "comparison", "workflow", "table", "qa", "code", "media", "media-grid", "blank"].includes(template) ||
       typeof title !== "string" || !title.length || title.length > 500 || !/^[\w-]+$/.test(id))
     editingFail("INVALID", "Invalid template, title or slide ID.");
   const preset = projectCreateTemplate(template, title),
@@ -122,7 +122,8 @@ const studioEditing = Object.freeze({
           created.push(id);
         } else if (!dbOperation(candidate, op, created)) editingFail("INVALID", "Unsupported editing operation.");
       }
-      projectValidateState(candidate);
+      const validatedCandidate=projectValidateState(candidate);
+      if(candidate.design)candidate.design=validatedCandidate.design;
       if (ceViolates(before, candidate)) editingFail("LOCKED", "The batch changes protected content.");
       if (signal?.aborted) editingFail("CANCELLED", "The batch was cancelled.");
       if (JSON.stringify(before) === JSON.stringify(candidate))

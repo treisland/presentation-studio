@@ -16,7 +16,8 @@ function mgSettings(root) {
   return { rows: mgWeights(rows[1].split('-').map(Number)), cols: mgWeights(cols[1].split('-').map(Number)), gap: Number(gap[1]) };
 }
 function mgWrite(root, settings) {
-  root.attrs.class = `mg-grid mg-r-${settings.rows.join('-')} mg-c-${settings.cols.join('-')} mg-g-${settings.gap}`;
+  const layer=root.attrs.class.match(/\blayer-[\w-]+\b/)?.[0];
+  root.attrs.class = `mg-grid mg-r-${settings.rows.join('-')} mg-c-${settings.cols.join('-')} mg-g-${settings.gap}`+(layer?' '+layer:'');
 }
 function mgEqual(n) { return n === 3 ? [3333,3333,3334] : n === 2 ? [5000,5000] : [10000]; }
 function mgNewCell() { return projectNode('div', 'mg-cell ' + projectID('cell')); }

@@ -65,7 +65,7 @@ function wpAct(action) {
     else {
       const cfg=projectCopy(ceConfig()),id=projectID('object');
       cfg.canvas=ceObject(cfg.canvas);cfg.canvas.placement=cePlacement({...cfg.canvas.placement,x:(cfg.canvas.placement?.x??.6)+.02,y:(cfg.canvas.placement?.y??.5)+.02});
-      ceChange(()=>{projectState.mediaObjects??={};(projectState.mediaObjects[projectSelected]??=[]).push({id,media:cfg});});ceSelect(id);
+      ceChange(()=>{projectState.mediaObjects??={};(projectState.mediaObjects[projectSelected]??=[]).push({id,media:cfg});const meta=spData().objects['media-'+ceSelected];if(meta)spData(projectState,projectSelected,true).objects['media-'+id]=projectCopy(meta);});ceSelect(id);
     }
   } else $(action==='delete'?'fe-trash-slide':'fe-duplicate').click();
   wpPaint();if(!button.disabled)button.focus();else $('wp-selection-title').focus();
@@ -150,6 +150,7 @@ projectInit=function(){
       projectState.slides.splice(projectState.slides.indexOf(source)+1,0,copy);
       if(projectState.media[source.id])projectState.media[copy.id]=projectCopy(projectState.media[source.id]);
       if(ceObjects(source.id).length){projectState.mediaObjects??={};projectState.mediaObjects[copy.id]=projectCopy(ceObjects(source.id));}
+      if(projectState.design?.slides[source.id])projectState.design.slides[copy.id]=projectCopy(projectState.design.slides[source.id]);
       for(const loop of Object.values(projectState.loops)){const i=loop.slideIds.indexOf(source.id);if(i>=0)loop.slideIds.splice(i+1,0,copy.id);}
       projectSelected=copy.id;
     });

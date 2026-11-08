@@ -7,7 +7,7 @@ projectSafeStyle = function (value) {
   return String(value || "").split(";").map(rule => {
     const match = rule.trim().match(/^(left|top|width|height):\s*(\d+(?:\.\d+)?)%$/i);
     if (match && Number(match[2]) <= 100) return rule.trim();
-    if (/^\s*position:\s*absolute\s*$/i.test(rule) || /^\s*z-index:\s*(?:[0-9]|[1-3][0-9]|40)\s*$/i.test(rule)) return rule.trim();
+    if (/^\s*position:\s*absolute\s*$/i.test(rule) || /^\s*z-index:\s*(?:\d{1,3}|1000)\s*$/i.test(rule)) return rule.trim();
     return dbStyle(rule);
   }).filter(Boolean).join(";");
 };
@@ -36,7 +36,7 @@ function dbPlace(node, placement, layer = dbRect(node).layer) {
   if (!placement || !["x", "y", "w", "h"].every(k => Number.isFinite(placement[k])) ||
       placement.x < 0 || placement.y < 0 || placement.w < 0.05 || placement.h < 0.05 ||
       placement.x + placement.w > 1.000001 || placement.y + placement.h > 1.000001 ||
-      !Number.isInteger(layer) || layer < 0 || layer > 40) editingFail("INVALID", "Block placement must fit inside the slide; layer must be 0–40.");
+      !Number.isInteger(layer) || layer < 0 || layer > 1000) editingFail("INVALID", "Block placement must fit inside the slide; layer must be 0–1000.");
   const p = cePlacement(placement);
   node.attrs.style = (node.attrs.style || "").split(";").filter(rule => !/^\s*(position|left|top|width|height|z-index)\s*:/i.test(rule)).join(";") +
     `;position:absolute;left:${p.x * 100}%;top:${p.y * 100}%;width:${p.w * 100}%;height:${p.h * 100}%;z-index:${layer}`;
@@ -61,7 +61,7 @@ function dbOperation(state, op, created) {
       if (slide.tree.filter(dbID).length >= 60) editingFail("INVALID", "At most 60 free blocks per slide.");
       const copy = projectCopy(found), id = projectID("block"), p = dbRect(copy);
       copy.attrs.class = copy.attrs.class.replace(dbID(copy), id);
-      dbPlace(copy, cePlacement({ ...p, x: p.x + 0.02, y: p.y + 0.02 }), Math.min(40, p.layer + 1));
+      dbPlace(copy, cePlacement({ ...p, x: p.x + 0.02, y: p.y + 0.02 }), Math.min(1000, p.layer + 1));
       slide.tree.push(copy); created.push(id);
     } else editingFail("INVALID", "Unsupported block operation.");
   }
@@ -143,6 +143,7 @@ vbModify = function (action) {
   return dbModify(action);
 };
 function dbFinish(cancel = false) {
+  spClearGuides();
   const gesture = dbDrag;
   if (!gesture) return;
   dbDrag = null;
@@ -188,7 +189,7 @@ projectInit = function () {
   window.addEventListener("pointerdown", e => {
     const handle = e.target.closest?.("[data-db-drag]");
     let block = handle?.closest(".db-block");
-    if (!block || !projectPreviewNode.contains(block) || !weEditing() || vbMode !== "edit" || ceLocked() || e.button !== 0 || weSpace || ceDrag || ceRelocate) return;
+    if (!block || !projectPreviewNode.contains(block) || !weEditing() || vbMode !== "edit" || ceLocked() || spMeta(dbID({attrs:{class:block.className}})).locked || e.button !== 0 || weSpace || ceDrag || ceRelocate) return;
     e.preventDefault(); e.stopImmediatePropagation(); vbEnd(false); projectFlush();
     dbSelected = [...block.classList].find(c => c.startsWith("block-"));
     block = projectPreviewNode.querySelector('.' + dbSelected);
@@ -204,17 +205,10 @@ projectInit = function () {
     e.preventDefault(); const d = dbDrag, p = { ...d.p }, dx = (e.clientX - d.x) / d.bounds.width, dy = (e.clientY - d.y) / d.bounds.height;
     if (d.mode === "move") {
       p.x = Math.max(0, Math.min(1 - p.w, p.x + dx)); p.y = Math.max(0, Math.min(1 - p.h, p.y + dy));
-      if (!e.altKey) for (const [key, size] of [["x",p.w],["y",p.h]]) {
-        const target = [0, 0.05, (1-size)/2, 0.95-size, 1-size].find(v => v >= 0 && Math.abs(v-p[key]) < 0.01);
-        if (target !== undefined) p[key] = target;
-      }
     } else {
       p.w = Math.max(0.05, Math.min(1-p.x, p.w+dx)); p.h = Math.max(0.05, Math.min(1-p.y, p.h+dy));
-      if (!e.altKey) for (const key of ["w", "h"]) {
-        const snap = Math.round(p[key] / 0.05) * 0.05, limit = 1 - p[key === "w" ? "x" : "y"];
-        if (snap >= 0.05 && snap <= limit && Math.abs(snap-p[key]) < 0.006) p[key] = snap;
-      }
     }
+    Object.assign(p,spSnap(p,d.el.closest('.slide'),d.id,d.mode==='resize',e.altKey));
     d.next = p; Object.assign(d.el.style, { left: p.x*100+"%", top:p.y*100+"%", width:p.w*100+"%", height:p.h*100+"%" });
   }, true);
   window.addEventListener("pointerup", e => { if (dbDrag?.pointer === e.pointerId) dbFinish(); }, true);
@@ -224,6 +218,7 @@ projectInit = function () {
   window.addEventListener("keydown", e => {
     if (e.key === "Escape" && dbDrag) { e.preventDefault(); e.stopImmediatePropagation(); dbFinish(true); return; }
     const block = e.target.closest?.(".db-block");
+    if(block&&spMeta(dbID({attrs:{class:block.className}})).locked)return;
     if (!block || !projectPreviewNode.contains(block) || !weEditing() || vbMode !== "edit" || !["ArrowLeft","ArrowRight","ArrowUp","ArrowDown"].includes(e.key) ||
         (e.target !== block && !e.target.matches(".db-handle"))) return;
     e.preventDefault(); e.stopImmediatePropagation(); dbSelected = [...block.classList].find(c => c.startsWith("block-"));
