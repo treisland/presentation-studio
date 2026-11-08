@@ -22,14 +22,14 @@ function mgWrite(root, settings) {
 function mgEqual(n) { return n === 3 ? [3333,3333,3334] : n === 2 ? [5000,5000] : [10000]; }
 function mgNewCell() { return projectNode('div', 'mg-cell ' + projectID('cell')); }
 function mgMark(cell, id) { cell.attrs.class = 'mg-cell ' + mgCellID(cell) + (id ? ' mg-media-' + id : ''); }
-function mgRects(settings) {
-  const {rows, cols, gap} = settings, g = gap/100, w = .9-g*(cols.length-1), h = .72-g*(rows.length-1), result=[];
-  let y=.23;
-  for (const row of rows) { let x=.05; for (const col of cols) { result.push({x,y,w:w*col/10000,h:h*row/10000}); x+=w*col/10000+g; } y+=h*row/10000+g; }
+function mgRects(settings, bounds = {x:.05,y:.23,w:.9,h:.72}) {
+  const {rows, cols, gap} = settings, g = gap/100, w = bounds.w-g*(cols.length-1), h = bounds.h-g*(rows.length-1), result=[];
+  let y=bounds.y;
+  for (const row of rows) { let x=bounds.x; for (const col of cols) { result.push({x,y,w:w*col/10000,h:h*row/10000}); x+=w*col/10000+g; } y+=h*row/10000+g; }
   return result;
 }
 function mgArrange(state, model) {
-  const root=mgRoot(model), rects=mgRects(mgSettings(root));
+  const root=mgRoot(model), rects=mgRects(mgSettings(root), lcBounds(model));
   root.children.forEach((cell,i)=>{const cfg=mgConfig(state,model.id,mgObjectID(cell));if(cfg) { cfg.layout='inset';cfg.canvas={...ceObject(cfg.canvas),placement:rects[i]}; }});
 }
 const mgTemplate = projectCreateTemplate;
@@ -140,9 +140,9 @@ function mgPanel() {
   for(const figure of projectPreviewNode?.querySelectorAll('.media-box[data-mg-cell]')||[])figure.classList.toggle('mg-selected',vbMode==='edit'&&figure.dataset.mgCell===mgSelected);
 }
 function mgPaint(slide,settings,editing=false) {
-  const model=projectModel(slide.dataset.mediaId),root=mgRoot(model);if(!root)return;
+  const model=slide.studioPreviewModel||projectModel(slide.dataset.mediaId),root=mgRoot(model);if(!root)return;
   slide.querySelectorAll('.mg-guides').forEach(n=>n.remove());
-  const rects=mgRects(settings);
+  const bounds=lcBounds(model),rects=mgRects(settings,bounds);
   root.children.forEach((cell,i)=>{
     const object=mgObjectID(cell),cfg=mgConfig(projectState,model.id,object),r=rects[i];
     const figure=object&&slide.querySelector(`:scope > .media-box[data-object-id="${object}"]`);
@@ -156,15 +156,15 @@ function mgPaint(slide,settings,editing=false) {
   if(editing)for(const axis of ['rows','cols']) {
     const weights=settings[axis],horizontal=axis==='cols';let sum=0;
     for(let i=0;i<weights.length-1;i++) {
-      sum+=weights[i];const gap=settings.gap/100,size=(horizontal?.9:.72)-gap*(weights.length-1),position=(horizontal?.05:.23)+size*sum/10000+gap*i+gap/2;
+      sum+=weights[i];const gap=settings.gap/100,size=(horizontal?bounds.w:bounds.h)-gap*(weights.length-1),position=(horizontal?bounds.x:bounds.y)+size*sum/10000+gap*i+gap/2;
       const handle=document.createElement('button');handle.type='button';handle.className='mg-divider mg-guides';handle.dataset.mgAxis=axis;handle.dataset.mgIndex=i;handle.textContent=horizontal?'↔':'↕';
       handle.setAttribute('aria-label',`Resize ${horizontal?'column':'row'} divider ${i+1}`);handle.setAttribute('aria-description','Arrow keys adjust proportions. Shift adjusts faster. Escape cancels a drag.');
-      Object.assign(handle.style,horizontal?{left:position*100+'%',top:'23%',height:'72%'}:{top:position*100+'%',left:'5%',width:'90%'});slide.append(handle);
+      Object.assign(handle.style,horizontal?{left:position*100+'%',top:bounds.y*100+'%',height:bounds.h*100+'%'}:{top:position*100+'%',left:bounds.x*100+'%',width:bounds.w*100+'%'});slide.append(handle);
     }
   }
 }
 const mgMediaApply=mediaApply;
-mediaApply=function(slide){mgMediaApply(slide);if(!projectReady)return;for(const n of slide.querySelectorAll(':scope > .media-original > .mg-grid'))slide.append(n);const root=mgRoot(projectModel(slide.dataset.mediaId));if(root)mgPaint(slide,mgSettings(root));};
+mediaApply=function(slide){mgMediaApply(slide);if(!projectReady)return;for(const n of slide.querySelectorAll(':scope > .media-original > .mg-grid'))slide.append(n);const root=mgRoot(slide.studioPreviewModel||projectModel(slide.dataset.mediaId));if(root)mgPaint(slide,mgSettings(root));};
 function mgAttach() {
   if(!projectPreviewNode)return;const slide=projectPreviewNode.querySelector('.slide'),root=mgRoot(projectModel());
   if(slide&&root){mgPaint(slide,mgSettings(root),vbMode==='edit');for(const f of slide.querySelectorAll('.media-box[data-mg-cell]')) f.querySelectorAll('.ce-handle,.ce-placement-handle').forEach(n=>n.remove());}
@@ -225,7 +225,7 @@ projectInit=function(){
     const button=e.target.closest('.mg-cell-action'),figure=e.target.closest('.media-box[data-mg-cell]');
     if(button||figure){if(figure&&$('ce-crop').checked&&ceFigureConfig(figure)?.kind==='image')return;e.preventDefault();e.stopImmediatePropagation();const cell=(button||figure).dataset.mgCell;mgChoose(cell);(button||figure).focus();}
   },true);
-  window.addEventListener('pointermove',e=>{const d=mgDrag;if(!d||d.pointer!==e.pointerId)return;const horizontal=d.axis==='cols',length=(horizontal?.9:.72)-d.settings.gap/100*(d.settings[d.axis].length-1),delta=((horizontal?e.clientX:e.clientY)-d.start)/(horizontal?d.bounds.width:d.bounds.height)/length*10000;d.next=mgAdjusted(d.settings,d.axis,d.i,delta);const slide=projectPreviewNode?.querySelector('.slide');if(slide){const rects=mgRects(d.next),root=mgRoot(projectModel());root.children.forEach((c,i)=>{const r=rects[i];for(const el of slide.querySelectorAll(`[data-mg-cell="${mgCellID(c)}"]`))Object.assign(el.style,{left:r.x*100+'%',top:r.y*100+'%',width:r.w*100+'%',height:(el.matches('.mg-populated')?Math.min(.055,r.h):r.h)*100+'%'});});}},true);
+  window.addEventListener('pointermove',e=>{const d=mgDrag;if(!d||d.pointer!==e.pointerId)return;const horizontal=d.axis==='cols',area=lcBounds(projectModel()),length=(horizontal?area.w:area.h)-d.settings.gap/100*(d.settings[d.axis].length-1),delta=((horizontal?e.clientX:e.clientY)-d.start)/(horizontal?d.bounds.width:d.bounds.height)/length*10000;d.next=mgAdjusted(d.settings,d.axis,d.i,delta);const slide=projectPreviewNode?.querySelector('.slide');if(slide){const rects=mgRects(d.next,area),root=mgRoot(projectModel());root.children.forEach((c,i)=>{const r=rects[i];for(const el of slide.querySelectorAll(`[data-mg-cell="${mgCellID(c)}"]`))Object.assign(el.style,{left:r.x*100+'%',top:r.y*100+'%',width:r.w*100+'%',height:(el.matches('.mg-populated')?Math.min(.055,r.h):r.h)*100+'%'});});}},true);
   window.addEventListener('pointerup',e=>{if(mgDrag?.pointer===e.pointerId)mgEnd();},true);
   window.addEventListener('pointercancel',()=>mgEnd(true),true);window.addEventListener('lostpointercapture',()=>mgEnd(true),true);window.addEventListener('blur',()=>mgEnd(true));
   $('full-editor').addEventListener('close',()=>mgEnd(true));

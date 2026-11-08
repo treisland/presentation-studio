@@ -1,6 +1,16 @@
 # 0.5.0 — Layout collections and examples
 
-The maintainer approved this milestone plan after 0.4.0-rc.1 publication. [0.5.0](https://github.com/treisland/presentation-studio/milestone/6) now covers layouts/examples; existing AI issues #15–#19 retain their milestone membership under 0.6.0, and MCP issues #20–#22 under 0.7.0. Scope below is planning only: these issues are not agent-ready and do not authorize implementation or publication by themselves.
+The maintainer approved this milestone plan after 0.4.0-rc.1 publication and authorized implementation after stable 0.4.0 shipped. [0.5.0](https://github.com/treisland/presentation-studio/milestone/6) covers layouts/examples; existing AI issues #15–#19 retain their milestone membership under 0.6.0, and MCP issues #20–#22 under 0.7.0. Work starts with #63 and the first Portfolio composition/starter/demo checkpoint. Broader collection expansion follows the manual review described below; publication still needs a separate release plan.
+
+## First review slice
+
+Choose **Project → New presentation → Portfolio starter** or **Portfolio finished example**, then use defaults or continue setup. Each use creates fresh project and slide identities through the existing save-before-switch guard. The finished one-slide library case study is fictional, makes no measured-impact claim, and embeds an original Apache-2.0 diagram. The library factory remains unchanged when a user customizes a copy. **Project settings → Recovery & reset → Reset entire presentation** confirms replacement, checkpoints changes and supports Undo.
+
+**Add slide → Portfolio · Case study** adds the same composition to a project without changing its theme or swatches. Use the slide Layout control to preview a change. The mapping lists source text for each slot, image handling and unmatched material. Unmatched text/tables/commands stay on the slide; identified/free blocks and existing Grid cells retain identity. Extra material may overflow and must be shortened or rearranged before sharing. Locked slide contents block layout changes. Replacing prompts is explicitly confirmed; accepted changes preserve notes, IDs and media and create one Undo step plus a recovery checkpoint.
+
+The image slot uses existing Media Grid controls for upload, Fit/Fill, independent crop and Media inspector descriptions/captions. Missing images remain editable drop targets. Text never shrinks automatically: long-slot guidance and the readiness/layout overflow check flag excessive content and title/body overlap. All output remains 16:9 slides.
+
+Automated checks cover layout mapping, lock rejection, Undo/checkpoints, fresh IDs, confirmed reset, long-content warnings and editable/playback ZIP reopening offline. These do not establish a real screen-reader, OBS or delivery-video pass. Complete [the checkpoint checklist](0.5.0-manual-test-plan.md) before broadening the collection.
 
 ## Scope and delivery order
 
@@ -37,4 +47,4 @@ All initial collections use the current 16:9 slide canvas. Newsletter-style slid
 
 [Unscheduled discovery #73](https://github.com/treisland/presentation-studio/issues/73) assesses portrait, square, print and scrolling formats, reflow/pagination, compatibility and suitable exports. It has no milestone or release commitment. Only add orientation filters when multiple actual formats exist.
 
-Implementation requires scoped readiness decisions and linked feature PRs under AGENTS.md/CONTRIBUTING.md. Run required checks/package validation, record real supported-environment/manual results, freeze scope before beta, and use a separate approved release plan. Neither this document nor the milestone renumbering authorizes publication.
+Continue implementation through scoped issues and linked feature PRs under AGENTS.md/CONTRIBUTING.md. Run required checks/package validation, record real supported-environment/manual results, freeze scope before beta, and use a separate approved release plan. Neither the milestone nor feature PRs authorize publication.

@@ -14,7 +14,9 @@ The main distribution uses `templates/studio/presentation.json` as its eight-sli
 
 Only neutral templates are included. Legacy section keys remain importable, with question banks rebuilt from user-provided project data.
 
-The build emits generic demo and blank HTML files. Generic wizard choices are Blank, Studio demo, and Import. Imported legacy product content receives an opened-project reset baseline; resetting it does not substitute the Studio demo. Earlier schema and database identifiers are accepted only by the import/migration adapter; newly written projects use neutral identifiers.
+The build emits generic demo and blank HTML files. Generic wizard choices include Blank, Studio demo, Import, and the first Portfolio starter/finished example. Imported legacy product content receives an opened-project reset baseline; resetting it does not substitute the Studio demo. Earlier schema and database identifiers are accepted only by the import/migration adapter; newly written projects use neutral identifiers.
+
+`layouts.js` registers composition/slot/image-bound/reading-order metadata independently from project themes. It reuses safe AST templates and existing Media Grid objects, including bounded divider geometry. The collection layout operation moves complete editable nodes, retains unmatched material, respects design locks and commits through the revision-checked editing API. Example factories create fresh IDs with an independent reset baseline; original example artwork is embedded alongside the core demo asset. No project schema change, external service or additional dependency is introduced.
 
 ## Themes and visual editing
 

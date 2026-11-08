@@ -1,0 +1,11 @@
+/* Composition inherits all project typography and palette tokens. */
+.slide.lc-case { display:block; }
+.lc-case .lc-slot-title { position:absolute;left:5%;top:3%;width:90%;margin:0;font-size:60px;line-height:1.12;overflow-wrap:anywhere; }
+.lc-case .lc-copy { position:absolute;left:5%;top:24%;width:45%; }
+.lc-case .lc-label { font-size:24px;line-height:1.2;margin:0 0 8px;color:var(--project-accent); }
+.lc-case .lc-copy p { font-size:28px;line-height:1.35;margin:0 0 24px;overflow-wrap:anywhere; }
+.lc-case .lc-slot-credits { position:absolute;left:55%;top:85%;width:40%;font-size:22px;line-height:1.35;margin:0;overflow-wrap:anywhere; }
+.lc-case .lc-retained { position:absolute;left:5%;top:92%;width:90%;border-top:2px dashed var(--project-accent);font-size:28px; }
+#lc-mapping { font:13px/1.5 Arial;overflow-wrap:anywhere; }
+#lc-mapping ul { padding-left:22px; }
+#lc-mapping-status { font:13px/1.5 Arial; }

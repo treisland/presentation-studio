@@ -470,7 +470,7 @@
         "media",
         "media-grid",
         "blank",
-      ].includes(s.template)
+      ].includes(s.template) || Object.hasOwn(lcLayouts, s.template)
         ? s.template
         : "hero";
       return {

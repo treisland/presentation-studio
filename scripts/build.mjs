@@ -30,6 +30,10 @@ const demo = JSON.parse(await read("templates/studio/presentation.json"));
 const blank = JSON.parse(await read("templates/blank/presentation.json"));
 const image = await read("examples/sample-diagram.svg");
 const assets = {
+  "assets/portfolio-library.svg": {
+    type: "image/svg+xml",
+    data: Buffer.from(await read("examples/portfolio-library.svg")).toString("base64"),
+  },
   "assets/studio-demo-workflow.svg": {
     type: "image/svg+xml",
     data: Buffer.from(image).toString("base64"),

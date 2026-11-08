@@ -978,6 +978,7 @@
     const section = document.createElement("section");
     section.className = "slide active " + model.classes;
     section.dataset.mediaId = model.id;
+    section.studioPreviewModel = model;
     model.tree.forEach((n) => section.append(projectDOM(n)));
     root.append(section);
     const footer = document.createElement("footer");
@@ -1078,6 +1079,7 @@
       "code",
       "media",
       "media-grid",
+      ...Object.keys(lcLayouts),
     ];
     if (mode === "change") templates.unshift("original");
     $("studio-gallery").showModal();
@@ -1130,6 +1132,7 @@
       projectForm();
       return;
     }
+    if (lcApplyGallery()) return;
     const candidate = studioGalleryCandidate(),
       defaults =
         document.querySelector('input[name="studio-layout-mode"]:checked')

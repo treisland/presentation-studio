@@ -2,7 +2,10 @@
 
 ## Unreleased
 
+- Begin layout collections with a theme-independent Portfolio case-study composition, a prompt starter and a finished fictional example with an original offline diagram.
+- Preview text/image mapping before a collection layout change; keep unmatched content, media identities and recovery, respect locks and apply as one Undo step. Flag long text and title/body overlap without shrinking text.
 - Document 0.5.0 layout/example planning and rename future AI/MCP milestones to 0.6.0/0.7.0.
+
 ## 0.4.0 — 2026-11-08
 
 - Promote the maintainer-tested published release candidate to stable. Includes styling/swatches/picker, blank/clear slides, Layers and precision snapping, with atomic Grid removal fixes. No runtime, dependency or project-format changes since rc.1.

@@ -65,7 +65,7 @@ function editingUpdate(state, id, changes) {
   }
 }
 function editingCreateModel(template, title, group, id) {
-  if (!["hero", "comparison", "workflow", "table", "qa", "code", "media", "media-grid", "blank"].includes(template) ||
+  if ((!['hero', 'comparison', 'workflow', 'table', 'qa', 'code', 'media', 'media-grid', 'blank'].includes(template) && !Object.hasOwn(lcLayouts, template)) ||
       typeof title !== "string" || !title.length || title.length > 500 || !/^[\w-]+$/.test(id))
     editingFail("INVALID", "Invalid template, title or slide ID.");
   const preset = projectCreateTemplate(template, title),
