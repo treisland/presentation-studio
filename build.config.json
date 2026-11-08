@@ -43,6 +43,7 @@
     "src/runtime/precision.js",
     "src/runtime/layouts.js",
     "src/runtime/comic-layouts.js",
+    "src/runtime/editorial-layouts.js",
     "src/runtime/boot.js"
   ],
   "vendor": "vendor/jszip-3.10.1.min.js"

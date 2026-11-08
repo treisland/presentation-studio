@@ -4,7 +4,7 @@ function lcComposition(name,purpose,body,images=1,gallery=false) {
     imageBounds:gallery?{x:.05,y:.34,w:.9,h:.48}:{x:.55,y:.24,w:.4,h:.59},
     imageSlots:Array.from({length:images},(_,i)=>({id:'visual-'+(i+1),label:'Project visual '+(i+1),description:'Independent Fit/Fill, crop and alternative description.'})),
     readingOrder:['title',...body.map(s=>s.label),'visuals','credits'],
-    slots:[{id:'title',label:'Project title',tag:'h2',limit:85},...body.map(s=>({...s,tag:'p',limit:210})),{id:'credits',label:'Credits / image context',tag:'p',limit:140}]};
+    slots:[{id:'title',label:'Project title',tag:'h2',limit:85},...body.map(s=>({...s,tag:'p',limit:s.limit??210})),{id:'credits',label:'Credits / image context',tag:'p',limit:140}]};
 }
 const lcLayouts = {
   'portfolio-case': {
@@ -58,8 +58,9 @@ projectCreateTemplate = function(type,title) {
   if(layout.body){
     const root=projectNode('div','mg-grid',Array.from({length:layout.images},mgNewCell));
     mgWrite(root,{rows:mgEqual(layout.rows??(layout.gallery?2:1)),cols:mgEqual(layout.cols??(layout.gallery?2:1)),gap:2});
-    return {classes:'wide mg-slide lc-case lc-'+type,tree:[text('title',title||layout.name),
-      projectNode('div','lc-copy',layout.body.flatMap(slot=>[projectNode('h3','lc-label',[slot.label]),text(slot.id,slot.prompt)])),
+    const body=layout.body.map(slot=>[projectNode('h3','lc-label',[slot.label]),text(slot.id,slot.prompt)]);
+    return {classes:'wide mg-slide lc-case lc-'+type,tree:[...(layout.masthead?[projectNode('p','lc-masthead',[layout.masthead])]:[]),text('title',title||layout.name),
+      projectNode('div','lc-copy',layout.columns?body.map(children=>projectNode('div','lc-column',children)):body.flat()),
       root,text('credits','Add image descriptions, source credits and relevant project context.')]};
   }
   const root=projectNode('div','mg-grid',[mgNewCell()]);
@@ -267,5 +268,7 @@ const lcOverflow=projectLayoutOverflow;
 projectLayoutOverflow=function(root){
   if(lcOverflow(root))return true;
   const slide=root.querySelector('.lc-case'),heading=slide?.querySelector('.lc-slot-title'),copy=slide?.querySelector('.lc-copy');
+  const model=slide&&(slide.studioPreviewModel||projectModel(slide.dataset.mediaId)),bottom=lcLayouts[model?.template]?.bodyBottom;
+  if(copy&&bottom&&copy.getBoundingClientRect().bottom>slide.getBoundingClientRect().top+bottom*slide.getBoundingClientRect().height)return true;
   return !!(heading&&copy&&heading.getBoundingClientRect().bottom>copy.getBoundingClientRect().top-2);
 };

@@ -19,3 +19,10 @@
 .lc-comic-sequence .lc-slot-credits { left:5%;width:90%;top:85%; }
 .lc-case :is(.lc-slot-dialogue) { border:3px solid var(--project-accent);border-radius:30px;padding:16px 22px;background:var(--project-surface,var(--project-bg)); }
 .lc-comic-sequence .media-box { border:3px solid var(--project-ink)!important;border-radius:5px!important; }
+.lc-masthead { position:absolute;left:5%;top:3%;width:90%;font-size:25px;letter-spacing:4px;margin:0;border-bottom:3px solid var(--project-ink);padding-bottom:12px; }
+.lc-editorial-cover .lc-slot-title { top:11%; }
+.lc-editorial-cover .lc-copy { top:34%; }
+.lc-editorial-columns .lc-copy { display:grid;grid-template-columns:1fr 1fr;gap:5%;width:90%; }
+.lc-editorial-columns .lc-column+ .lc-column { border-left:2px solid var(--project-border,var(--project-ink));padding-left:30px; }
+.lc-editorial-columns .lc-slot-credits { left:5%;width:68%;top:81%; }
+.lc-editorial-feature .lc-slot-quote { font-size:36px;font-style:italic;border-left:5px solid var(--project-accent);padding-left:20px; }

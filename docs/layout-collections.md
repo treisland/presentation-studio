@@ -22,6 +22,12 @@ The gallery is a two-by-two Media Grid with independent Fit/Fill, crop and image
 
 ## Scope and delivery order
 
+### Editorial collection
+
+**Editorial starter / finished example** offers newspaper cover, blog lead, two-column story, image/pull-quote feature and closing note. The fictional Community Notebook uses original bundled diagrams with captions and credits. A masthead is editable text, the two columns read as complete left then right groups, and pull quotes remain editable paragraphs. Project typography and palette continue to apply.
+
+Columns have an explicit content boundary above the visual/credits area. Long articles or headlines produce overflow guidance without shrinking or auto-paginating; continue a story on another slide when needed. These are 16:9 newspaper/blog-style slides, not scrolling articles, a website or a publishing service. Draft/manual review is still required for the expanded set.
+
 ### Comic collection
 
 **Comic starter / finished example** in New presentation provide four slides: opening, three-panel sequence, explanation and takeaway. The seed-sharing story uses original bundled `comic-seed-1/2/3.svg` illustrations under Apache 2.0. Speech is editable paragraph content styled as a bubble; panel captions and image descriptions use the existing Media inspector. Text is never baked into the story artwork.

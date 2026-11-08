@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Add five Editorial compositions with newspaper masthead/columns and blog-style lead/image/closing treatments, a complete fictional starter/demo pair, deliberate column reading order and long-article overflow checks.
 - Add four Comic compositions and an original seed-sharing starter/demo with editable speech, numbered captions and independently cropped panels. Composition colors and typography inherit the project theme.
 - Expand Portfolio to five theme-independent compositions: case study, process, results, image gallery and details/credits. Provide a five-slide prompt starter and finished fictional demo with four original offline diagrams and independent gallery crops.
 - Preserve complete retained tables, including empty cells/rows, and other protected structures during collection layout changes.
