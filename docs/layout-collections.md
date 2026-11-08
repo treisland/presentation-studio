@@ -67,6 +67,8 @@ The sequence reads left to right. Each panel has its own Fit/Fill/crop and capti
 
 ## Product rules
 
+Optional walkthroughs for the three core collections are available explicitly from Project → Editor walkthrough. They point to controls without performing authoring actions, support Skip/Close/Replay and reduced motion, and remain outside project/history/export state. The gallery distinguishes these cues from editable starter prompts and finished-demo content.
+
 The example gallery now supplies purpose/image-layout filters and complete, read-only slide previews, including multi-image cells, captions and an accessible text/description view. Use starter/demo reuses the guarded new-project path; preview and filter state are editor-only. No orientation filter is shown because all current collections are 16:9.
 
 The three core pairs and both lightweight starters are documented in [Starting from an example](examples.md), including original assets, fresh identities, repeated-reset recovery and format boundaries. Their implementation is in the draft review stack; final manual review and protected merges remain pending.

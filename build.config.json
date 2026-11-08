@@ -47,6 +47,7 @@
     "src/runtime/newsletter-layouts.js",
     "src/runtime/flyer-layouts.js",
     "src/runtime/example-gallery.js",
+    "src/runtime/example-walkthroughs.js",
     "src/runtime/boot.js"
   ],
   "vendor": "vendor/jszip-3.10.1.min.js"

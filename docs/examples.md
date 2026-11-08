@@ -16,6 +16,8 @@ All are **16:9 slides**. Newsletter does not mean email HTML or sending. Flyer d
 
 ## Customize and recover
 
+**Project → Editor walkthrough** opens optional Portfolio, Comic or Editorial help. Next/Previous and Replay only change the help view; you choose and perform each editor action yourself. Skip guide, Close or Escape while focused in the guide dismisses it and restores focus to a reachable entry control. The guide does not open automatically, change slides or alter project history. It closes when switching projects or leaving the editor, respects reduced motion, and never becomes slide content or an active exported overlay.
+
 Text, speech, captions, image descriptions and credits stay editable. Themes and project swatches determine appearance. Image slots use the existing Media Grid controls for Fit/Fill and independent crop. Missing visuals are explicit editing targets; long text is flagged without being auto-shrunk.
 
 Use **Project settings → Recovery & reset → Reset entire presentation** to restore the starting content of your copy. Confirmation names what is replaced, a checkpoint retains current work, and Undo can recover edits. The reset baseline stays with the project, including after repeated resets and editable ZIP reopening. Resetting your copy does not change the immutable library example or another browser draft.
