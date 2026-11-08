@@ -441,7 +441,7 @@ function vbModify(action) {
       parent = parts.reduce((v, k) => v[k], model.tree),
       node = parent[index];
     if (action === "duplicate") {
-      parent.splice(index + 1, 0, projectCopy(node));
+      parent.splice(index + 1, 0, spCloneNode(node));
       nextPath = [...parts, String(index + 1)].join(".");
     }
     if (action === "delete") parent.splice(index, 1);

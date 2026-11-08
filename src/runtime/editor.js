@@ -469,6 +469,7 @@
         "code",
         "media",
         "media-grid",
+        "blank",
       ].includes(s.template)
         ? s.template
         : "hero";

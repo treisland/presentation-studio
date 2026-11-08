@@ -12,7 +12,8 @@
     "src/styles/backup-verification.css",
     "src/styles/draggable-blocks.css",
     "src/styles/media-grid.css",
-    "src/styles/panel-polish.css"
+    "src/styles/panel-polish.css",
+    "src/styles/precision.css"
   ],
   "scripts": [
     "src/runtime/prelude.js",
@@ -37,6 +38,8 @@
     "src/runtime/draggable-blocks.js",
     "src/runtime/media-grid.js",
     "src/runtime/panel-polish.js",
+    "src/runtime/design.js",
+    "src/runtime/precision.js",
     "src/runtime/boot.js"
   ],
   "vendor": "vendor/jszip-3.10.1.min.js"

@@ -25,6 +25,8 @@ Directional chevrons sit on the inner edge of Slides and Inspector. Collapse lef
 
 Slides search/Add slide stay above the independently scrolling thumbnail list. Thumbnail actions appear on hover or keyboard focus and retain locks. Existing section collapse and selected-slide indicators remain available. Project settings stay in their separate dialog.
 
+The additive **Layers** tab and Style swatches are described in [Styling and precision](styling-and-precision.md). Layers selects/orders/names/hides/locks objects; check boxes batch appearance changes. **Add slide → Blank**, Clear selected objects and confirmed Clear slide contents support a fresh layout while retaining identity and recovery.
+
 ## Project settings
 
 **Project settings** in the editor header opens a separate dialog containing Branding, Presentation settings, Sections, Kiosk loops and Recovery & reset. It retains the existing theme gallery, presets, logos, transitions, booth controls and recovery actions. **Back to canvas** or Escape while inside that dialog closes it without closing the editor. The title bar and slide navigation remain available while settings are open.
