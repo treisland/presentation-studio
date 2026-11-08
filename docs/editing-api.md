@@ -24,7 +24,7 @@ The additive [styling and precision](styling-and-precision.md) operations use th
 - `design.background`: `color` using the same bounded color representation.
 - `design.meta`: `changes` containing `name` (max 80), `hidden`, `locked`, `rotation` (-180–180). Locked targets accept lock-only changes; all other edits are rejected. Grid rotation requires detaching individual media first.
 - `design.reorder`: one key, with `direction` forward/backward or `target` key. Background media is pinned; locked layers prevent order changes that would affect them.
-- `design.remove`: selected keys. `design.clear`: all current slide contents/media, retaining slide identity, section and background. Recovery checkpoints and Undo retain removed references; clear rejects locked contents.
+- `design.remove`: distinct selected keys; removing a Grid also removes its referenced media while retaining unrelated free media. Repeated keys are rejected before mutation. `design.clear`: all current slide contents/media, retaining slide identity, section and background. Recovery checkpoints and Undo retain removed references; clear rejects locked contents.
 - `design.palette`: `colors`, up to 24 `{name,hex}` project swatches (name max 40). Palette entries are reusable custom values rather than theme roles.
 
 Safe normalized `state.design` data is additive to schema-v2 packs. Unknown/unsafe color CSS cannot be executed. API session/revision and view selections/snapping preferences remain outside portable artifacts.

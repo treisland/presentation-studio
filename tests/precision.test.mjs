@@ -149,3 +149,16 @@ test('custom picker and hex synchronize drafts, preserve opacity and commit only
  await p.locator('#fe-undo').click();assert.deepEqual((await read(p)).state,before.state);await p.locator('#sp-hex').fill('#12');assert.equal(await p.locator('#sp-hex').getAttribute('aria-invalid'),'true');await p.locator('#sp-custom').click();assert.deepEqual((await read(p)).state,before.state);
  assert.equal((await apply(p,[{type:'design.meta',keys:[id],changes:{locked:true}}])).ok,true);assert.equal(await p.locator('#sp-color-picker').isDisabled(),true);assert.equal(await p.locator('#sp-custom').isDisabled(),true);assert.deepEqual(errors,[]);
  }finally{await p.close();}});
+
+test('duplicate layer removal keys reject atomically without deleting an unrelated root',async()=>{const{p,errors}=await setup();try{
+ await addSlide(p,'blank');const a=await block(p);await block(p,'circle');await block(p,'text');const before=await pack(p);
+ assert.equal((await apply(p,[{type:'design.remove',keys:[a,a]}])).code,'INVALID');assert.deepEqual(await pack(p),before);assert.deepEqual(errors,[]);
+ }finally{await p.close();}});
+
+test('clearing a selected Grid removes nested media atomically and Undo restores all references',async()=>{const{p,errors}=await setup();try{
+ await addSlide(p,'media-grid');for(let i=0;i<3;i++)await p.locator('#fe-preview .mg-cell-action').nth(i).evaluate((el,i)=>{const d=new DataTransfer();d.items.add(new File(['<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30"><rect width="30" height="30" fill="blue"/></svg>'],'nested-'+i+'.svg',{type:'image/svg+xml'}));el.dispatchEvent(new DragEvent('drop',{bubbles:true,dataTransfer:d}));},i);
+ const initial=(await read(p)).state,gridSlide=initial.slides.find(s=>s.template==='media-grid'),gridIndex=gridSlide.tree.findIndex(n=>n.attrs?.class?.startsWith('mg-grid ')),detachedCell=gridSlide.tree[gridIndex].children[2].attrs.class.match(/cell-[\w-]+/)[0];assert.equal((await apply(p,[{slideId:gridSlide.id,type:'grid.detach',cellId:detachedCell}])).ok,true);
+ const before=await pack(p),slide=before.state.slides.find(s=>s.template==='media-grid'),index=slide.tree.findIndex(n=>n.attrs?.class?.startsWith('mg-grid ')),ids=before.state.mediaObjects[slide.id].map(n=>n.id),unrelated=before.state.mediaObjects[slide.id][2];
+ assert.equal((await apply(p,[{slideId:slide.id,type:'design.remove',keys:['node-'+index]}])).ok,true);const after=await pack(p);assert.equal(after.state.slides.find(s=>s.id===slide.id).tree.length,slide.tree.length-1);assert.deepEqual(after.state.mediaObjects[slide.id],[unrelated]);assert.equal(await p.locator('#fe-preview .media-box').count(),1);assert.equal(after.history.past.length,before.history.past.length+1);for(const id of ids)assert(JSON.stringify(after.history).includes(id));
+ await p.locator('#fe-undo').click();assert.deepEqual((await read(p)).state,before.state);assert.equal(await p.locator('#fe-preview .media-box').count(),3);assert.deepEqual(errors,[]);
+ }finally{await p.close();}});

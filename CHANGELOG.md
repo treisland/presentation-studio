@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Clear Grid layers together with their nested media, retaining Undo/recovery, and reject duplicate layer keys before removal can affect unrelated content.
 - Add theme-linked/custom text, fill, border and slide-background colors with opacity, named project swatches, contrast estimates, presets and copy/paste appearance.
 - Pair Custom hex with a synchronized native color picker; draft color changes apply only when confirmed with Apply custom.
 - Add a blank slide template and lock-aware clear-selected/confirmed clear-slide actions with atomic Undo and recovery retention.
