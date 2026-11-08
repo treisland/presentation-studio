@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add a text/shape/callout palette with stable content-block IDs, slide-relative dragging/resizing, snapping, alignment/layers and keyboard arrangement through atomic editing operations. Existing content, media and recovery/export behavior are preserved.
+
 - Keep added background media behind original slide text in editing, Preview and exported playback without changing the content layout.
 
 - Make media additions preserve existing content by default, with explicit named/previewed replacement confirmation, cancellation and stale-project protection. Remove the opt-in additional-object checkbox.

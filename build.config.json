@@ -9,7 +9,8 @@
     "src/styles/booth.css",
     "src/styles/workspace.css",
     "src/styles/preflight.css",
-    "src/styles/backup-verification.css"
+    "src/styles/backup-verification.css",
+    "src/styles/draggable-blocks.css"
   ],
   "scripts": [
     "src/runtime/prelude.js",
@@ -31,6 +32,7 @@
     "src/runtime/preflight.js",
     "src/runtime/backup-verification.js",
     "src/runtime/editing-api.js",
+    "src/runtime/draggable-blocks.js",
     "src/runtime/boot.js"
   ],
   "vendor": "vendor/jszip-3.10.1.min.js"

@@ -100,7 +100,7 @@ const studioEditing = Object.freeze({
       if (request?.apiVersion !== 1) editingFail("VERSION", "Unsupported editing contract version.");
       if (request.projectId !== projectMeta.id || request.expectedRevision !== editingRevision())
         editingFail("CONFLICT", "The project changed. Read it again and review a fresh proposal.");
-      if (projectPending || vbSession || ceDrag || ceRelocate || mfState || mediaExporting)
+      if (projectPending || vbSession || ceDrag || ceRelocate || dbDrag || mfState || mediaExporting)
         editingFail("BUSY", "Finish the current edit, gesture or export first.");
       if (!Array.isArray(request.operations) || !request.operations.length || request.operations.length > 100)
         editingFail("INVALID", "Supply 1–100 operations.");
@@ -120,7 +120,7 @@ const studioEditing = Object.freeze({
           if (candidate.origin === "blank" && Object.keys(candidate.loops).length === 1 && !candidate.loops[section.id])
             Object.values(candidate.loops)[0].slideIds.push(id);
           created.push(id);
-        } else editingFail("INVALID", "Unsupported editing operation.");
+        } else if (!dbOperation(candidate, op, created)) editingFail("INVALID", "Unsupported editing operation.");
       }
       projectValidateState(candidate);
       if (ceViolates(before, candidate)) editingFail("LOCKED", "The batch changes protected content.");

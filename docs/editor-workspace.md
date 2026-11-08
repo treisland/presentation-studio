@@ -4,6 +4,8 @@ The editor uses three areas: sectioned slide thumbnails on the left, the editing
 
 ## Select and edit
 
+Use **Add block** for freely positioned text, shapes and callouts; the inspector's **Content blocks** list provides selection and keyboard arrangement. See [content blocks](content-blocks.md) for placement, snapping, layers and compatibility details.
+
 Click text to edit it directly, or select a media frame or table cell. The inspector follows the selection:
 
 - **Slide:** section, layout, duration, transition, visibility and block editor. Click the empty canvas or the Slide tab to return here.
