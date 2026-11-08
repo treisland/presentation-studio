@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## 0.3.0 — 2026-11-08
+
+- Promote the tested release candidate to stable after maintainer sign-off. Includes the canvas workspace, additive media, draggable blocks, Media Grid, local editing API and panel polish. No runtime, dependency or project-format changes since rc.1.
+- Retain documented support limits, complete editable backup guidance and unknown manual environment details.
+
 ## 0.3.0-rc.1 — 2026-11-08
 
 - Polish Slides and Inspector panels with directional collapse/reveal rails, pinned selection actions, Content/Arrange/Style sections and keyboard-accessible thumbnail actions. Duplicate slides retain additional/grid media.
