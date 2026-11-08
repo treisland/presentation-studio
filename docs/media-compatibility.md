@@ -2,6 +2,8 @@
 
 Results describe exact tested encodings and workflows, not a guarantee for every MP4/WebM file or browser. Use muted video for automated playback. Test your actual delivery files and OBS setup before presenting.
 
+The maintainer subsequently reported the alpha.2 OBS recording/actual delivery-video checklist passing without defects. Exact versions, capture method and opening mode were not supplied; see [the consolidated release evidence](releases/0.2.0-evidence.md). That report does not identify OBS Browser Source specifically, so the source-specific matrix entry remains pending.
+
 ## Fixture coverage
 
 The original silent patterns in tests/fixtures/media are H.264 baseline/yuv420p in MP4 and VP8/yuv420p in WebM. Each is two seconds, 320x180, 15 fps. Provenance and regeneration commands are beside the fixtures. FFmpeg is not needed to run the committed tests.

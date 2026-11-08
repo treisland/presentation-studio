@@ -76,7 +76,7 @@ For a localhost preview, run `npm run serve`, then open `http://127.0.0.1:4173`.
 
 [Quick start](docs/quick-start.md) · [Architecture](docs/architecture.md) · [Contributing](CONTRIBUTING.md) · [Content and branding](docs/content-and-branding.md) · [Open-source release](docs/open-source-release.md) · [Roadmap](docs/roadmap.md) · [Troubleshooting](docs/troubleshooting.md)
 
-Version 0.2.0-alpha.2. Released under the [Apache License 2.0](LICENSE). Third-party notices remain applicable. Chromium workflows are tested; OBS and other browsers require manual validation.
+Version 0.2.0-beta.1. Release preparation only; not published. Released under the [Apache License 2.0](LICENSE). Third-party notices remain applicable. See the [0.2 release evidence](docs/releases/0.2.0-evidence.md) for tested workflows and outstanding environment details.
 
 ## Development process
 
