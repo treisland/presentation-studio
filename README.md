@@ -22,7 +22,7 @@ Download and unzip a release or a successful **Validate and build** Actions arti
 | `presentation-studio-blank.html` | One neutral starter slide and section |
 | `studio-demo-editable.zip` | Portable Studio demo project, including its sample image |
 
-Click **Edit** or press **J**. Use **Project → New presentation** for **Blank**, **Studio demo**, or **Import**. **Presentations** (or **P**) opens recent browser drafts and project ZIP/JSON files. Export an editable ZIP to save a complete portable copy; playback ZIPs are for delivery.
+Click **Edit** or press **J**. Use **Project → New presentation** for **Blank**, **Studio demo**, collection starters/examples, or **Import**. **Project → Start from an example** opens the filtered preview gallery; see [the example guide](docs/examples.md). **Presentations** (or **P**) opens recent browser drafts and project ZIP/JSON files. Export an editable ZIP to save a complete portable copy; playback ZIPs are for delivery.
 
 ![Generic Studio demo](docs/images/studio-demo.png)
 
@@ -76,7 +76,7 @@ For a localhost preview, run `npm run serve`, then open `http://127.0.0.1:4173`.
 
 [Quick start](docs/quick-start.md) · [Architecture](docs/architecture.md) · [Contributing](CONTRIBUTING.md) · [Content and branding](docs/content-and-branding.md) · [Open-source release](docs/open-source-release.md) · [Roadmap](docs/roadmap.md) · [Troubleshooting](docs/troubleshooting.md)
 
-Version 0.4.0. Stable styling and precision release authorized after maintainer validation and sign-off of the published candidate. Released under the [Apache License 2.0](LICENSE). Third-party notices remain applicable. See the [release notes](docs/releases/0.4.0.md) for support scope, recovery guidance and evidence limitations.
+Version 0.5.0-rc.1. Layout collections and examples release candidate authorized after the maintainer's completed manual reviews. Stable 0.4.0 remains available while candidate downloads are tested. Released under the [Apache License 2.0](LICENSE). Third-party notices apply. See the [candidate notes](docs/releases/0.5.0-rc.1.md) for support scope, recovery guidance and evidence limitations.
 
 ## Development process
 
