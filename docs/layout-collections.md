@@ -67,6 +67,8 @@ The sequence reads left to right. Each panel has its own Fit/Fill/crop and capti
 
 ## Product rules
 
+The example gallery now supplies purpose/image-layout filters and complete, read-only slide previews, including multi-image cells, captions and an accessible text/description view. Use starter/demo reuses the guarded new-project path; preview and filter state are editor-only. No orientation filter is shown because all current collections are 16:9.
+
 The three core pairs and both lightweight starters are documented in [Starting from an example](examples.md), including original assets, fresh identities, repeated-reset recovery and format boundaries. Their implementation is in the draft review stack; final manual review and protected merges remain pending.
 
 Layouts define structure; project themes/swatches define appearance. Text remains editable, each image slot supports sensible Fit/Fill/crop and descriptions, and reading order is deliberate. Long headings, missing images and additional paragraphs need explicit overflow/empty-slot handling. Never silently discard content or shrink text below useful sizes.

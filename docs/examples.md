@@ -1,6 +1,8 @@
 # Starting from an example
 
-New presentation provides three core starter/demo pairs and two lightweight starters. Every use creates a fresh project and fresh slide identities. Starting another presentation uses the same save-before-switch guard as Blank and Import; browser recovery is not a replacement for an editable ZIP backup.
+Choose **Project → Start from an example**, the matching action in Recent presentations, or **Start from an example** beside the Blank/Import choices in New presentation. The gallery provides three core starter/demo pairs and two lightweight starters. Every use creates a fresh project and fresh slide identities. Starting another presentation uses the same save-before-switch guard as Blank and Import; browser recovery is not a replacement for an editable ZIP backup.
+
+Filter by purpose and image layout, then Preview a collection. Previous/Next visits every slide; Preview content switches between prompts and finished content where a demo exists. **Read preview text and image descriptions** exposes the same content in a text view. Previews do not change the active project or history. Close/Escape returns to the entry control or Project menu. Use starter / Use demo creates the selected separate copy only after the existing work can be saved; Cancel or a failed save keeps the current project. Unavailable artwork disables the affected demo and leaves other available starters/examples usable.
 
 | Collection | Slides | Starter | Finished example |
 | --- | --- | --- | --- |

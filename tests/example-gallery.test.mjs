@@ -1,0 +1,29 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {chromium} from 'playwright';
+import {readFile,writeFile,mkdir} from 'node:fs/promises';
+import {resolve} from 'node:path';
+import {snapshot,operations} from './collection-ui.mjs';
+import {click} from './ui.mjs';
+const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH,args:['--no-sandbox']});test.after(()=>browser.close());
+async function setup(file='dist/presentation-studio.html'){const p=await browser.newPage({acceptDownloads:true,viewport:{width:1366,height:768}}),errors=[];p.setDefaultTimeout(10000);p.on('pageerror',e=>errors.push(e.message));await p.goto('file://'+resolve(file));await p.locator('#open-full-editor').click();return{p,errors};}
+test('example browsing filters, complete previews, readable descriptions and Escape remain view-only',async()=>{const{p,errors}=await setup();try{
+ const before=await snapshot(p);await click(p,'#lc-examples-open');assert.equal(await p.locator('.lc-example-card').count(),5);assert.match(await p.locator('.lc-example-badge').first().textContent(),/16:9 slides/);
+ for(let i=0;i<3;i++)await p.locator('#lc-preview-next').click();assert.equal(await p.locator('#lc-example-preview .lc-library-visual img').count(),4);await p.waitForFunction(()=>Array.from(document.querySelectorAll('#lc-example-preview img')).every(n=>n.complete&&n.naturalWidth>0));
+ await p.locator('#lc-examples details > summary').click();assert.match(await p.locator('#lc-preview-readable').textContent(),/Visual 4:/);await p.screenshot({path:'test-results/example-gallery.png'});
+ await p.locator('#lc-example-purpose').selectOption('story');assert.equal(await p.locator('.lc-example-card').count(),1);assert.match(await p.locator('#lc-preview-title').textContent(),/Comic/);await p.locator('#lc-example-images').selectOption('single');assert.equal(await p.locator('.lc-example-card').count(),0);assert.equal(await p.locator('#lc-use-starter').isDisabled(),true);
+ await p.locator('#lc-example-images').selectOption('all');await p.locator('#lc-example-purpose').selectOption('all');await p.keyboard.press('Escape');assert.equal(await p.locator('#lc-examples').isVisible(),false);await p.waitForFunction(()=>document.activeElement.id==='lc-examples-open'||document.activeElement.matches('#hub-project-menu > summary'));assert.equal(await p.locator('#full-editor').isVisible(),true);assert.deepEqual(await snapshot(p),before);assert.deepEqual(errors,[]);
+}finally{await p.close();}});
+test('Use preserves save-before-switch cancellation and creates a separate example only after saving',async()=>{const{p,errors}=await setup();try{
+ const initial=await snapshot(p);await operations(p,[{type:'slide.update',slideId:initial.state.slides[0].id,changes:{title:'Keep my edited project'}}]);const before=await snapshot(p);await click(p,'#lc-examples-open');await p.getByRole('button',{name:'Preview Comic demo',exact:true}).click();await p.locator('#lc-use-starter').click();await p.locator('#hub-cancel-switch').click();assert.equal(await p.locator('#lc-examples').isVisible(),true);assert.deepEqual(await snapshot(p),before);
+ await p.locator('#lc-use-starter').click();await p.locator('#hub-save-switch').click();await p.waitForFunction(id=>window.presentationStudioEditing.read().projectId!==id,before.projectId);await p.locator('#nx-wizard').waitFor({state:'hidden'});const next=await snapshot(p);assert.equal(next.state.slides.length,4);assert(next.state.slides.every(s=>s.template.startsWith('comic-')));assert(!next.state.slides.some(s=>before.state.slides.some(o=>o.id===s.id)));assert.equal(await p.locator('#lc-examples').isVisible(),false);assert.deepEqual(errors,[]);
+}finally{await p.close();}});
+test('a failed local save keeps the active project and does not create the requested example',async()=>{const{p}=await setup();try{
+ const first=await snapshot(p);await operations(p,[{type:'slide.update',slideId:first.state.slides[0].id,changes:{title:'Unsaved work survives'}}]);const before=await snapshot(p);
+ await p.evaluate(()=>{window.lcTestTransaction=IDBDatabase.prototype.transaction;IDBDatabase.prototype.transaction=function(stores,mode,...args){if(mode==='readwrite')throw Error('Synthetic storage failure');return window.lcTestTransaction.call(this,stores,mode,...args);};});
+ await click(p,'#lc-examples-open');await p.locator('#lc-use-starter').click();await p.locator('#hub-save-switch').click();await p.waitForFunction(()=>/saved|storage/i.test(document.getElementById('hub-switch-message').textContent));assert.deepEqual(await snapshot(p),before);assert.equal(await p.locator('#lc-examples').isVisible(),true);
+}finally{await p.close();}});
+test('missing bundled artwork disables the affected demo without loading a broken image or changing the project',async()=>{
+ let html=await readFile('dist/presentation-studio.html','utf8');html=html.replace(/(<script id="studio-template-assets" type="application\/json">)([\s\S]*?)(<\/script>)/,(_all,start,json,end)=>{const assets=JSON.parse(json);delete assets['assets/portfolio-library.svg'];return start+JSON.stringify(assets)+end;});await mkdir('test-results',{recursive:true});await writeFile('test-results/missing-example-art.html',html);
+ const{p,errors}=await setup('test-results/missing-example-art.html');try{const before=await snapshot(p);await click(p,'#lc-examples-open');assert.match(await p.locator('#lc-example-status').textContent(),/artwork is unavailable/);assert.equal(await p.locator('#lc-use-demo').isDisabled(),true);assert.equal(await p.locator('#lc-example-preview img').count(),0);assert.deepEqual(await snapshot(p),before);await p.getByRole('button',{name:'Preview Comic demo',exact:true}).click();assert.equal(await p.locator('#lc-use-demo').isDisabled(),false);assert.deepEqual(errors,[]);}finally{await p.close();}
+});

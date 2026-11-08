@@ -653,7 +653,7 @@ function nxWizardPreview() {
     choice = document.querySelector('input[name="nx-start"]:checked').value;
   const example=lcExampleState(choice, 'Preview');
   const candidate =
-    (example?{...example.slides[0],previewMedia:example.media[example.slides[0].id]}:null) || (choice === "template"
+    (example?{...example.slides[0],previewLibrary:example}:null) || (choice === "template"
       ? studioDefaultTemplate.slides[0]
       : {
           id: "wizard-preview",

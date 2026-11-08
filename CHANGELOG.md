@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Add a view-only example gallery with purpose/image-layout filters, complete slide previews and readable image descriptions. Separate starter/demo creation uses save-before-switch and handles unavailable artwork without replacing the active project.
 - Consolidate cross-example identity/reset and complete offline export checks across the three core pairs and lightweight starters. Keep each project's own reset baseline after repeated resets instead of falling back to the Studio demo.
 - Copy new examples' artwork from immutable bundled originals into fresh asset paths so imported filename collisions cannot substitute library visuals or overwrite a prior draft's media.
 - Add three Flyer compositions and a lightweight starter for events, announcements and portfolio covers, with original replaceable artwork, readable calls to action and explicit 16:9 slide-format labeling.

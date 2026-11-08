@@ -32,3 +32,24 @@
 .lc-flyer-event .lc-slot-title,.lc-flyer-announcement .lc-slot-title,.lc-flyer-cover .lc-slot-title { font-size:72px; }
 .lc-flyer-event .lc-slot-action,.lc-flyer-announcement .lc-slot-action,.lc-flyer-cover .lc-slot-action { font-weight:700;border:3px solid var(--project-accent);border-radius:12px;padding:14px 18px; }
 .lc-flyer-cover .lc-copy { width:38%; }
+#lc-examples { width:min(1360px,96vw);max-height:92vh;overflow:auto;padding:24px;border:1px solid #bdcada;border-radius:16px;background:#fff;color:#101c2f;font:14px/1.5 Arial; }
+#lc-examples::backdrop { background:#101c2fb0; }
+#lc-examples button { font:14px Arial;padding:10px 14px; }
+.lc-example-filters { display:flex;gap:18px;align-items:end;flex-wrap:wrap;margin-bottom:18px; }
+#lc-examples label { display:block;font-weight:700; }
+#lc-examples select { display:block;padding:10px;border:1px solid #aebfd5;border-radius:6px;background:white;color:#101c2f;font:14px Arial;margin:5px 0 12px; }
+.lc-example-layout { display:grid;grid-template-columns:minmax(240px,.8fr) minmax(340px,1.2fr);gap:24px; }
+#lc-example-cards { max-height:65vh;overflow:auto; }
+.lc-example-card { padding:16px;border:1px solid #b8c8dd;border-radius:10px;margin-bottom:12px;background:#f4f7fc; }
+.lc-example-card h3 { margin:0;font-size:20px; }
+.lc-example-badge { font-size:12px;color:#4c5d72; }
+#lc-example-preview { position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;border:1px solid #c6d1df;border-radius:7px;background:#f4f6f8; }
+.lc-example-actions { display:flex;gap:10px;flex-wrap:wrap;margin:12px 0; }
+#lc-examples [hidden] { display:none!important; }
+#lc-examples button:disabled { opacity:.5;cursor:default; }
+#lc-examples :is(button,select,summary):focus-visible { outline:3px solid #0066ff;outline-offset:3px; }
+.editor-dark #lc-examples { background:#111b2c;color:#eaf2ff;border-color:#40516b; }
+.editor-dark #lc-examples :is(.lc-example-card,select) { background:#1c2c44;color:#eaf2ff;border-color:#556985; }
+.editor-dark #lc-examples .lc-example-badge { color:#b4c6df; }
+.playback-only :is(#lc-examples,#lc-examples-open,#lc-examples-hub,#lc-examples-wizard) { display:none!important; }
+@media(max-width:850px){.lc-example-layout{grid-template-columns:1fr}#lc-example-cards{max-height:30vh}.lc-example-filters{gap:10px}#lc-examples{padding:16px}}

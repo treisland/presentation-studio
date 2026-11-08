@@ -273,8 +273,8 @@ function lcMakeExample(name,collection,pages,demo){
 const lcMediaApply=mediaApply;
 mediaApply=function(slide){
   lcMediaApply(slide);if(!slide.classList.contains('lc-case'))return;
-  const cfg=slide.studioPreviewModel?.previewMedia;
-  if(cfg&&!slide.querySelector('.media-box')){const img=document.createElement('img'),r=lcBounds(slide.studioPreviewModel);img.className='lc-example-image';img.src=mediaAssetURL(cfg.src);img.alt=cfg.alt;Object.assign(img.style,{position:'absolute',left:r.x*100+'%',top:r.y*100+'%',width:r.w*100+'%',height:r.h*100+'%',objectFit:'contain'});slide.append(img);}
+  const library=slide.studioPreviewModel?.previewLibrary;
+  if(library)lcPaintLibraryPreview(slide,library);
   const credits=slide.querySelector('.lc-slot-credits');if(credits)slide.append(credits);
 };
 
