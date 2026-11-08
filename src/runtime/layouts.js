@@ -70,9 +70,9 @@ function lcMapped(original,type) {
     mapping.push(slot.label+' ← '+projectText(node).trim().slice(0,100));
   }
   function remaining(nodes){return nodes.filter(n=>!used.has(n)).map(n=>{
-    if(!n.tag||mgHas(n,'mg-grid')||spNodeID(n))return n;
+    if(!n.tag||mgHas(n,'mg-grid')||spNodeID(n)||['table','pre','ul','ol'].includes(n.tag)||mgHas(n,'terminal'))return n;
     return {...n,children:remaining(n.children||[])};
-  }).filter(n=>!n.tag||projectText(n).trim()||spNodeID(n)||mgHas(n,'mg-grid'));}
+  }).filter(n=>!n.tag||projectText(n).trim()||spNodeID(n)||mgHas(n,'mg-grid')||['table','pre','ul','ol'].includes(n.tag)||mgHas(n,'terminal')||n.children?.some(c=>c.tag));}
   const leftovers=remaining(source.tree),grid=leftovers.find(n=>mgHas(n,'mg-grid'));
   if(grid){const index=next.tree.findIndex(n=>mgHas(n,'mg-grid'));if(index>=0)next.tree[index]=grid;else next.tree.push(grid);leftovers.splice(leftovers.indexOf(grid),1);mapping.push('Image slots ← existing grid (all cells retained)');}
   // Keep identified/free roots top-level: Layers and free-block editing depend on it.
