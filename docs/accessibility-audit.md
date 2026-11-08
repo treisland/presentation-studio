@@ -1,6 +1,6 @@
 # Accessibility audit — 0.2 development
 
-This is evidence tracking, not a compliance certification. Issue #9 stays open until manual screen-reader evidence and remaining workflow checks are complete. The baseline manual pairing is Windows, installed Chrome and NVDA; record actual versions and the tested commit before reporting results.
+This is evidence tracking, not a compliance certification. Issue #9 stays open until manual screen-reader evidence and remaining workflow checks are complete. The baseline manual pairing is Windows, installed Chrome and NVDA; record actual versions and the tested commit before reporting results. The maintainer subsequently reported the supplied alpha.2 test plan passing; see [the consolidated evidence](releases/0.2.0-evidence.md). The pending checklist below describes task-level evidence still to document, not a rejection of that overall pass.
 
 ## Confirmed findings and changes
 
@@ -14,7 +14,7 @@ This is evidence tracking, not a compliance certification. Issue #9 stays open u
 
 Windows x64 with matching Playwright Chromium passes these tests locally. Installed Chrome is a separate run; test output records its exact version. Existing focus/media-placement/zoom/recovery tests provide additional regression coverage but are not a complete keyboard-only or screen-reader audit. Linux evidence comes from protected PR CI, not the local Windows run.
 
-Browser accessibility-tree inspection confirmed the unnamed arrow controls and missing panel names. Tree inspection and automated keyboard tests do not prove what NVDA announces. No NVDA manual test has been completed; its executable was not found at standard installation locations during this work. Do not mark manual release gates passed from these results.
+Browser accessibility-tree inspection confirmed the unnamed arrow controls and missing panel names. Tree inspection and automated keyboard tests do not prove what NVDA announces. The agent did not perform an NVDA manual test; its executable was not found at standard installation locations during the original audit. The later maintainer report is separate evidence and still needs environment/task detail. Do not mark manual release gates passed from automation alone.
 
 ## Manual evidence checklist
 

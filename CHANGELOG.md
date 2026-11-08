@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Prepare the 0.2.0 beta feature freeze and consolidate maintainer-reported test evidence; the maintainer authorized beta publication with documented evidence limitations.
+
 - Make keyboard ZIP import validation independent of native headless file-picker interception while checking keyboard activation of the import control.
 
 ## 0.2.0-alpha.2 — 2026-11-07
