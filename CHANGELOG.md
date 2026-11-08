@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 0.2.0-rc.1 — 2026-11-07
+
+- Prepare the first release candidate after maintainer confirmation that the published beta.1 package passed testing. No runtime or project-format changes since beta.1.
+
+## 0.2.0-beta.1 — 2026-11-07
+
 - Prepare the 0.2.0 beta feature freeze and consolidate maintainer-reported test evidence; the maintainer authorized beta publication with documented evidence limitations.
 
 - Make keyboard ZIP import validation independent of native headless file-picker interception while checking keyboard activation of the import control.
