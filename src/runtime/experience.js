@@ -640,13 +640,13 @@ function nxWizardPage() {
   $("nx-wizard-layout").disabled = choice !== "blank";
   $("nx-wizard-layout-hint").textContent =
     choice !== "blank"
-      ? (choice.startsWith('portfolio-') ? 'The Portfolio example' : studioTemplateName) + " keeps its existing slides. Add slide remains available after setup."
+      ? (lcExampleLabel(choice) || studioTemplateName) + " keeps its existing slides. Add slide remains available after setup."
       : "This layout creates your first slide. Add more layouts after setup.";
   if (nxWizardStep === 2) nxWizardPreview();
   if (nxWizardStep === 3) nxWizardPreview();
   if (nxWizardStep === 3)
     $("nx-wizard-summary").textContent =
-      `${$("nx-wizard-name").value.trim() || "Untitled presentation"} · ${choice.startsWith('portfolio-') ? (choice==='portfolio-demo'?'Portfolio finished example':'Portfolio starter') : choice === "template" ? studioTemplateName : $("nx-wizard-layout").selectedOptions[0].textContent + " starter"} · independent project ID and draft.`;
+      `${$("nx-wizard-name").value.trim() || "Untitled presentation"} · ${lcExampleLabel(choice) || (choice === "template" ? studioTemplateName : $("nx-wizard-layout").selectedOptions[0].textContent + " starter")} · independent project ID and draft.`;
 }
 function nxWizardPreview() {
   const type = $("nx-wizard-layout").value,

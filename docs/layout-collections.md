@@ -22,6 +22,12 @@ The gallery is a two-by-two Media Grid with independent Fit/Fill, crop and image
 
 ## Scope and delivery order
 
+### Comic collection
+
+**Comic starter / finished example** in New presentation provide four slides: opening, three-panel sequence, explanation and takeaway. The seed-sharing story uses original bundled `comic-seed-1/2/3.svg` illustrations under Apache 2.0. Speech is editable paragraph content styled as a bubble; panel captions and image descriptions use the existing Media inspector. Text is never baked into the story artwork.
+
+The sequence reads left to right. Each panel has its own Fit/Fill/crop and caption; long dialogue uses the same explicit slot/overflow guidance, and empty panels remain editable targets. Theme fonts and colors are inherited rather than forcing comic lettering or a bright palette. These remain 16:9 slides. Optional interface walkthrough cues are separate work under #71.
+
 1. Build shared composition/slot metadata, theme inheritance, content mapping, reading order and overflow handling.
 2. Deliver one complete Portfolio composition plus starter/finished-demo pair for maintainer manual review. Use this checkpoint to validate the abstraction and editing workflow before multiplying templates.
 3. Expand to 3–5 reusable compositions per collection: Portfolio/Case study, Comic, Editorial with Newspaper/Blog variants, Newsletter and Flyer.
