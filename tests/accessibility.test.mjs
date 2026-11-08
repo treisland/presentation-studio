@@ -102,9 +102,19 @@ test('keyboard slide creation and clean-profile ZIP import retain editable conte
     await imported.goto('file://' + resolve('dist/presentation-studio-blank.html'));
     await imported.keyboard.press('p');
     await reach(imported, '#hub-open-file');
-    const chooser = imported.waitForEvent('filechooser');
+    // Verify keyboard activation in the DOM, then supply the OS-selected bytes.
+    // Native chooser interception is not a reliable headless Windows boundary.
+    await imported.locator('#hub-file').evaluate(input => {
+      input.addEventListener('click', event => {
+        event.preventDefault();
+        input.dataset.keyboardRequested = String(
+          document.activeElement.id === 'hub-open-file' && navigator.userActivation.isActive,
+        );
+      }, { once: true });
+    });
     await imported.keyboard.press('Enter');
-    await (await chooser).setFiles({ name: 'keyboard-import.zip', mimeType: 'application/zip', buffer: bytes });
+    await imported.waitForFunction(() => document.querySelector('#hub-file').dataset.keyboardRequested === 'true');
+    await imported.locator('#hub-file').setInputFiles({ name: 'keyboard-import.zip', mimeType: 'application/zip', buffer: bytes });
     await imported.waitForFunction(() => document.querySelector('#fe-status').dataset.saveState === 'saved');
     await reach(imported, '#open-full-editor');
     await imported.keyboard.press('Enter');
