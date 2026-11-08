@@ -4,7 +4,7 @@ function lcComposition(name,purpose,body,images=1,gallery=false) {
     imageBounds:gallery?{x:.05,y:.34,w:.9,h:.48}:{x:.55,y:.24,w:.4,h:.59},
     imageSlots:Array.from({length:images},(_,i)=>({id:'visual-'+(i+1),label:'Project visual '+(i+1),description:'Independent Fit/Fill, crop and alternative description.'})),
     readingOrder:['title',...body.map(s=>s.label),'visuals','credits'],
-    slots:[{id:'title',label:'Project title',tag:'h2',limit:85},...body.map(s=>({...s,tag:'p',limit:210})),{id:'credits',label:'Credits / image context',tag:'p',limit:140}]};
+    slots:[{id:'title',label:'Project title',tag:'h2',limit:85},...body.map(s=>({...s,tag:'p',limit:s.limit??210})),{id:'credits',label:'Credits / image context',tag:'p',limit:140}]};
 }
 const lcLayouts = {
   'portfolio-case': {
@@ -42,6 +42,20 @@ const lcLayouts = {
   ].map(s=>s.id==='credits'?{...s,id:'acknowledgements'}:s)),
 };
 const lcExamples={portfolio:{label:'Portfolio',starterDescription:'Five editable slides: case study, process, results, image gallery and credits.',demoDescription:'A five-slide fictional library case study with original offline diagrams.'}};
+const lcLibraryAssets=JSON.parse($('studio-template-assets')?.textContent||'{}');
+function lcLibraryAsset(path){
+  const asset=Object.hasOwn(lcLibraryAssets,path)&&lcLibraryAssets[path];
+  if(!mediaSafePath(path)||!asset||!['image/svg+xml','image/png'].includes(asset.type)||typeof asset.data!=='string')throw Error('Example artwork is unavailable: '+path.split('/').at(-1));
+  const bytes=Uint8Array.from(atob(asset.data),c=>c.charCodeAt(0));if(!bytes.length)throw Error('Example artwork is empty.');
+  return {blob:new Blob([bytes],{type:asset.type}),url:'data:'+asset.type+';base64,'+asset.data};
+}
+function lcExampleMedia(state){return [...Object.values(state.media||{}),...Object.values(state.mediaObjects||{}).flatMap(items=>items.map(o=>o.media))];}
+function lcMaterializeExample(state){
+  // Decode all original resources first. Never overwrite a current project's path.
+  const assets=new Map();for(const cfg of lcExampleMedia(state))if(!assets.has(cfg.src))assets.set(cfg.src,{path:'assets/'+projectID('example')+'-'+mediaFilename(cfg.src.split('/').at(-1)),...lcLibraryAsset(cfg.src)});
+  for(const asset of assets.values())mediaRemember(asset.path,asset.blob);
+  for(const value of [state,state.startingState].filter(Boolean))for(const cfg of lcExampleMedia(value))if(assets.has(cfg.src))cfg.src=assets.get(cfg.src).path;
+}
 function lcExampleInfo(choice){const match=String(choice).match(/^([a-z]+)-(starter|demo)$/);return match&&Object.hasOwn(lcExamples,match[1])?{...lcExamples[match[1]],id:match[1],demo:match[2]==='demo'}:null;}
 function lcExampleLabel(choice){const info=lcExampleInfo(choice);return info?info.label+(info.demo?' finished example':' starter'):null;}
 function lcRegister(entries){for(const [id,layout]of Object.entries(entries)){if(Object.hasOwn(lcLayouts,id))throw Error('Duplicate composition '+id);lcLayouts[id]=layout;studioTemplateInfo[id]=[layout.name,layout.purpose];}}
@@ -58,8 +72,10 @@ projectCreateTemplate = function(type,title) {
   if(layout.body){
     const root=projectNode('div','mg-grid',Array.from({length:layout.images},mgNewCell));
     mgWrite(root,{rows:mgEqual(layout.rows??(layout.gallery?2:1)),cols:mgEqual(layout.cols??(layout.gallery?2:1)),gap:2});
-    return {classes:'wide mg-slide lc-case lc-'+type,tree:[text('title',title||layout.name),
-      projectNode('div','lc-copy',layout.body.flatMap(slot=>[projectNode('h3','lc-label',[slot.label]),text(slot.id,slot.prompt)])),
+    const body=layout.body.map(slot=>[projectNode('h3','lc-label',[slot.label]),text(slot.id,slot.prompt)]);
+    const masthead=layout.masthead?text('masthead',layout.masthead):null;if(masthead)masthead.attrs.class+=' lc-masthead';
+    return {classes:'wide mg-slide lc-case lc-'+type,tree:[...(masthead?[masthead]:[]),text('title',title||layout.name),
+      projectNode('div','lc-copy',layout.columns||layout.cards?body.map(children=>projectNode('div',layout.columns?'lc-column':'lc-storycard',children)):body.flat()),
       root,text('credits','Add image descriptions, source credits and relevant project context.')]};
   }
   const root=projectNode('div','mg-grid',[mgNewCell()]);
@@ -97,7 +113,8 @@ function lcMapped(original,type) {
     labels.forEach(({node},i)=>{const target=targets[i];if(!target)return;used.add(node);const parts=target.path.split('.');let parent=next.tree;for(const key of parts.slice(0,-1))parent=parent[key];parent[parts.at(-1)]=node;});
   }
   for(const slot of destinations){
-    const node=fields.find(n=>!used.has(n)&&(slot.id==='title'?['h1','h2'].includes(n.tag):n.tag==='p'));
+    const node=slot.id==='masthead'?fields.find(n=>!used.has(n)&&mgHas(n,'lc-masthead')):
+      fields.find(n=>!used.has(n)&&mgHas(n,'lc-slot-'+slot.id))||fields.find(n=>!used.has(n)&&!mgHas(n,'lc-masthead')&&(slot.id==='title'?['h1','h2'].includes(n.tag):n.tag==='p'));
     if(!node){mapping.push(slot.label+' ← editable prompt');continue;}
     used.add(node);const target=slot.target,parts=target.path.split('.');let parent=next.tree;
     for(const key of parts.slice(0,-1))parent=parent[key];
@@ -109,6 +126,7 @@ function lcMapped(original,type) {
     if(!n.tag||mgHas(n,'mg-grid')||spNodeID(n)||['table','pre','ul','ol'].includes(n.tag)||mgHas(n,'terminal'))return n;
     return {...n,children:remaining(n.children||[])};
   }).filter(n=>!n.tag||projectText(n).trim()||spNodeID(n)||mgHas(n,'mg-grid')||['table','pre','ul','ol'].includes(n.tag)||mgHas(n,'terminal')||n.children?.some(c=>c.tag));}
+  if(!layout?.masthead)for(const node of fields)if(mgHas(node,'lc-masthead'))node.attrs.class=node.attrs.class.replace(/\blc-(?:masthead|slot-masthead)\b/g,'').trim();
   const leftovers=remaining(source.tree),grid=leftovers.find(n=>mgHas(n,'mg-grid'));
   if(grid){const index=next.tree.findIndex(n=>mgHas(n,'mg-grid'));if(index>=0)next.tree[index]=grid;else next.tree.push(grid);leftovers.splice(leftovers.indexOf(grid),1);mapping.push('Image slots ← existing grid (all cells retained)');}
   // Keep identified/free roots top-level: Layers and free-block editing depend on it.
@@ -258,8 +276,8 @@ function lcMakeExample(name,collection,pages,demo){
 const lcMediaApply=mediaApply;
 mediaApply=function(slide){
   lcMediaApply(slide);if(!slide.classList.contains('lc-case'))return;
-  const cfg=slide.studioPreviewModel?.previewMedia;
-  if(cfg&&!slide.querySelector('.media-box')){const img=document.createElement('img'),r=lcBounds(slide.studioPreviewModel);img.className='lc-example-image';img.src=mediaAssetURL(cfg.src);img.alt=cfg.alt;Object.assign(img.style,{position:'absolute',left:r.x*100+'%',top:r.y*100+'%',width:r.w*100+'%',height:r.h*100+'%',objectFit:'contain'});slide.append(img);}
+  const library=slide.studioPreviewModel?.previewLibrary;
+  if(library)lcPaintLibraryPreview(slide,library);
   const credits=slide.querySelector('.lc-slot-credits');if(credits)slide.append(credits);
 };
 
@@ -267,5 +285,7 @@ const lcOverflow=projectLayoutOverflow;
 projectLayoutOverflow=function(root){
   if(lcOverflow(root))return true;
   const slide=root.querySelector('.lc-case'),heading=slide?.querySelector('.lc-slot-title'),copy=slide?.querySelector('.lc-copy');
+  const model=slide&&(slide.studioPreviewModel||projectModel(slide.dataset.mediaId)),bottom=lcLayouts[model?.template]?.bodyBottom;
+  if(copy&&bottom&&copy.getBoundingClientRect().bottom>slide.getBoundingClientRect().top+bottom*slide.getBoundingClientRect().height)return true;
   return !!(heading&&copy&&heading.getBoundingClientRect().bottom>copy.getBoundingClientRect().top-2);
 };

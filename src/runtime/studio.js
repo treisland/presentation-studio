@@ -1683,8 +1683,10 @@
             : "starting presentation") +
           "? Custom slides, text, media assignments, sections, branding, loops, and Trash are replaced. A recovery checkpoint preserves the current project first.",
         () => {
+          const baseline = projectCopy(projectBuiltIn);
+          delete baseline.startingState;
           projectSnapshot("Before full presentation reset");
-          projectChange(() => (projectState = projectCopy(projectBuiltIn)));
+          projectChange(() => (projectState = { ...baseline, startingState: projectCopy(baseline) }));
           projectMessage(
             "Starting template restored. Undo or the recovery checkpoint can recover your customization.",
           );

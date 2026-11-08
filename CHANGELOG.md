@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+- Preserve custom Editorial mastheads during retained layout changes, keep Comic preview captions visible, and direct visual walkthrough steps to the selected-cell inspector.
+
+- Complete the sampler with all thirty core/collection layouts, including Blank, and consolidate viewport, gallery entry-point and manual acceptance evidence.
+
+- Add explicit optional Portfolio, Comic and Editorial editor walkthroughs with static control cues, keyboard navigation, Skip/Close/Replay and reduced-motion support. Guide state stays outside projects and exports and closes on project switching.
+- Add a view-only example gallery with purpose/image-layout filters, complete slide previews and readable image descriptions. Separate starter/demo creation uses save-before-switch and handles unavailable artwork without replacing the active project.
+- Consolidate cross-example identity/reset and complete offline export checks across the three core pairs and lightweight starters. Keep each project's own reset baseline after repeated resets instead of falling back to the Studio demo.
+- Copy new examples' artwork from immutable bundled originals into fresh asset paths so imported filename collisions cannot substitute library visuals or overwrite a prior draft's media.
+- Add three Flyer compositions and a lightweight starter for events, announcements and portfolio covers, with original replaceable artwork, readable calls to action and explicit 16:9 slide-format labeling.
+- Add four Newsletter compositions and a lightweight prompt starter with lead story, recurring updates, curated resources and closing action. Output is explicitly newsletter-style slides, without email HTML or sending.
+- Add five Editorial compositions with newspaper masthead/columns and blog-style lead/image/closing treatments, a complete fictional starter/demo pair, deliberate column reading order and long-article overflow checks.
 - Add four Comic compositions and an original seed-sharing starter/demo with editable speech, numbered captions and independently cropped panels. Composition colors and typography inherit the project theme.
 - Expand Portfolio to five theme-independent compositions: case study, process, results, image gallery and details/credits. Provide a five-slide prompt starter and finished fictional demo with four original offline diagrams and independent gallery crops.
 - Preserve complete retained tables, including empty cells/rows, and other protected structures during collection layout changes.

@@ -653,7 +653,7 @@ function nxWizardPreview() {
     choice = document.querySelector('input[name="nx-start"]:checked').value;
   const example=lcExampleState(choice, 'Preview');
   const candidate =
-    (example?{...example.slides[0],previewMedia:example.media[example.slides[0].id]}:null) || (choice === "template"
+    (example?{...example.slides[0],previewLibrary:example}:null) || (choice === "template"
       ? studioDefaultTemplate.slides[0]
       : {
           id: "wizard-preview",
@@ -725,6 +725,7 @@ async function nxFinishWizard(defaults = false) {
           ? projectCopy(studioDefaultTemplate)
           : studioBlankState(name));
       state.projectName = name;
+      if (lcExampleInfo(choice) || choice === 'template') lcMaterializeExample(state);
       if (!defaults) {
         const selected = nxPresets.find(
           (p) => p.id === $("nx-wizard-preset").value,
@@ -780,7 +781,8 @@ async function nxFinishWizard(defaults = false) {
         sectionTransition: "inherit",
         disableMotion: false,
       };
-      if (choice !== "template") { delete state.startingState; state.startingState = projectCopy(state); }
+      delete state.startingState;
+      state.startingState = projectCopy(state);
       projectDraftPending = null;
       projectAcceptPack({
         schemaVersion: 2,
