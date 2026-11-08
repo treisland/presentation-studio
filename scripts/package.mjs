@@ -27,6 +27,8 @@ for (const file of ['AGENTS.md', 'docs/release-process.md', 'docs/media-compatib
 for (const name of (await readdir(resolve(root, 'docs/releases'))).sort()) {
   zip.file('docs/releases/' + name, new Uint8Array(await readFile(resolve(root, 'docs/releases', name))), { date: new Date('2026-01-01T00:00:00Z') });
 }
+zip.file('docs/media-grid.md', new Uint8Array(await readFile(resolve(root,'docs/media-grid.md'))), {date:new Date('2026-01-01T00:00:00Z')});
+zip.file('docs/0.3.0-manual-test-plan.md', new Uint8Array(await readFile(resolve(root,'docs/0.3.0-manual-test-plan.md'))), {date:new Date('2026-01-01T00:00:00Z')});
 for (const name of (await readdir(resolve(root, 'vendor/licenses'))).sort()) zip.file('vendor/licenses/' + name, new Uint8Array(await readFile(resolve(root, 'vendor/licenses', name))), { date: new Date('2026-01-01T00:00:00Z') });
 const demo = JSON.parse(await readFile(resolve(root, 'templates/studio/presentation.json'), 'utf8'));
 const demoZip = new sandbox.JSZip();

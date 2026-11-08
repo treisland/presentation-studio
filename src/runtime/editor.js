@@ -468,6 +468,7 @@
         "qa",
         "code",
         "media",
+        "media-grid",
       ].includes(s.template)
         ? s.template
         : "hero";

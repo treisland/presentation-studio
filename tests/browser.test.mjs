@@ -79,7 +79,9 @@ test('layout example imports and OBS mode suppresses editor controls', async () 
     await page.locator('#open-full-editor').click();
     await page.locator('#fe-import-file').setInputFiles(path + 'examples/layout-sampler.json');
     await page.waitForTimeout(400);
-    assert.equal(await page.locator('.fe-slide-button').count(), 7);
+    assert.equal(await page.locator('.fe-slide-button').count(), 8);
+    await page.locator('.fe-slide-button[data-slide-id="slide-media-grid-sampler"]').click();
+    assert.equal(await page.locator('#fe-preview .mg-cell-action').count(),4);
     await page.goto('file://' + path + 'dist/presentation-studio.html?obs=1');
     await page.keyboard.press('j');
     assert.equal(await page.locator('#full-editor').isVisible(), false);

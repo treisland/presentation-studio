@@ -1,5 +1,7 @@
 # Editor workspace
 
+For multiple images/videos in adjustable cells, see [Media Grid](media-grid.md).
+
 The editor uses three areas: sectioned slide thumbnails on the left, the editing canvas in the center, and a contextual inspector on the right. These changes do not introduce a new presentation format.
 
 ## Select and edit

@@ -65,7 +65,7 @@ function editingUpdate(state, id, changes) {
   }
 }
 function editingCreateModel(template, title, group, id) {
-  if (!["hero", "comparison", "workflow", "table", "qa", "code", "media"].includes(template) ||
+  if (!["hero", "comparison", "workflow", "table", "qa", "code", "media", "media-grid"].includes(template) ||
       typeof title !== "string" || !title.length || title.length > 500 || !/^[\w-]+$/.test(id))
     editingFail("INVALID", "Invalid template, title or slide ID.");
   const preset = projectCreateTemplate(template, title),
@@ -100,7 +100,7 @@ const studioEditing = Object.freeze({
       if (request?.apiVersion !== 1) editingFail("VERSION", "Unsupported editing contract version.");
       if (request.projectId !== projectMeta.id || request.expectedRevision !== editingRevision())
         editingFail("CONFLICT", "The project changed. Read it again and review a fresh proposal.");
-      if (projectPending || vbSession || ceDrag || ceRelocate || dbDrag || mfState || mediaExporting)
+      if (projectPending || vbSession || ceDrag || ceRelocate || dbDrag || mgDrag || mgUploading || mfState || mediaExporting)
         editingFail("BUSY", "Finish the current edit, gesture or export first.");
       if (!Array.isArray(request.operations) || !request.operations.length || request.operations.length > 100)
         editingFail("INVALID", "Supply 1–100 operations.");

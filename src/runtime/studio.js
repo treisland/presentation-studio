@@ -950,6 +950,7 @@
     qa: ["Q&A", "A question, an answer, and a takeaway."],
     code: ["Commands", "An explanation and a terminal example."],
     media: ["Media", "A heading and space for an image or video."],
+    'media-grid': ['Media Grid', 'Multiple media cells with adjustable rows, columns and spacing.'],
     original: ["Original", "The slide’s starting layout."],
   };
   function studioPreviewModel(model, parent, palette = null) {
@@ -1074,6 +1075,7 @@
       "qa",
       "code",
       "media",
+      "media-grid",
     ];
     if (mode === "change") templates.unshift("original");
     $("studio-gallery").showModal();
