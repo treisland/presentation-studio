@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.4.0-rc.1 — 2026-11-08
+
 - Clear Grid layers together with their nested media, retaining Undo/recovery, and reject duplicate layer keys before removal can affect unrelated content.
 - Add theme-linked/custom text, fill, border and slide-background colors with opacity, named project swatches, contrast estimates, presets and copy/paste appearance.
 - Pair Custom hex with a synchronized native color picker; draft color changes apply only when confirmed with Apply custom.
