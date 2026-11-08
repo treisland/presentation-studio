@@ -2,20 +2,20 @@
 const lcGuides={
   portfolio:[
     ['Shape the story','Select a title or paragraph on the canvas and replace the prompt with your own words. Keep the problem, approach and outcome distinct.','#fe-preview'],
-    ['Describe the visual','Select an image cell, then use Media to add or replace a visual and write a meaningful description. Compare Fit/Fill and adjust only the intended crop.','#fe-media'],
+    ['Describe the visual','Open Inspector Content and choose the intended Selected cell in Media Grid. Add or replace its visual there; edit its Caption and Alternative text after choosing Media in the inspector context controls. Use the grid Fit / crop controls for that cell.','#mg-cell'],
     ['Check the layers','Expand the Inspector if needed and choose Layers. Review names, visibility, locks and order without losing the story’s reading order.','#wp-tab-layers'],
     ['Keep a portable copy','Open Project → Export → Editable ZIP. Keep the complete ZIP, then reopen it offline to check text, images and recovery.','#hub-project-menu > summary'],
   ],
   comic:[
     ['Give the character a voice','Select the speech text on the canvas. Dialogue stays editable; keep it concise and check the long-content warning instead of making text tiny.','#fe-preview'],
     ['Read the panel sequence','Follow the numbered sequence left to right. Select each panel and check its independent image, crop and story role. Empty panels remain editable targets.','#fe-preview'],
-    ['Caption and describe','Select a panel, then use Media to edit its caption and image description. A caption tells the story; a description explains the visual.','#fe-media'],
+    ['Caption and describe','Open Inspector Content and choose the intended panel in Media Grid’s Selected cell. Edit Caption and Alternative text after choosing Media in the inspector context controls. A caption tells the story; a description explains the visual.','#mg-cell'],
     ['Save the whole story','Open Project → Export → Editable ZIP. Reopen a copy offline and confirm that dialogue, captions and all panels remain present.','#hub-project-menu > summary'],
   ],
   editorial:[
     ['Set the headline','Edit the headline and, on a cover, the masthead. Check hierarchy and shorten long headlines when the editor flags overlap.','#fe-preview'],
     ['Read complete columns','On the columns slide, read the complete left column before the right. Continue a long article on another slide instead of forcing it into the reserved area.','#fe-preview'],
-    ['Connect quote and image','Keep the quote editable on the canvas. Select the visual and use Media to check its caption, description and source credit.','#fe-media'],
+    ['Connect quote and image','Keep the quote editable on the canvas. Open Inspector Content, choose the visual in Media Grid’s Selected cell and check its Caption and Alternative text after choosing Media in the inspector context controls. Keep source credits in the slide text.','#mg-cell'],
     ['Preserve the edition','Open Project → Export → Editable ZIP. Check the reopened copy offline, including article order, quote, visuals and credits.','#hub-project-menu > summary'],
   ],
 };

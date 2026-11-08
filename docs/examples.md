@@ -36,4 +36,6 @@ Each new example receives fresh asset paths copied from the bundled originals. A
 
 ## Validation and review
 
+Editorial mastheads have a dedicated retained-content destination. Changing to a composition without a masthead keeps the text as ordinary retained content instead of carrying absolute masthead placement into the article. Library previews reserve space for captions. For visual guide steps, choose the intended Media Grid cell, then choose Media in the inspector context controls to edit that cell's Caption and Alternative text; the separate top-level Media editor edits the primary image.
+
 Cross-example workflow tests cover all three pairs and both lightweight starters: complete referenced assets, fresh identities, confirmed copy-only reset, repeated reset, original-library preservation and clean-context offline editable/playback reopening. These automated checks do not replace manual screen-reader, keyboard, supported browser/OS or delivery-video/OBS review. Follow [the milestone checklist](0.5.0-manual-test-plan.md). Feature PRs and this guide do not authorize release publication.

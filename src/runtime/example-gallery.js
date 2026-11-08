@@ -13,10 +13,10 @@ function lcPaintLibraryPreview(slide,state){
   const rects=mgRects(mgSettings(grid),lcBounds(model));
   grid.children.forEach((cell,i)=>{
     const object=mgObjectID(cell),cfg=mgConfig(state,model.id,object);if(!cfg)return;
-    const r=rects[i],box=document.createElement('div'),img=document.createElement('img');box.className='media-box lc-library-visual';img.className='media-asset';img.alt=cfg.alt||'';img.src=lcLibraryAsset(cfg.src).url;
+    const r=rects[i],box=document.createElement('figure'),viewport=document.createElement('div'),img=document.createElement('img');box.className='media-box lc-library-visual';viewport.className='media-viewport';img.className='media-asset';img.alt=cfg.alt||'';img.src=lcLibraryAsset(cfg.src).url;
     Object.assign(box.style,{position:'absolute',left:r.x*100+'%',top:r.y*100+'%',width:r.w*100+'%',height:r.h*100+'%',overflow:'hidden'});
-    Object.assign(img.style,{width:'100%',height:'100%',objectFit:cfg.fit||'contain',objectPosition:(cfg.canvas?.crop?.x??50)+'% '+(cfg.canvas?.crop?.y??50)+'%'});box.append(img);
-    if(cfg.caption){const caption=document.createElement('div');caption.className='media-caption';caption.textContent=cfg.caption;box.append(caption);}slide.append(box);
+    Object.assign(img.style,{width:'100%',height:'100%',objectFit:cfg.fit||'contain',objectPosition:(cfg.canvas?.crop?.x??50)+'% '+(cfg.canvas?.crop?.y??50)+'%'});viewport.append(img);box.append(viewport);
+    if(cfg.caption){const caption=document.createElement('figcaption');caption.textContent=cfg.caption;box.append(caption);}slide.append(box);
   });
 }
 function lcAvailable(state){try{for(const cfg of lcExampleMedia(state))lcLibraryAsset(cfg.src);return true;}catch{return false;}}
@@ -25,7 +25,7 @@ function lcReadablePreview(model,state){
   const parent=$('lc-preview-readable');parent.replaceChildren();
   const masthead=projectFind(model,n=>mgHas(n,'lc-masthead'))[0];if(masthead){const p=document.createElement('p');p.textContent=projectText(masthead.node);parent.append(p);}
   const layout=lcLayouts[model.template];
-  for(const slot of layout.slots.filter(s=>s.id!=='credits')){const p=document.createElement('p'),strong=document.createElement('strong');strong.textContent=slot.label+': ';p.append(strong,document.createTextNode(projectText(lcSlot(model,slot.id)?.node)));parent.append(p);}
+  for(const slot of layout.slots.filter(s=>!['credits','masthead'].includes(s.id))){const p=document.createElement('p'),strong=document.createElement('strong');strong.textContent=slot.label+': ';p.append(strong,document.createTextNode(projectText(lcSlot(model,slot.id)?.node)));parent.append(p);}
   const root=mgRoot(model);root?.children.forEach((cell,i)=>{const cfg=mgConfig(state,model.id,mgObjectID(cell)),p=document.createElement('p');p.textContent='Visual '+(i+1)+': '+(cfg?[cfg.alt,cfg.caption].filter(Boolean).join(' · '):'Empty editable image target.');parent.append(p);});
   const credits=document.createElement('p');credits.textContent='Credits: '+projectText(lcSlot(model,'credits')?.node);parent.append(credits);
 }

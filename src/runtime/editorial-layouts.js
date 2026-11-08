@@ -1,4 +1,4 @@
-const lcEditorial=(name,purpose,body,options={})=>({...lcComposition(name,purpose,body),collection:'Editorial',...options});
+const lcEditorial=(name,purpose,body,options={})=>{const layout={...lcComposition(name,purpose,body),collection:'Editorial',...options};if(layout.masthead)layout.slots.unshift({id:'masthead',label:'Masthead',tag:'p',limit:100});return layout;};
 lcRegister({
   'editorial-cover':lcEditorial('Editorial · Newspaper cover','Pair an editable masthead and lead headline with a story visual.',[
     {id:'lead',label:'Lead story',prompt:'Introduce the story and why it belongs in this edition.'},

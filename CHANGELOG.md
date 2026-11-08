@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Preserve custom Editorial mastheads during retained layout changes, keep Comic preview captions visible, and direct visual walkthrough steps to the selected-cell inspector.
+
 - Complete the sampler with all thirty core/collection layouts, including Blank, and consolidate viewport, gallery entry-point and manual acceptance evidence.
 
 - Add explicit optional Portfolio, Comic and Editorial editor walkthroughs with static control cues, keyboard navigation, Skip/Close/Replay and reduced-motion support. Guide state stays outside projects and exports and closes on project switching.

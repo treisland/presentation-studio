@@ -73,7 +73,8 @@ projectCreateTemplate = function(type,title) {
     const root=projectNode('div','mg-grid',Array.from({length:layout.images},mgNewCell));
     mgWrite(root,{rows:mgEqual(layout.rows??(layout.gallery?2:1)),cols:mgEqual(layout.cols??(layout.gallery?2:1)),gap:2});
     const body=layout.body.map(slot=>[projectNode('h3','lc-label',[slot.label]),text(slot.id,slot.prompt)]);
-    return {classes:'wide mg-slide lc-case lc-'+type,tree:[...(layout.masthead?[projectNode('p','lc-masthead',[layout.masthead])]:[]),text('title',title||layout.name),
+    const masthead=layout.masthead?text('masthead',layout.masthead):null;if(masthead)masthead.attrs.class+=' lc-masthead';
+    return {classes:'wide mg-slide lc-case lc-'+type,tree:[...(masthead?[masthead]:[]),text('title',title||layout.name),
       projectNode('div','lc-copy',layout.columns||layout.cards?body.map(children=>projectNode('div',layout.columns?'lc-column':'lc-storycard',children)):body.flat()),
       root,text('credits','Add image descriptions, source credits and relevant project context.')]};
   }
@@ -112,7 +113,8 @@ function lcMapped(original,type) {
     labels.forEach(({node},i)=>{const target=targets[i];if(!target)return;used.add(node);const parts=target.path.split('.');let parent=next.tree;for(const key of parts.slice(0,-1))parent=parent[key];parent[parts.at(-1)]=node;});
   }
   for(const slot of destinations){
-    const node=fields.find(n=>!used.has(n)&&(slot.id==='title'?['h1','h2'].includes(n.tag):n.tag==='p'));
+    const node=slot.id==='masthead'?fields.find(n=>!used.has(n)&&mgHas(n,'lc-masthead')):
+      fields.find(n=>!used.has(n)&&mgHas(n,'lc-slot-'+slot.id))||fields.find(n=>!used.has(n)&&!mgHas(n,'lc-masthead')&&(slot.id==='title'?['h1','h2'].includes(n.tag):n.tag==='p'));
     if(!node){mapping.push(slot.label+' ← editable prompt');continue;}
     used.add(node);const target=slot.target,parts=target.path.split('.');let parent=next.tree;
     for(const key of parts.slice(0,-1))parent=parent[key];
@@ -124,6 +126,7 @@ function lcMapped(original,type) {
     if(!n.tag||mgHas(n,'mg-grid')||spNodeID(n)||['table','pre','ul','ol'].includes(n.tag)||mgHas(n,'terminal'))return n;
     return {...n,children:remaining(n.children||[])};
   }).filter(n=>!n.tag||projectText(n).trim()||spNodeID(n)||mgHas(n,'mg-grid')||['table','pre','ul','ol'].includes(n.tag)||mgHas(n,'terminal')||n.children?.some(c=>c.tag));}
+  if(!layout?.masthead)for(const node of fields)if(mgHas(node,'lc-masthead'))node.attrs.class=node.attrs.class.replace(/\blc-(?:masthead|slot-masthead)\b/g,'').trim();
   const leftovers=remaining(source.tree),grid=leftovers.find(n=>mgHas(n,'mg-grid'));
   if(grid){const index=next.tree.findIndex(n=>mgHas(n,'mg-grid'));if(index>=0)next.tree[index]=grid;else next.tree.push(grid);leftovers.splice(leftovers.indexOf(grid),1);mapping.push('Image slots ← existing grid (all cells retained)');}
   // Keep identified/free roots top-level: Layers and free-block editing depend on it.
