@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Fix circle block Move/Resize controls being clipped by the rounded shape in the editor.
+
 - Add Media Grid templates with named file-drop cells, presets/custom row and column counts, fit/crop, safe overflow retention, cell swaps and pointer/keyboard divider resizing.
 
 - Remove the redundant visible Expand control; a named Media Focus keyboard action appears on focus in presentation, Preview and portable booth playback.

@@ -1,9 +1,12 @@
 .slide > .db-block { box-sizing: border-box; margin: 0; min-width: 0; min-height: 0; max-width: none; padding: 24px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
-.db-block > p { margin: 0; font-size: 38px; line-height: 1.3; }
+.db-block > p, .db-circle-content > p { margin: 0; font-size: 38px; line-height: 1.3; }
 :is(.presentation-canvas,.me-preview-stage) .slide > .db-text { background: transparent; border-color: transparent; box-shadow: none; }
 :is(.presentation-canvas,.me-preview-stage) .slide > :is(.db-rectangle,.db-circle) { background: var(--project-accent, #0066ff); color: var(--project-accent-ink, #fff); }
 :is(.presentation-canvas,.me-preview-stage) .slide > :is(.db-rectangle,.db-circle) > p { color: inherit; }
+:is(.presentation-canvas,.me-preview-stage) .slide > .db-circle > .db-circle-content > p { color: inherit; }
 .db-circle { border-radius: 50%; }
+[data-block-mode="edit"] .slide > .db-circle { overflow:visible; }
+.db-circle-content { position:absolute;inset:0;border-radius:inherit;overflow:hidden;padding:24px;display:flex;align-items:center;justify-content:center;color:inherit; }
 :is(.presentation-canvas,.me-preview-stage) .slide > .db-callout { border-left: 14px solid var(--project-accent, #0066ff); background: var(--project-surface-alt, #eef3fa); }
 .db-handle { display: none; }
 [data-block-mode="edit"] .db-block .db-handle { display: block; position: absolute; z-index: 50; padding: 5px 10px; font: 18px Arial; touch-action: none; }
