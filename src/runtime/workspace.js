@@ -1,6 +1,27 @@
 // Editor-only view state. No zoom, pan, selection or thumbnail state enters packs.
 let weFormUpdating = false;
 let weLastMode = "edit";
+const wePanels = {
+  slides: { width: 210, min: 140, max: 320, open: true },
+  inspector: { width: 335, min: 250, max: 480, open: true },
+};
+function wePanelView() {
+  const body = document.querySelector("#full-editor .we-body");
+  if (!body) return;
+  for (const [name, panel] of Object.entries(wePanels)) {
+    const node = $(name === "slides" ? "we-slides" : "we-inspector"),
+      toggle = $("we-toggle-" + name),
+      size = $("we-size-" + name);
+    node.hidden = !panel.open;
+    body.dataset[name] = panel.open ? "open" : "closed";
+    body.style.setProperty("--we-" + name + "-width", panel.width + "px");
+    toggle.setAttribute("aria-expanded", String(panel.open));
+    size.value = panel.width;
+    size.disabled = !panel.open;
+    size.setAttribute("aria-valuetext", panel.width + " pixels preferred width");
+  }
+  weView();
+}
 let weMounted = false,
   weContext = "slide",
   weKey = "",
@@ -562,6 +583,7 @@ function weBind() {
   const body = document.querySelector("#full-editor .fe-body"),
     work = document.querySelector("#full-editor .fe-work");
   body.classList.add("we-body");
+  body.querySelector(".fe-sidebar").id = "we-slides";
   work.id = "we-center";
   const inspector = document.createElement("aside");
   inspector.id = "we-inspector";
@@ -718,6 +740,34 @@ function weBind() {
       .join("") +
     '</select><button id="we-zoom-in" aria-label="Zoom in">+</button><output id="we-zoom-value" aria-live="polite"></output><span id="we-view-status"></span>';
   viewport.before(tools);
+  const panels = document.createElement("div");
+  panels.id = "we-panel-tools";
+  panels.innerHTML = '<button id="we-toggle-slides" aria-controls="we-slides" aria-expanded="true">Slides</button><button id="we-toggle-inspector" aria-controls="we-inspector" aria-expanded="true">Inspector</button><details id="we-panel-sizes"><summary>Panel sizes</summary><div><label for="we-size-slides">Slides width</label><input id="we-size-slides" type="range" min="140" max="320" step="10" value="210"><label for="we-size-inspector">Inspector width</label><input id="we-size-inspector" type="range" min="250" max="480" step="5" value="335"><button id="we-panel-reset">Reset panels</button><p>View only. Widths adapt to available space.</p></div></details>';
+  tools.before(panels);
+  for (const [name, panel] of Object.entries(wePanels)) {
+    $("we-toggle-" + name).onclick = () => {
+      panel.open = !panel.open;
+      wePanelView();
+    };
+    $("we-size-" + name).oninput = (event) => {
+      panel.width = Math.max(panel.min, Math.min(panel.max, Number(event.target.value)));
+      wePanelView();
+    };
+  }
+  $("we-panel-reset").onclick = () => {
+    wePanels.slides.width = 210;
+    wePanels.inspector.width = 335;
+    wePanels.slides.open = wePanels.inspector.open = true;
+    wePanelView();
+  };
+  $("we-panel-sizes").addEventListener("keydown", (event) => {
+    if (event.key !== "Escape") return;
+    event.preventDefault();
+    event.stopPropagation();
+    $("we-panel-sizes").open = false;
+    $("we-panel-sizes").querySelector("summary").focus();
+  });
+  wePanelView();
   $("we-fit").onclick = () => weSetZoom("fit");
   $("we-zoom-in").onclick = () => weStepZoom(1);
   $("we-zoom-out").onclick = () => weStepZoom(-1);

@@ -29,6 +29,9 @@ Custom kiosk loops keep their intentional order. As with the previous move butto
 
 ## Zoom and pan
 
+- Toggle **Slides** or **Inspector** above the canvas to give it more room. **Panel sizes** offers width sliders: drag them or use arrow/Home/End keys while focused. Widths are preferred sizes and adapt to the available screen width; **Reset panels** restores both panels and default widths. Escape closes the size controls without closing the editor.
+- Fit automatically follows panel collapse, width changes and window resizing. A manually selected zoom remains selected across these changes; click **Fit** to return to the complete-slide view. Panel state lasts only for this page session and never enters projects, exports or undo history.
+
 - **Fit** shows the complete slide in the available viewport; the readout shows the actual fit percentage.
 - Choose **50–200%** or use plus/minus for closer editing.
 - Focus the canvas, hold **Space**, and drag to pan. Middle-mouse dragging also pans.

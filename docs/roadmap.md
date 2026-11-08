@@ -2,7 +2,7 @@
 
 ## Current delivery plan
 
-The latest published release is 0.2.0-rc.1. The maintainer confirmed testing the published RC and granted stable 0.2.0 sign-off; see the [manual evidence record](releases/0.2.0-evidence.md). Stable publication awaits protected validation and artifact gates. See [release stages and contribution flow](release-process.md). GitHub milestones and linked issues hold acceptance criteria and delivery state; this document summarizes direction.
+Stable 0.2.0 is published after maintainer RC validation and protected release gates; see the [manual evidence record](releases/0.2.0-evidence.md). The maintainer assigned 0.3.0 implementation, starting with responsive workspace #10. Feature PRs do not select a new release version. See [release stages and contribution flow](release-process.md). GitHub milestones and linked issues hold acceptance criteria and delivery state; this document summarizes direction.
 
 - **Now — 0.2.0 stable delivery:** promote the tested RC with no runtime changes; verify actual publication before closing release readiness #30. Detailed media/accessibility environment follow-ups #7/#9 stay visible; see the stable release notes for support limitations and recovery guidance.
 - **Next — 0.3.0 canvas enhancements:** responsive workspace #10, shared validated editing API #14, additive media #11, draggable blocks #12, Media Grid presets/drop zones/adjustable dividers #38, and removal of the redundant visible Expand control with accessible activation retained #39. Design/compatibility review precedes scoped implementation. Live timers/counters follow basic blocks.
