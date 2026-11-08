@@ -17,7 +17,13 @@ Click text to edit it directly, or select a media frame or table cell. The inspe
 - **Commands:** displayed command variants; these are never executed.
 - **Notes:** presenter notes.
 
-The title and design lock buttons remain available above the contextual controls. The inspector scrolls independently of the canvas. Existing lock and recovery protections still apply.
+The selection header and Duplicate/Delete actions stay visible above **Content**, **Arrange** and **Style** tabs. Content holds text/table/commands/notes and media file/caption fields; Arrange holds geometry, alignment, layers, grid presets/dividers and design locks; Style holds text formatting and media fit/crop/visibility. Context tools remain in Content. Use arrows/Home/End within the section tablist. The active tab persists for the editing session, including selection changes.
+
+Deletion names identify the target: Delete block, Remove media, Remove media from cell or Delete slide. Locked/read-only selections disable destructive actions; Undo restores changes. Grid cells use removal/swap rather than duplicating into an occupied cell. Slide duplication retains primary and additional/grid media in one undo step.
+
+Directional chevrons sit on the inner edge of Slides and Inspector. Collapse left/right respectively; their narrow labeled rails remain visible to reveal either panel. Tooltips, accessible names and expanded state describe each action. Panel widths, collapse and section tabs are view-only session preferences and do not enter saved projects or history.
+
+Slides search/Add slide stay above the independently scrolling thumbnail list. Thumbnail actions appear on hover or keyboard focus and retain locks. Existing section collapse and selected-slide indicators remain available. Project settings stay in their separate dialog.
 
 ## Project settings
 

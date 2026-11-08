@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import {createRequire} from 'node:module';
 import {resolve} from 'node:path';
 import {readFile} from 'node:fs/promises';
-import {click} from './ui.mjs';
+import {click,reveal} from './ui.mjs';
 const {chromium}=createRequire(import.meta.url)('playwright');
 const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH,args:['--no-sandbox']});
 test.after(()=>browser.close());
@@ -48,7 +48,7 @@ test('Live focus fills canvas, restores pause, respects settings and reduced mot
  assert.deepEqual(errors,[]);
  }finally{await p.close();}});
 test('Video keeps its element, position, and user pause decision through focus',async()=>{const {p,errors}=await setup();try{
- await p.locator('#fe-preview .media-box').click();await p.locator('#vb-panel').click();
+ await p.locator('#fe-preview .media-box').click();await reveal(p,'#vb-panel');await p.locator('#vb-panel').click();
  const bytes=await p.evaluate(async()=>{const c=document.createElement('canvas');c.width=320;c.height=180;const g=c.getContext('2d'),stream=c.captureStream(10),r=new MediaRecorder(stream,{mimeType:'video/webm'}),chunks=[];r.ondataavailable=e=>chunks.push(e.data);const stopped=new Promise(resolve=>r.onstop=resolve);r.start();let n=0;const draw=setInterval(()=>{g.fillStyle=n++%2?'blue':'cyan';g.fillRect(0,0,320,180);},50);await new Promise(r=>setTimeout(r,1200));clearInterval(draw);r.stop();await stopped;stream.getTracks().forEach(t=>t.stop());return [...new Uint8Array(await new Blob(chunks,{type:'video/webm'}).arrayBuffer())];});
  await p.locator('#me-file').setInputFiles({name:'focus.webm',mimeType:'video/webm',buffer:Buffer.from(bytes)});await p.waitForTimeout(350);await p.locator('#me-close').click();await p.locator('#open-full-editor').click();await p.locator('.fe-slide-button').filter({hasText:'Bring your content to life'}).click();await p.locator('#vb-preview-mode').click();
  await waitForVideo(p, '#fe-preview video');

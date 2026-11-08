@@ -1,3 +1,4 @@
+import { reveal } from './ui.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { chromium } from 'playwright';
@@ -54,8 +55,13 @@ test('palette and keyboard arrangement preserve original content and unique IDs 
     const resize = p.locator('#fe-preview .' + id + ' .db-resize');
     await resize.focus(); await p.keyboard.press('ArrowRight'); await p.keyboard.press('ArrowRight');
     assert.equal(await p.evaluate(() => document.activeElement.dataset.dbDrag), 'resize');
+    await reveal(p,"#db-w");
+    await reveal(p,"#db-w");
     await p.locator('#db-w').fill('40'); await p.locator('#db-w').press('Tab');
+    await reveal(p,"#db-layer");
+    await reveal(p,"#db-layer");
     await p.locator('#db-layer').fill('8'); await p.locator('#db-layer').press('Tab');
+    await reveal(p,"#db-align");
     await p.locator('#db-align').selectOption('Center');
     const arranged = blocks((await read(p)).state).at(-1);
     assert(arranged.attrs.style.includes('width:40%'));
@@ -67,6 +73,7 @@ test('palette and keyboard arrangement preserve original content and unique IDs 
     await p.locator('#fe-undo').click();
     assert.equal(blocks((await read(p)).state).length, 4);
     assert((await pack(p)).history.past.length > before.history.past.length);
+    await reveal(p,"#ce-slide-lock");
     await p.locator('#ce-slide-lock').click();
     const locked = await pack(p);
     await add(p, 'text');

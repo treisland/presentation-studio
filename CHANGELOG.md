@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Polish Slides and Inspector panels with directional collapse/reveal rails, pinned selection actions, Content/Arrange/Style sections and keyboard-accessible thumbnail actions. Duplicate slides retain additional/grid media.
+- Keep Grid cell fields and removal actions synchronized when selecting media from the Inspector object list.
+
 - Fix circle block Move/Resize controls being clipped by the rounded shape in the editor.
 
 - Add Media Grid templates with named file-drop cells, presets/custom row and column counts, fit/crop, safe overflow retention, cell swaps and pointer/keyboard divider resizing.

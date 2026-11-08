@@ -1,4 +1,8 @@
 export async function reveal(page, selector) {
+  if (await page.locator('#wp-tabs').count()) {
+    const part = await page.locator(selector).evaluate(el => el.closest('[data-wp-part]')?.dataset.wpPart || (el.closest('#we-inspector .fe-tabs') ? 'content' : null));
+    if (['content','arrange','style'].includes(part)) await page.locator('#wp-tab-' + part).click();
+  }
   const ids = await page.locator(selector).evaluate((element) => {
     const ids = [];
     for (let node = element.parentElement; node; node = node.parentElement)
@@ -32,5 +36,6 @@ export async function selectTab(page, name) {
     else if (!project && open) await page.locator("#we-settings-close").click();
     if (name === "Content") name = "Slide";
   }
+  if (await page.locator('#wp-tabs').count() && !await page.locator('#we-settings').evaluate(el=>el.open)) await page.locator('#wp-tab-content').click();
   await page.getByRole("tab", { name, exact: true }).click();
 }
