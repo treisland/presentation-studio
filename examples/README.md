@@ -1,8 +1,8 @@
 # Examples
 
-The first Portfolio starter and finished example are bundled in **New presentation**. Each creates an independent editable copy. The finished fictional library case study uses the original `portfolio-library.svg`, licensed with the project under Apache 2.0; it requires no remote assets. See `docs/layout-collections.md` for the composition and safe layout-change workflow.
+The five-slide Portfolio starter and finished example are bundled in **New presentation**. Each creates an independent editable copy covering case study, process, results, gallery and details/credits. The finished fictional library project uses original `portfolio-library.svg`, `portfolio-signs.svg`, `portfolio-workshop.svg` and `portfolio-plan.svg`, licensed with the project under Apache 2.0; it requires no remote assets. See `docs/layout-collections.md` for the compositions and safe layout-change workflow.
 
-Import `layout-sampler.json` through **Presentations → Open ZIP / JSON** to explore nine layouts, including Media Grid and the first Portfolio case-study composition. It contains neutral demonstration copy, no customer material, and no external assets. The JSON includes an empty history to keep it easy to review.
+Import `layout-sampler.json` through **Presentations → Open ZIP / JSON** to explore thirteen layouts, including Media Grid and five Portfolio compositions. It contains neutral demonstration copy, no customer material, and no external assets. The JSON includes an empty history to keep it easy to review.
 
 To demonstrate media placement, select its Media slide, choose **Edit media**, and upload `sample-diagram.svg`. Try right/left, below, full-screen, background, and corner inset placements; add a caption and inspect the preview. Export an editable ZIP to include the uploaded media.
 

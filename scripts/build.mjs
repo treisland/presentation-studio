@@ -39,6 +39,7 @@ const assets = {
     data: Buffer.from(image).toString("base64"),
   },
 };
+for(const name of ['signs','workshop','plan'])assets['assets/portfolio-'+name+'.svg']={type:'image/svg+xml',data:Buffer.from(await read('examples/portfolio-'+name+'.svg')).toString('base64')};
 for (const [name, kind, project] of [
   ["presentation-studio.html", "generic", demo],
   ["presentation-studio-blank.html", "generic", blank],
