@@ -96,7 +96,7 @@ dbOperation=function(state,op,created){
     if(spEntries(slide,state).some(spProtected)||mgRoot(slide)?.children.some(c=>mgConfig(state,slide.id,mgObjectID(c))?.canvas?.locked))editingFail('LOCKED','Unlock all slide contents before clearing.');
     slide.tree=[];slide.commands=null;delete state.media[slide.id];delete state.mediaObjects[slide.id];data.objects={};return true;
   }
-  if(!Array.isArray(op.keys)||!op.keys.length||op.keys.length>100)editingFail('INVALID','Select 1–100 layers.');
+  if(!Array.isArray(op.keys)||!op.keys.length||op.keys.length>100||new Set(op.keys).size!==op.keys.length)editingFail('INVALID','Select 1–100 distinct layers.');
   const lockOnly=op.type==='design.meta'&&op.changes&&Object.keys(op.changes).length===1&&typeof op.changes.locked==='boolean';
   const targets=spResolve(state,slide,op.keys);
   if(!lockOnly&&targets.some(spProtected))editingFail('LOCKED','Unlock selected layers first.');
@@ -108,6 +108,7 @@ dbOperation=function(state,op,created){
       if(e.kind==='grid'&&c.rotation)editingFail('INVALID','Detach Grid media before rotating individual items.');
       Object.assign(meta,c);
     }else if(op.type==='design.remove'){
+      if(e.kind==='grid')for(const cell of e.node.children){const object=mgObjectID(cell);if(!object)continue;if(object==='primary')delete state.media[slide.id];else state.mediaObjects[slide.id]=(state.mediaObjects[slide.id]||[]).filter(n=>n.id!==object);delete data.objects['media-'+object];}
       if(e.node)slide.tree.splice(slide.tree.indexOf(e.node),1);
       else if(e.object==='primary')delete state.media[slide.id];else state.mediaObjects[slide.id]=state.mediaObjects[slide.id].filter(n=>n.id!==e.object);
       delete data.objects[e.key];
