@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.5.0-rc.1 — 2026-11-08
+
 - Preserve custom Editorial mastheads during retained layout changes, keep Comic preview captions visible, and direct visual walkthrough steps to the selected-cell inspector.
 
 - Complete the sampler with all thirty core/collection layouts, including Blank, and consolidate viewport, gallery entry-point and manual acceptance evidence.
