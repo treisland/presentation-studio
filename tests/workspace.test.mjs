@@ -408,7 +408,7 @@ test("Interactive Preview fits the canvas and keeps Media Focus controls visible
     await p.locator("#we-zoom").selectOption("1");
     await p.locator("#vb-preview-mode").click();
     assert.equal(await p.locator("#we-zoom").inputValue(), "fit");
-    await p.locator("#fe-preview .mf-expand").click();
+    await p.locator("#fe-preview .mf-expand").press("Enter");
     await p.waitForSelector("#media-focus");
     await p.waitForTimeout(100);
     const control = await p.locator("#mf-close").boundingBox(),

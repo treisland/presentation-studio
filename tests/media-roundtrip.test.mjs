@@ -39,7 +39,7 @@ for (const name of ['pattern.mp4', 'pattern.webm']) {
       await page.locator('#vb-preview-mode').click();
       await playing(page, '#fe-preview video');
       await page.locator('#fe-preview video').evaluate(video => { window.roundtripVideo = video; video.pause(); video.currentTime = 0.5; });
-      await page.locator('#fe-preview .mf-expand').click();
+      await page.locator('#fe-preview .mf-expand').press('Enter');
       await page.waitForSelector('#media-focus video');
       assert.equal(await page.locator('#media-focus video').evaluate(video => video === window.roundtripVideo), true);
       await page.keyboard.press('Escape');

@@ -129,4 +129,4 @@ In **Preview**, text is not editable. Question browsing, copy buttons, links, an
 
 ## Focus on media
 
-Click media or **Expand** during playback or interactive Preview. Use the image zoom controls, wheel, double-click, drag, or **Fit**. **Escape** or **Return to slide** restores the slide and prior presentation play/pause state. Native video controls remain usable. Customize this under **Presentation settings → Media Focus**. Reduced motion disables focus animation. In OBS use Browser Source **Interact**; focus stays within that source canvas.
+Click media during playback or interactive Preview. Keyboard users can Tab to **Open media focus: [media name]**, which becomes visible on focus, and press Enter or Space. In editing mode clicking media selects it. Use the image zoom controls, wheel, double-click, drag, or **Fit**. **Escape** or **Return to slide** restores the slide, keyboard focus and prior presentation play/pause state. Native video controls remain usable. Customize this under **Presentation settings → Media Focus**. Reduced motion disables focus animation. In OBS use Browser Source **Interact**; focus stays within that source canvas.

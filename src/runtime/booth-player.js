@@ -100,10 +100,13 @@ function boothStandalone() {
     if (p.focus) {
       const expand = document.createElement("button");
       expand.className = "mf-expand";
-      expand.textContent = "Expand";
+      expand.textContent = "Open media focus";
+      expand.type = "button";
+      expand.setAttribute("aria-label", "Open media focus: " + (cfg.alt || cfg.name || "slide media"));
+      expand.setAttribute("aria-haspopup", "dialog");
       expand.onclick = () => openFocus(box);
       box.append(expand);
-      asset.addEventListener("click", (e) => {
+      view.addEventListener("click", (e) => {
         if (
           cfg.kind === "video" &&
           e.clientY >

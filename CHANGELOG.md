@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Remove the redundant visible Expand control; a named Media Focus keyboard action appears on focus in presentation, Preview and portable booth playback.
+
 - Add a text/shape/callout palette with stable content-block IDs, slide-relative dragging/resizing, snapping, alignment/layers and keyboard arrangement through atomic editing operations. Existing content, media and recovery/export behavior are preserved.
 
 - Keep added background media behind original slide text in editing, Preview and exported playback without changing the content layout.

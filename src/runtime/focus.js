@@ -20,8 +20,15 @@ function mfDecorate(slide) {
   const figure = slide.querySelector(':scope > .media-box'); if (!figure) return;
   figure.querySelector('.mf-expand')?.remove();
   if (!mfSettings().enabled) { figure.classList.remove('mf-can-focus'); return; }
-  const button = document.createElement('button'); button.className = 'mf-expand'; button.type = 'button'; button.textContent = 'Expand'; button.title = 'Expand media to focus'; button.setAttribute('aria-label','Expand media to focus');
+  const button = mfAction(figure);
   figure.append(button); figure.classList.add('mf-can-focus');
+}
+function mfAction(figure) {
+  const button = document.createElement('button'), asset = figure.querySelector('.media-asset');
+  button.className = 'mf-expand'; button.type = 'button'; button.textContent = 'Open media focus';
+  button.setAttribute('aria-label', 'Open media focus: ' + (asset?.alt || ceFigureConfig(figure)?.name || 'slide media'));
+  button.setAttribute('aria-haspopup', 'dialog');
+  return button;
 }
 const mfApply = mediaApply;
 mediaApply = function(slide) { if (mfState?.slide === slide) mfAbort(); mfApply(slide); mfDecorate(slide); };
@@ -173,7 +180,7 @@ function mfBind() {
   for(const[id,key]of [['mf-setting-enabled','enabled'],['mf-setting-animation','animation'],['mf-setting-captions','captions'],['mf-setting-zoom','zoom']])$(id).onchange=e=>projectChange(()=>{const p=nxSettings(projectState.presentation);p.mediaFocus={...p.mediaFocus,[key]:e.target.type==='checkbox'?e.target.checked:e.target.value};projectState.presentation=p;});
   document.addEventListener('click',e=>{
     if(mfState)return;const figure=e.target.closest?.('.media-box');if(!figure||!mfAllowed(figure))return;
-    const explicit=e.target.closest('.mf-expand'),asset=e.target.closest('.media-asset');if(!explicit&&!asset)return;
+    const explicit=e.target.closest('.mf-expand'),asset=e.target.closest('.media-viewport')?.querySelector('.media-asset');if(!explicit&&!asset)return;
     if(asset?.tagName==='VIDEO'&&!explicit){const r=asset.getBoundingClientRect(),host=mfHost(figure),scale=host.getBoundingClientRect().width/host.clientWidth;if(e.clientY>=r.bottom-70*scale)return;}
     e.preventDefault();e.stopImmediatePropagation();mfOpen(figure,explicit||figure.querySelector('.mf-expand'));
   },true);
