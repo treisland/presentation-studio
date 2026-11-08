@@ -4,8 +4,8 @@
 
 The 0.2 series is in alpha development. See [release stages and contribution flow](release-process.md). GitHub milestones and linked issues hold acceptance criteria and delivery state; this document summarizes direction.
 
-- **Now — 0.2.0-alpha.1:** release merged presentation preflight. The SDLC foundation and Apache 2.0 alignment shipped in 0.1.4-alpha.
-- **Next — 0.2.0:** alpha.2 targets media reliability (#7); alpha.3 targets backup verification (#8). Beta requires committed features and keyboard/screen-reader audit (#9), followed by RC package verification and stable evidence. These are scope gates, not delivery dates. Release tracking: #29 and #30.
+- **Now — 0.2.0-alpha.2:** package merged media regression coverage, isolated backup verification (#8), and automated keyboard/accessibility improvements. Preflight shipped in alpha.1. The earlier separate backup alpha is consolidated into alpha.2 because the implementation is already merged.
+- **Next — 0.2.0:** complete OBS/actual delivery-video evidence (#7), NVDA and remaining manual accessibility tasks (#9), then fix confirmed defects. Additional alpha increments are available if needed. Beta freezes features only after required evidence is recorded, followed by RC package verification and stable gates. These are scope gates, not delivery dates. Release tracking: #30.
 - **Later — canvas enhancements:** screen-adaptive workspace, collapsible/resizable panels, additive media beside existing content, draggable blocks, snapping/layering and keyboard placement. Track separately under 0.3.0 unless deliberately promoted into 0.2 during alpha. Live timers/counters follow basic blocks.
 - **Deferred:** camera overlays, template publishing, accounts and collaboration until the core workflow is dependable.
 

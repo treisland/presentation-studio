@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.2.0-alpha.2 — 2026-11-07
+
 - Name slide movement controls and editor/settings tab panels for assistive technology; keep Tab navigation within readiness/backup dialogs. Add keyboard authoring/import/export regressions and a manual accessibility evidence checklist.
 
 - Inspect original ZIP directory members before JSZip deduplicates paths, rejecting duplicate/ambiguous entries and enforcing limits against all original members.
