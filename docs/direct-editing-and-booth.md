@@ -8,6 +8,8 @@ Open **Edit → Edit blocks** for on-slide manipulation. Click text to edit it a
 
 Drop one image or video onto the slide preview. Dropping without an explicit replacement zone adds it as a floating object. **Add · Left**, **Add · Right**, **Add · Background**, and **Add · Floating** preserve existing text, tables and other media; they position the new frame without converting the slide's content layout. **Add media to slide** and the **Add placement** selector provide the keyboard/file-picker alternative. The current limit is 250 MB per file and 30 additional media objects per slide; codec support depends on the browser.
 
+Background additions use layer 0 behind the original content, which retains its existing layout in the foreground. Ordinary floating media starts above the content and can be arranged with the layer controls.
+
 Existing media also has a **Change placement** handle when selected in Edit blocks. Drag that handle into **Left**, **Right**, **Background**, or **Floating**; the placement grid reappears without choosing a new file. Clicking the handle (or pressing Enter/Space on it) opens the same choices for keyboard use. The inspector also has **Change placement…** for objects that are behind other content. Escape, Cancel, or releasing outside the grid leaves the slide unchanged. The change is one undo step, and ordinary frame dragging remains free movement without the grid.
 
 A structured placement uses the primary media slot. If you reposition an additional object into a structured zone, the old primary is preserved as a floating object; a locked primary must be unlocked first. Background media stays behind slide content. Asset bytes, captions, fit and other settings are preserved.

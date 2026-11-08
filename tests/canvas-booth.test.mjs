@@ -144,6 +144,40 @@ test("Default addition preserves table/text, existing media and IDs with one-ste
   } finally { await context.close(); }
 });
 
+test("Background additions keep text foreground stacking in edit, Preview and offline playback", async () => {
+  const { p, context, errors } = await setup();
+  const foreground = root => root.evaluate(slide => {
+    const content = slide.querySelector(':scope > .media-original');
+    const frame = [...slide.querySelectorAll(':scope > .ce-floating')].find(el => getComputedStyle(el).zIndex === '0');
+    return !!content && !!frame && Number(getComputedStyle(content).zIndex) > Number(getComputedStyle(frame).zIndex);
+  });
+  try {
+    const before = await json(p);
+    await p.locator('#we-context-media').click();
+    await upload(p, 'background.svg', 'background');
+    const after = await json(p);
+    assert.deepEqual(after.state.slides[0].tree, before.state.slides[0].tree);
+    assert.equal(await foreground(p.locator('#fe-preview .slide')), true);
+    await p.locator('#vb-preview-mode').click();
+    assert.equal(await foreground(p.locator('#fe-preview .slide')), true);
+    const zip = await zipDownload(p, '#fe-playback'), folder = resolve('test-results/background-playback');
+    await unpack(zip, folder);
+    const reopened = await browser.newPage();
+    try {
+      await reopened.context().setOffline(true);
+      await reopened.goto('file://' + resolve(folder, 'index.html'));
+      assert.equal(await foreground(reopened.locator('#stage .slide[data-media-id="studio-welcome"]')), true);
+    } finally { await reopened.close(); }
+    await p.locator('#vb-edit-mode').click();
+    await p.locator('#fe-undo').click();
+    assert.deepEqual((await json(p)).state, before.state);
+    await mediaSlide(p);
+    await upload(p, 'additional-background.svg', 'background');
+    assert.equal(await foreground(p.locator('#fe-preview .slide')), true);
+    assert.deepEqual(errors, []);
+  } finally { await context.close(); }
+});
+
 test("Replacement names/previews its target, cancels safely and rejects a stale project", async () => {
   const { p, context, errors } = await setup();
   try {

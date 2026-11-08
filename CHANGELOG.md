@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Keep added background media behind original slide text in editing, Preview and exported playback without changing the content layout.
+
 - Make media additions preserve existing content by default, with explicit named/previewed replacement confirmation, cancellation and stale-project protection. Remove the opt-in additional-object checkbox.
 
 - Keep editing batches BUSY throughout inline text sessions, including pauses after typing saves; reject invalid title input before opening a typing transaction.

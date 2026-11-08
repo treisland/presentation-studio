@@ -8,6 +8,10 @@
   display: flex !important;
   pointer-events: none;
 }
+/* Free frames keep the original content layout. Layer 0 is behind that content. */
+.slide:has(> .ce-floating) > .media-original {
+  z-index: 1;
+}
 .ce-free .media-original button,
 .ce-free .media-original a {
   pointer-events: auto;
