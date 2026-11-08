@@ -846,31 +846,8 @@
       }
       const title =
           template === "qa" ? "New question" : "New " + template + " slide",
-        preset = projectCreateTemplate(template, title),
-        id = projectID(),
-        commands =
-          template === "code"
-            ? {
-                powershell: 'Write-Output "Replace with your command"',
-                bash: 'printf "%s\\n" "Replace with your command"',
-              }
-            : null;
-      const model = {
-        id,
-        title,
-        group: group.id,
-        template,
-        classes: preset.classes,
-        tree: preset.tree,
-        templateBase: projectCopy(preset.tree),
-        templateClasses: preset.classes,
-        duration: 12,
-        hidden: false,
-        notes: "",
-        topic: "General",
-        commands,
-        templateCommands: projectCopy(commands),
-      };
+        id = projectID();
+      const model = editingCreateModel(template, title, group.id, id);
       const current = projectModel(),
         last = projectState.slides
           .map((s, i) => (s.group === group.id ? i : -1))

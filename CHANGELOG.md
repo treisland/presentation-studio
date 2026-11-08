@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Keep editing batches BUSY throughout inline text sessions, including pauses after typing saves; reject invalid title input before opening a typing transaction.
+
+- Add a versioned local editing API for atomic slide metadata/create and existing-media placement batches, with stale-revision rejection, shared locks/validation, one undo step and a recovery checkpoint. Reuse the contract in title, gallery and Free placement controls.
+
 - Add collapsible Slides/Inspector panels and keyboard-operable width controls; Fit follows window/panel resizing while manual zoom stays selected. Panel state remains outside projects and undo history.
 
 ## 0.2.0 — 2026-11-07
