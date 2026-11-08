@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Make keyboard ZIP import validation independent of native headless file-picker interception while checking keyboard activation of the import control.
+
 ## 0.2.0-alpha.2 — 2026-11-07
 
 - Name slide movement controls and editor/settings tab panels for assistive technology; keep Tab navigation within readiness/backup dialogs. Add keyboard authoring/import/export regressions and a manual accessibility evidence checklist.
