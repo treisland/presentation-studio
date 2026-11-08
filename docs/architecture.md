@@ -1,5 +1,7 @@
 # Architecture
 
+The versioned [local editing API](editing-api.md) stages supported metadata, template creation and existing-media placement operations on a detached candidate. UI controls reuse its validation/model helpers, while atomic batches enforce revision checks, existing design locks, one undo step and a pre-change checkpoint. It is local authoring code, not a remote or authenticated endpoint.
+
 The repository is the source of truth for the studio engine and included examples. Each build inlines the source, styles, template bootstrap, and vendored JSZip into portable HTML. The application makes no required runtime CDN requests and has no server-side persistence.
 
 `build.config.json` defines concatenation order. Runtime files share one IIFE scope: they are ordered source fragments, not independently importable ES modules. `projects.js` adds the project picker and compact menus after the existing controls are initialized. It serializes browser saves, verifies media completeness, reads recent records from IndexedDB, and protects same-ID file replacements with a separate previous-version copy. It mounts existing buttons into native details menus, preserving their handlers and shortcuts.
