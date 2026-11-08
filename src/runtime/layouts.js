@@ -6,7 +6,7 @@ function lcComposition(name,purpose,body,images=1,gallery=false) {
     readingOrder:['title',...body.map(s=>s.label),'visuals','credits'],
     slots:[{id:'title',label:'Project title',tag:'h2',limit:85},...body.map(s=>({...s,tag:'p',limit:210})),{id:'credits',label:'Credits / image context',tag:'p',limit:140}]};
 }
-const lcLayouts = Object.freeze({
+const lcLayouts = {
   'portfolio-case': {
     name: 'Portfolio · Case study',
     purpose: 'Explain a problem, approach and outcome beside a project image.',
@@ -40,7 +40,11 @@ const lcLayouts = Object.freeze({
     {id:'deliverables',label:'Deliverables',prompt:'List what was produced and the constraints that shaped it.'},
     {id:'credits',label:'Acknowledgements',prompt:'Credit collaborators, image sources and licenses.'},
   ].map(s=>s.id==='credits'?{...s,id:'acknowledgements'}:s)),
-});
+};
+const lcExamples={portfolio:{label:'Portfolio',starterDescription:'Five editable slides: case study, process, results, image gallery and credits.',demoDescription:'A five-slide fictional library case study with original offline diagrams.'}};
+function lcExampleInfo(choice){const match=String(choice).match(/^([a-z]+)-(starter|demo)$/);return match&&Object.hasOwn(lcExamples,match[1])?{...lcExamples[match[1]],id:match[1],demo:match[2]==='demo'}:null;}
+function lcExampleLabel(choice){const info=lcExampleInfo(choice);return info?info.label+(info.demo?' finished example':' starter'):null;}
+function lcRegister(entries){for(const [id,layout]of Object.entries(entries)){if(Object.hasOwn(lcLayouts,id))throw Error('Duplicate composition '+id);lcLayouts[id]=layout;studioTemplateInfo[id]=[layout.name,layout.purpose];}}
 function lcBounds(model) {
   return lcLayouts[model?.template]?.imageBounds || {x:.05,y:.23,w:.9,h:.72};
 }
@@ -53,7 +57,7 @@ projectCreateTemplate = function(type,title) {
   const text=(id,value)=>{const slot=layout.slots.find(s=>s.id===id);return projectNode(slot.tag,'lc-slot-'+id,[value]);};
   if(layout.body){
     const root=projectNode('div','mg-grid',Array.from({length:layout.images},mgNewCell));
-    mgWrite(root,{rows:mgEqual(layout.gallery?2:1),cols:mgEqual(layout.gallery?2:1),gap:2});
+    mgWrite(root,{rows:mgEqual(layout.rows??(layout.gallery?2:1)),cols:mgEqual(layout.cols??(layout.gallery?2:1)),gap:2});
     return {classes:'wide mg-slide lc-case lc-'+type,tree:[text('title',title||layout.name),
       projectNode('div','lc-copy',layout.body.flatMap(slot=>[projectNode('h3','lc-label',[slot.label]),text(slot.id,slot.prompt)])),
       root,text('credits','Add image descriptions, source credits and relevant project context.')]};
@@ -179,7 +183,7 @@ studioGalleryRefresh=function(){
 };
 
 function lcExampleState(choice,name){
-  if(!['portfolio-starter','portfolio-demo'].includes(choice))return null;
+  if(!['portfolio-starter','portfolio-demo'].includes(choice)){const info=lcExampleInfo(choice);return info?.make?info.make(name,info.demo):null;}
   const state=studioBlankState(name),slide=state.slides[0],demo=choice==='portfolio-demo';
   const preset=projectCreateTemplate('portfolio-case',demo?'A calmer community library':'Your project story');
   Object.assign(slide,preset,{template:'portfolio-case',title:demo?'A calmer community library':'Your project story',templateBase:projectCopy(preset.tree),templateClasses:preset.classes});
@@ -226,11 +230,30 @@ projectInit=function(){
   $('studio-gallery-apply').before(mapping,status);
   for(const id of Object.keys(lcLayouts))for(const select of [$('fe-slide-template'),$('fe-new-template'),$('nx-wizard-layout')])if(select&&!Array.from(select.options).some(o=>o.value===id))select.add(new Option(lcLayouts[id].name,id));
   const options=document.querySelector('#nx-wizard .studio-start-options');
-  if(options)for(const [value,title,description]of [
-    ['portfolio-starter','Portfolio starter','Five editable slides: case study, process, results, image gallery and credits. 16:9 slide format.'],
-    ['portfolio-demo','Portfolio finished example','A five-slide fictional library case study with original offline diagrams. 16:9 slide format.'],
-  ]){const label=document.createElement('label'),input=document.createElement('input'),b=document.createElement('b'),span=document.createElement('span');input.type='radio';input.name='nx-start';input.value=value;input.onchange=()=>{$('nx-wizard-header').value='CASE STUDY';nxWizardPage();};b.textContent=title;span.textContent=description;label.append(input,b,span);options.append(label);}
+  if(options)for(const [id,entry]of Object.entries(lcExamples))for(const mode of entry.starterOnly?['starter']:['starter','demo']){
+    const value=id+'-'+mode,label=document.createElement('label'),input=document.createElement('input'),b=document.createElement('b'),span=document.createElement('span');input.type='radio';input.name='nx-start';input.value=value;input.onchange=()=>{$('nx-wizard-header').value=entry.label.toUpperCase();nxWizardPage();};b.textContent=lcExampleLabel(value);span.textContent=(mode==='demo'?entry.demoDescription:entry.starterDescription)+' 16:9 slide format.';label.append(input,b,span);options.append(label);
+  }
 };
+
+// Examples remain ordinary validated projects, with fresh identities and a reset copy.
+function lcMakeExample(name,collection,pages,demo){
+  const state=studioBlankState(name);state.slides=[];state.brand.headerTitle=collection.toUpperCase();
+  for(const page of pages){
+    const layout=lcLayouts[page.type],model=editingCreateModel(page.type,demo?page.title:page.promptTitle||layout.name,state.sections[0].id,projectID());
+    if(demo){
+      for(const [id,text]of Object.entries(page.copy||{}))projectSetText(lcSlot(model,id).node,text);
+      projectSetText(lcSlot(model,'credits').node,page.credits||'Original example by Presentation Studio · Apache 2.0.');
+      const grid=mgRoot(model);
+      for(const [i,asset]of (page.assets||[]).entries()){
+        const object=i===0?'primary':projectID('object'),media={...mediaDefaults,kind:'image',src:asset.src,name:asset.name,alt:asset.alt,caption:asset.caption||'',fit:'contain'};
+        if(i===0)state.media[model.id]=media;else{state.mediaObjects??={};(state.mediaObjects[model.id]??=[]).push({id:object,media});}mgMark(grid.children[i],object);
+      }
+      mgArrange(state,model);
+    }
+    model.templateBase=projectCopy(model.tree);model.notes=page.notes||'Replace prompts with your own story. Describe visuals and keep source credits. These examples use fictional, original content.';state.slides.push(model);
+  }
+  Object.values(state.loops)[0].slideIds=state.slides.map(s=>s.id);state.origin='imported';state.startingState=projectCopy(state);return state;
+}
 
 const lcMediaApply=mediaApply;
 mediaApply=function(slide){

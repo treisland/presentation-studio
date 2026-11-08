@@ -13,3 +13,9 @@
 .lc-portfolio-gallery .lc-copy .lc-label { display:none; }
 .lc-portfolio-gallery .lc-copy p { font-size:26px;margin:0; }
 .lc-portfolio-gallery .lc-slot-credits { left:5%;width:90%;top:85%; }
+.lc-comic-sequence .lc-copy { width:90%;top:22%; }
+.lc-comic-sequence .lc-copy .lc-label { display:none; }
+.lc-comic-sequence .lc-copy p { font-size:26px;margin:0; }
+.lc-comic-sequence .lc-slot-credits { left:5%;width:90%;top:85%; }
+.lc-case :is(.lc-slot-dialogue) { border:3px solid var(--project-accent);border-radius:30px;padding:16px 22px;background:var(--project-surface,var(--project-bg)); }
+.lc-comic-sequence .media-box { border:3px solid var(--project-ink)!important;border-radius:5px!important; }
