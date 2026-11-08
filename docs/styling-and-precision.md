@@ -8,6 +8,8 @@ Select a block/content root or media, then open **Style**. Choose Text, Fill or 
 
 Name and save up to 24 project colors. Use Accent, Outline or Quiet presets, or Copy/Paste appearance. These controls style the selected content object, rather than a partial character range. Existing Bold/Italic controls remain available for inline selections.
 
+The native Color picker and Custom hex field stay synchronized. The picker opens at the selected custom or theme color; opacity remains a separate control. Pick or type a color, then choose Apply custom to commit one Undo step. Draft picker/hex changes do not alter the project. Invalid or incomplete hex values are marked and cannot be applied.
+
 Use check boxes in Layers to apply appearance to several objects in one Undo step; differing values display Mixed. A batch containing a locked object is rejected atomically. Gradients, shadows, recent-color UI and palette import remain outside this milestone.
 
 ## Blank and clear

@@ -3,6 +3,7 @@
 ## Unreleased
 
 - Add theme-linked/custom text, fill, border and slide-background colors with opacity, named project swatches, contrast estimates, presets and copy/paste appearance.
+- Pair Custom hex with a synchronized native color picker; draft color changes apply only when confirmed with Apply custom.
 - Add a blank slide template and lock-aware clear-selected/confirmed clear-slide actions with atomic Undo and recovery retention.
 - Add a Layers tab with synchronized selection, batch appearance, object naming, hide/lock and keyboard/pointer ordering. Grid cells remain nested; background media stays pinned.
 - Extend block/media snapping with object edges/centers, equal-spacing guides, a session toggle, Alt bypass and screen-pixel tolerance. Add validated rotation and preserve styling/layers in portable exports.

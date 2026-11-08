@@ -139,3 +139,13 @@ test('deleting an unlocked sibling preserves a locked absolute block despite cha
  await addSlide(p,'blank');const a=await block(p),b=await block(p,'circle');await apply(p,[{type:'design.meta',keys:[b],changes:{locked:true}}]);const before=await read(p),slide=before.state.slides.find(s=>s.template==='blank'),locked=slide.tree.find(n=>n.attrs.class.includes(b));
  assert.equal((await apply(p,[{type:'design.remove',keys:[a]}])).ok,true);const after=(await read(p)).state.slides.find(s=>s.id===slide.id);assert.deepEqual(after.tree,[locked]);assert.equal((await apply(p,[{type:'block.remove',blockId:b}])).code,'LOCKED');assert.deepEqual(errors,[]);
  }finally{await p.close();}});
+
+test('custom picker and hex synchronize drafts, preserve opacity and commit only on Apply with lock/Undo protection',async()=>{const{p,errors}=await setup();try{
+ await addSlide(p,'blank');const id=await block(p);await p.locator('#wp-tab-style').click();await p.locator('#sp-slot').selectOption('fill');await p.getByRole('button',{name:'Theme accent',exact:true}).click();
+ const before=await pack(p),slide=before.state.slides.find(s=>s.template==='blank');assert.equal(await p.locator('#sp-color-picker').inputValue(),before.state.brand.accent.toLowerCase());
+ await p.locator('#sp-color-picker').evaluate(el=>{el.value='#abcdef';el.dispatchEvent(new Event('input',{bubbles:true}));});assert.equal(await p.locator('#sp-hex').inputValue(),'#abcdef');
+ await p.locator('#sp-hex').fill('#123ABC');assert.equal(await p.locator('#sp-color-picker').inputValue(),'#123abc');await p.locator('#sp-opacity').fill('45');assert.deepEqual(await pack(p),before);
+ await p.locator('#sp-custom').click();const applied=await pack(p);assert.deepEqual(applied.state.design.slides[slide.id].objects[id].style.fill,{hex:'#123abc',opacity:.45});assert.equal(applied.history.past.length,before.history.past.length+1);assert.equal(await p.locator('#sp-color-picker').inputValue(),'#123abc');
+ await p.locator('#fe-undo').click();assert.deepEqual((await read(p)).state,before.state);await p.locator('#sp-hex').fill('#12');assert.equal(await p.locator('#sp-hex').getAttribute('aria-invalid'),'true');await p.locator('#sp-custom').click();assert.deepEqual((await read(p)).state,before.state);
+ assert.equal((await apply(p,[{type:'design.meta',keys:[id],changes:{locked:true}}])).ok,true);assert.equal(await p.locator('#sp-color-picker').isDisabled(),true);assert.equal(await p.locator('#sp-custom').isDisabled(),true);assert.deepEqual(errors,[]);
+ }finally{await p.close();}});

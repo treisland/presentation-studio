@@ -3,6 +3,9 @@
 #we-inspector[data-wp-tab=layers] #wp-fields > :not([data-wp-part=layers]) {display:none!important;}
 #sp-style h3,#sp-layer-panel h3 {margin-top:0;}#sp-style label,#sp-layer-panel label {display:block;margin:10px 0;}
 #sp-style input,#sp-style select,#sp-layer-panel input:not([type=checkbox]) {width:100%;box-sizing:border-box;}
+.sp-custom-color {display:grid;grid-template-columns:72px minmax(0,1fr);gap:10px;align-items:end;}
+#sp-style .sp-custom-color label {min-width:0;}
+#sp-style input[type=color] {height:40px;padding:3px;cursor:pointer;}
 .sp-actions,#sp-swatches {display:flex;flex-wrap:wrap;gap:6px;margin:8px 0;}
 #full-editor .sp-swatch {display:inline-flex;align-items:center;gap:5px;padding:6px;font-size:12px;}
 #full-editor .sp-swatch,#full-editor .sp-layer-row button {background:#edf2f8;color:#19324f;border-color:#bac9dd;}
