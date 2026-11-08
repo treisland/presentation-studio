@@ -60,7 +60,7 @@ projectCreateTemplate = function(type,title) {
     mgWrite(root,{rows:mgEqual(layout.rows??(layout.gallery?2:1)),cols:mgEqual(layout.cols??(layout.gallery?2:1)),gap:2});
     const body=layout.body.map(slot=>[projectNode('h3','lc-label',[slot.label]),text(slot.id,slot.prompt)]);
     return {classes:'wide mg-slide lc-case lc-'+type,tree:[...(layout.masthead?[projectNode('p','lc-masthead',[layout.masthead])]:[]),text('title',title||layout.name),
-      projectNode('div','lc-copy',layout.columns?body.map(children=>projectNode('div','lc-column',children)):body.flat()),
+      projectNode('div','lc-copy',layout.columns||layout.cards?body.map(children=>projectNode('div',layout.columns?'lc-column':'lc-storycard',children)):body.flat()),
       root,text('credits','Add image descriptions, source credits and relevant project context.')]};
   }
   const root=projectNode('div','mg-grid',[mgNewCell()]);

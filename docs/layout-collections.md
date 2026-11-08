@@ -22,6 +22,12 @@ The gallery is a two-by-two Media Grid with independent Fit/Fill, crop and image
 
 ## Scope and delivery order
 
+### Newsletter collection
+
+**Newsletter starter** provides lead story, update cards, curated reading and closing-action slides. Recurring labels and short editable prompts help build a consistent edition; resource titles/URLs are display/navigation content, not commands. All four inherit project themes and keep the same image/description, mapping, lock and Undo controls. The starter has empty image targets rather than a finished-demo claim.
+
+This is newsletter-style 16:9 slide output, not email-client HTML, sending, subscriptions or a scrolling publication. A separate finished Newsletter demo can follow the three core pairs. Check long updates, placeholder contacts/links, image descriptions and reading order before sharing.
+
 ### Editorial collection
 
 **Editorial starter / finished example** offers newspaper cover, blog lead, two-column story, image/pull-quote feature and closing note. The fictional Community Notebook uses original bundled diagrams with captions and credits. A masthead is editable text, the two columns read as complete left then right groups, and pull quotes remain editable paragraphs. Project typography and palette continue to apply.

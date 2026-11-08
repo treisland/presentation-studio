@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Add four Newsletter compositions and a lightweight prompt starter with lead story, recurring updates, curated resources and closing action. Output is explicitly newsletter-style slides, without email HTML or sending.
 - Add five Editorial compositions with newspaper masthead/columns and blog-style lead/image/closing treatments, a complete fictional starter/demo pair, deliberate column reading order and long-article overflow checks.
 - Add four Comic compositions and an original seed-sharing starter/demo with editable speech, numbered captions and independently cropped panels. Composition colors and typography inherit the project theme.
 - Expand Portfolio to five theme-independent compositions: case study, process, results, image gallery and details/credits. Provide a five-slide prompt starter and finished fictional demo with four original offline diagrams and independent gallery crops.

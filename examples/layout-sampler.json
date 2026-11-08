@@ -4735,6 +4735,1014 @@
         "topic": "General",
         "commands": null,
         "templateCommands": null
+      },
+      {
+        "id": "slide-sampler-newsletter-lead",
+        "title": "newsletter lead",
+        "group": "section-405df504-7de5-40ca-b7f3-720ddf2e1864",
+        "template": "newsletter-lead",
+        "classes": "wide mg-slide lc-case lc-newsletter-lead",
+        "tree": [
+          {
+            "tag": "h2",
+            "attrs": {
+              "class": "lc-slot-title"
+            },
+            "children": [
+              {
+                "text": "newsletter lead"
+              }
+            ]
+          },
+          {
+            "tag": "div",
+            "attrs": {
+              "class": "lc-copy"
+            },
+            "children": [
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "This edition"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-edition"
+                },
+                "children": [
+                  {
+                    "text": "Name the edition and the audience. Example: a monthly update for a fictional community group."
+                  }
+                ]
+              },
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "Lead story"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-lead"
+                },
+                "children": [
+                  {
+                    "text": "Write the most useful update first. Keep the main point easy to find."
+                  }
+                ]
+              },
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "Regular section"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-recurring"
+                },
+                "children": [
+                  {
+                    "text": "Introduce a recurring section that readers can recognize next time."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "tag": "div",
+            "attrs": {
+              "class": "mg-grid mg-r-10000 mg-c-10000 mg-g-2"
+            },
+            "children": [
+              {
+                "tag": "div",
+                "attrs": {
+                  "class": "mg-cell cell-sampler-newsletter-lead-1"
+                },
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "p",
+            "attrs": {
+              "class": "lc-slot-credits"
+            },
+            "children": [
+              {
+                "text": "Add image descriptions, source credits and relevant project context."
+              }
+            ]
+          }
+        ],
+        "templateBase": [
+          {
+            "tag": "h2",
+            "attrs": {
+              "class": "lc-slot-title"
+            },
+            "children": [
+              {
+                "text": "newsletter lead"
+              }
+            ]
+          },
+          {
+            "tag": "div",
+            "attrs": {
+              "class": "lc-copy"
+            },
+            "children": [
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "This edition"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-edition"
+                },
+                "children": [
+                  {
+                    "text": "Name the edition and the audience. Example: a monthly update for a fictional community group."
+                  }
+                ]
+              },
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "Lead story"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-lead"
+                },
+                "children": [
+                  {
+                    "text": "Write the most useful update first. Keep the main point easy to find."
+                  }
+                ]
+              },
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "Regular section"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-recurring"
+                },
+                "children": [
+                  {
+                    "text": "Introduce a recurring section that readers can recognize next time."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "tag": "div",
+            "attrs": {
+              "class": "mg-grid mg-r-10000 mg-c-10000 mg-g-2"
+            },
+            "children": [
+              {
+                "tag": "div",
+                "attrs": {
+                  "class": "mg-cell cell-sampler-newsletter-lead-1"
+                },
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "p",
+            "attrs": {
+              "class": "lc-slot-credits"
+            },
+            "children": [
+              {
+                "text": "Add image descriptions, source credits and relevant project context."
+              }
+            ]
+          }
+        ],
+        "templateClasses": "wide mg-slide lc-case lc-newsletter-lead",
+        "duration": 12,
+        "hidden": false,
+        "notes": "",
+        "topic": "General",
+        "commands": null,
+        "templateCommands": null
+      },
+      {
+        "id": "slide-sampler-newsletter-updates",
+        "title": "newsletter updates",
+        "group": "section-405df504-7de5-40ca-b7f3-720ddf2e1864",
+        "template": "newsletter-updates",
+        "classes": "wide mg-slide lc-case lc-newsletter-updates",
+        "tree": [
+          {
+            "tag": "h2",
+            "attrs": {
+              "class": "lc-slot-title"
+            },
+            "children": [
+              {
+                "text": "newsletter updates"
+              }
+            ]
+          },
+          {
+            "tag": "div",
+            "attrs": {
+              "class": "lc-copy"
+            },
+            "children": [
+              {
+                "tag": "div",
+                "attrs": {
+                  "class": "lc-storycard"
+                },
+                "children": [
+                  {
+                    "tag": "h3",
+                    "attrs": {
+                      "class": "lc-label"
+                    },
+                    "children": [
+                      {
+                        "text": "1. What changed"
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "p",
+                    "attrs": {
+                      "class": "lc-slot-one"
+                    },
+                    "children": [
+                      {
+                        "text": "Describe one useful change and who it affects."
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "tag": "div",
+                "attrs": {
+                  "class": "lc-storycard"
+                },
+                "children": [
+                  {
+                    "tag": "h3",
+                    "attrs": {
+                      "class": "lc-label"
+                    },
+                    "children": [
+                      {
+                        "text": "2. Coming next"
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "p",
+                    "attrs": {
+                      "class": "lc-slot-two"
+                    },
+                    "children": [
+                      {
+                        "text": "Preview an upcoming activity without implying a confirmed date."
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "tag": "div",
+                "attrs": {
+                  "class": "lc-storycard"
+                },
+                "children": [
+                  {
+                    "tag": "h3",
+                    "attrs": {
+                      "class": "lc-label"
+                    },
+                    "children": [
+                      {
+                        "text": "3. From the community"
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "p",
+                    "attrs": {
+                      "class": "lc-slot-three"
+                    },
+                    "children": [
+                      {
+                        "text": "Add a short original example or replace this with an attributed contribution."
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "tag": "div",
+            "attrs": {
+              "class": "mg-grid mg-r-10000 mg-c-10000 mg-g-2"
+            },
+            "children": [
+              {
+                "tag": "div",
+                "attrs": {
+                  "class": "mg-cell cell-sampler-newsletter-updates-1"
+                },
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "p",
+            "attrs": {
+              "class": "lc-slot-credits"
+            },
+            "children": [
+              {
+                "text": "Add image descriptions, source credits and relevant project context."
+              }
+            ]
+          }
+        ],
+        "templateBase": [
+          {
+            "tag": "h2",
+            "attrs": {
+              "class": "lc-slot-title"
+            },
+            "children": [
+              {
+                "text": "newsletter updates"
+              }
+            ]
+          },
+          {
+            "tag": "div",
+            "attrs": {
+              "class": "lc-copy"
+            },
+            "children": [
+              {
+                "tag": "div",
+                "attrs": {
+                  "class": "lc-storycard"
+                },
+                "children": [
+                  {
+                    "tag": "h3",
+                    "attrs": {
+                      "class": "lc-label"
+                    },
+                    "children": [
+                      {
+                        "text": "1. What changed"
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "p",
+                    "attrs": {
+                      "class": "lc-slot-one"
+                    },
+                    "children": [
+                      {
+                        "text": "Describe one useful change and who it affects."
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "tag": "div",
+                "attrs": {
+                  "class": "lc-storycard"
+                },
+                "children": [
+                  {
+                    "tag": "h3",
+                    "attrs": {
+                      "class": "lc-label"
+                    },
+                    "children": [
+                      {
+                        "text": "2. Coming next"
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "p",
+                    "attrs": {
+                      "class": "lc-slot-two"
+                    },
+                    "children": [
+                      {
+                        "text": "Preview an upcoming activity without implying a confirmed date."
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "tag": "div",
+                "attrs": {
+                  "class": "lc-storycard"
+                },
+                "children": [
+                  {
+                    "tag": "h3",
+                    "attrs": {
+                      "class": "lc-label"
+                    },
+                    "children": [
+                      {
+                        "text": "3. From the community"
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "p",
+                    "attrs": {
+                      "class": "lc-slot-three"
+                    },
+                    "children": [
+                      {
+                        "text": "Add a short original example or replace this with an attributed contribution."
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "tag": "div",
+            "attrs": {
+              "class": "mg-grid mg-r-10000 mg-c-10000 mg-g-2"
+            },
+            "children": [
+              {
+                "tag": "div",
+                "attrs": {
+                  "class": "mg-cell cell-sampler-newsletter-updates-1"
+                },
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "p",
+            "attrs": {
+              "class": "lc-slot-credits"
+            },
+            "children": [
+              {
+                "text": "Add image descriptions, source credits and relevant project context."
+              }
+            ]
+          }
+        ],
+        "templateClasses": "wide mg-slide lc-case lc-newsletter-updates",
+        "duration": 12,
+        "hidden": false,
+        "notes": "",
+        "topic": "General",
+        "commands": null,
+        "templateCommands": null
+      },
+      {
+        "id": "slide-sampler-newsletter-curated",
+        "title": "newsletter curated",
+        "group": "section-405df504-7de5-40ca-b7f3-720ddf2e1864",
+        "template": "newsletter-curated",
+        "classes": "wide mg-slide lc-case lc-newsletter-curated",
+        "tree": [
+          {
+            "tag": "h2",
+            "attrs": {
+              "class": "lc-slot-title"
+            },
+            "children": [
+              {
+                "text": "newsletter curated"
+              }
+            ]
+          },
+          {
+            "tag": "div",
+            "attrs": {
+              "class": "lc-copy"
+            },
+            "children": [
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "Read"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-read"
+                },
+                "children": [
+                  {
+                    "text": "Add a resource title, its source and a display URL. Explain why it is relevant."
+                  }
+                ]
+              },
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "Watch or listen"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-watch"
+                },
+                "children": [
+                  {
+                    "text": "Add an accessible resource and note available captions or a transcript."
+                  }
+                ]
+              },
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "Try"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-try"
+                },
+                "children": [
+                  {
+                    "text": "Suggest a small activity and link to clear instructions if needed."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "tag": "div",
+            "attrs": {
+              "class": "mg-grid mg-r-10000 mg-c-10000 mg-g-2"
+            },
+            "children": [
+              {
+                "tag": "div",
+                "attrs": {
+                  "class": "mg-cell cell-sampler-newsletter-curated-1"
+                },
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "p",
+            "attrs": {
+              "class": "lc-slot-credits"
+            },
+            "children": [
+              {
+                "text": "Add image descriptions, source credits and relevant project context."
+              }
+            ]
+          }
+        ],
+        "templateBase": [
+          {
+            "tag": "h2",
+            "attrs": {
+              "class": "lc-slot-title"
+            },
+            "children": [
+              {
+                "text": "newsletter curated"
+              }
+            ]
+          },
+          {
+            "tag": "div",
+            "attrs": {
+              "class": "lc-copy"
+            },
+            "children": [
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "Read"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-read"
+                },
+                "children": [
+                  {
+                    "text": "Add a resource title, its source and a display URL. Explain why it is relevant."
+                  }
+                ]
+              },
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "Watch or listen"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-watch"
+                },
+                "children": [
+                  {
+                    "text": "Add an accessible resource and note available captions or a transcript."
+                  }
+                ]
+              },
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "Try"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-try"
+                },
+                "children": [
+                  {
+                    "text": "Suggest a small activity and link to clear instructions if needed."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "tag": "div",
+            "attrs": {
+              "class": "mg-grid mg-r-10000 mg-c-10000 mg-g-2"
+            },
+            "children": [
+              {
+                "tag": "div",
+                "attrs": {
+                  "class": "mg-cell cell-sampler-newsletter-curated-1"
+                },
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "p",
+            "attrs": {
+              "class": "lc-slot-credits"
+            },
+            "children": [
+              {
+                "text": "Add image descriptions, source credits and relevant project context."
+              }
+            ]
+          }
+        ],
+        "templateClasses": "wide mg-slide lc-case lc-newsletter-curated",
+        "duration": 12,
+        "hidden": false,
+        "notes": "",
+        "topic": "General",
+        "commands": null,
+        "templateCommands": null
+      },
+      {
+        "id": "slide-sampler-newsletter-closing",
+        "title": "newsletter closing",
+        "group": "section-405df504-7de5-40ca-b7f3-720ddf2e1864",
+        "template": "newsletter-closing",
+        "classes": "wide mg-slide lc-case lc-newsletter-closing",
+        "tree": [
+          {
+            "tag": "h2",
+            "attrs": {
+              "class": "lc-slot-title"
+            },
+            "children": [
+              {
+                "text": "newsletter closing"
+              }
+            ]
+          },
+          {
+            "tag": "div",
+            "attrs": {
+              "class": "lc-copy"
+            },
+            "children": [
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "One next step"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-action"
+                },
+                "children": [
+                  {
+                    "text": "Tell readers what they can do next. The call to action is editable slide text."
+                  }
+                ]
+              },
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "Contribute"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-contribute"
+                },
+                "children": [
+                  {
+                    "text": "Describe how readers can contribute or where they can find the next update."
+                  }
+                ]
+              },
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "Sources and credits"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-sources"
+                },
+                "children": [
+                  {
+                    "text": "Credit contributors and visual sources. Replace all placeholder contact details before sharing."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "tag": "div",
+            "attrs": {
+              "class": "mg-grid mg-r-10000 mg-c-10000 mg-g-2"
+            },
+            "children": [
+              {
+                "tag": "div",
+                "attrs": {
+                  "class": "mg-cell cell-sampler-newsletter-closing-1"
+                },
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "p",
+            "attrs": {
+              "class": "lc-slot-credits"
+            },
+            "children": [
+              {
+                "text": "Add image descriptions, source credits and relevant project context."
+              }
+            ]
+          }
+        ],
+        "templateBase": [
+          {
+            "tag": "h2",
+            "attrs": {
+              "class": "lc-slot-title"
+            },
+            "children": [
+              {
+                "text": "newsletter closing"
+              }
+            ]
+          },
+          {
+            "tag": "div",
+            "attrs": {
+              "class": "lc-copy"
+            },
+            "children": [
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "One next step"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-action"
+                },
+                "children": [
+                  {
+                    "text": "Tell readers what they can do next. The call to action is editable slide text."
+                  }
+                ]
+              },
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "Contribute"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-contribute"
+                },
+                "children": [
+                  {
+                    "text": "Describe how readers can contribute or where they can find the next update."
+                  }
+                ]
+              },
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "Sources and credits"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-sources"
+                },
+                "children": [
+                  {
+                    "text": "Credit contributors and visual sources. Replace all placeholder contact details before sharing."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "tag": "div",
+            "attrs": {
+              "class": "mg-grid mg-r-10000 mg-c-10000 mg-g-2"
+            },
+            "children": [
+              {
+                "tag": "div",
+                "attrs": {
+                  "class": "mg-cell cell-sampler-newsletter-closing-1"
+                },
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "p",
+            "attrs": {
+              "class": "lc-slot-credits"
+            },
+            "children": [
+              {
+                "text": "Add image descriptions, source credits and relevant project context."
+              }
+            ]
+          }
+        ],
+        "templateClasses": "wide mg-slide lc-case lc-newsletter-closing",
+        "duration": 12,
+        "hidden": false,
+        "notes": "",
+        "topic": "General",
+        "commands": null,
+        "templateCommands": null
       }
     ],
     "trash": [],
@@ -4763,7 +5771,11 @@
           "slide-sampler-editorial-lead",
           "slide-sampler-editorial-columns",
           "slide-sampler-editorial-feature",
-          "slide-sampler-editorial-closing"
+          "slide-sampler-editorial-closing",
+          "slide-sampler-newsletter-lead",
+          "slide-sampler-newsletter-updates",
+          "slide-sampler-newsletter-curated",
+          "slide-sampler-newsletter-closing"
         ]
       }
     },
@@ -8214,6 +9226,1014 @@
           "topic": "General",
           "commands": null,
           "templateCommands": null
+        },
+        {
+          "id": "slide-sampler-newsletter-lead",
+          "title": "newsletter lead",
+          "group": "section-405df504-7de5-40ca-b7f3-720ddf2e1864",
+          "template": "newsletter-lead",
+          "classes": "wide mg-slide lc-case lc-newsletter-lead",
+          "tree": [
+            {
+              "tag": "h2",
+              "attrs": {
+                "class": "lc-slot-title"
+              },
+              "children": [
+                {
+                  "text": "newsletter lead"
+                }
+              ]
+            },
+            {
+              "tag": "div",
+              "attrs": {
+                "class": "lc-copy"
+              },
+              "children": [
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "This edition"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-edition"
+                  },
+                  "children": [
+                    {
+                      "text": "Name the edition and the audience. Example: a monthly update for a fictional community group."
+                    }
+                  ]
+                },
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "Lead story"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-lead"
+                  },
+                  "children": [
+                    {
+                      "text": "Write the most useful update first. Keep the main point easy to find."
+                    }
+                  ]
+                },
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "Regular section"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-recurring"
+                  },
+                  "children": [
+                    {
+                      "text": "Introduce a recurring section that readers can recognize next time."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "tag": "div",
+              "attrs": {
+                "class": "mg-grid mg-r-10000 mg-c-10000 mg-g-2"
+              },
+              "children": [
+                {
+                  "tag": "div",
+                  "attrs": {
+                    "class": "mg-cell cell-sampler-newsletter-lead-1"
+                  },
+                  "children": []
+                }
+              ]
+            },
+            {
+              "tag": "p",
+              "attrs": {
+                "class": "lc-slot-credits"
+              },
+              "children": [
+                {
+                  "text": "Add image descriptions, source credits and relevant project context."
+                }
+              ]
+            }
+          ],
+          "templateBase": [
+            {
+              "tag": "h2",
+              "attrs": {
+                "class": "lc-slot-title"
+              },
+              "children": [
+                {
+                  "text": "newsletter lead"
+                }
+              ]
+            },
+            {
+              "tag": "div",
+              "attrs": {
+                "class": "lc-copy"
+              },
+              "children": [
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "This edition"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-edition"
+                  },
+                  "children": [
+                    {
+                      "text": "Name the edition and the audience. Example: a monthly update for a fictional community group."
+                    }
+                  ]
+                },
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "Lead story"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-lead"
+                  },
+                  "children": [
+                    {
+                      "text": "Write the most useful update first. Keep the main point easy to find."
+                    }
+                  ]
+                },
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "Regular section"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-recurring"
+                  },
+                  "children": [
+                    {
+                      "text": "Introduce a recurring section that readers can recognize next time."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "tag": "div",
+              "attrs": {
+                "class": "mg-grid mg-r-10000 mg-c-10000 mg-g-2"
+              },
+              "children": [
+                {
+                  "tag": "div",
+                  "attrs": {
+                    "class": "mg-cell cell-sampler-newsletter-lead-1"
+                  },
+                  "children": []
+                }
+              ]
+            },
+            {
+              "tag": "p",
+              "attrs": {
+                "class": "lc-slot-credits"
+              },
+              "children": [
+                {
+                  "text": "Add image descriptions, source credits and relevant project context."
+                }
+              ]
+            }
+          ],
+          "templateClasses": "wide mg-slide lc-case lc-newsletter-lead",
+          "duration": 12,
+          "hidden": false,
+          "notes": "",
+          "topic": "General",
+          "commands": null,
+          "templateCommands": null
+        },
+        {
+          "id": "slide-sampler-newsletter-updates",
+          "title": "newsletter updates",
+          "group": "section-405df504-7de5-40ca-b7f3-720ddf2e1864",
+          "template": "newsletter-updates",
+          "classes": "wide mg-slide lc-case lc-newsletter-updates",
+          "tree": [
+            {
+              "tag": "h2",
+              "attrs": {
+                "class": "lc-slot-title"
+              },
+              "children": [
+                {
+                  "text": "newsletter updates"
+                }
+              ]
+            },
+            {
+              "tag": "div",
+              "attrs": {
+                "class": "lc-copy"
+              },
+              "children": [
+                {
+                  "tag": "div",
+                  "attrs": {
+                    "class": "lc-storycard"
+                  },
+                  "children": [
+                    {
+                      "tag": "h3",
+                      "attrs": {
+                        "class": "lc-label"
+                      },
+                      "children": [
+                        {
+                          "text": "1. What changed"
+                        }
+                      ]
+                    },
+                    {
+                      "tag": "p",
+                      "attrs": {
+                        "class": "lc-slot-one"
+                      },
+                      "children": [
+                        {
+                          "text": "Describe one useful change and who it affects."
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "tag": "div",
+                  "attrs": {
+                    "class": "lc-storycard"
+                  },
+                  "children": [
+                    {
+                      "tag": "h3",
+                      "attrs": {
+                        "class": "lc-label"
+                      },
+                      "children": [
+                        {
+                          "text": "2. Coming next"
+                        }
+                      ]
+                    },
+                    {
+                      "tag": "p",
+                      "attrs": {
+                        "class": "lc-slot-two"
+                      },
+                      "children": [
+                        {
+                          "text": "Preview an upcoming activity without implying a confirmed date."
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "tag": "div",
+                  "attrs": {
+                    "class": "lc-storycard"
+                  },
+                  "children": [
+                    {
+                      "tag": "h3",
+                      "attrs": {
+                        "class": "lc-label"
+                      },
+                      "children": [
+                        {
+                          "text": "3. From the community"
+                        }
+                      ]
+                    },
+                    {
+                      "tag": "p",
+                      "attrs": {
+                        "class": "lc-slot-three"
+                      },
+                      "children": [
+                        {
+                          "text": "Add a short original example or replace this with an attributed contribution."
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "tag": "div",
+              "attrs": {
+                "class": "mg-grid mg-r-10000 mg-c-10000 mg-g-2"
+              },
+              "children": [
+                {
+                  "tag": "div",
+                  "attrs": {
+                    "class": "mg-cell cell-sampler-newsletter-updates-1"
+                  },
+                  "children": []
+                }
+              ]
+            },
+            {
+              "tag": "p",
+              "attrs": {
+                "class": "lc-slot-credits"
+              },
+              "children": [
+                {
+                  "text": "Add image descriptions, source credits and relevant project context."
+                }
+              ]
+            }
+          ],
+          "templateBase": [
+            {
+              "tag": "h2",
+              "attrs": {
+                "class": "lc-slot-title"
+              },
+              "children": [
+                {
+                  "text": "newsletter updates"
+                }
+              ]
+            },
+            {
+              "tag": "div",
+              "attrs": {
+                "class": "lc-copy"
+              },
+              "children": [
+                {
+                  "tag": "div",
+                  "attrs": {
+                    "class": "lc-storycard"
+                  },
+                  "children": [
+                    {
+                      "tag": "h3",
+                      "attrs": {
+                        "class": "lc-label"
+                      },
+                      "children": [
+                        {
+                          "text": "1. What changed"
+                        }
+                      ]
+                    },
+                    {
+                      "tag": "p",
+                      "attrs": {
+                        "class": "lc-slot-one"
+                      },
+                      "children": [
+                        {
+                          "text": "Describe one useful change and who it affects."
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "tag": "div",
+                  "attrs": {
+                    "class": "lc-storycard"
+                  },
+                  "children": [
+                    {
+                      "tag": "h3",
+                      "attrs": {
+                        "class": "lc-label"
+                      },
+                      "children": [
+                        {
+                          "text": "2. Coming next"
+                        }
+                      ]
+                    },
+                    {
+                      "tag": "p",
+                      "attrs": {
+                        "class": "lc-slot-two"
+                      },
+                      "children": [
+                        {
+                          "text": "Preview an upcoming activity without implying a confirmed date."
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "tag": "div",
+                  "attrs": {
+                    "class": "lc-storycard"
+                  },
+                  "children": [
+                    {
+                      "tag": "h3",
+                      "attrs": {
+                        "class": "lc-label"
+                      },
+                      "children": [
+                        {
+                          "text": "3. From the community"
+                        }
+                      ]
+                    },
+                    {
+                      "tag": "p",
+                      "attrs": {
+                        "class": "lc-slot-three"
+                      },
+                      "children": [
+                        {
+                          "text": "Add a short original example or replace this with an attributed contribution."
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "tag": "div",
+              "attrs": {
+                "class": "mg-grid mg-r-10000 mg-c-10000 mg-g-2"
+              },
+              "children": [
+                {
+                  "tag": "div",
+                  "attrs": {
+                    "class": "mg-cell cell-sampler-newsletter-updates-1"
+                  },
+                  "children": []
+                }
+              ]
+            },
+            {
+              "tag": "p",
+              "attrs": {
+                "class": "lc-slot-credits"
+              },
+              "children": [
+                {
+                  "text": "Add image descriptions, source credits and relevant project context."
+                }
+              ]
+            }
+          ],
+          "templateClasses": "wide mg-slide lc-case lc-newsletter-updates",
+          "duration": 12,
+          "hidden": false,
+          "notes": "",
+          "topic": "General",
+          "commands": null,
+          "templateCommands": null
+        },
+        {
+          "id": "slide-sampler-newsletter-curated",
+          "title": "newsletter curated",
+          "group": "section-405df504-7de5-40ca-b7f3-720ddf2e1864",
+          "template": "newsletter-curated",
+          "classes": "wide mg-slide lc-case lc-newsletter-curated",
+          "tree": [
+            {
+              "tag": "h2",
+              "attrs": {
+                "class": "lc-slot-title"
+              },
+              "children": [
+                {
+                  "text": "newsletter curated"
+                }
+              ]
+            },
+            {
+              "tag": "div",
+              "attrs": {
+                "class": "lc-copy"
+              },
+              "children": [
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "Read"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-read"
+                  },
+                  "children": [
+                    {
+                      "text": "Add a resource title, its source and a display URL. Explain why it is relevant."
+                    }
+                  ]
+                },
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "Watch or listen"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-watch"
+                  },
+                  "children": [
+                    {
+                      "text": "Add an accessible resource and note available captions or a transcript."
+                    }
+                  ]
+                },
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "Try"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-try"
+                  },
+                  "children": [
+                    {
+                      "text": "Suggest a small activity and link to clear instructions if needed."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "tag": "div",
+              "attrs": {
+                "class": "mg-grid mg-r-10000 mg-c-10000 mg-g-2"
+              },
+              "children": [
+                {
+                  "tag": "div",
+                  "attrs": {
+                    "class": "mg-cell cell-sampler-newsletter-curated-1"
+                  },
+                  "children": []
+                }
+              ]
+            },
+            {
+              "tag": "p",
+              "attrs": {
+                "class": "lc-slot-credits"
+              },
+              "children": [
+                {
+                  "text": "Add image descriptions, source credits and relevant project context."
+                }
+              ]
+            }
+          ],
+          "templateBase": [
+            {
+              "tag": "h2",
+              "attrs": {
+                "class": "lc-slot-title"
+              },
+              "children": [
+                {
+                  "text": "newsletter curated"
+                }
+              ]
+            },
+            {
+              "tag": "div",
+              "attrs": {
+                "class": "lc-copy"
+              },
+              "children": [
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "Read"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-read"
+                  },
+                  "children": [
+                    {
+                      "text": "Add a resource title, its source and a display URL. Explain why it is relevant."
+                    }
+                  ]
+                },
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "Watch or listen"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-watch"
+                  },
+                  "children": [
+                    {
+                      "text": "Add an accessible resource and note available captions or a transcript."
+                    }
+                  ]
+                },
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "Try"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-try"
+                  },
+                  "children": [
+                    {
+                      "text": "Suggest a small activity and link to clear instructions if needed."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "tag": "div",
+              "attrs": {
+                "class": "mg-grid mg-r-10000 mg-c-10000 mg-g-2"
+              },
+              "children": [
+                {
+                  "tag": "div",
+                  "attrs": {
+                    "class": "mg-cell cell-sampler-newsletter-curated-1"
+                  },
+                  "children": []
+                }
+              ]
+            },
+            {
+              "tag": "p",
+              "attrs": {
+                "class": "lc-slot-credits"
+              },
+              "children": [
+                {
+                  "text": "Add image descriptions, source credits and relevant project context."
+                }
+              ]
+            }
+          ],
+          "templateClasses": "wide mg-slide lc-case lc-newsletter-curated",
+          "duration": 12,
+          "hidden": false,
+          "notes": "",
+          "topic": "General",
+          "commands": null,
+          "templateCommands": null
+        },
+        {
+          "id": "slide-sampler-newsletter-closing",
+          "title": "newsletter closing",
+          "group": "section-405df504-7de5-40ca-b7f3-720ddf2e1864",
+          "template": "newsletter-closing",
+          "classes": "wide mg-slide lc-case lc-newsletter-closing",
+          "tree": [
+            {
+              "tag": "h2",
+              "attrs": {
+                "class": "lc-slot-title"
+              },
+              "children": [
+                {
+                  "text": "newsletter closing"
+                }
+              ]
+            },
+            {
+              "tag": "div",
+              "attrs": {
+                "class": "lc-copy"
+              },
+              "children": [
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "One next step"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-action"
+                  },
+                  "children": [
+                    {
+                      "text": "Tell readers what they can do next. The call to action is editable slide text."
+                    }
+                  ]
+                },
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "Contribute"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-contribute"
+                  },
+                  "children": [
+                    {
+                      "text": "Describe how readers can contribute or where they can find the next update."
+                    }
+                  ]
+                },
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "Sources and credits"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-sources"
+                  },
+                  "children": [
+                    {
+                      "text": "Credit contributors and visual sources. Replace all placeholder contact details before sharing."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "tag": "div",
+              "attrs": {
+                "class": "mg-grid mg-r-10000 mg-c-10000 mg-g-2"
+              },
+              "children": [
+                {
+                  "tag": "div",
+                  "attrs": {
+                    "class": "mg-cell cell-sampler-newsletter-closing-1"
+                  },
+                  "children": []
+                }
+              ]
+            },
+            {
+              "tag": "p",
+              "attrs": {
+                "class": "lc-slot-credits"
+              },
+              "children": [
+                {
+                  "text": "Add image descriptions, source credits and relevant project context."
+                }
+              ]
+            }
+          ],
+          "templateBase": [
+            {
+              "tag": "h2",
+              "attrs": {
+                "class": "lc-slot-title"
+              },
+              "children": [
+                {
+                  "text": "newsletter closing"
+                }
+              ]
+            },
+            {
+              "tag": "div",
+              "attrs": {
+                "class": "lc-copy"
+              },
+              "children": [
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "One next step"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-action"
+                  },
+                  "children": [
+                    {
+                      "text": "Tell readers what they can do next. The call to action is editable slide text."
+                    }
+                  ]
+                },
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "Contribute"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-contribute"
+                  },
+                  "children": [
+                    {
+                      "text": "Describe how readers can contribute or where they can find the next update."
+                    }
+                  ]
+                },
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "Sources and credits"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-sources"
+                  },
+                  "children": [
+                    {
+                      "text": "Credit contributors and visual sources. Replace all placeholder contact details before sharing."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "tag": "div",
+              "attrs": {
+                "class": "mg-grid mg-r-10000 mg-c-10000 mg-g-2"
+              },
+              "children": [
+                {
+                  "tag": "div",
+                  "attrs": {
+                    "class": "mg-cell cell-sampler-newsletter-closing-1"
+                  },
+                  "children": []
+                }
+              ]
+            },
+            {
+              "tag": "p",
+              "attrs": {
+                "class": "lc-slot-credits"
+              },
+              "children": [
+                {
+                  "text": "Add image descriptions, source credits and relevant project context."
+                }
+              ]
+            }
+          ],
+          "templateClasses": "wide mg-slide lc-case lc-newsletter-closing",
+          "duration": 12,
+          "hidden": false,
+          "notes": "",
+          "topic": "General",
+          "commands": null,
+          "templateCommands": null
         }
       ],
       "trash": [],
@@ -8236,7 +10256,11 @@
             "slide-sampler-editorial-lead",
             "slide-sampler-editorial-columns",
             "slide-sampler-editorial-feature",
-            "slide-sampler-editorial-closing"
+            "slide-sampler-editorial-closing",
+            "slide-sampler-newsletter-lead",
+            "slide-sampler-newsletter-updates",
+            "slide-sampler-newsletter-curated",
+            "slide-sampler-newsletter-closing"
           ]
         }
       },

@@ -6,7 +6,9 @@ Comic starter / finished example add four story compositions and three original 
 
 Editorial starter / finished example supplies a fictional five-slide Community Notebook with newspaper/blog treatments. It reuses original bundled library diagrams with explicit credits and makes no real participant or measured-outcome claims.
 
-Import `layout-sampler.json` through **Presentations → Open ZIP / JSON** to explore twenty-two layouts, including Media Grid, five Portfolio, four Comic and five Editorial compositions. It contains neutral demonstration copy, no customer material, and no external assets. The JSON includes an empty history to keep it easy to review.
+Newsletter starter adds four prompt-based newsletter-style slide compositions. It intentionally does not claim email HTML or sending and starts with empty image targets.
+
+Import `layout-sampler.json` through **Presentations → Open ZIP / JSON** to explore twenty-six layouts, including Media Grid and the Portfolio, Comic, Editorial and Newsletter collections. It contains neutral demonstration copy, no customer material, and no external assets. The JSON includes an empty history to keep it easy to review.
 
 To demonstrate media placement, select its Media slide, choose **Edit media**, and upload `sample-diagram.svg`. Try right/left, below, full-screen, background, and corner inset placements; add a caption and inspect the preview. Export an editable ZIP to include the uploaded media.
 
