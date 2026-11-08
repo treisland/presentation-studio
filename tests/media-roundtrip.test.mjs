@@ -61,9 +61,16 @@ for (const name of ['pattern.mp4', 'pattern.webm']) {
           await writeFile(target, await entry.async('uint8array'));
         }
         const reopened = await context.newPage();
+        const bootErrors=[];reopened.on('pageerror',e=>bootErrors.push(e.message));
         await reopened.goto('file://' + resolve(destination, 'index.html'));
         await reopened.locator('#stage .dot').nth(4).click();
         await playing(reopened, '#stage .slide.active video');
+        assert.deepEqual(bootErrors,[]);
+        if(kind==='editable') {
+          await reopened.locator('#open-full-editor').click();
+          assert.equal(await reopened.locator('#full-editor').evaluate(el=>el.open),true);
+          assert.equal(await reopened.evaluate(()=>window.presentationStudioEditing.read().state.media['studio-media'].kind),'video');
+        }
         await reopened.close();
         if (kind === 'editable') {
           const archive = resolve('test-results', `media-${name}.zip`);

@@ -26,7 +26,7 @@ function mfDecorate(slide) {
 function mfAction(figure) {
   const button = document.createElement('button'), asset = figure.querySelector('.media-asset');
   button.className = 'mf-expand'; button.type = 'button'; button.textContent = 'Open media focus';
-  button.setAttribute('aria-label', 'Open media focus: ' + (asset?.alt || ceFigureConfig(figure)?.name || 'slide media'));
+  button.setAttribute('aria-label', 'Open media focus: ' + (asset?.alt || (projectReady && ceFigureConfig(figure)?.name) || 'slide media'));
   button.setAttribute('aria-haspopup', 'dialog');
   return button;
 }
