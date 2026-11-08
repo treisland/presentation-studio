@@ -10,7 +10,7 @@ Newsletter starter adds four prompt-based newsletter-style slide compositions. I
 
 Flyer starter adds event, announcement and portfolio-cover slides with original `flyer-gathering.svg` placeholder artwork under Apache 2.0. It is 16:9 slide output, not a print-ready format.
 
-Import `layout-sampler.json` through **Presentations → Open ZIP / JSON** to explore twenty-nine layouts across the core templates and five collections. It contains neutral demonstration copy, no customer material, and no external assets. The JSON includes an empty history to keep it easy to review.
+Import `layout-sampler.json` through **Presentations → Open ZIP / JSON** to explore thirty layouts (nine core templates, including Blank, and twenty-one collection compositions) across the core templates and five collections. It contains neutral demonstration copy, no customer material, and no external assets. The JSON includes an empty history to keep it easy to review.
 
 To demonstrate media placement, select its Media slide, choose **Edit media**, and upload `sample-diagram.svg`. Try right/left, below, full-screen, background, and corner inset placements; add a caption and inspect the preview. Export an editable ZIP to include the uploaded media.
 

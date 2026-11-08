@@ -4,9 +4,9 @@ The maintainer approved this milestone plan after 0.4.0-rc.1 publication and aut
 
 ## First review slice
 
-The maintainer passed the first Portfolio manual review and authorized merge/continued development. PR #77 merged at `189212dc60c2874172c7be9bd318f195d76ccb92`; the explicit sign-off was “manual testing passed. PR is good to be merged and continue with the dev process”. This clears the initial expansion checkpoint, not the later release gates. A subsequently identified empty-table retention regression is tracked in #78 with a focused fix and ZIP round-trip test.
+The maintainer passed the first Portfolio manual review and authorized merge/continued development. PR #77 merged at `189212dc60c2874172c7be9bd318f195d76ccb92`; the explicit sign-off was “manual testing passed. PR is good to be merged and continue with the dev process”. This clears the initial expansion checkpoint, not the later release gates. The empty-table retention regression (#78) was fixed and merged in #79, with ZIP round-trip coverage.
 
-Choose **Project → New presentation → Portfolio starter** or **Portfolio finished example**, then use defaults or continue setup. Each use creates fresh project and slide identities through the existing save-before-switch guard. The finished one-slide library case study is fictional, makes no measured-impact claim, and embeds an original Apache-2.0 diagram. The library factory remains unchanged when a user customizes a copy. **Project settings → Recovery & reset → Reset entire presentation** confirms replacement, checkpoints changes and supports Undo.
+At the initial checkpoint, choose **Project → New presentation → Portfolio starter** or **Portfolio finished example**, then use defaults or continue setup. Each use creates fresh project and slide identities through the existing save-before-switch guard. The finished one-slide library case study is fictional, makes no measured-impact claim, and embeds an original Apache-2.0 diagram. The library factory remains unchanged when a user customizes a copy. **Project settings → Recovery & reset → Reset entire presentation** confirms replacement, checkpoints changes and supports Undo.
 
 **Add slide → Portfolio · Case study** adds the same composition to a project without changing its theme or swatches. Use the slide Layout control to preview a change. The mapping lists source text for each slot, image handling and unmatched material. Unmatched text/tables/commands stay on the slide; identified/free blocks and existing Grid cells retain identity. Extra material may overflow and must be shortened or rearranged before sharing. Locked slide contents block layout changes. Replacing prompts is explicitly confirmed; accepted changes preserve notes, IDs and media and create one Undo step plus a recovery checkpoint.
 
@@ -20,7 +20,7 @@ The collection now offers five editable 16:9 compositions: **Case study**, **Pro
 
 The gallery is a two-by-two Media Grid with independent Fit/Fill, crop and image descriptions. Each collection retains theme/swatches, ID/recovery behavior and content-mapping protections. The layout sampler includes all five Portfolio compositions. Long copy, additional retained content and missing images remain explicit editing/review tasks rather than being hidden or auto-shrunk.
 
-## Scope and delivery order
+## Implemented collections in review
 
 ### Flyer collection
 
@@ -44,7 +44,9 @@ Columns have an explicit content boundary above the visual/credits area. Long ar
 
 **Comic starter / finished example** in New presentation provide four slides: opening, three-panel sequence, explanation and takeaway. The seed-sharing story uses original bundled `comic-seed-1/2/3.svg` illustrations under Apache 2.0. Speech is editable paragraph content styled as a bubble; panel captions and image descriptions use the existing Media inspector. Text is never baked into the story artwork.
 
-The sequence reads left to right. Each panel has its own Fit/Fill/crop and caption; long dialogue uses the same explicit slot/overflow guidance, and empty panels remain editable targets. Theme fonts and colors are inherited rather than forcing comic lettering or a bright palette. These remain 16:9 slides. Optional interface walkthrough cues are separate work under #71.
+The sequence reads left to right. Each panel has its own Fit/Fill/crop and caption; long dialogue uses the same explicit slot/overflow guidance, and empty panels remain editable targets. Theme fonts and colors are inherited rather than forcing comic lettering or a bright palette. These remain 16:9 slides. Optional interface walkthrough cues are implemented separately under #71.
+
+## Scope and delivery order
 
 1. Build shared composition/slot metadata, theme inheritance, content mapping, reading order and overflow handling.
 2. Deliver one complete Portfolio composition plus starter/finished-demo pair for maintainer manual review. Use this checkpoint to validate the abstraction and editing workflow before multiplying templates.
@@ -86,3 +88,5 @@ All initial collections use the current 16:9 slide canvas. Newsletter-style slid
 [Unscheduled discovery #73](https://github.com/treisland/presentation-studio/issues/73) assesses portrait, square, print and scrolling formats, reflow/pagination, compatibility and suitable exports. It has no milestone or release commitment. Only add orientation filters when multiple actual formats exist.
 
 Continue implementation through scoped issues and linked feature PRs under AGENTS.md/CONTRIBUTING.md. Run required checks/package validation, record real supported-environment/manual results, freeze scope before beta, and use a separate approved release plan. Neither the milestone nor feature PRs authorize publication.
+
+See [the consolidated validation record](0.5.0-validation.md) for the draft stack, automated evidence and remaining manual gates.

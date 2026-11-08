@@ -6463,6 +6463,22 @@
         "topic": "General",
         "commands": null,
         "templateCommands": null
+      },
+      {
+        "id": "slide-sampler-blank",
+        "title": "blank",
+        "group": "section-405df504-7de5-40ca-b7f3-720ddf2e1864",
+        "template": "blank",
+        "classes": "wide studio-blank",
+        "tree": [],
+        "templateBase": [],
+        "templateClasses": "wide studio-blank",
+        "duration": 12,
+        "hidden": false,
+        "notes": "",
+        "topic": "General",
+        "commands": null,
+        "templateCommands": null
       }
     ],
     "trash": [],
@@ -6498,7 +6514,8 @@
           "slide-sampler-newsletter-closing",
           "slide-sampler-flyer-event",
           "slide-sampler-flyer-announcement",
-          "slide-sampler-flyer-cover"
+          "slide-sampler-flyer-cover",
+          "slide-sampler-blank"
         ]
       }
     },
@@ -11677,6 +11694,22 @@
           "topic": "General",
           "commands": null,
           "templateCommands": null
+        },
+        {
+          "id": "slide-sampler-blank",
+          "title": "blank",
+          "group": "section-405df504-7de5-40ca-b7f3-720ddf2e1864",
+          "template": "blank",
+          "classes": "wide studio-blank",
+          "tree": [],
+          "templateBase": [],
+          "templateClasses": "wide studio-blank",
+          "duration": 12,
+          "hidden": false,
+          "notes": "",
+          "topic": "General",
+          "commands": null,
+          "templateCommands": null
         }
       ],
       "trash": [],
@@ -11706,7 +11739,8 @@
             "slide-sampler-newsletter-closing",
             "slide-sampler-flyer-event",
             "slide-sampler-flyer-announcement",
-            "slide-sampler-flyer-cover"
+            "slide-sampler-flyer-cover",
+            "slide-sampler-blank"
           ]
         }
       },

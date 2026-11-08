@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Complete the sampler with all thirty core/collection layouts, including Blank, and consolidate viewport, gallery entry-point and manual acceptance evidence.
+
 - Add explicit optional Portfolio, Comic and Editorial editor walkthroughs with static control cues, keyboard navigation, Skip/Close/Replay and reduced-motion support. Guide state stays outside projects and exports and closes on project switching.
 - Add a view-only example gallery with purpose/image-layout filters, complete slide previews and readable image descriptions. Separate starter/demo creation uses save-before-switch and handles unavailable artwork without replacing the active project.
 - Consolidate cross-example identity/reset and complete offline export checks across the three core pairs and lightweight starters. Keep each project's own reset baseline after repeated resets instead of falling back to the Studio demo.
