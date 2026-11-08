@@ -14,6 +14,8 @@ Call `apply({apiVersion:1, projectId, expectedRevision, operations})`. Operation
 
 The template set is hero, comparison, workflow, table, qa, code and media. Unsupported operations/fields, invalid bounds and unknown IDs fail rather than being silently applied. Same project/slide/object locks and validators are used by UI and API. Title entry reuses metadata validation, gallery creation reuses template model construction, and Free placement uses the batch operation. Remaining legacy editing paths retain their existing lock/undo guards and are migrated incrementally as future operations are added.
 
+The additive [content-block operations](content-blocks.md) support block.create/place/duplicate/remove for palette-created top-level nodes. They use the same transaction contract and stable IDs scoped to each slide. Active block gestures return BUSY; existing original-layout nodes are not silently converted.
+
 ## Atomicity, recovery and conflicts
 
 Validation or cancellation before commit leaves live state, media bytes, checkpoints and undo history unchanged. A successful changed batch creates one undo entry and a bounded **Before editing batch** recovery checkpoint; a no-op creates neither. Operations cannot change asset bytes, avoiding asynchronous file changes during commit. Commit/render failure restores state, history, checkpoints and metadata. No asynchronous boundary occurs during commit; an AbortSignal already aborted is rejected, and cancellation is checked again before commit. Cancellation after the synchronous call returns cannot undo a committed result.
@@ -24,4 +26,4 @@ Existing schema-v2 project packs, reset baselines, media references and editable
 
 ## Versioning and future work
 
-Require the integer `apiVersion` explicitly. Incompatible operation semantics require a new major contract; additive operations can extend v1 when older requests retain behavior. This first contract deliberately excludes arbitrary trees/HTML, generic property paths, lock changes, deletion, asset uploads, model output and remote access. Canvas blocks #12 and additive media #11 can add reviewed operations later. Test legacy imports and offline export/reopen alongside the contract tests; do not treat this local API as a ready-made Hermes/MCP endpoint.
+Require the integer `apiVersion` explicitly. Incompatible operation semantics require a new major contract; additive operations can extend v1 when older requests retain behavior. The contract excludes arbitrary trees/HTML, generic property paths, lock changes, original-layout deletion, asset uploads, model output and remote access. Block removal is limited to the documented palette nodes. Test legacy imports and offline export/reopen alongside the contract tests; do not treat this local API as a ready-made Hermes/MCP endpoint.
