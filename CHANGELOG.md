@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add collapsible Slides/Inspector panels and keyboard-operable width controls; Fit follows window/panel resizing while manual zoom stays selected. Panel state remains outside projects and undo history.
+
 ## 0.2.0 — 2026-11-07
 
 - Promote the tested release candidate to stable after maintainer sign-off. Includes readiness checks, isolated backup verification, media round-trip coverage and keyboard/accessibility improvements. No runtime or project-format changes since rc.1.

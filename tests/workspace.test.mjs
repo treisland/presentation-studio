@@ -35,6 +35,55 @@ async function media(p) {
   await slide(p, "studio-media").click();
 }
 
+test("Panel collapse and keyboard sizing refit the canvas without changing project or undo data", async () => {
+  const { p, context, errors } = await setup();
+  try {
+    const before = await pack(p);
+    const fits = async () => {
+      await p.waitForFunction(() => {
+        const v = document.querySelector('#we-viewport').getBoundingClientRect();
+        const s = document.querySelector('#fe-preview').getBoundingClientRect();
+        return s.left >= v.left && s.top >= v.top && s.right <= v.right && s.bottom <= v.bottom;
+      });
+    };
+    for (const size of [{ width: 1280, height: 720 }, { width: 1366, height: 768 }]) {
+      await p.setViewportSize(size);
+      await fits();
+      const initial = await p.locator('#we-viewport').boundingBox();
+      await p.locator('#we-toggle-slides').press('Enter');
+      await p.locator('#we-toggle-inspector').press('Space');
+      assert.equal(await p.locator('#we-slides').isVisible(), false);
+      assert.equal(await p.locator('#we-inspector').isVisible(), false);
+      await fits();
+      assert((await p.locator('#we-viewport').boundingBox()).width > initial.width);
+      await p.locator('#we-toggle-slides').press('Enter');
+      await p.locator('#we-toggle-inspector').press('Enter');
+      await p.locator('#we-panel-sizes > summary').press('Enter');
+      const slider = await p.locator('#we-size-slides').boundingBox();
+      await p.mouse.click(slider.x + slider.width * 0.75, slider.y + slider.height / 2);
+      assert.notEqual(await p.locator('#we-size-slides').inputValue(), '210');
+      await p.locator('#we-size-slides').press('End');
+      await p.locator('#we-size-inspector').press('End');
+      await fits();
+      await p.locator('#we-zoom').selectOption('0.75');
+      await p.locator('#we-size-slides').press('Home');
+      await p.setViewportSize({ width: size.width - 60, height: size.height });
+      assert.equal(await p.locator('#we-zoom').inputValue(), '0.75');
+      await p.locator('#we-size-inspector').press('Escape');
+      assert.equal(await p.locator('#we-panel-sizes').getAttribute('open'), null);
+      assert.equal(await p.locator('#full-editor').evaluate(el => el.open), true);
+      await p.locator('#we-fit').click();
+      await fits();
+      await p.locator('#we-panel-sizes > summary').click();
+      await p.locator('#we-panel-reset').click();
+      assert.equal(await p.locator('#we-size-slides').inputValue(), '210');
+      await p.locator('#we-panel-reset').press('Escape');
+    }
+    assert.deepEqual(await pack(p), before);
+    assert.deepEqual(errors, []);
+  } finally { await context.close(); }
+});
+
 test("Compact editor keeps actions reachable and settings returns keyboard focus", async () => {
   const { p, context } = await setup();
   try {
@@ -317,6 +366,14 @@ test("Dragging media while zoomed uses slide coordinates, and view state is abse
     }
     const before = (await pack(p)).state.media["studio-media"].canvas.placement;
     await p.locator("#we-zoom").selectOption("0.5");
+    await p.locator('#we-toggle-slides').click();
+    await p.setViewportSize({ width: 1280, height: 720 });
+    await p.waitForFunction(() => {
+      const viewport = document.querySelector('#we-viewport');
+      const transform = new DOMMatrix(getComputedStyle(document.querySelector('#fe-preview')).transform);
+      return Math.abs(transform.e - (viewport.clientWidth - 960) / 2) < 1 &&
+        Math.abs(transform.f - (viewport.clientHeight - 540) / 2) < 1;
+    });
     const box = p.locator("#fe-preview .ce-floating");
     const r = await box.boundingBox(),
       width = await p
@@ -334,6 +391,7 @@ test("Dragging media while zoomed uses slide coordinates, and view state is abse
         data.state.media["studio-media"].canvas.placement.x -
           (before.x - 30 / width),
       ) < 0.015,
+      JSON.stringify({ before, after: data.state.media['studio-media'].canvas.placement, r, width }),
     );
     assert(!JSON.stringify(data.state).includes("weZoom"));
     assert.equal(await p.locator("#we-zoom").inputValue(), "0.5");
