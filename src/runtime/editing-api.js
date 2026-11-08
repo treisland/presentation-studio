@@ -42,8 +42,7 @@ function editingSlide(state, id) {
   if (state.editLocked || slide.editLocked) editingFail("LOCKED", "Unlock the presentation or slide first.");
   return slide;
 }
-function editingUpdate(state, id, changes) {
-  const slide = editingSlide(state, id);
+function editingValidateUpdate(changes) {
   if (!changes || typeof changes !== "object" || Array.isArray(changes) ||
       Object.keys(changes).some(k => !["title", "notes", "duration"].includes(k)))
     editingFail("INVALID", "Supported slide fields are title, notes and duration.");
@@ -54,6 +53,10 @@ function editingUpdate(state, id, changes) {
       editingFail("INVALID", "Invalid slide " + key + ".");
     }
   }
+}
+function editingUpdate(state, id, changes) {
+  const slide = editingSlide(state, id);
+  editingValidateUpdate(changes);
   Object.assign(slide, changes);
   if (Object.hasOwn(changes, "title")) {
     slide.title ||= "Untitled slide";
@@ -97,7 +100,7 @@ const studioEditing = Object.freeze({
       if (request?.apiVersion !== 1) editingFail("VERSION", "Unsupported editing contract version.");
       if (request.projectId !== projectMeta.id || request.expectedRevision !== editingRevision())
         editingFail("CONFLICT", "The project changed. Read it again and review a fresh proposal.");
-      if (projectPending || ceDrag || ceRelocate || mfState || mediaExporting)
+      if (projectPending || vbSession || ceDrag || ceRelocate || mfState || mediaExporting)
         editingFail("BUSY", "Finish the current edit, gesture or export first.");
       if (!Array.isArray(request.operations) || !request.operations.length || request.operations.length > 100)
         editingFail("INVALID", "Supply 1–100 operations.");
@@ -157,7 +160,12 @@ const editingInit = projectInit;
 projectInit = function () {
   editingInit();
   $("fe-slide-title").oninput = event => {
-    try { projectEdit(() => editingUpdate(projectState, projectSelected, { title: event.target.value })); }
+    try {
+      const changes = { title: event.target.value };
+      editingSlide(projectState, projectSelected);
+      editingValidateUpdate(changes);
+      projectEdit(() => editingUpdate(projectState, projectSelected, changes));
+    }
     catch (error) { projectMessage(error.message); }
   };
   $("ce-float").onclick = () => {

@@ -47,6 +47,48 @@ test('shared API batches metadata and placement in one undo step with a pre-chan
     assert.deepEqual((await read(page)).state, after.state);
   } finally { await page.close(); }
 });
+test('inline sessions block batches after typing flush until the author finishes editing', async () => {
+  const page = await setup();
+  try {
+    const heading = page.locator('#fe-preview h1').first();
+    await heading.click();
+    await page.keyboard.press('Control+a');
+    await page.keyboard.type('Inline authoring');
+    // A saved draft proves the typing debounce has flushed without ending the session.
+    await page.waitForFunction(() => document.querySelector('#fe-status').dataset.saveState === 'saved');
+    assert.equal(await heading.getAttribute('contenteditable'), 'true');
+    const snapshot = await read(page);
+    const operation = { type: 'slide.update', slideId: 'studio-welcome', changes: { title: 'API proposal' } };
+    assert.equal((await apply(page, [operation], snapshot)).code, 'BUSY');
+    assert.deepEqual((await read(page)).state, snapshot.state);
+    await page.keyboard.press('End');
+    await page.keyboard.type(' continued');
+    assert((await read(page)).state.slides[0].title.includes('continued'));
+    await page.keyboard.press('Escape');
+    assert.equal((await apply(page, [operation])).ok, true);
+    assert.equal((await read(page)).state.slides[0].title, 'API proposal');
+    assert.equal(await page.locator('#fe-preview h1').first().innerText(), 'API proposal');
+  } finally { await page.close(); }
+});
+test('invalid title input does not open or strand a typing transaction', async () => {
+  const page = await setup();
+  try {
+    const before = await pack(page), snapshot = await read(page);
+    await page.locator('#fe-slide-title').fill('x'.repeat(501));
+    assert.equal((await page.locator('#fe-slide-title').inputValue()).length, 501);
+    assert.equal((await read(page)).revision, snapshot.revision);
+    const noOp = await apply(page, [{ type: 'slide.update', slideId: 'studio-welcome', changes: { title: snapshot.state.slides[0].title } }]);
+    assert.equal(noOp.ok, true);
+    assert.equal(noOp.changed, false);
+    assert.deepEqual(await pack(page), before);
+    assert.equal((await apply(page, [{ type: 'slide.update', slideId: 'studio-welcome', changes: { notes: 'Still available' } }])).ok, true);
+    await page.locator('#fe-slide-title').fill('Valid pending title');
+    await page.locator('#fe-slide-title').fill('x'.repeat(501));
+    await page.waitForFunction(() => document.querySelector('#fe-status').dataset.saveState === 'saved');
+    assert.equal((await read(page)).state.slides[0].title, 'Valid pending title');
+    assert.equal((await apply(page, [{ type: 'slide.update', slideId: 'studio-welcome', changes: { notes: 'Timer preserved' } }])).ok, true);
+  } finally { await page.close(); }
+});
 test('partial failure, cancellation, locks and stale UI edits leave batches unapplied', async () => {
   const page = await setup();
   try {
