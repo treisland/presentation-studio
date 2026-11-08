@@ -34,6 +34,13 @@ test('palette and keyboard arrangement preserve original content and unique IDs 
     assert.deepEqual(created.state.slides[0].tree.slice(0, original.state.slides[0].tree.length), original.state.slides[0].tree);
     assert.deepEqual(created.state.slides.map(s => s.id), original.state.slides.map(s => s.id));
     assert.equal(blocks(created.state).length, 4);
+    const appearance = await p.locator('#fe-preview .db-block').evaluateAll(nodes => nodes.map(n => ({ background: getComputedStyle(n).backgroundColor, color: getComputedStyle(n).color, text: getComputedStyle(n.querySelector('p')).color, border: getComputedStyle(n).borderLeftColor })));
+    assert.equal(appearance[0].background, 'rgba(0, 0, 0, 0)');
+    assert.equal(appearance[1].background, appearance[3].border);
+    assert.equal(appearance[1].background, appearance[2].background);
+    assert.notEqual(appearance[1].background, appearance[3].background);
+    assert.equal(appearance[1].text, appearance[1].color);
+    assert.equal(appearance[2].text, appearance[2].color);
     const node = blocks(created.state).at(-1), id = idOf(node);
     const root = p.locator('#fe-preview .' + id);
     await root.focus(); await p.keyboard.press('ArrowLeft');
