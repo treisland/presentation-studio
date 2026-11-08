@@ -3,6 +3,11 @@
 ## Unreleased
 
 - Document 0.5.0 layout/example planning and rename future AI/MCP milestones to 0.6.0/0.7.0.
+## 0.4.0 — 2026-11-08
+
+- Promote the maintainer-tested published release candidate to stable. Includes styling/swatches/picker, blank/clear slides, Layers and precision snapping, with atomic Grid removal fixes. No runtime, dependency or project-format changes since rc.1.
+- Record published-candidate manual sign-off and retain documented environment limitations, backup and recovery guidance.
+
 ## 0.4.0-rc.1 — 2026-11-08
 
 - Clear Grid layers together with their nested media, retaining Undo/recovery, and reject duplicate layer keys before removal can affect unrelated content.
