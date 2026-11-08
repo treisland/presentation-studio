@@ -1,4 +1,4 @@
-import { selectTab } from './ui.mjs';
+import { selectTab, addSlide } from './ui.mjs';
 import test from "node:test";
 import assert from "node:assert/strict";
 import { createRequire } from "node:module";
@@ -54,14 +54,18 @@ async function json(p) {
   return JSON.parse(await readFile(await file.path(), "utf8"));
 }
 async function upload(p, name = "second.svg", zone = "floating") {
-  await p.locator("#ce-zone").selectOption(zone);
-  await p.locator("#ce-file").setInputFiles({
+  if (zone !== "replace") await p.locator("#ce-zone").selectOption(zone);
+  await p.locator(zone === "replace" ? "#ce-replace-file" : "#ce-file").setInputFiles({
     name,
     mimeType: "image/svg+xml",
     buffer: Buffer.from(
       '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect width="400" height="300" fill="orange"/></svg>',
     ),
   });
+}
+async function confirmedUpload(p, name, zone) {
+  await upload(p, name, zone);
+  if (zone === "replace" && await p.locator('#fe-confirm').isVisible()) await p.locator('#fe-confirm-accept').click();
 }
 async function boothDialog(p) {
   await selectTab(p, "Presentation settings");
@@ -86,6 +90,95 @@ async function unpack(zip, folder) {
     await writeFile(path, await entry.async("uint8array"));
   }
 }
+
+test("Default addition preserves table/text, existing media and IDs with one-step undo", async () => {
+  const { p, context, errors } = await setup();
+  try {
+    await addSlide(p, 'table');
+    await p.locator('#we-context-media').click();
+    const id = await p.locator('.fe-slide-button[aria-current=true]').getAttribute('data-slide-id');
+    const before = await json(p), model = before.state.slides.find(s => s.id === id);
+    await upload(p, 'table-first.svg');
+    const first = await json(p);
+    assert.deepEqual(first.state.slides.find(s => s.id === id), model);
+    assert.equal(first.history.past.length, before.history.past.length + 1);
+    assert.equal(await p.locator('#fe-preview table').isVisible(), true);
+    await upload(p, 'table-second.svg', 'left');
+    const second = await json(p);
+    assert.deepEqual(second.state.media[id], first.state.media[id]);
+    assert.deepEqual(second.state.slides.find(s => s.id === id), model);
+    assert.equal(second.state.mediaObjects[id].length, 1);
+    await p.locator('#ce-file').setInputFiles(resolve('tests/fixtures/media/pattern.mp4'));
+    const third = await json(p);
+    assert.equal(third.state.mediaObjects[id].length, 2);
+    assert.equal(third.state.mediaObjects[id][1].media.kind, 'video');
+    await p.locator('#fe-undo').click();
+    assert.deepEqual((await json(p)).state, second.state);
+    await p.locator('#fe-redo').click();
+    assert.deepEqual((await json(p)).state, third.state);
+    const archive = await zipDownload(p, '#fe-export');
+    for (const media of [third.state.media[id], ...third.state.mediaObjects[id].map(o => o.media)]) assert(archive.file(media.src));
+    assert.deepEqual(Buffer.from(await archive.file(third.state.mediaObjects[id][1].media.src).async('uint8array')),
+      await readFile('tests/fixtures/media/pattern.mp4'));
+    for (const [kind, zip] of [['editable', archive], ['playback', await zipDownload(p, '#fe-playback')]]) {
+      const folder = resolve('test-results/additive-' + kind);
+      await unpack(zip, folder);
+      const reopened = await browser.newPage();
+      try {
+        await reopened.context().setOffline(true);
+        await reopened.goto('file://' + resolve(folder, 'index.html'));
+        if (kind === 'editable') {
+          await reopened.locator('#open-full-editor').click();
+          await reopened.locator('.fe-slide-button[data-slide-id="' + id + '"]').click();
+          assert.equal(await reopened.locator('#fe-preview table').isVisible(), true);
+          assert.equal(await reopened.locator('#fe-preview .media-box').count(), 3);
+        } else {
+          const saved = JSON.parse(await zip.file('presentation.json').async('string'));
+          assert.deepEqual(saved.state.slides.find(s => s.id === id).tree, model.tree);
+          assert.equal(saved.state.mediaObjects[id].length, 2);
+          assert.equal(await reopened.locator('#stage .slide[data-media-id="' + id + '"] .media-box').count(), 3);
+        }
+      } finally { await reopened.close(); }
+    }
+    assert.deepEqual(errors, []);
+  } finally { await context.close(); }
+});
+
+test("Replacement names/previews its target, cancels safely and rejects a stale project", async () => {
+  const { p, context, errors } = await setup();
+  try {
+    await mediaSlide(p);
+    await upload(p, 'keep-primary.svg');
+    const before = await json(p), extra = before.state.mediaObjects['studio-media'][0];
+    await upload(p, 'cancelled.svg', 'replace');
+    assert((await p.locator('#fe-confirm-title').innerText()).includes(extra.media.name));
+    assert.equal(await p.locator('#ce-replacement-preview').isVisible(), true);
+    assert.equal(await p.locator('#fe-preview .ce-replace-target').count(), 1);
+    await p.keyboard.press('Escape');
+    await p.waitForSelector('#ce-replacement-preview', { state: 'detached' });
+    assert.deepEqual(await json(p), before);
+    await upload(p, 'stale.svg', 'replace');
+    const changed = await p.evaluate(() => {
+      const api = window.presentationStudioEditing, snapshot = api.read();
+      return api.apply({ apiVersion: 1, projectId: snapshot.projectId, expectedRevision: snapshot.revision,
+        operations: [{ type: 'slide.update', slideId: 'studio-welcome', changes: { notes: 'Changed during confirmation' } }] });
+    });
+    assert.equal(changed.ok, true);
+    await p.locator('#fe-confirm-accept').click();
+    assert.deepEqual((await json(p)).state.mediaObjects['studio-media'][0], extra);
+    await confirmedUpload(p, 'accepted.svg', 'replace');
+    const after = await json(p), replaced = after.state.mediaObjects['studio-media'][0];
+    assert.equal(replaced.id, extra.id);
+    assert.deepEqual(replaced.media.canvas, extra.media.canvas);
+    assert.deepEqual(after.state.media['studio-media'], before.state.media['studio-media']);
+    const archive = await zipDownload(p, '#fe-export');
+    assert(archive.file(extra.media.src), 'Undo history retains the old asset');
+    assert(archive.file(replaced.media.src));
+    await p.locator('#fe-undo').click();
+    assert.deepEqual((await json(p)).state.mediaObjects['studio-media'][0], extra);
+    assert.deepEqual(errors, []);
+  } finally { await context.close(); }
+});
 
 test("Floating placement, scaled dragging, undo, crop, multiple objects and exports round-trip", async () => {
   const { p, context, errors } = await setup();
@@ -114,7 +207,6 @@ test("Floating placement, scaled dragging, undo, crop, multiple objects and expo
       (await json(p)).state.media["studio-media"].canvas.placement,
       initial,
     );
-    await p.locator("#ce-add-object").check();
     await upload(p);
     assert.equal(await p.locator("#fe-preview .media-box").count(), 2);
     await p.locator("#ce-fit").selectOption("cover");
@@ -171,13 +263,13 @@ test("Drop replacement retains placement; design locks prevent direct and indire
     await p.locator("#ce-float").click();
     const original = (await json(p)).state.media["studio-media"].canvas
       .placement;
-    await upload(p, "replacement.svg", "replace");
+    await confirmedUpload(p, "replacement.svg", "replace");
     assert.deepEqual(
       (await json(p)).state.media["studio-media"].canvas.placement,
       original,
     );
     await p.locator("#ce-object-lock").click();
-    await upload(p, "blocked.svg", "replace");
+    await confirmedUpload(p, "blocked.svg", "replace");
     assert.equal(
       (await json(p)).state.media["studio-media"].name,
       "replacement.svg",
@@ -242,7 +334,7 @@ test("Actual file drops choose placement and Present prevents browser navigation
       .locator("[data-drop-zone=floating]")
       .dispatchEvent("drop", { dataTransfer: dt });
     assert.equal(
-      (await json(p)).state.media["studio-media"].name,
+      (await json(p)).state.mediaObjects["studio-media"][0].media.name,
       "dropped.svg",
     );
     await p.locator("#fe-close").click();
@@ -634,7 +726,6 @@ test("Structured placement of additional media keeps both assets and respects pr
   const { p, context, errors } = await setup();
   try {
     await mediaSlide(p);
-    await p.locator("#ce-add-object").check();
     await upload(p, "additional-layout.svg");
     const before = (await json(p)).state,
       extra = before.mediaObjects["studio-media"][0];

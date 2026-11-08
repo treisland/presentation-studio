@@ -319,6 +319,9 @@ function cePanel() {
   $("ce-grid").disabled =
     !cfg || vbMode !== "edit" || ceLocked(projectSelected, ceSelected);
   $("ce-selected").textContent = cfg ? cfg.name : "No media selected";
+  $("ce-replace").textContent = cfg ? "Replace " + (cfg.name || "selected media") + "…" : "Replace selected media…";
+  $("ce-replace").disabled = !cfg || ceLocked(projectSelected, ceSelected);
+  $("ce-upload").disabled = ceLocked();
   for (const key of ["x", "y", "w", "h"])
     $("ce-" + key).value =
       Math.round(
@@ -567,7 +570,7 @@ function ceEnd(cancel = false) {
   projectChange(() => ceSetConfig(next, d.object, d.id));
 }
 async function ceDrop(files, zone) {
-  if (ceLocked() || vbMode !== "edit" || !$("full-editor").open || boothActive)
+  if (!projectReady || projectDraftPending || mediaExporting || ceLocked() || vbMode !== "edit" || !$("full-editor").open || boothActive)
     return;
   const file = files[0];
   if (files.length !== 1) {
@@ -588,14 +591,21 @@ async function ceDrop(files, zone) {
     projectMessage("Unlock the selected object before replacing it.");
     return;
   }
-  if ($("ce-add-object").checked && ceObjects().length >= 30) {
+  if (zone !== "replace" && projectState.media[projectSelected] && ceObjects().length >= 30) {
     projectMessage("A slide supports up to 30 additional media objects.");
     return;
   }
-  const id = projectSelected,
-    path = "assets/" + projectID("media") + "-" + mediaFilename(file.name);
-  mediaRemember(path, file);
-  const existing = zone === "replace" ? ceConfig() : null;
+  if ($("fe-confirm").open) return;
+  vbEnd(false);
+  projectFlush();
+  const id = projectSelected, objectID = ceSelected,
+    revision = studioEditing.read().revision,
+    path = "assets/" + projectID("media") + "-" + mediaFilename(file.name),
+    existing = zone === "replace" ? ceConfig(objectID, id) : null;
+  if (zone === "replace" && !existing) {
+    projectMessage("Select an existing media object to replace.");
+    return;
+  }
   const cfg = {
     ...mediaDefaults,
     ...existing,
@@ -605,44 +615,77 @@ async function ceDrop(files, zone) {
     kind: file.type.startsWith("video/") ? "video" : "image",
   };
   if (zone !== "replace") {
-    cfg.layout = ["left", "right", "background"].includes(zone)
-      ? zone
-      : "inset";
+    cfg.layout = "inset";
     cfg.canvas = ceObject({
-      placement:
-        zone === "floating" ? { x: 0.6, y: 0.5, w: 0.35, h: 0.4 } : null,
+      placement: zone === "background" ? { x: 0, y: 0, w: 1, h: 1 } :
+        { x: zone === "left" ? 0.05 : 0.6, y: 0.5, w: 0.35, h: 0.4 },
+      z: zone === "background" ? 0 : 3,
     });
   }
   if (cfg.kind === "image") {
     delete cfg.poster;
     delete cfg.posterName;
   }
-  projectChange(() => {
-    if (zone === "replace" && existing) ceSetConfig(cfg);
-    else if ($("ce-add-object").checked && projectState.media[id]) {
-      const object = {
-        id: projectID("object"),
-        media: {
-          ...cfg,
-          canvas: ceObject({
-            ...cfg.canvas,
-            placement: cfg.canvas?.placement || {
-              x: 0.6,
-              y: 0.5,
-              w: 0.35,
-              h: 0.4,
-            },
-          }),
-        },
-      };
-      projectState.mediaObjects ??= {};
-      (projectState.mediaObjects[id] ??= []).push(object);
-      ceSelected = object.id;
-    } else {
-      projectState.media[id] = cfg;
-      ceSelected = "primary";
+  const commit = () => {
+    if (!$("full-editor").open || vbMode !== "edit" || boothActive || projectDraftPending || ceLocked(id) ||
+        (zone === "replace" && ceLocked(id, objectID)) || studioEditing.read().revision !== revision) {
+      projectMessage("The project changed or became locked. Choose the media action again.");
+      return;
     }
-  });
+    mediaRemember(path, file);
+    projectChange(() => {
+      if (zone === "replace" && existing) {
+        ceSetConfig(cfg, objectID, id);
+        ceSelected = objectID;
+      } else if (projectState.media[id]) {
+        const object = {
+          id: projectID("object"),
+          media: {
+            ...cfg,
+            canvas: ceObject({
+              ...cfg.canvas,
+              placement: cfg.canvas?.placement || {
+                x: 0.6,
+                y: 0.5,
+                w: 0.35,
+                h: 0.4,
+              },
+            }),
+          },
+        };
+        projectState.mediaObjects ??= {};
+        (projectState.mediaObjects[id] ??= []).push(object);
+        ceSelected = object.id;
+      } else {
+        projectState.media[id] = cfg;
+        ceSelected = "primary";
+      }
+    });
+    const retained = projectState.media[id]?.src === path || ceObjects(id).some(o => o.media.src === path);
+    if (!retained) {
+      URL.revokeObjectURL(mediaURLs.get(path));
+      mediaURLs.delete(path);
+      mediaBlobs.delete(path);
+    }
+  };
+  if (zone === "replace") {
+    const figure = ceFigure();
+    figure?.classList.add("ce-replace-target");
+    projectConfirm("Replace " + (existing.name || "selected media") + "?",
+      "Replace only this object's file with " + file.name + ". Its placement and other slide content stay unchanged. Undo restores the previous media.", commit);
+    const preview = document.createElement(cfg.kind === "video" ? "video" : "img"), previewURL = URL.createObjectURL(file);
+    preview.id = "ce-replacement-preview";
+    preview.src = previewURL;
+    if (cfg.kind === "video") { preview.controls = true; preview.muted = true; preview.preload = "metadata"; }
+    else preview.alt = "Replacement preview: " + file.name;
+    $("fe-confirm-message").after(preview);
+    $("fe-confirm").addEventListener("close", () => {
+      preview.remove();
+      URL.revokeObjectURL(previewURL);
+      figure?.classList.remove("ce-replace-target");
+      if (projectConfirmAction === commit) projectConfirmAction = null;
+    }, { once: true });
+  } else commit();
 }
 function ceDropZones(existing = false) {
   const host = $("fe-preview");
@@ -666,8 +709,8 @@ function ceDropZones(existing = false) {
     button.dataset.dropZone = zone;
     button.textContent =
       zone === "replace"
-        ? "Replace selected"
-        : zone[0].toUpperCase() + zone.slice(1);
+        ? "Replace " + (ceConfig()?.name || "selected media") + "…"
+        : (existing ? "" : "Add · ") + zone[0].toUpperCase() + zone.slice(1);
     if (existing) button.onclick = () => ceFinishPlacement(zone);
     layer.append(button);
   }
@@ -800,7 +843,7 @@ function ceBind() {
   panel.className = "hub-brand-group";
   panel.open = true;
   panel.innerHTML =
-    '<summary>On-slide media and locks</summary><p id="ce-readonly" role="status"></p><div class="ce-row"><button id="ce-slide-lock">Lock slide</button><button id="ce-project-lock">Make presentation read-only</button></div><div id="ce-objects" aria-label="Media objects"></div><b id="ce-selected"></b><label class="fe-check"><input id="ce-add-object" type="checkbox"> Add dropped media as another floating object</label><button id="ce-upload">Add / replace media file</button><input id="ce-file" type="file" accept="image/*,video/*" hidden><label>Upload placement<select id="ce-zone"><option value="replace">Replace selected</option><option value="floating">Floating</option><option value="left">Left</option><option value="right">Right</option><option value="background">Background</option></select></label><div class="ce-row">' +
+    '<summary>On-slide media and locks</summary><p id="ce-readonly" role="status"></p><div class="ce-row"><button id="ce-slide-lock">Lock slide</button><button id="ce-project-lock">Make presentation read-only</button></div><div id="ce-objects" aria-label="Media objects"></div><b id="ce-selected"></b><div class="ce-row"><button id="ce-upload">Add media to slide</button><button id="ce-replace">Replace selected media…</button></div><input id="ce-file" type="file" accept="image/*,video/*" hidden><input id="ce-replace-file" type="file" accept="image/*,video/*" hidden><label>Add placement<select id="ce-zone"><option value="floating">Floating</option><option value="left">Left</option><option value="right">Right</option><option value="background">Background</option></select></label><div class="ce-row">' +
     ["x", "y", "w", "h"]
       .map(
         (key) =>
@@ -820,8 +863,15 @@ function ceBind() {
   bind("ce-upload", () => {
     if (!ceLocked()) $("ce-file").click();
   });
+  bind("ce-replace", () => {
+    if (ceConfig() && !ceLocked(projectSelected, ceSelected)) $("ce-replace-file").click();
+  });
+  $("ce-replace-file").onchange = e => {
+    if (e.target.files.length) ceDrop(e.target.files, "replace");
+    e.target.value = "";
+  };
   $("ce-file").onchange = (e) => {
-    ceDrop(e.target.files, $("ce-zone").value);
+    if (e.target.files.length) ceDrop(e.target.files, $("ce-zone").value);
     e.target.value = "";
   };
   for (const type of ["slide", "project", "object"])
@@ -1034,7 +1084,7 @@ function ceBind() {
             .forEach((z) => z.classList.toggle("ce-drop-active", z === zone));
         } else {
           const zone =
-            e.target.closest("[data-drop-zone]")?.dataset.dropZone || "replace";
+            e.target.closest("[data-drop-zone]")?.dataset.dropZone || "floating";
           $("fe-preview").querySelector(".ce-drop-zones")?.remove();
           ceDrop(e.dataTransfer.files, zone);
         }
