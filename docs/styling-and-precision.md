@@ -1,6 +1,6 @@
 # 0.4.0 — Styling and precision
 
-Assigned scope: [#57](https://github.com/treisland/presentation-studio/issues/57), [0.4.0 milestone](https://github.com/treisland/presentation-studio/milestone/5). AI moves to 0.5.0; MCP moves to 0.6.0. This implementation does not bump the version or authorize publication. The maintainer reviews the development build before separate release preparation.
+Assigned scope: [#57](https://github.com/treisland/presentation-studio/issues/57), [0.4.0 milestone](https://github.com/treisland/presentation-studio/milestone/5). The reviewed features are published in 0.4.0-rc.1 through a separate authorized release plan; stable promotion still requires candidate testing/sign-off. Layout collections/examples follow in 0.5.0, AI in 0.6.0 and MCP in 0.7.0. See [release evidence](releases/0.4.0-evidence.md) and [the next milestone plan](layout-collections.md).
 
 ## Appearance
 

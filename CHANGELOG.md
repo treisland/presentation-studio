@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Document 0.5.0 layout/example planning and rename future AI/MCP milestones to 0.6.0/0.7.0.
 ## 0.4.0-rc.1 — 2026-11-08
 
 - Clear Grid layers together with their nested media, retaining Undo/recovery, and reject duplicate layer keys before removal can affect unrelated content.
