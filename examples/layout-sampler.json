@@ -4,7 +4,7 @@
   "meta": {
     "id": "presentation-studio-layout-sampler-v1",
     "name": "Layout sampler",
-    "updatedAt": "2026-11-05T00:00:00.000Z"
+    "updatedAt": "2026-11-08T00:00:00.000Z"
   },
   "playbackOnly": false,
   "state": {
@@ -1603,6 +1603,246 @@
         "commands": null,
         "templateCommands": null,
         "_trashIndex": 0
+      },
+      {
+        "id": "slide-sampler-portfolio-case",
+        "title": "Portfolio case study",
+        "group": "section-405df504-7de5-40ca-b7f3-720ddf2e1864",
+        "template": "portfolio-case",
+        "classes": "wide mg-slide lc-case",
+        "tree": [
+          {
+            "tag": "h2",
+            "attrs": {
+              "class": "lc-slot-title"
+            },
+            "children": [
+              {
+                "text": "Portfolio case study"
+              }
+            ]
+          },
+          {
+            "tag": "div",
+            "attrs": {
+              "class": "lc-copy"
+            },
+            "children": [
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "Problem"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-context"
+                },
+                "children": [
+                  {
+                    "text": "What problem did you set out to solve, and for whom?"
+                  }
+                ]
+              },
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "Approach"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-process"
+                },
+                "children": [
+                  {
+                    "text": "Describe your role, the important decision and how you tested it."
+                  }
+                ]
+              },
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "Outcome"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-results"
+                },
+                "children": [
+                  {
+                    "text": "State what changed. Distinguish measured results from plans."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "tag": "div",
+            "attrs": {
+              "class": "mg-grid mg-r-10000 mg-c-10000 mg-g-2"
+            },
+            "children": [
+              {
+                "tag": "div",
+                "attrs": {
+                  "class": "mg-cell cell-sampler-portfolio-visual"
+                },
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "p",
+            "attrs": {
+              "class": "lc-slot-credits"
+            },
+            "children": [
+              {
+                "text": "Add image context, your role and any collaborators or asset credits."
+              }
+            ]
+          }
+        ],
+        "templateBase": [
+          {
+            "tag": "h2",
+            "attrs": {
+              "class": "lc-slot-title"
+            },
+            "children": [
+              {
+                "text": "Portfolio case study"
+              }
+            ]
+          },
+          {
+            "tag": "div",
+            "attrs": {
+              "class": "lc-copy"
+            },
+            "children": [
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "Problem"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-context"
+                },
+                "children": [
+                  {
+                    "text": "What problem did you set out to solve, and for whom?"
+                  }
+                ]
+              },
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "Approach"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-process"
+                },
+                "children": [
+                  {
+                    "text": "Describe your role, the important decision and how you tested it."
+                  }
+                ]
+              },
+              {
+                "tag": "h3",
+                "attrs": {
+                  "class": "lc-label"
+                },
+                "children": [
+                  {
+                    "text": "Outcome"
+                  }
+                ]
+              },
+              {
+                "tag": "p",
+                "attrs": {
+                  "class": "lc-slot-results"
+                },
+                "children": [
+                  {
+                    "text": "State what changed. Distinguish measured results from plans."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "tag": "div",
+            "attrs": {
+              "class": "mg-grid mg-r-10000 mg-c-10000 mg-g-2"
+            },
+            "children": [
+              {
+                "tag": "div",
+                "attrs": {
+                  "class": "mg-cell cell-sampler-portfolio-visual"
+                },
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "p",
+            "attrs": {
+              "class": "lc-slot-credits"
+            },
+            "children": [
+              {
+                "text": "Add image context, your role and any collaborators or asset credits."
+              }
+            ]
+          }
+        ],
+        "templateClasses": "wide mg-slide lc-case",
+        "duration": 12,
+        "hidden": false,
+        "notes": "",
+        "topic": "General",
+        "commands": null,
+        "templateCommands": null
       }
     ],
     "trash": [],
@@ -1617,7 +1857,8 @@
           "slide-e68f61cd-2c73-4638-b5bb-88626d8de64b",
           "slide-46b2ddc6-2746-45b2-b1b1-c1066ef230ce",
           "slide-0d9aa9fc-9468-4f56-bbe7-550965cc0677",
-          "slide-media-grid-sampler"
+          "slide-media-grid-sampler",
+          "slide-sampler-portfolio-case"
         ]
       }
     },
@@ -1936,6 +2177,246 @@
           "commands": null,
           "templateCommands": null,
           "_trashIndex": 0
+        },
+        {
+          "id": "slide-sampler-portfolio-case",
+          "title": "Portfolio case study",
+          "group": "section-405df504-7de5-40ca-b7f3-720ddf2e1864",
+          "template": "portfolio-case",
+          "classes": "wide mg-slide lc-case",
+          "tree": [
+            {
+              "tag": "h2",
+              "attrs": {
+                "class": "lc-slot-title"
+              },
+              "children": [
+                {
+                  "text": "Portfolio case study"
+                }
+              ]
+            },
+            {
+              "tag": "div",
+              "attrs": {
+                "class": "lc-copy"
+              },
+              "children": [
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "Problem"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-context"
+                  },
+                  "children": [
+                    {
+                      "text": "What problem did you set out to solve, and for whom?"
+                    }
+                  ]
+                },
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "Approach"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-process"
+                  },
+                  "children": [
+                    {
+                      "text": "Describe your role, the important decision and how you tested it."
+                    }
+                  ]
+                },
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "Outcome"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-results"
+                  },
+                  "children": [
+                    {
+                      "text": "State what changed. Distinguish measured results from plans."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "tag": "div",
+              "attrs": {
+                "class": "mg-grid mg-r-10000 mg-c-10000 mg-g-2"
+              },
+              "children": [
+                {
+                  "tag": "div",
+                  "attrs": {
+                    "class": "mg-cell cell-sampler-portfolio-visual"
+                  },
+                  "children": []
+                }
+              ]
+            },
+            {
+              "tag": "p",
+              "attrs": {
+                "class": "lc-slot-credits"
+              },
+              "children": [
+                {
+                  "text": "Add image context, your role and any collaborators or asset credits."
+                }
+              ]
+            }
+          ],
+          "templateBase": [
+            {
+              "tag": "h2",
+              "attrs": {
+                "class": "lc-slot-title"
+              },
+              "children": [
+                {
+                  "text": "Portfolio case study"
+                }
+              ]
+            },
+            {
+              "tag": "div",
+              "attrs": {
+                "class": "lc-copy"
+              },
+              "children": [
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "Problem"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-context"
+                  },
+                  "children": [
+                    {
+                      "text": "What problem did you set out to solve, and for whom?"
+                    }
+                  ]
+                },
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "Approach"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-process"
+                  },
+                  "children": [
+                    {
+                      "text": "Describe your role, the important decision and how you tested it."
+                    }
+                  ]
+                },
+                {
+                  "tag": "h3",
+                  "attrs": {
+                    "class": "lc-label"
+                  },
+                  "children": [
+                    {
+                      "text": "Outcome"
+                    }
+                  ]
+                },
+                {
+                  "tag": "p",
+                  "attrs": {
+                    "class": "lc-slot-results"
+                  },
+                  "children": [
+                    {
+                      "text": "State what changed. Distinguish measured results from plans."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "tag": "div",
+              "attrs": {
+                "class": "mg-grid mg-r-10000 mg-c-10000 mg-g-2"
+              },
+              "children": [
+                {
+                  "tag": "div",
+                  "attrs": {
+                    "class": "mg-cell cell-sampler-portfolio-visual"
+                  },
+                  "children": []
+                }
+              ]
+            },
+            {
+              "tag": "p",
+              "attrs": {
+                "class": "lc-slot-credits"
+              },
+              "children": [
+                {
+                  "text": "Add image context, your role and any collaborators or asset credits."
+                }
+              ]
+            }
+          ],
+          "templateClasses": "wide mg-slide lc-case",
+          "duration": 12,
+          "hidden": false,
+          "notes": "",
+          "topic": "General",
+          "commands": null,
+          "templateCommands": null
         }
       ],
       "trash": [],
@@ -1944,7 +2425,8 @@
           "name": "Main presentation",
           "slideIds": [
             "slide-7a07607d-3f73-4827-90a3-2021ab481474",
-            "slide-media-grid-sampler"
+            "slide-media-grid-sampler",
+            "slide-sampler-portfolio-case"
           ]
         }
       },

@@ -13,7 +13,8 @@
     "src/styles/draggable-blocks.css",
     "src/styles/media-grid.css",
     "src/styles/panel-polish.css",
-    "src/styles/precision.css"
+    "src/styles/precision.css",
+    "src/styles/layouts.css"
   ],
   "scripts": [
     "src/runtime/prelude.js",
@@ -40,6 +41,7 @@
     "src/runtime/panel-polish.js",
     "src/runtime/design.js",
     "src/runtime/precision.js",
+    "src/runtime/layouts.js",
     "src/runtime/boot.js"
   ],
   "vendor": "vendor/jszip-3.10.1.min.js"

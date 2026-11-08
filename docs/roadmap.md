@@ -2,10 +2,10 @@
 
 ## Current delivery plan
 
-Stable 0.4.0 promotion is authorized after maintainer testing/sign-off of published 0.4.0-rc.1; see [the evidence record](releases/0.4.0-evidence.md). The maintainer approved the layout/example milestone plan after candidate publication. These are scoped planning issues, not permission to implement every future candidate. Feature PRs do not select release versions. See [release stages and contribution flow](release-process.md). GitHub milestones and linked issues hold acceptance criteria and delivery state.
+Stable 0.4.0 is published after maintainer testing/sign-off; see [the evidence record](releases/0.4.0-evidence.md). The maintainer authorized proceeding with 0.5.0, beginning with shared foundations and the first Portfolio review checkpoint. Feature PRs do not select release versions. See [release stages and contribution flow](release-process.md). GitHub milestones and linked issues hold acceptance criteria and delivery state.
 
-- **Now — 0.4.0 stable delivery:** promote the signed-off published candidate with no runtime changes; verify publication before closing release tracking. Includes styling/swatches/picker, blank/clear, snapping, Layers and reviewed removal fixes. See [stable notes](releases/0.4.0.md) and [feature guide](styling-and-precision.md).
-- **Next — 0.5.0 layout collections and examples:** theme-independent reusable Portfolio/Case study, Comic, Editorial (Newspaper/Blog), Newsletter and Flyer compositions. Shared foundations precede one complete Portfolio starter/demo pair and a manual review checkpoint; then expand the collections, example gallery and optional walkthroughs. See [the scoped plan](layout-collections.md) and #63–#72. Issues remain planned until explicitly ready.
+- **Completed — 0.4.0 stable delivery:** styling/swatches/picker, blank/clear, snapping, Layers and reviewed removal fixes. See [stable notes](releases/0.4.0.md) and [feature guide](styling-and-precision.md).
+- **Now — 0.5.0 layout collections and examples:** shared foundations and the first theme-independent Portfolio composition/starter/demo are in progress for manual review. After that checkpoint, expand Portfolio/Case study, Comic, Editorial (Newspaper/Blog), Newsletter and Flyer, then the example gallery and optional walkthroughs. See [the scoped plan](layout-collections.md) and #63–#72.
 - **Completed — 0.3.0 canvas enhancements:** responsive workspace, shared editing API, additive media, draggable blocks, Media Grid, accessible Media Focus and Inspector polish. Detailed environment follow-ups #7/#9 remain visible.
 - **Deferred:** camera overlays, template publishing, accounts and collaboration until the core workflow is dependable.
 

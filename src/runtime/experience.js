@@ -637,29 +637,30 @@ function nxWizardPage() {
       : nxWizardStep === 3
         ? "Create presentation"
         : "Next";
-  $("nx-wizard-layout").disabled = choice === "template";
+  $("nx-wizard-layout").disabled = choice !== "blank";
   $("nx-wizard-layout-hint").textContent =
-    choice === "template"
-      ? studioTemplateName + " keeps its existing slides. Add slide remains available after setup."
+    choice !== "blank"
+      ? (choice.startsWith('portfolio-') ? 'The Portfolio example' : studioTemplateName) + " keeps its existing slides. Add slide remains available after setup."
       : "This layout creates your first slide. Add more layouts after setup.";
   if (nxWizardStep === 2) nxWizardPreview();
   if (nxWizardStep === 3) nxWizardPreview();
   if (nxWizardStep === 3)
     $("nx-wizard-summary").textContent =
-      `${$("nx-wizard-name").value.trim() || "Untitled presentation"} · ${choice === "template" ? studioTemplateName : $("nx-wizard-layout").selectedOptions[0].textContent + " starter"} · independent project ID and draft.`;
+      `${$("nx-wizard-name").value.trim() || "Untitled presentation"} · ${choice.startsWith('portfolio-') ? (choice==='portfolio-demo'?'Portfolio finished example':'Portfolio starter') : choice === "template" ? studioTemplateName : $("nx-wizard-layout").selectedOptions[0].textContent + " starter"} · independent project ID and draft.`;
 }
 function nxWizardPreview() {
   const type = $("nx-wizard-layout").value,
     choice = document.querySelector('input[name="nx-start"]:checked').value;
+  const example=lcExampleState(choice, 'Preview');
   const candidate =
-    choice === "template"
+    (example?{...example.slides[0],previewMedia:example.media[example.slides[0].id]}:null) || (choice === "template"
       ? studioDefaultTemplate.slides[0]
       : {
           id: "wizard-preview",
           group: projectState.sections[0].id,
           template: type,
           ...projectCreateTemplate(type, "Your presentation"),
-        };
+        });
   const preset = nxPresets.find(p => p.id === $("nx-wizard-preset").value);
   const base = preset?.brand || (choice === "template" ? studioDefaultTemplate.brand : studioBlankState("Preview").brand);
   const brand = {
@@ -720,9 +721,9 @@ async function nxFinishWizard(defaults = false) {
       await projectSaveDraft();
       const name = $("nx-wizard-name").value.trim() || "Untitled presentation";
       let state =
-        choice === "template"
+        lcExampleState(choice, name) || (choice === "template"
           ? projectCopy(studioDefaultTemplate)
-          : studioBlankState(name);
+          : studioBlankState(name));
       state.projectName = name;
       if (!defaults) {
         const selected = nxPresets.find(
@@ -779,7 +780,7 @@ async function nxFinishWizard(defaults = false) {
         sectionTransition: "inherit",
         disableMotion: false,
       };
-      if (choice === "blank") state.startingState = projectCopy(state);
+      if (choice !== "template") { delete state.startingState; state.startingState = projectCopy(state); }
       projectDraftPending = null;
       projectAcceptPack({
         schemaVersion: 2,

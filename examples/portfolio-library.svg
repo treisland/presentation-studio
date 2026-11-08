@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="800" viewBox="0 0 1000 800" role="img" aria-labelledby="title desc">
+<title id="title">A calmer library visit</title><desc id="desc">Arrival leads to discovery, then quiet reading. Feedback informs the next signage revision.</desc>
+<rect width="1000" height="800" rx="32" fill="#eaf2f7"/>
+<g fill="none" stroke="#205065" stroke-width="10"><path d="M500 220v65m0 170v65"/><path d="M740 595h120V135H740" stroke-dasharray="14 12"/></g>
+<g fill="#fff" stroke="#205065" stroke-width="4"><rect x="180" y="70" width="560" height="150" rx="24"/><rect x="180" y="295" width="560" height="150" rx="24"/><rect x="180" y="520" width="560" height="150" rx="24"/></g>
+<g font-family="Arial,sans-serif" text-anchor="middle" fill="#143747"><text x="460" y="133" font-size="40" font-weight="700">1. Arrival</text><text x="460" y="181" font-size="27">A clear welcome and floor guide</text><text x="460" y="358" font-size="40" font-weight="700">2. Discovery</text><text x="460" y="406" font-size="27">Find a section without asking</text><text x="460" y="583" font-size="40" font-weight="700">3. Quiet reading</text><text x="460" y="631" font-size="27">Choose a space that fits</text><text x="500" y="744" font-size="28">Listen → test the signs → improve</text></g>
+</svg>
