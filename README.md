@@ -76,7 +76,7 @@ For a localhost preview, run `npm run serve`, then open `http://127.0.0.1:4173`.
 
 [Quick start](docs/quick-start.md) · [Architecture](docs/architecture.md) · [Contributing](CONTRIBUTING.md) · [Content and branding](docs/content-and-branding.md) · [Open-source release](docs/open-source-release.md) · [Roadmap](docs/roadmap.md) · [Troubleshooting](docs/troubleshooting.md)
 
-Version 0.5.0-rc.1. Layout collections and examples release candidate authorized after the maintainer's completed manual reviews. Stable 0.4.0 remains available while candidate downloads are tested. Released under the [Apache License 2.0](LICENSE). Third-party notices apply. See the [candidate notes](docs/releases/0.5.0-rc.1.md) for support scope, recovery guidance and evidence limitations.
+Version 0.5.0. Stable layout collections and examples release authorized after sign-off of the published candidate. Released under the [Apache License 2.0](LICENSE). Third-party notices apply. See the [release notes](docs/releases/0.5.0.md) for support scope, recovery guidance and evidence limitations.
 
 ## Development process
 
