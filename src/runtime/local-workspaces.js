@@ -3,6 +3,13 @@ const lwPackFiles = /* @AUTHORING_PACK */;
 const lwLimits = { input: 100 * 1024 * 1024, expanded: 200 * 1024 * 1024, json: 20 * 1024 * 1024, entries: 1000, folder: 500 };
 let lwFolder = null, lwRemembered = null, lwLinked = null, lwCandidate = null,
   lwBusy = false, lwBackupFolder = null, lwEpoch = 0, lwCheckRunning = false;
+let lwFolderGeneration = 0, lwConnectionGeneration = 0;
+function lwDeadline(operation, message, milliseconds = 2000) {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error(message)), milliseconds);
+    Promise.resolve(operation).then(value => { clearTimeout(timer); resolve(value); }, error => { clearTimeout(timer); reject(error); });
+  });
+}
 function lwMessage(message) { $("lw-message").textContent = message; }
 function lwButton(label, id, action) {
   const button = document.createElement("button");
@@ -15,7 +22,7 @@ async function lwRun(action) {
   $("lw-panel").setAttribute("aria-busy", "true");
   try { await action(); }
   catch (error) {
-    if (error.name !== "AbortError") lwMessage(error.message || String(error));
+    lwMessage(error.name === "AbortError" ? "Operation cancelled. The current presentation remains open." : error.message || String(error));
   } finally {
     lwBusy = false; $("lw-panel").setAttribute("aria-busy", "false"); lwStatus();
   }
@@ -30,24 +37,31 @@ function lwStatus() {
   $("lw-destination").textContent = state;
   $("lw-save").disabled = !lwLinked || lwBusy;
   $("lw-reload").disabled = !lwLinked || lwBusy;
+  $("lw-refresh").disabled = !lwFolder || lwBusy;
   $("lw-review-open").disabled = !lwCandidate || lwBusy;
   $("lw-review-copy").disabled = !lwCandidate || lwBusy;
   $("lw-backup-state").textContent = lwBackupFolder ? "Snapshots enabled · " + lwBackupFolder.name + " · newest five per project" : "Snapshots off";
   if (lwLinked) $("fe-status").textContent = state + " · Browser recovery: " + hubSaveState;
 }
-async function lwHandleStore(value, read = false) {
-  const db = await new Promise((resolve, reject) => {
+async function lwHandleStore(value, read = false, current = () => true) {
+  let expired = false, db;
+  const opening = new Promise((resolve, reject) => {
     const request = indexedDB.open("presentation-studio-workspaces", 1);
     request.onupgradeneeded = () => request.result.createObjectStore("handles");
-    request.onsuccess = () => resolve(request.result); request.onerror = () => reject(request.error);
+    request.onsuccess = () => { if (expired) request.result.close(); else resolve(request.result); };
+    request.onerror = () => reject(request.error);
+    request.onblocked = () => reject(new Error("Remembered-folder storage is blocked by another browser tab."));
   });
+  try { db = await lwDeadline(opening, "Remembered-folder storage did not respond."); }
+  catch (error) { expired = true; throw error; }
   try {
-    return await new Promise((resolve, reject) => {
+    if (!current()) return;
+    return await lwDeadline(new Promise((resolve, reject) => {
       const tx = db.transaction("handles", read ? "readonly" : "readwrite"), store = tx.objectStore("handles");
       const request = read ? store.get("folder") : value ? store.put(value, "folder") : store.delete("folder");
       let result; request.onsuccess = () => { result = request.result; };
       tx.oncomplete = () => resolve(result); tx.onabort = tx.onerror = () => reject(tx.error || new Error("Folder preference could not be saved."));
-    });
+    }), "Remembered-folder storage did not finish.");
   } finally { db.close(); }
 }
 async function lwPermission(handle, write = false) {
@@ -226,26 +240,57 @@ async function lwAccept(copy = false) {
 }
 async function lwRefresh() {
   if (!lwFolder) throw new Error("Connect or reconnect a folder first.");
-  await lwPermission(lwFolder);
-  const list = $("lw-files"), records = []; let count = 0;
-  // Enumerate top-level metadata only. No recursive scan or background file content reads.
-  for await (const [name, handle] of lwFolder.entries()) {
-    if (++count > lwLimits.folder) throw new Error("Folder exceeds 500 top-level entries. Choose a smaller presentations folder.");
-    if (handle.kind !== "file" || name.startsWith(".") || !/\.(json|zip)$/i.test(name)) continue;
-    const file = await handle.getFile(); records.push({ handle, file });
-  }
+  const folder = lwFolder, generation = ++lwFolderGeneration;
+  await lwPermission(folder);
+  $("lw-folder-summary").textContent = "Reading filenames in “" + folder.name + "”…";
+  const list = $("lw-files"), records = []; list.replaceChildren();
+  let count = 0, folders = 0, done = false;
+  const iterator = folder.entries()[Symbol.asyncIterator]();
+  try {
+    while (true) {
+      const result = await lwDeadline(iterator.next(), "Folder listing did not respond. Reconnect the drive/share or choose another folder.", 5000);
+      if (generation !== lwFolderGeneration || folder !== lwFolder) return;
+      if (result.done) { done = true; break; }
+      if (++count > lwLimits.folder) throw new Error("Folder exceeds 500 top-level entries. Choose a smaller presentations folder.");
+      const [name, handle] = result.value;
+      if (handle.kind === "directory") folders++;
+      if (handle.kind === "file" && !name.startsWith(".") && /\.(json|zip)$/i.test(name)) records.push({ name, handle });
+    }
+  } catch (error) {
+    $("lw-folder-summary").textContent = "Could not list “" + folder.name + "”. " + error.message;
+    throw error;
+  } finally { if (!done && iterator.return) Promise.resolve(iterator.return()).catch(() => {}); }
   list.replaceChildren();
-  for (const { handle, file } of records.sort((a, b) => b.file.lastModified - a.file.lastModified)) {
-    const row = document.createElement("li"); row.dataset.name = file.name.toLowerCase();
-    const button = lwButton(file.name, null, async () => lwStage(await handle.getFile(), { handle, folder: lwFolder }));
-    const details = document.createElement("small"); details.textContent = " · " + new Date(file.lastModified).toLocaleString() + " · " + Math.ceil(file.size / 1024) + " KB · validate on open";
-    row.append(button, details); list.append(row);
+  for (const record of records.sort((a, b) => a.name.localeCompare(b.name))) {
+    const { name, handle } = record, row = document.createElement("li"); row.dataset.name = name.toLowerCase();
+    const button = lwButton(name, null, async () => lwStage(await lwDeadline(handle.getFile(), "File is unavailable. Reconnect the drive/share and try opening it again.", 5000), { handle, folder }));
+    record.details = document.createElement("small"); record.details.textContent = " · checking file information… · validate on open";
+    row.append(button, record.details); list.append(row);
   }
-  lwFilter(); lwMessage("Connected read-only: " + lwFolder.name + " · " + records.length + " supported file(s). Validation happens when selected.");
+  $("lw-folder-summary").textContent = records.length
+    ? "Connected read-only: " + folder.name + " · " + records.length + " JSON/ZIP file(s)."
+    : "No top-level JSON/ZIP files found in “" + folder.name + "”. " + (folders ? folders + " subfolder(s) were not scanned. " : "") + "Select the folder containing the files directly.";
+  lwFilter(); lwMessage("Connected read-only: " + folder.name + " · " + records.length + " supported file(s). Validation happens when selected.");
+  // Metadata is optional. Native/cloud file information must not block the list or other controls.
+  let next = 0;
+  const worker = async () => {
+    while (next < records.length && generation === lwFolderGeneration && folder === lwFolder) {
+      const record = records[next++];
+      try {
+        const file = await lwDeadline(record.handle.getFile(), "File information unavailable.");
+        if (generation === lwFolderGeneration && folder === lwFolder) record.details.textContent = " · " + new Date(file.lastModified).toLocaleString() + " · " + Math.ceil(file.size / 1024) + " KB · validate on open";
+      } catch {
+        if (generation === lwFolderGeneration && folder === lwFolder) record.details.textContent = " · file information unavailable; opening will report access errors";
+      }
+    }
+  };
+  for (let i = 0; i < Math.min(4, records.length); i++) void worker();
 }
 function lwFilter() {
   const query = $("lw-search").value.trim().toLowerCase();
-  for (const row of $("lw-files").children) row.hidden = !row.dataset.name.includes(query);
+  let visible = 0;
+  for (const row of $("lw-files").children) { row.hidden = !row.dataset.name.includes(query); if (!row.hidden) visible++; }
+  $("lw-search-empty").hidden = !query || visible > 0;
 }
 async function lwCheckDisk() {
   if (!lwLinked || lwBusy || lwCheckRunning) return;
@@ -335,8 +380,16 @@ async function lwSave(copy = false) {
 async function lwOpen() {
   if (projectPlayback || boothBlocked() || document.body.classList.contains("obs")) return;
   hubMenusClose(); $("lw-panel").showModal(); lwStatus();
-  lwRemembered = lwFolder || await lwHandleStore(null, true).catch(() => null);
+  lwRemembered = lwFolder;
   $("lw-reconnect").disabled = !lwRemembered;
+  if (!lwFolder) {
+    const generation = lwConnectionGeneration;
+    void lwHandleStore(null, true).then(handle => {
+      if (!lwFolder && generation === lwConnectionGeneration) { lwRemembered = handle; $("lw-reconnect").disabled = !handle; }
+    }).catch(() => {
+      if (!lwFolder && generation === lwConnectionGeneration) $("lw-folder-summary").textContent = "Remembered-folder access is unavailable. Choose Open folder to connect for this session.";
+    });
+  }
 }
 function lwMount() {
   const dialog = document.createElement("dialog"); dialog.id = "lw-panel"; dialog.setAttribute("aria-labelledby", "lw-title");
@@ -350,8 +403,8 @@ function lwMount() {
     <label>Or paste authoring JSON<textarea id="lw-json" rows="5" maxlength="2000000" placeholder="Paste the complete JSON document"></textarea></label>
     <button id="lw-validate">Validate pasted JSON</button></section>
     <section id="lw-folder-panel" role="tabpanel" aria-labelledby="lw-tab-folder" hidden><h3>Presentation folder</h3><p id="lw-support"></p>
-    <div class="lw-actions" id="lw-folder-actions"></div>
-    <label>Find a presentation<input id="lw-search" type="search" placeholder="Search filenames"></label><ul id="lw-files"></ul></section>
+    <div class="lw-actions" id="lw-folder-actions"></div><p id="lw-folder-summary" role="status">No presentation folder connected.</p>
+    <label>Find a presentation<input id="lw-search" type="search" placeholder="Search filenames"></label><ul id="lw-files"></ul><p id="lw-search-empty" hidden>No filenames match this search. Clear the search to see all files.</p><button id="lw-clear-search">Clear filename search</button></section>
     <section id="lw-save-panel" role="tabpanel" aria-labelledby="lw-tab-save" hidden><h3>Save and recovery</h3><div class="lw-actions" id="lw-save-actions"></div>
     <p id="lw-backup-state"></p><details><summary>Recovery and backup details</summary>
     <p>Browser recovery retains opened content and media in this browser profile. Remove old copies through Presentations → Remove local copy after switching away. Disconnect forgets folder access here, but does not delete files or recovery; revoke permission in browser site settings.</p>
@@ -382,18 +435,31 @@ function lwMount() {
   projectMenu.append(lwButton("AI & local workspace…", "lw-open", lwOpen));
   $("hub-open-file").parentElement.append(lwButton("AI & local workspace…", "lw-hub-open", lwOpen));
   const supports = !!window.showDirectoryPicker && window.isSecureContext;
-  $("lw-support").textContent = supports ? "Choose a dedicated presentations folder. Top-level JSON/ZIP files only; read access first." : "Folder access is unavailable in this browser/context. Use JSON/ZIP import and editable ZIP downloads.";
+  $("lw-support").textContent = supports ? "Choose a dedicated presentations folder, then confirm Select Folder in the system picker. Files appear here afterward. Top-level JSON/ZIP files only; read access first." : "Live folder access is unavailable in this browser/context (including Firefox). Use Create / import for JSON/ZIP files and Save a copy for editable ZIP downloads.";
   const connect = lwButton("Open folder", "lw-connect", async () => {
-    const folder = await window.showDirectoryPicker({ mode: "read" });
+    lwMessage("Choose a presentation folder and confirm Select Folder. Waiting for the system picker…");
+    let folder;
+    try { folder = await window.showDirectoryPicker({ mode: "read" }); }
+    catch (error) {
+      if (error.name === "AbortError") { lwMessage("Folder selection was cancelled or the browser declined access. Confirm Select Folder and any read-access prompt. Try a dedicated presentations subfolder rather than a protected system folder."); return; }
+      throw new Error("Could not open the folder picker: " + error.message + ". Use Create / import to open individual files.");
+    }
     await lwPermission(folder); lwFolder = folder; lwRemembered = folder;
-    try { await lwHandleStore(folder); } catch { lwMessage("Folder connected for this session; could not remember permission."); }
-    $("lw-reconnect").disabled = false; await lwRefresh();
+    const generation = ++lwConnectionGeneration;
+    $("lw-search").value = ""; $("lw-reconnect").disabled = false;
+    await lwRefresh();
+    void lwHandleStore(folder, false, () => lwFolder === folder && generation === lwConnectionGeneration).catch(() => {
+      if (lwFolder === folder && generation === lwConnectionGeneration) $("lw-folder-summary").textContent += " Connected for this session; permission could not be remembered.";
+    });
   }); connect.disabled = !supports;
   const reconnect = lwButton("Reconnect remembered folder", "lw-reconnect", async () => { await lwPermission(lwRemembered); lwFolder = lwRemembered; await lwRefresh(); });
   $("lw-folder-actions").append(connect, reconnect, lwButton("Refresh folder", "lw-refresh", lwRefresh), lwButton("Disconnect", "lw-disconnect", async () => {
-    await lwHandleStore(null); lwFolder = lwRemembered = lwLinked = lwBackupFolder = lwCandidate = null;
+    lwConnectionGeneration++; lwFolderGeneration++;
+    lwFolder = lwRemembered = lwLinked = lwBackupFolder = lwCandidate = null;
     $("lw-files").replaceChildren(); $("lw-review").replaceChildren(); $("lw-reconnect").disabled = true;
+    $("lw-folder-summary").textContent = "No presentation folder connected."; $("lw-search").value = ""; lwFilter();
     lwMessage("Disconnected. Files and browser recovery were retained. Revoke permission in browser site settings if desired."); projectStatus();
+    void lwHandleStore(null).catch(() => { if (!lwFolder) lwMessage("Disconnected for this session; browser preferences could not be cleared. Revoke folder access in browser site settings if needed."); });
   }));
   $("lw-save-actions").append(lwButton("Save linked file", "lw-save", () => lwSave()), lwButton("Save a copy…", "lw-save-copy", () => lwSave(true)),
     lwButton("Reload from disk", "lw-reload", async () => {
@@ -430,6 +496,7 @@ function lwMount() {
   };
   $("lw-validate").onclick = () => lwRun(() => lwStage(new File([$("lw-json").value], "authoring.json", { type: "application/json" })));
   $("lw-search").oninput = lwFilter;
+  $("lw-clear-search").onclick = () => { $("lw-search").value = ""; lwFilter(); $("lw-search").focus(); };
   $("lw-copy-repair").onclick = () => lwRun(async () => {
     try { await navigator.clipboard.writeText($("lw-repair").value); lwMessage("Repair instructions copied."); }
     catch { $("lw-repair").focus(); $("lw-repair").select(); lwMessage("Copy the selected repair text manually."); }

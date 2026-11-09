@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Fix blank folder-selection feedback: list filenames before optional storage/metadata, isolate unreadable files, clear stale searches and explain cancellation, empty folders and unsupported-browser fallback.
+
 - Extend portable authoring with Auto/explicit native-element layouts, editable Library widgets, balanced typography, safe visual import review and layout/fit/repair feedback; preserve earlier authoring-v1 inputs.
 
 - Add provider-independent AI authoring instructions/schema/examples and validated JSON import with review and repair feedback.

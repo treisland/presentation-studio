@@ -5,6 +5,7 @@ import {resolve} from 'node:path';
 import {chromium} from 'playwright';
 import {click} from './ui.mjs';
 import vm from 'node:vm';
+import {createServer} from 'node:http';
 
 const browser = await chromium.launch({headless:true, executablePath:process.env.CHROMIUM_EXECUTABLE_PATH, args:['--no-sandbox']});
 test.after(() => browser.close());
@@ -20,9 +21,13 @@ window.__lwTest = {load:lwLoad, stage:lwStage, save:lwSave, check:lwCheckDisk, w
   projectInit();`);
 await writeFile('test-results/workspace-fixture.html',html);
 
-async function open({filesystem = false} = {}) {
+async function open({filesystem = false, blockedPreferences = false} = {}) {
   const page = await browser.newPage({acceptDownloads:true, viewport:{width:1280,height:800}});
   page.setDefaultTimeout(15000); const errors=[]; page.on('pageerror', e=>errors.push(e.message));
+  if(blockedPreferences)await page.addInitScript(()=>{
+    const original=indexedDB.open.bind(indexedDB);
+    indexedDB.open=(name,...args)=>name==='presentation-studio-workspaces'?{}:original(name,...args);
+  });
   if (!filesystem) await page.addInitScript(()=>{window.showDirectoryPicker=undefined;window.showSaveFilePicker=undefined;});
   if (filesystem) await page.addInitScript(({blank,example})=>{
     class Handle {
@@ -204,4 +209,76 @@ test('traversal archives, decompression limits, future project versions and unsu
     await page.screenshot({path:'test-results/local-workspace-small.png',fullPage:true});
     assert.deepEqual(errors,[]);
   }finally{await page.close();}
+});
+
+test('folder names appear despite blocked remembered storage and unavailable file metadata',async()=>{
+  const {page,errors}=await open({filesystem:true,blockedPreferences:true});try{
+    await page.evaluate(()=>{
+      __fs.native.getFile=()=>new Promise(()=>{});
+      const unavailable=new __fs.Handle('unavailable.zip','');unavailable.getFile=async()=>{throw new DOMException('File offline','NotReadableError');};
+      __fs.folder.files.set(unavailable.name,unavailable);
+    });
+    await page.locator('#lw-tab-folder').click();await page.locator('#lw-search').fill('stale search');
+    await page.locator('#lw-connect').click();
+    await page.locator('#lw-files button').filter({hasText:'project.json'}).waitFor();
+    assert.equal(await page.locator('#lw-files button:visible').count(),3);
+    assert.equal(await page.locator('#lw-search').inputValue(),'');
+    await page.waitForFunction(()=>document.querySelector('#lw-panel').getAttribute('aria-busy')==='false');
+    assert.match(await page.locator('#lw-folder-summary').textContent(),/Connected read-only/);
+    await page.waitForFunction(()=>document.querySelector('#lw-folder-summary').textContent.includes('could not be remembered'));
+    assert.match(await page.locator('#lw-files').innerText(),/file information unavailable/);
+    // A healthy file still opens even though another file never returns metadata.
+    await page.locator('#lw-files button').filter({hasText:'ai.json'}).click();await page.locator('#lw-review h3').waitFor();
+    assert.deepEqual(errors,[]);
+  }finally{await page.close();}
+});
+
+test('cancelled folder selection, empty nested folders and filtered results explain what happened',async()=>{
+  const {page,errors}=await open({filesystem:true});try{
+    await page.locator('#lw-tab-folder').click();
+    await page.evaluate(()=>{window.showDirectoryPicker=async()=>{throw new DOMException('Cancelled','AbortError');};});
+    await page.locator('#lw-connect').click();await page.waitForFunction(()=>document.querySelector('#lw-message').textContent.includes('cancelled'));
+    assert.match(await page.locator('#lw-message').textContent(),/Select Folder/);
+    await page.evaluate(()=>{window.showDirectoryPicker=async()=>__fs.folder;});await page.locator('#lw-connect').click();
+    await page.locator('#lw-files button').first().waitFor();
+    await page.locator('#lw-search').fill('not-a-filename');assert.equal(await page.locator('#lw-search-empty').isVisible(),true);
+    await page.locator('#lw-clear-search').click();assert.equal(await page.locator('#lw-files button:visible').count(),2);
+    await page.evaluate(()=>{__fs.folder.files.clear();__fs.folder.files.set('nested',{kind:'directory'});});
+    await page.locator('#lw-refresh').click();await page.waitForFunction(()=>document.querySelector('#lw-folder-summary').textContent.includes('No top-level'));
+    assert.match(await page.locator('#lw-folder-summary').textContent(),/1 subfolder/);assert.equal(await page.locator('#lw-files button').count(),0);
+    assert.deepEqual(errors,[]);
+  }finally{await page.close();}
+});
+
+test('a real browser directory handle lists JSON/ZIP files and survives preference serialization',async()=>{
+  const server=createServer((request,response)=>{
+    if(request.url!=='/'){response.writeHead(404);response.end();return;}
+    response.setHeader('Content-Type','text/html; charset=utf-8');response.end(html);
+  });
+  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
+  const page=await browser.newPage({viewport:{width:1280,height:800}}),errors=[];page.on('pageerror',e=>errors.push(e.message));
+  try{
+    await page.addInitScript(({blank})=>{
+      window.showDirectoryPicker=async()=>{
+        const root=await navigator.storage.getDirectory(),folder=await root.getDirectoryHandle('presentation-tests',{create:true});
+        for(const [name,content]of [['project.json',JSON.stringify(blank)],['another.ZIP','List without reading archive content']]){
+          const writer=await(await folder.getFileHandle(name,{create:true})).createWritable();await writer.write(content);await writer.close();
+        }
+        return folder;
+      };
+    },{blank});
+    await page.goto('http://127.0.0.1:'+server.address().port+'/');await page.locator('#open-full-editor').click();await click(page,'#lw-open');
+    await page.locator('#lw-tab-folder').click();await page.locator('#lw-connect').click();
+    await page.locator('#lw-files button').filter({hasText:'project.json'}).waitFor();assert.equal(await page.locator('#lw-files button').count(),2);
+    await page.waitForFunction(()=>document.querySelector('#lw-files').textContent.includes('KB'));
+    await page.waitForFunction(async()=>new Promise(resolve=>{
+      const request=indexedDB.open('presentation-studio-workspaces',1);request.onerror=()=>resolve(false);
+      request.onsuccess=()=>{const db=request.result,tx=db.transaction('handles','readonly'),saved=tx.objectStore('handles').get('folder');
+        saved.onsuccess=()=>resolve(saved.result instanceof FileSystemDirectoryHandle);saved.onerror=()=>resolve(false);tx.oncomplete=()=>db.close();};
+    }));
+    await page.reload();await page.locator('#open-full-editor').click();await click(page,'#lw-open');await page.locator('#lw-tab-folder').click();await page.locator('#lw-reconnect').click();
+    await page.waitForFunction(()=>document.querySelector('#lw-message').textContent.includes('Connected read-only'));
+    await page.locator('#lw-files button').filter({hasText:'project.json'}).click();await page.locator('#lw-review h3').waitFor();
+    assert.deepEqual(errors,[]);
+  }finally{await page.close();await new Promise(resolve=>server.close(resolve));}
 });
