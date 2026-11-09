@@ -204,6 +204,7 @@ function vbReadInline(element) {
       return [{ text: node.textContent.slice(0, 100000) }];
     if (node.nodeType !== 1) return [];
     const tag = node.tagName.toLowerCase();
+    if (node.matches('.db-handle,.an-endpoint')) return [];
     if (
       ["script", "style", "iframe", "object", "svg", "img", "video"].includes(
         tag,

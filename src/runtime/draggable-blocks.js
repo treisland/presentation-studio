@@ -32,14 +32,19 @@ function dbRect(node) {
   return { x: parseFloat(style.left) / 100, y: parseFloat(style.top) / 100,
     w: parseFloat(style.width) / 100, h: parseFloat(style.height) / 100, layer: Number(style.zIndex || 4) };
 }
+function dbClampPlacement(node,placement){
+  if(!mgHas(node,'db-template'))return cePlacement(placement);
+  const x=Math.max(0,Math.min(.995,placement.x)),y=Math.max(0,Math.min(.995,placement.y));
+  return {...placement,x,y,w:Math.max(.005,Math.min(1-x,placement.w)),h:Math.max(.005,Math.min(1-y,placement.h))};
+}
 function dbPlace(node, placement, layer = dbRect(node).layer) {
   if (!placement || !["x", "y", "w", "h"].every(k => Number.isFinite(placement[k])) ||
-      placement.x < 0 || placement.y < 0 || placement.w < 0.05 || placement.h < 0.05 ||
+      placement.x < 0 || placement.y < 0 || placement.w < (mgHas(node,'db-template')?.005:.05) || placement.h < (mgHas(node,'db-template')?.005:.05) ||
       placement.x + placement.w > 1.000001 || placement.y + placement.h > 1.000001 ||
       !Number.isInteger(layer) || layer < 0 || layer > 1000) editingFail("INVALID", "Block placement must fit inside the slide; layer must be 0–1000.");
-  const p = cePlacement(placement);
+  const p = mgHas(node,'db-template') ? {...placement} : cePlacement(placement);
   node.attrs.style = (node.attrs.style || "").split(";").filter(rule => !/^\s*(position|left|top|width|height|z-index)\s*:/i.test(rule)).join(";") +
-    `;position:absolute;left:${p.x * 100}%;top:${p.y * 100}%;width:${p.w * 100}%;height:${p.h * 100}%;z-index:${layer}`;
+    `;position:absolute;left:${Number((p.x * 100).toFixed(6))}%;top:${Number((p.y * 100).toFixed(6))}%;width:${Number((p.w * 100).toFixed(6))}%;height:${Number((p.h * 100).toFixed(6))}%;z-index:${layer}`;
 }
 function dbOperation(state, op, created) {
   if (!op?.type?.startsWith("block.")) return false;
@@ -206,7 +211,7 @@ projectInit = function () {
     if (d.mode === "move") {
       p.x = Math.max(0, Math.min(1 - p.w, p.x + dx)); p.y = Math.max(0, Math.min(1 - p.h, p.y + dy));
     } else {
-      p.w = Math.max(0.05, Math.min(1-p.x, p.w+dx)); p.h = Math.max(0.05, Math.min(1-p.y, p.h+dy));
+      const min=d.el.classList.contains('db-template')?.005:.05;p.w = Math.max(min, Math.min(1-p.x, p.w+dx)); p.h = Math.max(min, Math.min(1-p.y, p.h+dy));
     }
     Object.assign(p,spSnap(p,d.el.closest('.slide'),d.id,d.mode==='resize',e.altKey));
     d.next = p; Object.assign(d.el.style, { left: p.x*100+"%", top:p.y*100+"%", width:p.w*100+"%", height:p.h*100+"%" });
@@ -225,7 +230,7 @@ projectInit = function () {
     const p = dbRect(dbNode()), delta = e.shiftKey ? 0.01 : 0.002, handleKind = e.target.dataset.dbDrag;
     if (e.target.dataset.dbDrag === "resize") { p.w += e.key === "ArrowLeft" ? -delta : e.key === "ArrowRight" ? delta : 0; p.h += e.key === "ArrowUp" ? -delta : e.key === "ArrowDown" ? delta : 0; }
     else { p.x += e.key === "ArrowLeft" ? -delta : e.key === "ArrowRight" ? delta : 0; p.y += e.key === "ArrowUp" ? -delta : e.key === "ArrowDown" ? delta : 0; }
-    dbRun({ type:"block.place", blockId: dbSelected, placement: cePlacement(p) });
+    dbRun({ type:"block.place", blockId: dbSelected, placement: dbClampPlacement(dbNode(),p) });
     const root = projectPreviewNode.querySelector('.' + dbSelected);
     (handleKind ? root?.querySelector('[data-db-drag="' + handleKind + '"]') : root)?.focus();
   }, true);

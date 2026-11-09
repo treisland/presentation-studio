@@ -162,7 +162,7 @@ async function componentSave() {
     vbEnd(false);projectFlush();const snapshot=studioEditing.read(),slide=projectModel(),keys=spActiveKeys(),targets=componentTargets(projectState,slide,keys),name=$('component-name').value.trim();
     if(!name)throw Error('Give the component a name.');
     targets.forEach(componentRect);
-    const item={id:projectID('preset'),name,entries:targets.map(entry=>({node:entry.node&&projectCopy(entry.node),media:entry.media&&projectCopy(entry.media),commands:entry.node&&projectFind({tree:[entry.node]},node=>mgHas(node,'terminal')).length?projectCopy(slide.commands):undefined,meta:projectCopy(entry.meta)})),assets:{}};
+    const item={id:projectID('preset'),name,entries:targets.map(entry=>({node:entry.node&&projectCopy(entry.node),media:entry.media&&projectCopy(entry.media),commands:entry.node&&projectFind({tree:[entry.node]},node=>mgHas(node,'terminal')).length?projectCopy(slide.commands):undefined,groupName:entry.meta.group?spData().groups?.[entry.meta.group]?.name:undefined,meta:projectCopy(entry.meta)})),assets:{}};
     for(const entry of targets)if(entry.media)for(const path of [entry.media.src,entry.media.poster].filter(Boolean)){
       const blob=mediaBlobs.get(path);if(!blob)throw Error('Missing component media: '+path);
       item.assets[path]=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=reject;reader.readAsDataURL(blob);});
@@ -187,7 +187,7 @@ editingRegisterOperation('component.insert', (state, operation, created) => {
       if(state.mediaObjects[slide.id].length>=30)editingFail('INVALID','At most 30 media objects per slide.');
       state.mediaObjects[slide.id].push({id:object,media:entry.media});key='media-'+object;created.push(key);
     }
-    if(entry.meta.group){if(!groups.has(entry.meta.group))groups.set(entry.meta.group,projectID('group'));entry.meta.group=groups.get(entry.meta.group);}
+    if(entry.meta.group){if(!groups.has(entry.meta.group))groups.set(entry.meta.group,projectID('group'));entry.meta.group=groups.get(entry.meta.group);if(entry.groupName){if(typeof entry.groupName!=='string'||entry.groupName.length>80)editingFail('INVALID','Invalid preset group name.');data.groups??={};data.groups[entry.meta.group]??={autoName:enCounter(state,slide,'Group'),name:entry.groupName};}}
     data.objects[key]=entry.meta;
   }
 });

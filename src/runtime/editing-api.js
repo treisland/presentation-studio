@@ -3,6 +3,7 @@ let editingGeneration = 0, editingSignature = "";
 let editingStateReference = null;
 const editingSession = projectID("editing");
 const editingOperations = new Map();
+let editingAfterOperation = () => {};
 function editingRegisterOperation(type, handler) {
   if (editingOperations.has(type) || typeof handler !== 'function') throw new Error('Invalid or duplicate editing operation: ' + type);
   editingOperations.set(type, handler);
@@ -111,6 +112,7 @@ const studioEditing = Object.freeze({
         editingFail("INVALID", "Supply 1–100 operations.");
       const before = projectCopy(projectState), candidate = projectCopy(projectState), created = [];
       for (const op of request.operations) {
+        const createdBefore = created.length;
         if (editingOperations.has(op?.type)) editingOperations.get(op.type)(candidate, op, created);
         else if (op?.type === "slide.update") editingUpdate(candidate, op.slideId, op.changes);
         else if (op?.type === "media.place") editingPlace(candidate, op.slideId, op.objectId || "primary", op.placement);
@@ -127,6 +129,7 @@ const studioEditing = Object.freeze({
             Object.values(candidate.loops)[0].slideIds.push(id);
           created.push(id);
         } else if (!dbOperation(candidate, op, created)) editingFail("INVALID", "Unsupported editing operation.");
+        editingAfterOperation(candidate, op, created.slice(createdBefore));
       }
       const validatedCandidate=projectValidateState(candidate);
       if(candidate.design)candidate.design=validatedCandidate.design;

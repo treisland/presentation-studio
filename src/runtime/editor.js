@@ -233,6 +233,7 @@
         if (a && ["ul", "ol", "pre", "table"].includes(a.tag)) return false;
       }
       return (
+        !/\btp-placeholder\b/.test(node.attrs?.class||'') &&
         (includeTitle || node !== projectHeading(model)?.node) &&
         (!["qa", "remqa"].includes(model.group) ||
           !/\beyebrow\b/.test(node.attrs?.class || ""))
