@@ -14,44 +14,27 @@ const zipContext = {setImmediate,clearImmediate,setTimeout,clearTimeout,Uint8Arr
 vm.runInNewContext(await readFile('vendor/jszip-3.10.1.min.js','utf8'),zipContext);
 await mkdir('test-results', {recursive:true});
 const html = (await readFile('dist/presentation-studio.html','utf8')).replace('  projectInit();', `
-window.__lwTest = {load:lwLoad, stage:lwStage, save:lwSave, check:lwCheckDisk, write:lwWrite, schema:paSchema, validate:paValidate,
-  pack:()=>projectPack(), link:()=>lwLinked, dirty:()=>lwNativeDirty(), setBackups:h=>{lwBackupFolder=h;},
+window.__lwTest = {load:lwLoad, stage:lwStage, schema:paSchema, validate:paValidate,
+  pack:()=>projectPack(), saveDraft:()=>projectSaveDraft(),
   edit:title=>projectChange(()=>{projectState.projectName=title;}), persisted:()=>hubAllRecords()};
   projectInit();`);
 await writeFile('test-results/workspace-fixture.html',html);
 
-async function open({filesystem = false} = {}) {
-  const page = await browser.newPage({acceptDownloads:true, viewport:{width:1280,height:800}});
-  page.setDefaultTimeout(15000); const errors=[]; page.on('pageerror', e=>errors.push(e.message));
-  if (!filesystem) await page.addInitScript(()=>{window.showDirectoryPicker=undefined;window.showSaveFilePicker=undefined;});
-  if (filesystem) await page.addInitScript(({blank,example})=>{
-    class Handle {
-      kind='file'; permission='granted'; writes=0; fail=false; aborts=0;
-      constructor(name,content){this.name=name;this.content=content;}
-      async queryPermission(){return this.permission;}
-      async requestPermission(){return this.permission;}
-      async getFile(){if(this.missing)throw Error('Share disconnected');return new File([this.content],this.name,{lastModified:123456});}
-      async isSameEntry(other){return other===this;}
-      async createWritable(){if(this.permission!=='granted')throw Error('Permission denied');let value;
-        return {write:async blob=>{if(this.fail)throw Error('Write failed');value=await blob.arrayBuffer();},
-          close:async()=>{this.content=value;this.writes++;},abort:async()=>{this.aborts++;}};}
-    }
-    class Folder {
-      kind='directory'; name='Presentations'; permission='granted'; files=new Map();
-      async queryPermission(){return this.permission;} async requestPermission(){return this.permission;}
-      async *entries(){yield* this.files;}
-      async getFileHandle(name,options){if(!this.files.has(name)){if(!options?.create)throw Error('Missing file');this.files.set(name,new Handle(name,''));}return this.files.get(name);}
-      async removeEntry(name){this.files.delete(name);}
-    }
-    const folder=new Folder(), native=new Handle('project.json',JSON.stringify(blank)), ai=new Handle('ai.json',JSON.stringify(example));
-    folder.files.set(native.name,native);folder.files.set(ai.name,ai);
-    const backup=new Folder();backup.name='Backups';
-    window.__fs={folder,native,ai,backup,Handle,Folder,saveHandle:new Handle('copy.zip','')};
-    window.showDirectoryPicker=async()=>folder;
-    window.showSaveFilePicker=async()=>window.__fs.saveHandle;
-  },{blank,example});
+async function open({nativeAvailable=false} = {}) {
+  const page = await browser.newPage({acceptDownloads:true,viewport:{width:1280,height:800}});
+  page.setDefaultTimeout(15000); const errors=[]; page.on('pageerror',e=>errors.push(e.message));
+  await page.addInitScript(nativeAvailable=>{
+    window.__forbiddenCalls=[];
+    for(const name of ['showDirectoryPicker','showSaveFilePicker','showOpenFilePicker'])
+      window[name]=nativeAvailable?()=>{__forbiddenCalls.push(name);throw Error('Unexpected native picker');}:undefined;
+    const original=indexedDB.open.bind(indexedDB);
+    indexedDB.open=(name,...args)=>{
+      if(name==='presentation-studio-workspaces'){__forbiddenCalls.push(name);throw Error('Old workspace preferences must remain untouched');}
+      return original(name,...args);
+    };
+  },nativeAvailable);
   await page.goto('file://'+resolve('test-results/workspace-fixture.html'));
-  await page.locator('#open-full-editor').click(); await click(page,'#lw-open');
+  await page.locator('#open-full-editor').click();await click(page,'#lw-open');
   return {page,errors};
 }
 async function accept(page,copy=false) {
@@ -59,15 +42,6 @@ async function accept(page,copy=false) {
   if(await page.locator('#hub-switch').evaluate(el=>el.open))await page.locator('#hub-save-switch').click();
   await page.locator('#lw-panel').waitFor({state:'hidden'});
 }
-async function linked(page) {
-  await page.locator('#lw-tab-folder').click();
-  await page.locator('#lw-connect').click();
-  await page.locator('#lw-files button').filter({hasText:'project.json'}).click();
-  await page.locator('#lw-review h3').waitFor(); await accept(page);
-  await click(page,'#lw-open');
-  await page.locator('#lw-tab-save').click();
-}
-
 test('portable authoring review, repair, safe text and editable ZIP roundtrip',async()=>{
   const {page,errors}=await open();try{
     const initial=await page.evaluate(()=>__lwTest.pack().meta.id);
@@ -112,72 +86,25 @@ test('schema and runtime share limits; malformed documents and dangerous paths f
   }finally{await page.close();}
 });
 
-test('folder browsing, linked save, external conflict and invalid reload preserve working state',async()=>{
-  const {page,errors}=await open({filesystem:true});try{
-    await linked(page);
-    assert.equal(await page.locator('#lw-files button').count(),2);
-    await page.evaluate(()=>__lwTest.edit('Studio edits'));
-    await page.locator('#lw-save').click();
-    await page.waitForFunction(()=>window.__fs.native.writes===1);
-    assert.equal(await page.evaluate(()=>__lwTest.dirty()),false);
-    assert.match(await page.locator('#fe-status').textContent(),/Matches last disk load\/save/);
-    await page.evaluate(()=>{__lwTest.edit('Keep my edits');__fs.native.content='{"external":true}';});
-    await page.locator('#lw-save').click();await page.waitForFunction(()=>document.querySelector('#lw-message').textContent.includes('Disk changed'));
-    assert.equal(await page.evaluate(()=>__fs.native.writes),1);
-    await page.locator('#lw-reload').click();await page.waitForFunction(()=>document.querySelector('#lw-message').textContent.includes('Unsupported project format'));
-    assert.equal(await page.evaluate(()=>__lwTest.pack().meta.name),'Keep my edits');
-    await page.evaluate(()=>{__fs.native.missing=true;});await page.evaluate(()=>__lwTest.check());
-    assert.match(await page.locator('#lw-message').textContent(),/unavailable/);assert.equal(await page.evaluate(()=>__lwTest.pack().meta.name),'Keep my edits');
-    await page.evaluate(()=>{__fs.native.missing=false;__fs.native.content=JSON.stringify(__lwTest.pack());});
-    await page.locator('#lw-reload').click();await page.locator('#lw-review h3').waitFor();await accept(page);
-    await click(page,'#lw-open');
+test('download retains actual demo media, IDs and history without native picker or preference access',async()=>{
+  const {page,errors}=await open({nativeAvailable:true});try{
     await page.locator('#lw-tab-save').click();
-    await page.evaluate(()=>{__fs.native.permission='denied';__lwTest.edit('Denied edit');});
-    await page.locator('#lw-save').click();await page.waitForFunction(()=>document.querySelector('#lw-message').textContent.includes('permission'));
-    assert.equal(await page.evaluate(()=>__fs.native.writes),1);assert.equal(await page.evaluate(()=>__lwTest.dirty()),true);
-    assert.deepEqual(errors,[]);
-  }finally{await page.close();}
-});
-
-test('failed writes abort and snapshot retention is bounded; saved copies reopen',async()=>{
-  const {page,errors}=await open({filesystem:true});try{
-    await linked(page);
-    await page.evaluate(()=>__lwTest.setBackups(__fs.backup));
-    for(let i=0;i<6;i++){
-      await page.evaluate(i=>__lwTest.edit('Revision '+i),i);await page.locator('#lw-save').click();
-      await page.waitForFunction(n=>__fs.native.writes===n,i+1);
-    }
-    assert.equal(await page.evaluate(()=>__fs.backup.files.size),5);
-    await page.evaluate(()=>{__fs.native.fail=true;__lwTest.edit('Write failure retained');});
-    await page.locator('#lw-save').click();await page.waitForFunction(()=>document.querySelector('#lw-message').textContent.includes('Write failed'));
-    assert.equal(await page.evaluate(()=>__fs.native.aborts),1);assert.equal(await page.evaluate(()=>__lwTest.dirty()),true);
-    await page.locator('#lw-save-copy').click();await page.waitForFunction(()=>__fs.saveHandle.writes===1);
-    const restored=await page.evaluate(async()=>{
-      const file=await __fs.saveHandle.getFile(),loaded=await __lwTest.load(file);return {title:loaded.pack.meta.name,id:loaded.pack.meta.id,current:__lwTest.pack().meta.id};
-    });
-    assert.equal(restored.title,'Write failure retained');assert.equal(restored.id,restored.current);assert.deepEqual(errors,[]);
-  }finally{await page.close();}
-});
-
-test('save-copy ZIP retains actual demo media and history; unsafe assets and folder limits are rejected',async()=>{
-  const {page,errors}=await open({filesystem:true});try{
-    await page.locator('#lw-tab-save').click();
-    await page.locator('#lw-save-copy').click();await page.waitForFunction(()=>__fs.saveHandle.writes===1);
-    const roundtrip=await page.evaluate(async()=>{
-      const loaded=await __lwTest.load(await __fs.saveHandle.getFile());
+    const download=page.waitForEvent('download');await page.locator('#lw-save-copy').click();
+    const bytes=[...await readFile(await(await download).path())];
+    const roundtrip=await page.evaluate(async bytes=>{
+      const loaded=await __lwTest.load(new File([new Uint8Array(bytes)],'demo.zip'));
       return {state:loaded.pack.state,history:loaded.pack.history,current:__lwTest.pack(),assets:loaded.assets.size};
-    });
+    },bytes);
     assert(roundtrip.assets>0);assert.deepEqual(roundtrip.state,roundtrip.current.state);assert.deepEqual(roundtrip.history,roundtrip.current.history);
-    const archiveErrors=await page.evaluate(async()=>{
+    const archiveErrors=await page.evaluate(async bytes=>{
       // JSZip is intentionally not exposed by production; construct fixtures using the downloaded editable archive.
-      const valid=await __fs.saveHandle.getFile(),loaded=await __lwTest.load(valid);
+      const loaded=await __lwTest.load(new File([new Uint8Array(bytes)],'demo.zip'));
       const unsafe=structuredClone(loaded.pack);unsafe.state.media={x:{src:'https://tracker.example/pixel.png'}};
       try{await __lwTest.load(new File([JSON.stringify(unsafe)],'unsafe.json'));return 'accepted';}catch(e){return e.message;}
-    });
+    },bytes);
     assert.match(archiveErrors,/Unsafe asset/);
-    await page.evaluate(()=>{for(let i=0;i<501;i++)__fs.folder.files.set('unrelated-'+i,{kind:'directory'});});
-    await page.locator('#lw-tab-folder').click();
-    await page.locator('#lw-connect').click();await page.waitForFunction(()=>document.querySelector('#lw-message').textContent.includes('500 top-level'));
+    assert.deepEqual(await page.evaluate(()=>__forbiddenCalls),[]);
+    assert.equal(await page.locator('#lw-connect, #lw-save, #lw-reload, #lw-backups, #lw-tab-folder').count(),0);
     assert.equal(await page.evaluate(()=>__lwTest.pack().meta.id),roundtrip.current.meta.id);assert.deepEqual(errors,[]);
   }finally{await page.close();}
 });
@@ -197,11 +124,36 @@ test('traversal archives, decompression limits, future project versions and unsu
     await page.waitForFunction(()=>document.querySelector('#lw-message').textContent.includes('Unsupported project format'));
     await page.setViewportSize({width:540,height:800});
     await page.locator('#lw-tab-create').focus();await page.keyboard.press('ArrowRight');
-    assert.equal(await page.locator('#lw-tab-folder').getAttribute('aria-selected'),'true');
-    assert.equal(await page.locator('#lw-connect').isDisabled(),true);
-    assert.match(await page.locator('#lw-support').textContent(),/unavailable/);
+    assert.equal(await page.locator('#lw-tab-save').getAttribute('aria-selected'),'true');
+    assert.equal(await page.locator('#lw-save-copy').isEnabled(),true);
+    await page.keyboard.press('Home');
+    assert.equal(await page.locator('#lw-tab-create').getAttribute('aria-selected'),'true');
     assert.equal(await page.locator('#lw-panel').evaluate(el=>el.scrollWidth<=el.clientWidth+2),true);
     await page.screenshot({path:'test-results/local-workspace-small.png',fullPage:true});
     assert.deepEqual(errors,[]);
+  }finally{await page.close();}
+});
+
+test('imported browser project survives reopening while downloads remain independent',async()=>{
+  const {page,errors}=await open({nativeAvailable:true});try{
+    const instructionDownload=page.waitForEvent('download');await page.locator('#lw-pack').click();
+    const instructionZip=await zipContext.JSZip.loadAsync(new Uint8Array(await readFile(await(await instructionDownload).path())));
+    assert(instructionZip.file('presentation.schema.json'));assert(instructionZip.file('capabilities.json'));
+    assert.match(await instructionZip.file('AUTHORING.md').async('string'),/AI presentations/);
+    assert.equal(instructionZip.file('presentation.json'),null);
+    await page.locator('#lw-json').fill(JSON.stringify(example));await page.locator('#lw-validate').click();
+    await page.locator('#lw-review h3').waitFor();await accept(page);
+    await page.evaluate(async()=>{__lwTest.edit('Portable recovery test');await __lwTest.saveDraft();});
+    const before=await page.evaluate(()=>__lwTest.pack());
+    await click(page,'#lw-open');await page.locator('#lw-tab-save').click();
+    const download=page.waitForEvent('download');await page.locator('#lw-save-copy').click();await download;
+    assert.equal(await page.evaluate(()=>__lwTest.pack().meta.id),before.meta.id);
+    const records=await page.evaluate(()=>__lwTest.persisted());
+    assert.deepEqual(records.find(record=>record.pack.meta.id===before.meta.id).pack.state,before.state);
+    await page.reload();await page.locator('#open-full-editor').click();
+    // Recovery may be offered rather than silently replacing the demo.
+    const recordsAfter=await page.evaluate(()=>__lwTest.persisted());
+    assert.deepEqual(recordsAfter.find(record=>record.pack.meta.id===before.meta.id).pack.state,before.state);
+    assert.deepEqual(await page.evaluate(()=>__forbiddenCalls),[]);assert.deepEqual(errors,[]);
   }finally{await page.close();}
 });

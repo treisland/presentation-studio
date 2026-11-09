@@ -1,39 +1,42 @@
-# 0.7.0 — Portable AI authoring and local workspaces
+# 0.7.0 — Portable AI authoring, import/export and recovery
 
-Approved scope: issue #115, milestone 0.7.0. Final manual review is required; this feature PR does not authorize a release. Direct provider integrations #15–#19 are deferred outside this milestone. MCP #20–#23 is optional future discovery; containers and collaboration are excluded.
+Approved revised scope: #119, milestone 0.7.0, draft/hold PR #118. Initial #115/#116 is merged; this revision defers live filesystem access. Final manual review of this build and separate release preparation are required. Direct providers, MCP, containers and collaboration remain outside scope.
 
-## Three workstreams
+## Supported workflow
 
-The approved [native layouts and Library elements extension](ai-layouts-and-elements.md) adds Auto/explicit compositions, native widgets, safe previews and per-slide overrides to the authoring workstream. Earlier authoring-v1 files remain supported; no project-format bump is introduced. The reported real LLM test successfully used repair after an incomplete JSON file, but the revised visual workflow still requires manual acceptance.
+1. Open **Project → AI presentations → Create / import**. Download the generic instruction pack: instructions, generated schema, capability catalog and examples. No user presentation is included.
+2. Give the pack to an LLM of your choice. Generate a complete authoring JSON document. No provider connection, API key or MCP server is needed.
+3. Select an individual JSON/editable ZIP file or paste JSON. Validate it, review the inert slide previews, native elements, layouts, placeholders and fit warnings. Use copyable repair instructions for invalid output. Validation does not establish factual accuracy, licensing or readability.
+4. Open the reviewed version or an independent copy. AI imports create a new identity; native imports retain IDs unless opened as a copy. A differing same-ID browser version is preserved by the existing previous-local-version mechanism.
+5. Edit native elements, add media, reflow through **Project → AI slide layout**, and rehearse. Browser recovery retains content and media in this browser profile.
+6. Choose **Export / recovery → Download editable ZIP** to keep content, media and recovery history together. Existing playback export creates an offline viewing copy. Reopen editable ZIPs through Create / import or Presentations → Open file.
 
-1. Portable AI authoring: [instructions](ai/AUTHORING.md), versioned generated JSON schema, neutral example, downloadable pack and pasted/file JSON validation with summaries and repair feedback. One adapter creates ordinary editable project packs. Import never silently drops unsupported authoring fields.
-2. Local workspaces: explicitly selected, read-only folder access, bounded top-level listing of JSON/ZIP files, search, modification dates, refresh, saved handle/reconnect and disconnect. Do not recursively inspect unrelated files. Focus-time checks and explicit reload detect external changes. Unavailable/invalid files leave current work intact.
-3. Local saving/recovery: explicit linked native-file Save and Save a copy as complete editable ZIP; permissions requested only at save time. Browser recovery continues independently. Save checks disk content fingerprints twice, including after snapshot preparation. Network shares and cross-tab writers have no guaranteed distributed lock; do not claim collaborative editing or race-free synchronization.
+## Recovery and compatibility
 
-## Primary save destination and recovery
+Browser recovery and downloaded backups serve different purposes. Browser data can be cleared or unavailable in another profile, origin, device or browser. Export an editable ZIP before moving environments or clearing data. Downloads use the ordinary browser download flow and do not establish a file link or overwrite the imported original through Studio. To load external edits, import the updated file and review it first.
 
-Browser projects remain the default and keep the existing draft/recovery/export workflow. Linked projects use the selected disk file as their primary saved destination. The status separately reports unsaved disk edits, external changes and browser recovery. A successful browser checkpoint never implies a successful disk write. Switching to another project disconnects the active file link. Handles are stored only in a separate browser database, never in project packs or exports. Reopening the remembered folder requires an explicit reconnect action and permission check; file links are session-only.
+Existing project/slide/section IDs, formats, media/history, legacy imports and offline exports remain supported. Authoring v1 is an input format; editable schema-v2 ZIP is the lossless storage format. Studio does not rewrite AI source JSON. JSON alone cannot carry media bytes: use the complete editable ZIP for media projects. The legacy editor import still allows incomplete media for readiness diagnostics and repair.
 
-Native JSON can only be saved directly when its complete project has no media references (including historical/recovery references). Otherwise use Save a copy ZIP. AI authoring JSON remains read-only source; Save a copy creates a normal lossless editable ZIP. Existing IDs are retained on linked native saves/reloads, and explicit Open as copy creates a new project identity. AI imports default to new identity. Same-ID differing browser drafts are preserved with the existing previous-local-version mechanism.
+No saved projects, user files, old workspace preferences or stored handles are deleted. The runtime no longer reads or writes the old workspace-handle database. Remove old browser copies through Presentations → Remove local copy after switching away.
 
-The legacy editor JSON import still permits incomplete media so readiness checks can explain and repair missing assets. New linked file/folder opens and ZIP imports require complete assets. No local save may be reported successful if its output exceeds the supported reopen limits.
+## Import boundaries
 
-Reload always requires review. If current work differs from the last disk load/save, the review explains that reload replaces those edits; browser recovery is saved before accepting, and prior differing same-ID content is preserved. Open as copy also preserves the current project through the switch guard. Invalid updates never replace the last working copy.
+Files are validated before changing the active project. Limits remain 100 MB input, 20 MB native JSON, 2 MB authoring JSON, 1,000 ZIP entries and 200 MB streamed expansion. Reject traversal, unsafe asset paths, unexpected archive entries, prototype keys, excessive nesting, unsupported versions and unsupported authoring fields. Import resolves only bundled ZIP assets or existing browser assets where explicitly allowed. It never follows arbitrary filesystem paths, fetches external assets, executes imported HTML or runs displayed commands. Error messages remain untrusted text.
 
-Disconnect forgets the browser's saved folder handle and active link; revoke access separately in browser site settings. It does not delete files or existing browser recovery. Remove old recovery copies through Presentations → Remove local copy after switching away; export a ZIP first if needed. Browser data clearing can remove drafts and remembered permissions, but not saved disk files.
+## Deferred live filesystem work — #117
 
-## Backups
+Folder connection/reconnect, directory browsing, linked-file save/reload, native save pickers and folder snapshots are deferred outside 0.7.0. They are absent from the shipped UI, rather than release dependencies. No browser security settings need to be weakened.
 
-Save is persistence, not a backup. Browser recovery protects interrupted editing; an editable ZIP includes media and recovery assets; separately stored backups protect against loss of the primary drive. Optional snapshots require explicit selection of a backup folder and consent to retain only the newest five snapshots per project created by Studio. Snapshots package the last successfully loaded/saved disk state, before overwrite. Failure to create a required snapshot blocks the save. No automatic disk saves or two-way synchronization. Backup settings are session-only and disconnect clears them.
+Chrome 157 on Windows rejected showDirectoryPicker with AbortError: The user aborted a request after a reported real folder selection. This reproduced on localhost in a secure, focused, top-level page with an active user gesture, including a minimal standalone page without Studio code. No root cause was established; this revision does not claim to fix that API failure. Firefox reported live folder access unavailable.
 
-## Security and limits
+Unbundled developer source tools/folder-picker-probe.html remains for future research and is excluded from product distributions. It reports context/errors without reading content, enumerating directories or storing handles. Reintroduction requires separate approval, real browser evidence and explicit permission, conflict, interrupted-write and recovery acceptance criteria.
 
-Only user-selected file/folder handles are used. The app never follows absolute paths, parent traversal, remote resources or imported instructions. All native project trees pass existing allowlist validators, with added bounded JSON depth/node/byte limits and safe asset-path checks. Reject unsupported newer formats instead of saving stripped data. ZIPs have entry-count and actual decompressed-byte limits; decoded assets are retained only after validation succeeds. Limits: 500 top-level folder entries, 100 MB input, 200 MB total expanded ZIP, 2 MB authoring JSON, bounded native JSON and structural complexity. JSON authoring has stricter schema limits. Runtime limit enforcement is cancellable between archive entries; the ZIP library does not offer hard CPU isolation.
+## Final manual checklist
 
-Data is rendered as text in import review. Project content is never executed; code blocks are display/copy only. Source links open only on user action. No telemetry or provider upload is introduced. Folder access increases the impact of compromised app code: maintain dependency/release review and avoid third-party scripts. A restrictive CSP is a separate compatibility review because existing standalone runtime uses inline code/styles and blob media.
+- Test the new build in Chrome and Firefox; record OS/browser versions. There should be no folder picker, linked-save/reload or snapshot controls.
+- Download the instruction pack; generate a deck using several LLMs, including one without browsing/download support. Validate, repair and review layouts, citations, notes and reading order.
+- Check native text/widgets/tables/code editing, movement, resizing, removal, layout overrides, reflow, locks and Undo. Inspect long titles, crowded slides and small screens.
+- Import existing JSON and a complete editable ZIP. Invalid/truncated/future-format input must leave current work intact. Export a media/history project and restore the ZIP in a clean profile; verify offline playback and legacy import.
+- Reload and exercise browser recovery separately from ZIP restoration. Confirm keyboard and screen-reader behavior; record exact versions/results.
 
-## Browser support and acceptance
-
-Feature-detect folder/save pickers in secure contexts; unsupported browsers keep normal import/export and pasted authoring. Permission lifetime is browser-controlled. Treat Chromium local filesystem support as a capability to test, not a universal browser guarantee. Network shares work only if OS/browser pickers expose them; test authentication, disconnection and competing writes manually.
-
-Manual checklist: use several LLMs including one without browsing/downloads; validate and repair output; inspect layout/reading order and citations; test Chrome/Edge versions, unsupported-browser fallback, keyboard/screen reader, folder reconnect/revocation, real share disconnect, external partial write, conflicting UI/disk changes, Save a copy, interrupted writes, snapshot restore/retention, browser-data clearing, media/history ZIP roundtrip and legacy/offline reopen. Record exact environments and results; CI mocks do not prove these manual gates. No publication until the separate release plan and required evidence are approved.
+Automated tests do not establish manual accessibility or LLM output quality. Final acceptance is pending; this feature revision does not authorize publication.
