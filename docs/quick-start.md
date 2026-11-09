@@ -123,7 +123,7 @@ The editor preview has **Edit blocks** and **Preview** modes. Existing panels re
 
 Escape or Done finishes editing without closing the editor. Ctrl/Cmd+B and Ctrl/Cmd+I format text. Ctrl/Cmd+Z and redo use project history. Pasted and dropped text is treated as safe text; arbitrary clipboard HTML is not inserted. Use Media settings for image/video files.
 
-The primary slide heading and table structure are protected from block deletion/duplication. Use Tables for rows/columns. Complex layouts retain their existing panel controls. Blocks stay in the template flow; free positioning and resizing are not part of this version. Duplicating blocks or adding long content may trigger the existing overflow warning.
+Primary slide headings support deletion and duplication. A copy becomes ordinary independent text; deleting the original keeps the slide name and ID. Undo restores the title role. Table cells retain their structural protection; use the table controls for rows/columns. Legacy template content stays in its layout flow, while free blocks support positioning and resizing. Duplicating blocks or adding long content may trigger the overflow warning.
 
 In **Preview**, text is not editable. Question browsing, copy buttons, links, and muted video controls work. Switching to Edit blocks pauses preview video. These editing controls do not appear in presentation playback or exported content. Older projects, including legacy schema-v2 ZIPs, use the same structured content model and remain editable.
 

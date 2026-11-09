@@ -219,7 +219,7 @@
     });
     return result;
   }
-  function projectFields(model) {
+  function projectFields(model, {includeTitle = false} = {}) {
     return projectFind(
       model,
       (n) =>
@@ -233,7 +233,7 @@
         if (a && ["ul", "ol", "pre", "table"].includes(a.tag)) return false;
       }
       return (
-        node !== projectHeading(model)?.node &&
+        (includeTitle || node !== projectHeading(model)?.node) &&
         (!["qa", "remqa"].includes(model.group) ||
           !/\beyebrow\b/.test(node.attrs?.class || ""))
       );
@@ -483,7 +483,7 @@
           .slice(0, 300),
         tree: projectValidateTree(s.tree),
         templateBase: projectValidateTree(s.templateBase || s.tree),
-        templateClasses: String(s.templateClasses || s.classes || "")
+        templateClasses: String(s.templateClasses ?? s.classes ?? "")
           .replace(/[^\w\s-]/g, "")
           .slice(0, 300),
         duration: Math.max(3, Math.min(600, Number(s.duration) || 12)),
@@ -1282,7 +1282,7 @@
     $("fe-hidden").checked = s.hidden;
     set("fe-topic", s.topic);
     $("fe-topic").disabled = !["qa", "remqa"].includes(s.group);
-    const fields = projectFields(s);
+    const fields = projectFields(s, {includeTitle:true});
     $("fe-block-select").replaceChildren();
     fields.forEach(({ node, path }, i) => {
       const option = document.createElement("option");
@@ -2309,7 +2309,10 @@
     $("fe-block-text").oninput = (e) =>
       projectEdit(() => {
         const node = projectAt(projectModel(), projectBlockPath);
-        if (node) projectSetText(node, e.target.value);
+          if (node) {
+            projectSetText(node, e.target.value);
+            if (projectHeading(projectModel())?.path === projectBlockPath) projectModel().title = e.target.value.trim().slice(0,500) || 'Untitled slide';
+          }
       });
     $("fe-remove-block").onclick = () =>
       projectChange(() => {
@@ -2317,7 +2320,8 @@
         const parts = projectBlockPath.split("."),
           last = Number(parts.pop()),
           parent = parts.reduce((v, k) => v[k], projectModel().tree);
-        parent.splice(last, 1);
+          projectMarkHeadingRemoved(projectModel(), projectBlockPath);
+          parent.splice(last, 1);
         projectBlockPath = "";
       });
     $("fe-add-paragraph").onclick = () =>

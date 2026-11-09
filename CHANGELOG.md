@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Allow template/demo primary-heading deletion and independent duplication with lock/Undo protection. Keep the slide name when its visible heading is removed, strip title/layout-slot roles from copies, and show/edit the selected heading in the Inspector instead of its eyebrow sibling.
 - Make Inspector Content, Style and Arrange follow the selected object, with selection breadcrumbs, group-member inspection, stable tabs, explicit slide settings and an opt-in plain-text editor. Keep canvas text editing primary and preserve structured widget/code/table editors and legacy workflows.
 - Add unified element hide/show in Layers and Inspector, editor-only hidden-element inspection, group visibility that preserves child settings, and inherited presentation/slide header, footer, logo, slide-number and decoration visibility. Editable backups retain hidden content; playback excludes hidden elements.
 - Make Library Tables and Code movable/resizable/removable free blocks with lock/Undo protection; add explicit conversion for older layout content and polished live Library previews.

@@ -1,5 +1,6 @@
 // Selection-derived Inspector view state stays outside projects and Undo history.
 let icReady = false, icPainting = false, icIdentity = '', icDestination = '', icSlide = '', icBlock = '', icMember = '';
+let icInspectorTarget = null;
 
 function icContains(node, predicate) {
   return !!node && projectFind({tree:[node]}, predicate).length > 0;
@@ -7,6 +8,11 @@ function icContains(node, predicate) {
 function icSelection() {
   const model = projectModel(), entries = spEntries(), keys = wpKind === 'slide' ? [] : spActiveKeys();
   const selected = entries.filter(entry => keys.includes(entry.key));
+  const inspectorPath = document.activeElement === $('fe-block-text') ? projectBlockPath : icInspectorTarget?.slide===projectSelected && wpKind==='text' ? icInspectorTarget.path : '';
+  if (!selected.length && inspectorPath && projectAt(model,inspectorPath)) {
+    const entry=entries.find(item=>item.node===model.tree[Number(inspectorPath.split('.')[0])]);
+    if(entry){selected.push(entry);keys.push(entry.key);}
+  }
   const candidate = vbSelected?.slideID === projectSelected && typeof vbSelected.path === 'string' && vbSelected.el?.isConnected ? vbSelected : null;
   const inline = candidate && (!selected.length || selected.some(entry=>entry.node === model.tree[Number(candidate.path.split('.')[0])])) ? candidate : null;
   const inlineNode = inline && projectAt(model, inline.path);
@@ -47,17 +53,17 @@ function icSelection() {
     if (editingChild) {const child = Number(inline.path.split('.')[2]);detail = title+' → '+(definition?.fields?.[child]?.[0] || inlineNode?.tag?.toUpperCase() || 'Text');}
   }
   if (kind === 'text') {
-    const fields = projectFields(model), root = entry?.node ? model.tree.indexOf(entry.node) : rootIndex;
-    const field = fields.find(item => item.path === inline?.path) || fields.find(item => inline?.path?.startsWith(item.path+'.')) || fields.find(item => Number(item.path.split('.')[0]) === root) || (icDestination === 'text' ? fields.find(item=>item.path===projectBlockPath) : null);
+    const fields = projectFields(model, {includeTitle:true}), root = entry?.node ? model.tree.indexOf(entry.node) : rootIndex;
+    const field = fields.find(item => item.path === (inspectorPath || inline?.path)) || fields.find(item => inline?.path?.startsWith(item.path+'.')) || fields.find(item => Number(item.path.split('.')[0]) === root) || (icDestination === 'text' ? fields.find(item=>item.path===projectBlockPath) : null);
     path = field?.path || '';
-    title = inlineNode?.tag || icDestination === 'text' ? 'Text · '+(inlineNode?.tag||field?.node.tag||'content').toUpperCase() : wpSelection().title;
+    title = inlineNode?.tag || inspectorPath || icDestination === 'text' ? 'Text · '+(inlineNode?.tag||field?.node.tag||'content').toUpperCase() : wpSelection().title;
     detail = path ? projectText(projectAt(model,path)).slice(0,90) : 'Select text inside this object to edit it.';
   }
   if (kind === 'notes') { title = 'Slide notes'; detail = model?.title || ''; }
   if (entry?.meta.name && !['multiple','slide','notes'].includes(kind)) title += ' · '+entry.meta.name;
   if (entry?.meta.group && kind !== 'multiple') detail = 'Group → '+detail;
   const locked = !weEditing() || vbMode !== 'edit' || ceLocked() || selected.some(spProtected);
-  return {kind,title,detail,path,locked,selected,identity:projectMeta.id+':'+projectSelected+':'+kind+':'+keys.join(',')+':'+(inline?.path || '')+':'+(member?.key||'')};
+  return {kind,title,detail,path,locked,selected,identity:projectMeta.id+':'+projectSelected+':'+kind+':'+keys.join(',')+':'+(kind==='text'?path:inline?.path || '')+':'+(member?.key||'')};
 }
 function icVisible(id, visible) { if ($(id)) $(id).dataset.icVisible = String(!!visible); }
 function icPaint() {
@@ -65,7 +71,7 @@ function icPaint() {
   icPainting = true;
   try {
     const slide = projectMeta.id+':'+projectSelected;
-    if (slide !== icSlide) {icSlide = slide; icDestination = '';}
+    if (slide !== icSlide) {icSlide = slide; icDestination = '';icInspectorTarget=null;}
     const context = icSelection(), {kind,locked} = context, changed = context.identity !== icIdentity;
     if (changed) { icIdentity = context.identity; $('wp-fields').scrollTop = 0; $('ic-text-editor').open = false; }
     $('we-inspector').dataset.icKind = kind;
@@ -141,13 +147,13 @@ spPaint = function(...args) { const result = icLayersPaint(...args); icPaint(); 
 const icCodeInspector = codeInspector;
 codeInspector = function(...args) { const result = icCodeInspector(...args); icPaint(); return result; };
 const icTextSelection = vbSetSelection;
-vbSetSelection = function(selection) { if (selection) {icDestination = '';icMember='';} const result = icTextSelection(selection); icPaint(); return result; };
+vbSetSelection = function(selection) { if (selection) {icDestination = '';icMember='';icInspectorTarget=null;} const result = icTextSelection(selection); icPaint(); return result; };
 const icLayerSelection = spSelect;
-spSelect = function(...args) { icDestination = '';icMember=''; vbEnd(false); const result = icLayerSelection(...args); icPaint(); return result; };
+spSelect = function(...args) { icDestination = '';icMember='';icInspectorTarget=null; vbEnd(false); const result = icLayerSelection(...args); icPaint(); return result; };
 const icMediaSelection = ceSelect;
-ceSelect = function(...args) { icDestination = ''; const result = icMediaSelection(...args); icPaint(); return result; };
+ceSelect = function(...args) { icDestination = '';icInspectorTarget=null; const result = icMediaSelection(...args); icPaint(); return result; };
 const icBlockPanel = dbPanel;
-dbPanel = function(...args) {if(dbSelected !== icBlock){icBlock=dbSelected;if(dbSelected)icDestination='';}const result=icBlockPanel(...args);icPaint();return result;};
+dbPanel = function(...args) {if(dbSelected !== icBlock){icBlock=dbSelected;if(dbSelected){icDestination='';icInspectorTarget=null;}}const result=icBlockPanel(...args);icPaint();return result;};
 const icInlineStart = vbStart;
 vbStart = function(...args) {const result=icInlineStart(...args);icPaint();return result;};
 const icInlineEnd = vbEnd;
@@ -168,6 +174,7 @@ function icNavigate(kind) {
   icDestination = kind === 'slide' ? '' : kind;
   spSelected = []; dbSelected = ''; vbSelected = null; wpKind = 'slide';
   icMember='';
+  icInspectorTarget=null;
   weInspect(kind === 'code' ? 'commands' : kind); wpChooseTab('content');
   if (kind === 'text') $('ic-text-editor').open = true;
   icPaint();
@@ -201,7 +208,7 @@ projectInit = function() {
     if (element) vbStart({el:element,path:context.path,kind:'text',slideID:projectSelected});
     icPaint();
   };
-  $('ic-text-editor').addEventListener('toggle',()=>{if(editor.open)vbEnd(false);});
+  $('ic-text-editor').addEventListener('toggle',()=>{if(editor.open){const context=icSelection();if(context.kind==='text'&&context.path)icInspectorTarget={slide:projectSelected,path:context.path};vbEnd(false);}});
   const panel = $('vb-panel').onclick;
   $('vb-panel').onclick = event => { const context = icSelection();if(context.kind === 'text')icExpandTextEditor();else if(context.kind === 'code')icNavigate('code');else panel?.call($('vb-panel'),event); };
   for (const [selector,kind] of [['#we-context-slide','slide'],['[data-fe-tab="commands"]','code'],['[data-fe-tab="table"]','table'],['[data-fe-tab="notes"]','notes'],['[data-fe-tab="content"]','text']]) {

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {chromium} from 'playwright';
-import {openExample,snapshot,operations} from './collection-ui.mjs';
+import {openExample,snapshot,operations,exportZip,importZip} from './collection-ui.mjs';
 import {reveal} from './ui.mjs';
 const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH,args:['--no-sandbox']});
 test.after(()=>browser.close());
@@ -74,5 +74,42 @@ test('group member inspection edits the chosen widget without ungrouping or stal
   const before=await snapshot(page);assert.equal(before.state.design.slides[id].objects[keys[0]].group,before.state.design.slides[id].objects[keys[1]].group);
   await page.locator('#ic-member').selectOption(keys[1]);await page.locator('#ic-text-editor summary').click();await page.locator('#fe-block-text').fill('Independent grouped text');await page.locator('#fe-block-text').press('Tab');
   const state=(await snapshot(page)).state,quote=state.slides[0].tree.find(node=>node.attrs?.class?.includes(keys[0]));assert.equal(quote.children[0].children[0].text,'A grouped quotation');assert.deepEqual(errors,[]);
+ }finally{await page.close();}
+});
+
+test('demo heading duplicates independently, deletes without renaming the slide, and survives recovery/export',async()=>{
+ const {page,errors}=await openExample(browser,'template');try{
+  await page.locator('.fe-slide-button[data-slide-id="studio-closing"]').click();
+  const initial=await snapshot(page),original=initial.state.slides.find(slide=>slide.id==='studio-closing'),title=original.title;
+  await page.locator('#fe-preview h1').click();assert.equal(await page.locator('#vb-duplicate').isEnabled(),true);assert.equal(await page.locator('#vb-delete').isEnabled(),true);
+  assert.equal(await page.locator('#wp-selection-detail').textContent(),'Make it yours.');
+  await page.locator('#vb-duplicate').click();const copy=page.locator('#fe-preview h1.editor-body');assert.equal(await copy.count(),1);
+  assert.doesNotMatch(await copy.getAttribute('class'),/editor-title|lc-slot-/);
+  await copy.click();await copy.fill('An independent copy');await page.waitForTimeout(400);
+  assert.equal((await snapshot(page)).state.slides.find(slide=>slide.id===original.id).title,title);
+  await page.locator('#fe-preview h1:not(.editor-body)').click();const beforeDelete=await snapshot(page);await page.locator('#vb-delete').click();
+  let state=(await snapshot(page)).state,slide=state.slides.find(slide=>slide.id===original.id);assert.equal(slide.title,title);assert.equal(slide.id,original.id);assert.equal(await copy.textContent(),'An independent copy');assert.match(slide.classes,/editor-title-removed/);
+  const removed=await snapshot(page),restored=await importZip(browser,await exportZip(page),removed.projectId);try{assert.deepEqual((await snapshot(restored)).state,removed.state);}finally{await restored.close();}
+  const playback=await page.evaluate(async bytes=>{const zip=await JSZip.loadAsync(new Uint8Array(bytes));return JSON.parse(await zip.file('presentation.json').async('string'));},[...await exportZip(page,'#fe-playback')]);assert.equal(playback.state.slides.find(slide=>slide.id===original.id).title,title);
+  await page.locator('#ic-slide-settings').click();await page.locator('#fe-slide-title').fill('A new navigation name');await page.locator('#fe-slide-title').press('Tab');await page.waitForTimeout(400);assert.equal(await copy.textContent(),'An independent copy');
+  await page.locator('#fe-undo').click();assert.deepEqual((await snapshot(page)).state,removed.state);await page.locator('#fe-undo').click();assert.deepEqual((await snapshot(page)).state,beforeDelete.state);
+  assert.equal(await page.locator('#fe-preview h1:not(.editor-body)').textContent(),'Make it yours.');assert.deepEqual(errors,[]);
+ }finally{await page.close();}
+});
+
+test('Inspector edits the selected primary heading instead of its eyebrow, with correct title synchronization',async()=>{
+ const {page,errors}=await openExample(browser,'template');try{
+  await page.locator('.fe-slide-button[data-slide-id="studio-closing"]').click();const before=await snapshot(page),eyebrow=await page.locator('#fe-preview .eyebrow').textContent();
+  await page.locator('#fe-preview h1').click();await page.locator('#ic-text-editor summary').click();assert.equal(await page.locator('#fe-block-text').inputValue(),'Make it yours.');
+  await page.locator('#fe-block-text').fill('The heading I selected');await page.waitForTimeout(400);await page.locator('#fe-block-text').fill('Still the selected heading');await page.locator('#fe-block-text').press('Tab');await page.waitForTimeout(400);
+  assert.equal(await page.locator('#fe-preview h1').textContent(),'Still the selected heading');assert.equal(await page.locator('#fe-preview .eyebrow').textContent(),eyebrow);assert.equal((await snapshot(page)).state.slides.find(slide=>slide.id==='studio-closing').title,'Still the selected heading');
+  await page.locator('#fe-undo').click();await page.locator('#fe-undo').click();assert.deepEqual((await snapshot(page)).state,before.state);assert.deepEqual(errors,[]);
+ }finally{await page.close();}
+});
+
+test('template headings retain lock protection for duplicate and delete',async()=>{
+ const {page,errors}=await openExample(browser,'template');try{
+  await page.locator('#fe-preview h1').click();await reveal(page,'#ce-slide-lock');await page.locator('#ce-slide-lock').click();const locked=await snapshot(page);
+  assert.equal(await page.locator('#vb-delete').isDisabled(),true);assert.equal(await page.locator('#vb-duplicate').isDisabled(),true);await page.locator('#fe-preview h1').press('Delete');assert.deepEqual((await snapshot(page)).state,locked.state);assert.deepEqual(errors,[]);
  }finally{await page.close();}
 });
