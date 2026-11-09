@@ -1,3 +1,4 @@
+import {selectStartingExample} from './ui.mjs';
 import {resolve} from 'node:path';
 import {readFile} from 'node:fs/promises';
 import {click} from './ui.mjs';
@@ -8,7 +9,7 @@ export async function openExample(browser,choice,dark=false){
  await page.goto('file://'+resolve('dist/presentation-studio.html'));await page.locator('#open-full-editor').click();await chooseExample(page,choice,dark);return{page,errors};
 }
 export async function chooseExample(page,choice,dark=false){
- await click(page,'#studio-new-open');if(await page.locator('#hub-switch').evaluate(d=>d.open))await page.locator('#hub-save-switch').click();await page.locator('#nx-wizard').waitFor({state:'visible'});await page.locator('[name=nx-start][value='+choice+']').check();
+ await click(page,'#studio-new-open');if(await page.locator('#hub-switch').evaluate(d=>d.open))await page.locator('#hub-save-switch').click();await page.locator('#nx-wizard').waitFor({state:'visible'});await selectStartingExample(page,choice);
  if(dark){for(let i=0;i<3;i++)await page.locator('#nx-wizard-next').click();await page.locator('#nx-wizard-theme').selectOption('dark');await page.locator('#nx-wizard-next').click();}else await page.locator('#nx-wizard-defaults').click();
  await page.locator('#nx-wizard').waitFor({state:'hidden'});
 }

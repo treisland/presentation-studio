@@ -1,3 +1,4 @@
+import {selectStartingExample} from './ui.mjs';
 import { selectTab } from './ui.mjs';
 import {legacyHTML} from './legacy-fixture.mjs';
 import test from "node:test";
@@ -150,7 +151,7 @@ test("generic demo is offline, fits both viewports, and exports its bundled imag
       await page.locator("#hub-save-switch").click();
     await page.locator("#nx-wizard").waitFor({ state: "visible" });
     const text = await page.locator("#nx-wizard").innerText();
-    assert(text.includes("Studio demo"));
+    assert(text.includes("Start from an example"));
     assert(!text.includes("legacy"));
     assert.deepEqual(network, []);
     assert.deepEqual(errors, []);
@@ -207,7 +208,7 @@ test("existing legacy schema-v2 ZIP opens in generic studio and keeps its reset 
     if (await page.locator("#hub-switch").isVisible())
       await page.locator("#hub-save-switch").click();
     await page.locator("#nx-wizard").waitFor({ state: "visible" });
-    await page.locator('input[name="nx-start"][value="template"]').check();
+    await selectStartingExample(page,'template');
     await page.locator("#nx-wizard-defaults").click();
     await page.locator("#nx-wizard").waitFor({ state: "hidden" });
     assert.equal(await page.locator(".fe-slide-button").count(), 8);

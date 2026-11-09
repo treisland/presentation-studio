@@ -1,3 +1,4 @@
+import {selectStartingExample} from './ui.mjs';
 import { reveal } from './ui.mjs';
 import { selectTab, addSlide } from './ui.mjs';
 import test from "node:test";
@@ -672,7 +673,7 @@ test("New presentation keeps the existing save-before-switch guard", async () =>
     assert.equal(await p.locator("#nx-wizard").isVisible(), false);
     await p.locator("#hub-save-switch").click();
     await p.locator("#nx-wizard").waitFor({ state: "visible" });
-    await p.locator('input[name="nx-start"][value="template"]').check();
+    await selectStartingExample(p,'template');
     await p.locator("#nx-wizard-defaults").click();
     await p.locator("#nx-wizard").waitFor({ state: "hidden" });
     assert.equal(await p.locator(".fe-slide-button").count(), 8);

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Remove duplicated starter/demo choices from New presentation. The dedicated gallery retains all examples, including Studio demo, and continues into naming/theme setup before creation.
+
 - Expose Heading 1–3 and Paragraph conversion in Inspector Content while retaining inline formatting, text selection, layout identity, title synchronization, locks and Undo.
 
 ## 0.5.0-rc.1 — 2026-11-08

@@ -801,9 +801,7 @@ function hubMount() {
   // Wizard and compatibility import entry points must respect the same save guard.
   const oldWizard = nxFinishWizard;
   nxFinishWizard = async function (defaults = false) {
-    const choice = document.querySelector(
-      'input[name="nx-start"]:checked',
-    ).value;
+    const choice = nxStartingChoice();
     if (choice === "import") {
       $("nx-wizard").close();
       await hubOpenPicker();

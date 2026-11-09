@@ -17,7 +17,7 @@ A pass means structure and archive integrity checks passed, not that rendering, 
 Original ZIP directory members are checked before filename decoding/deduplication. Duplicate or unsafe paths, overlapping members, inconsistent local headers, multi-disk/ZIP64 archives and Unicode filename-override extra fields are rejected. Use ordinary single-disk ZIP32 archives with plain UTF-8 names, as produced by Studio; verification supports stored or deflated entries.
 
 1. Open `presentation-studio.html` for the generic Studio demo, or `presentation-studio-blank.html` for an empty starter.
-2. Select **Edit** or press **J**. **Project → New presentation** opens the setup wizard: choose Blank, Studio demo, or Import; name and brand it; choose a starter layout; then select theme and transitions. **Skip setup / use defaults** creates the selected starting template immediately. New projects receive independent IDs and browser drafts.
+2. Select **Edit** or press **J**. **Project → New presentation** opens the setup wizard: choose Blank, Start from an example, or Import; name and brand it; choose a starter layout; then select theme and transitions. **Skip setup / use defaults** creates the selected starting template immediately. New projects receive independent IDs and browser drafts.
 3. Choose **Add slide** to preview Hero, Comparison, Workflow, Table, Q&A, Commands, or Media.
 4. Edit content in the corresponding panel. When changing an existing layout, retain content or replace it with template defaults. Review the preview for overflow.
 5. Use **Sections** to organize slides. Questions sections provide searchable presenter navigation. A section is an organizational group; a kiosk loop is a curated playback sequence and may cross sections.
@@ -74,7 +74,7 @@ Transitions finish before the slide timer starts. Outgoing videos pause immediat
 Use **Presentations** on the playback toolbar, **P**, or **Project → Recent presentations** in the editor. Cards show a first-slide preview, project name, last saved time, and slide count, with a clear **Browser draft** label. Search filters the cards by name.
 
 - **Open ZIP / JSON** loads a file; the drop area accepts the same formats. Editable ZIP is preferred because it includes media. JSON with media references needs the corresponding saved local assets or its full ZIP.
-- **New presentation** opens the existing wizard with Blank, Studio demo, or Import choices.
+- **New presentation** opens the existing wizard with Blank, Start from an example, or Import choices.
 - **Open** restores a browser draft and its media. **Export backup** downloads an editable ZIP without changing the active project.
 - **Duplicate** writes a separate project ID and media namespace. **Remove local copy** deletes only that browser copy after confirmation, including its media. The currently open project cannot be removed. Exported ZIPs are unaffected.
 
@@ -92,7 +92,7 @@ The editor header shows the project name and save state, Project, Undo, Redo, Pr
 
 The default deck has eight editable slides: welcome, comparison, workflow, table, bundled media, harmless command example, searchable Q&A, and closing. Its sections are Overview, Demonstration, and Questions. Main demo loop plays seven slides and leaves Questions for live discussion. Every slide has presenter notes.
 
-The included diagram is stored within the standalone HTML and included as an asset in ZIP exports. It needs no external image service. The generic wizard offers Blank, Studio demo, or Import. Reset restores the current starting presentation; imported legacy product projects retain their own starting content.
+The included diagram is stored within the standalone HTML and included as an asset in ZIP exports. It needs no external image service. The generic wizard offers Blank, Start from an example, or Import. Reset restores the current starting presentation; imported legacy product projects retain their own starting content.
 
 To use your previously exported project, choose Presentations → Open ZIP / JSON and select its editable ZIP. The product deck is separate content; it is not a built-in choice in the generic studio.
 

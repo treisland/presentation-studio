@@ -4,7 +4,7 @@ import {chromium} from 'playwright';
 import {snapshot,openExample,operations,exportZip,importZip,dropDiagram} from './collection-ui.mjs';
 const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH,args:['--no-sandbox']});test.after(()=>browser.close());
 test('Flyer starter supplies three readable 16:9 compositions without claiming print-ready output',async()=>{
- for(const dark of [false,true]){const{page:p,errors}=await openExample(browser,'flyer-starter',dark);try{const before=await snapshot(p);assert.equal(before.state.slides.length,3);assert.equal(await p.locator('[name=nx-start][value=flyer-demo]').count(),0);assert.match(await p.locator('[name=nx-start][value=flyer-starter]').locator('..').textContent(),/Not print-ready output/);
+ for(const dark of [false,true]){const{page:p,errors}=await openExample(browser,'flyer-starter',dark);try{const before=await snapshot(p);assert.equal(before.state.slides.length,3);assert.equal(await p.locator('[name=nx-start][value=flyer-demo]').count(),0);assert.equal(await p.locator('[name=nx-start][value=flyer-starter]').count(),0);
   for(const size of [{width:1366,height:768},{width:1920,height:1080}]){await p.setViewportSize(size);for(const slide of before.state.slides){await p.locator('.fe-slide-button[data-slide-id="'+slide.id+'"]').click();assert.equal(await p.locator('#fe-layout-warning').isVisible(),false,slide.template);await p.screenshot({path:'test-results/'+slide.template+'-'+size.width+(dark?'-dark':'')+'.png'});}}
   assert.deepEqual((await snapshot(p)).state,before.state);assert.deepEqual(errors,[]);
  }finally{await p.close();}}

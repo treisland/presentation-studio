@@ -1,3 +1,4 @@
+import {selectStartingExample} from './ui.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {chromium} from 'playwright';
@@ -7,7 +8,7 @@ import {click} from './ui.mjs';
 import {archivePath} from './archive-path.mjs';
 const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH,args:['--no-sandbox']});test.after(()=>browser.close());
 const read=p=>p.evaluate(()=>window.presentationStudioEditing.read());
-async function setup(choice='comic-demo'){const p=await browser.newPage({acceptDownloads:true,viewport:{width:1366,height:768}}),errors=[];p.setDefaultTimeout(10000);p.on('pageerror',e=>errors.push(e.message));await p.goto('file://'+resolve('dist/presentation-studio.html'));await p.locator('#open-full-editor').click();await click(p,'#studio-new-open');await p.locator('[name=nx-start][value='+choice+']').check();await p.locator('#nx-wizard-defaults').click();await p.locator('#nx-wizard').waitFor({state:'hidden'});return{p,errors};}
+async function setup(choice='comic-demo'){const p=await browser.newPage({acceptDownloads:true,viewport:{width:1366,height:768}}),errors=[];p.setDefaultTimeout(10000);p.on('pageerror',e=>errors.push(e.message));await p.goto('file://'+resolve('dist/presentation-studio.html'));await p.locator('#open-full-editor').click();await click(p,'#studio-new-open');await selectStartingExample(p,choice);await p.locator('#nx-wizard-defaults').click();await p.locator('#nx-wizard').waitFor({state:'hidden'});return{p,errors};}
 test('Comic starter/demo expose four readable compositions and editable speech without imposing a theme',async()=>{const{p,errors}=await setup();try{
  const initial=await read(p);assert.equal(initial.state.slides.length,4);assert.equal(initial.state.slides[1].template,'comic-sequence');
  for(const size of [{width:1366,height:768},{width:1920,height:1080}]){await p.setViewportSize(size);for(const slide of initial.state.slides){await p.locator('.fe-slide-button[data-slide-id="'+slide.id+'"]').click();assert.equal(await p.locator('#fe-layout-warning').isVisible(),false,slide.template);await p.screenshot({path:'test-results/'+slide.template+'-'+size.width+'.png'});}}

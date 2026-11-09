@@ -1,12 +1,17 @@
 // View-only example browsing. The project changes only through the existing new-project guard.
+lcExamples.studio={label:'Studio',demoOnly:true,demoDescription:'Eight editable slides with sample media, commands and a searchable question.'};
+function lcStudioState(name){const pack=JSON.parse($('studio-template-config').textContent),state=studioNormalize(pack.state||pack);state.projectName=name||'Studio demo';return state;}
 const lcExampleCatalog={
   portfolio:{category:'case-study',purpose:'Show a project from problem to evidence and credits.',images:'multiple'},
   comic:{category:'story',purpose:'Explain an idea through editable speech and numbered panels.',images:'multiple'},
   editorial:{category:'editorial',purpose:'Tell a newspaper/blog-style story with columns and visuals.',images:'single'},
   newsletter:{category:'updates',purpose:'Organize a recurring update as newsletter-style slides.',images:'single'},
   flyer:{category:'announcement',purpose:'Introduce an event, announcement or portfolio project.',images:'single'},
+  studio:{category:'basics',purpose:'Walk through the core editor with an eight-slide Studio demo.',images:'single'},
 };
 let lcGalleryCurrent=null,lcGalleryReturn=null,lcGalleryUsing=false;
+function lcLibraryFigure(cfg){const box=document.createElement('figure'),viewport=document.createElement('div'),img=document.createElement('img');box.className='media-box lc-library-visual frame-'+(cfg.frame||'none');viewport.className='media-viewport';img.className='media-asset';img.alt=cfg.alt||'';img.src=lcLibraryAsset(cfg.src).url;Object.assign(img.style,{width:'100%',height:'100%',objectFit:cfg.fit||'contain',objectPosition:(cfg.canvas?.crop?.x??50)+'% '+(cfg.canvas?.crop?.y??50)+'%'});viewport.append(img);box.append(viewport);if(cfg.caption){const caption=document.createElement('figcaption');caption.textContent=cfg.caption;box.append(caption);}return box;}
+function lcPaintStudioPreview(slide,state){const model=slide.studioPreviewModel,cfg=state.media[model.id];if(!cfg)return;const original=document.createElement('div');original.className='media-original';original.append(...slide.childNodes);slide.classList.add('media-on','media-right');slide.style.setProperty('--media-share','50%');slide.append(original,lcLibraryFigure(cfg));}
 function lcPaintLibraryPreview(slide,state){
   const model=slide.studioPreviewModel,grid=mgRoot(model);if(!grid)return;
   slide.querySelectorAll(':scope > .media-box,:scope > .lc-example-image').forEach(n=>n.remove());
@@ -20,11 +25,11 @@ function lcPaintLibraryPreview(slide,state){
   });
 }
 function lcAvailable(state){try{for(const cfg of lcExampleMedia(state))lcLibraryAsset(cfg.src);return true;}catch{return false;}}
-function lcExampleStateFor(id,mode){const entry=lcExamples[id];return lcExampleState(id+'-'+mode,entry.label+(mode==='demo'?' example':' starter'));}
+function lcExampleStateFor(id,mode){const entry=lcExamples[id];return id==='studio'?lcStudioState('Studio demo'):lcExampleState(id+'-'+mode,entry.label+(mode==='demo'?' example':' starter'));}
 function lcReadablePreview(model,state){
   const parent=$('lc-preview-readable');parent.replaceChildren();
   const masthead=projectFind(model,n=>mgHas(n,'lc-masthead'))[0];if(masthead){const p=document.createElement('p');p.textContent=projectText(masthead.node);parent.append(p);}
-  const layout=lcLayouts[model.template];
+  const layout=lcLayouts[model.template];if(!layout){const p=document.createElement('p');p.textContent=model.title+': '+projectText({children:model.tree});parent.append(p);const cfg=state.media[model.id];if(cfg){const visual=document.createElement('p');visual.textContent='Visual: '+[cfg.alt,cfg.caption].filter(Boolean).join(' · ');parent.append(visual);}return;}
   for(const slot of layout.slots.filter(s=>!['credits','masthead'].includes(s.id))){const p=document.createElement('p'),strong=document.createElement('strong');strong.textContent=slot.label+': ';p.append(strong,document.createTextNode(projectText(lcSlot(model,slot.id)?.node)));parent.append(p);}
   const root=mgRoot(model);root?.children.forEach((cell,i)=>{const cfg=mgConfig(state,model.id,mgObjectID(cell)),p=document.createElement('p');p.textContent='Visual '+(i+1)+': '+(cfg?[cfg.alt,cfg.caption].filter(Boolean).join(' · '):'Empty editable image target.');parent.append(p);});
   const credits=document.createElement('p');credits.textContent='Credits: '+projectText(lcSlot(model,'credits')?.node);parent.append(credits);
@@ -40,11 +45,11 @@ function lcRefreshExamplePreview(){
     if(brand)brand.textContent=state.brand.headerTitle+' / '+state.projectName;
     const edition=root.querySelector('header .edition');if(edition){if(state.brand.edition)edition.textContent=state.brand.edition;else edition.remove();}
     root.querySelector('footer .meta').textContent='Example preview · '+model.title;
-    $('lc-example-status').textContent='Preview only. Use creates a separate editable project.';
+    $('lc-example-status').textContent='Preview only. Use continues setup for a separate editable project.';
   }else{
     $('lc-example-preview').replaceChildren();$('lc-example-status').textContent='This example’s artwork is unavailable. Reopen a complete Studio build or choose an available starter. Your project is unchanged.';
   }
-  $('lc-use-starter').textContent='Use '+entry.label+' starter';$('lc-use-demo').textContent='Use '+entry.label+' demo';$('lc-use-demo').hidden=!!entry.starterOnly;
+  $('lc-use-starter').textContent='Use '+entry.label+' starter';$('lc-use-starter').hidden=!!entry.demoOnly;$('lc-use-demo').textContent='Use '+entry.label+' demo';$('lc-use-demo').hidden=!!entry.starterOnly;
   $('lc-use-starter').disabled=!lcAvailable(lcExampleStateFor(id,'starter'));
   $('lc-use-demo').disabled=!!entry.starterOnly||!lcAvailable(lcExampleStateFor(id,'demo'));
 }
@@ -52,7 +57,7 @@ function lcSelectExample(id,mode){
   const entry=lcExamples[id];if(!entry)return;
   mode=entry.starterOnly?'starter':mode||'demo';const state=lcExampleStateFor(id,mode);
   lcGalleryCurrent={id,mode,state,index:0,available:lcAvailable(state)};
-  $('lc-preview-kind').replaceChildren(new Option('Starter · editable prompts','starter'));
+  $('lc-preview-kind').replaceChildren();if(!entry.demoOnly)$('lc-preview-kind').add(new Option('Starter · editable prompts','starter'));
   if(!entry.starterOnly)$('lc-preview-kind').add(new Option('Demo · finished content','demo'));
   $('lc-preview-kind').value=mode;lcRefreshExamplePreview();
   $('lc-preview-kind').disabled=false;
@@ -62,10 +67,10 @@ function lcExampleCards(){
   for(const [id,entry]of Object.entries(lcExamples)){
     const info=lcExampleCatalog[id];if((category!=='all'&&category!==info.category)||(images!=='all'&&images!==info.images))continue;
     const card=document.createElement('article'),title=document.createElement('h3'),description=document.createElement('p'),badge=document.createElement('p'),button=document.createElement('button');
-    card.className='lc-example-card';card.dataset.example=id;title.textContent=entry.label;description.textContent=info.purpose;badge.className='lc-example-badge';badge.textContent='16:9 slides · '+(entry.starterOnly?'Starter':'Starter + finished demo')+' · '+(info.images==='multiple'?'Includes multi-image slides':'Single image per slide');
+    card.className='lc-example-card';card.dataset.example=id;title.textContent=entry.label;description.textContent=info.purpose;badge.className='lc-example-badge';badge.textContent='16:9 slides · '+(entry.demoOnly?'Finished demo':entry.starterOnly?'Starter':'Starter + finished demo')+' · '+(info.images==='multiple'?'Includes multi-image slides':'Single image per slide');
     button.textContent='Preview '+entry.label+(entry.starterOnly?' starter':' demo');button.onclick=()=>lcSelectExample(id);card.append(title,description,badge,button);parent.append(card);count++;visible.push(id);
   }
-  $('lc-example-count').textContent=count+' collection'+(count===1?'':'s')+' shown';
+  $('lc-example-count').textContent=count+' starting point'+(count===1?'':'s')+' shown';
   if(visible.includes(lcGalleryCurrent?.id))return;
   if(visible.length){lcSelectExample(visible[0]);return;}
   lcGalleryCurrent=null;$('lc-preview-title').textContent='No matching examples';$('lc-example-preview').replaceChildren();$('lc-preview-readable').replaceChildren();$('lc-preview-kind').replaceChildren();
@@ -79,20 +84,20 @@ function lcOpenExamples(){
 }
 async function lcUseExample(mode){
   const current=lcGalleryCurrent;if(!current)return;
-  const id=current.id,entry=lcExamples[id],choice=id+'-'+mode;
+  const id=current.id,entry=lcExamples[id],choice=id==='studio'?'template':id+'-'+mode;
   if((entry.starterOnly&&mode==='demo')||!lcAvailable(lcExampleStateFor(id,mode))){$('lc-example-status').textContent='Choose an example whose artwork is available.';return;}
   try{await hubGuard(async()=>{
-    const name=$('nx-wizard').open?$('nx-wizard-name').value.trim():'';
-    lcGalleryUsing=true;$('lc-examples').close();nxOpenWizard();document.querySelector('input[name="nx-start"][value="'+choice+'"]').checked=true;
-    $('nx-wizard-name').value=name&&name!=='Untitled presentation'?name:lcExampleLabel(choice);
-    await nxFinishWizard(true);if(!$('nx-wizard').open)$('fe-slide-title').focus();lcGalleryUsing=false;
+    lcGalleryUsing=true;$('lc-examples').close();if(!$('nx-wizard').open)nxOpenWizard();nxWizardExampleChoice=choice;for(const input of document.querySelectorAll('input[name="nx-start"]'))input.checked=false;
+    if(!$('nx-wizard-name').value.trim()||$('nx-wizard-name').value==='Untitled presentation')$('nx-wizard-name').value=lcExampleLabel(choice);
+    if($('nx-wizard-header').value==='PRESENTATION')$('nx-wizard-header').value=id==='studio'?lcStudioState().brand.headerTitle:entry.label.toUpperCase();
+    nxWizardStep=1;nxWizardPage();$('nx-wizard-name').focus();lcGalleryUsing=false;
   });}catch{$('lc-example-status').textContent='The example could not be opened. Your current project remains available.';lcGalleryUsing=false;}
 }
 const lcGalleryInit=projectInit;
 projectInit=function(){
   lcGalleryInit();
   const dialog=document.createElement('dialog');dialog.id='lc-examples';dialog.setAttribute('aria-labelledby','lc-examples-title');
-  dialog.innerHTML='<div class="studio-dialog-head"><div><h2 id="lc-examples-title">Start from an example</h2><p>Starters contain editable prompts. Demos contain finished content. Every use creates a separate project.</p></div><button id="lc-examples-close">Close</button></div><div class="lc-example-filters"><label>Purpose<select id="lc-example-purpose"><option value="all">All purposes</option><option value="case-study">Case study</option><option value="story">Storytelling</option><option value="editorial">Editorial story</option><option value="updates">Recurring updates</option><option value="announcement">Announcement</option></select></label><label>Image layout<select id="lc-example-images"><option value="all">All image layouts</option><option value="single">Single image per slide</option><option value="multiple">Includes multi-image slides</option></select></label><p id="lc-example-count" role="status"></p></div><div class="lc-example-layout"><div id="lc-example-cards" aria-label="Example collections"></div><section aria-label="Example preview"><h3 id="lc-preview-title"></h3><label>Preview content<select id="lc-preview-kind"></select></label><div id="lc-example-preview"></div><div class="lc-example-actions" role="group" aria-label="Example slides"><button id="lc-preview-prev" aria-label="Previous example slide">Previous</button><button id="lc-preview-next" aria-label="Next example slide">Next</button></div><details><summary>Read preview text and image descriptions</summary><div id="lc-preview-readable"></div></details><p id="lc-example-status" role="status"></p><div class="lc-example-actions"><button id="lc-use-starter">Use starter</button><button id="lc-use-demo">Use demo</button></div></section></div>';
+  dialog.innerHTML='<div class="studio-dialog-head"><div><h2 id="lc-examples-title">Start from an example</h2><p>Starters contain editable prompts. Demos contain finished content. Use continues setup for a separate project.</p></div><button id="lc-examples-close">Close</button></div><div class="lc-example-filters"><label>Purpose<select id="lc-example-purpose"><option value="all">All purposes</option><option value="basics">Studio basics</option><option value="case-study">Case study</option><option value="story">Storytelling</option><option value="editorial">Editorial story</option><option value="updates">Recurring updates</option><option value="announcement">Announcement</option></select></label><label>Image layout<select id="lc-example-images"><option value="all">All image layouts</option><option value="single">Single image per slide</option><option value="multiple">Includes multi-image slides</option></select></label><p id="lc-example-count" role="status"></p></div><div class="lc-example-layout"><div id="lc-example-cards" aria-label="Example collections"></div><section aria-label="Example preview"><h3 id="lc-preview-title"></h3><label>Preview content<select id="lc-preview-kind"></select></label><div id="lc-example-preview"></div><div class="lc-example-actions" role="group" aria-label="Example slides"><button id="lc-preview-prev" aria-label="Previous example slide">Previous</button><button id="lc-preview-next" aria-label="Next example slide">Next</button></div><details><summary>Read preview text and image descriptions</summary><div id="lc-preview-readable"></div></details><p id="lc-example-status" role="status"></p><div class="lc-example-actions"><button id="lc-use-starter">Use starter</button><button id="lc-use-demo">Use demo</button></div></section></div>';
   document.body.append(dialog);
   const add=(id,parent,before=false)=>{const button=document.createElement('button');button.id=id;button.textContent='Start from an example';button.onclick=lcOpenExamples;if(before)parent.before(button);else parent.after(button);};
   add('lc-examples-open',$('studio-new-open'));add('lc-examples-wizard',document.querySelector('#nx-wizard .studio-start-options'),true);add('lc-examples-hub',$('hub-new'));

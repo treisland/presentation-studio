@@ -22,7 +22,7 @@ Download and unzip a release or a successful **Validate and build** Actions arti
 | `presentation-studio-blank.html` | One neutral starter slide and section |
 | `studio-demo-editable.zip` | Portable Studio demo project, including its sample image |
 
-Click **Edit** or press **J**. Use **Project → New presentation** for **Blank**, **Studio demo**, collection starters/examples, or **Import**. **Project → Start from an example** opens the filtered preview gallery; see [the example guide](docs/examples.md). **Presentations** (or **P**) opens recent browser drafts and project ZIP/JSON files. Export an editable ZIP to save a complete portable copy; playback ZIPs are for delivery.
+Click **Edit** or press **J**. Use **Project → New presentation** for **Blank**, **Start from an example**, or **Import**. **Project → Start from an example** opens the filtered preview gallery; see [the example guide](docs/examples.md). **Presentations** (or **P**) opens recent browser drafts and project ZIP/JSON files. Export an editable ZIP to save a complete portable copy; playback ZIPs are for delivery.
 
 ![Generic Studio demo](docs/images/studio-demo.png)
 

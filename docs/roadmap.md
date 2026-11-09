@@ -17,6 +17,10 @@ Backup verification design: inspect/validate the selected ZIP without importing 
 
 Track [0.4.0 candidate/stable delivery](https://github.com/treisland/presentation-studio/milestone/5), [0.5.0 layouts/examples](https://github.com/treisland/presentation-studio/milestone/6), [0.6.0 AI](https://github.com/treisland/presentation-studio/milestone/3) and [0.7.0 MCP](https://github.com/treisland/presentation-studio/milestone/4).
 
+## 0.5.1 scoped usability corrections
+
+The maintainer authorized draft patch development for existing Heading 1–3/Paragraph conversion and removal of duplicated New presentation examples in favor of the gallery (#93/#94, milestone 0.5.1). No new block types, containers or formats are included. Stable 0.5.0 candidate sign-off and manual patch review precede merging; a separate plan authorizes patch publication. See [the draft review checklist](0.5.1-manual-test-plan.md).
+
 ## Historical development milestones
 
 The numbered sections below record historical development milestones, not published release versions.
