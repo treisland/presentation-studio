@@ -1,0 +1,20 @@
+{
+  "format": "presentation-studio-authoring",
+  "version": 1,
+  "title": "Community garden project update",
+  "slides": [
+    { "title": "A shared space is taking shape", "layout": "hero", "blocks": [
+      { "type": "paragraph", "text": "Our next goal is a small, accessible garden that neighbors can maintain together." },
+      { "type": "callout", "heading": "Decision needed", "text": "Choose the first planting area after an access review." }
+    ], "notes": "Synthetic example. Replace these details with your actual project evidence." },
+    { "title": "Progress and feedback", "layout": "comparison", "blocks": [
+      { "type": "metric", "value": "3", "label": "Planning sessions", "text": "Illustrative count for this fictional project." },
+      { "type": "quote", "text": "Start small and make it easy for everyone to join.", "attribution": "Fictional workshop participant" }
+    ] },
+    { "title": "The next three steps", "layout": "workflow", "blocks": [
+      { "type": "step", "title": "Review access", "text": "Walk the site with participants." },
+      { "type": "step", "title": "Prepare a plan", "text": "Agree on responsibilities and a small starting area." },
+      { "type": "step", "title": "Check the outcome", "text": "Gather feedback before expanding." }
+    ] }
+  ]
+}

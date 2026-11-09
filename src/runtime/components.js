@@ -11,9 +11,7 @@ function componentRegister(type, definition) {
   componentTypes.set(type, Object.freeze(definition));
 }
 for (const type of dbKinds.filter(kind=>kind!=='callout')) componentRegister(type, {name:type[0].toUpperCase()+type.slice(1), category:type==='text'?'Text':'Shapes', description:'Editable '+type+' block'});
-componentRegister('quote', {name:'Quote',category:'Widgets',description:'Quotation and attribution',fields:[['Quotation','A useful idea worth sharing.'],['Attribution','— Your source']]});
-componentRegister('metric', {name:'Metric card',category:'Widgets',description:'Value, label and supporting text',fields:[['Value','42%'],['Label','Your metric'],['Supporting text','Explain what this means.']]});
-componentRegister('callout', {name:'Callout',category:'Widgets',description:'Icon, heading and key message',fields:[['Icon','★'],['Heading','Key message'],['Body','Explain the important detail.']]});
+for (const type of ['quote','metric','callout']) componentRegister(type, paWidgetCatalog[type]);
 editingRegisterOperation('block.create', (state, operation, created) => {
   const definition = componentTypes.get(operation.kind);
   if (!definition) editingFail('INVALID','Choose a supported block.');

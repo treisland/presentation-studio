@@ -5,6 +5,23 @@ import vm from "node:vm";
 const root = fileURLToPath(new URL("../", import.meta.url));
 const read = (path) => readFile(resolve(root, path), "utf8");
 const config = JSON.parse(await read("build.config.json"));
+const authoringFiles = {
+  "AUTHORING.md": await read("docs/ai/AUTHORING.md"),
+  "example.json": await read("docs/ai/example.json"),
+  "project-update.json": await read("docs/ai/project-update.json"),
+  "technical-walkthrough.json": await read("docs/ai/technical-walkthrough.json"),
+};
+const authoringContext = vm.createContext({ URL });
+vm.runInContext(await read("src/runtime/authoring-definitions.js"), authoringContext);
+vm.runInContext(await read("src/runtime/authoring-contract.js"), authoringContext);
+const authoringSchema = vm.runInContext("JSON.stringify(paSchema(), null, 2)", authoringContext);
+for (const [name, content] of Object.entries(authoringFiles)) if (name.endsWith(".json"))
+  vm.runInContext("paValidate(" + content + ")", authoringContext, { filename: name });
+authoringFiles["capabilities.json"] = vm.runInContext("JSON.stringify(paCatalog(), null, 2)", authoringContext);
+authoringFiles["CAPABILITIES.md"] = vm.runInContext("paCapabilityGuide()", authoringContext);
+await mkdir(resolve(root, "dist/ai-authoring"), { recursive: true });
+for (const [name, content] of Object.entries({ ...authoringFiles, "presentation.schema.json": authoringSchema }))
+  await writeFile(resolve(root, "dist/ai-authoring", name), content);
 const styles = (await Promise.all(config.styles.map(read))).join("\n");
 const vendor = await read(config.vendor);
 new vm.Script(vendor, { filename: config.vendor });
@@ -55,6 +72,7 @@ for (const [name, kind, project] of [
     "\n" +
     (await read(boot));
   app = app.replace("/* @BUILD_KIND */", JSON.stringify(kind));
+  app = app.replace("/* @AUTHORING_PACK */", () => JSON.stringify(authoringFiles).replace(/</g, "\\u003c"));
   new vm.Script(app, { filename: name + ".js" });
   let output = source;
   const json = (value) => JSON.stringify(value).replace(/</g, "\\u003c");

@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Extend portable authoring with Auto/explicit native-element layouts, editable Library widgets, balanced typography, safe visual import review and layout/fit/repair feedback; preserve earlier authoring-v1 inputs.
+
+- Add provider-independent AI authoring instructions/schema/examples and validated JSON import with review and repair feedback.
+- Add permission-scoped local presentation folder browsing, explicit reload/save/copy, external-change protection, separate browser recovery status and optional five-snapshot ZIP backups. Existing editable formats and offline exports remain supported; final manual acceptance is pending.
+
 ## 0.6.0-beta.1 — 2026-11-09
 
 - Add per-type element names and Layers search/custom overrides, opt-in template section/text/card positioning with reset, numbered Step widgets with independent sequences/manual overrides, and free Arrow/Pointer annotations with editable endpoints and portable playback/booth rendering.

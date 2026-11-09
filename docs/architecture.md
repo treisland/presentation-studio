@@ -2,6 +2,8 @@
 
 `components.js` introduces a block-definition registry and explicitly registered editing operations for widgets, groups and preset insertion. Existing editing operations retain their current fallback; duplicate new registrations fail at startup. Components reuse safe AST blocks and optional design group identities. Browser-local presets contain independent node/media/style snapshots; media is embedded for library transfer and remapped to fresh paths on insertion. The library never enters project history, while inserted content uses the normal validated transaction/checkpoint pipeline. See [component scope and manual review](blocks-components.md).
 
+`authoring-definitions.js` shares widget fields with Library registration and generates the portable capability catalog. `authoring-contract.js` derives schema validation; `authoring-layouts.js` stages a detached native project using the same state handlers as Library insertion, without applying a live transaction. `authoring-review.js` renders inert candidate previews, measures fit without binding live media/selections and offers undoable post-import reflow. Unknown capabilities are errors and incompatible compositions produce explicit fallbacks. See [native AI authoring](ai-layouts-and-elements.md).
+
 The versioned [local editing API](editing-api.md) stages supported metadata, template creation and existing-media placement operations on a detached candidate. UI controls reuse its validation/model helpers, while atomic batches enforce revision checks, existing design locks, one undo step and a pre-change checkpoint. It is local authoring code, not a remote or authenticated endpoint.
 
 The repository is the source of truth for the studio engine and included examples. Each build inlines the source, styles, template bootstrap, and vendored JSZip into portable HTML. The application makes no required runtime CDN requests and has no server-side persistence.
@@ -35,6 +37,8 @@ A project pack has `schemaVersion`, `kind`, `meta`, `playbackOnly`, `state`, `ch
 Slide trees are validated against allowed nodes and attributes; imported raw HTML and displayed commands are not executed. Sections and slides use stable IDs. Labels can change without breaking media references. Hidden sections and slides are filtered out of presentation and playback exports. At least one visible slide must remain in a visible section.
 
 ## Persistence
+
+Portable authoring v1 uses `authoring-contract.js` as the single schema/validation definition; its maintained adapter emits existing schema-v2 project packs. `local-workspaces.js` handles bounded file decoding, permission-scoped handles, import review, external-change fingerprints and explicit writes. Browser drafts remain recovery; linked file save status is independent. Handles live in a separate preference database and never enter project packs. See [scope and security](local-workspaces.md).
 
 - In-memory state supports bounded undo/redo and checkpoints.
 - IndexedDB stores browser recovery drafts and media blobs by project ID.

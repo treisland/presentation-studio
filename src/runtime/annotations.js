@@ -1,5 +1,5 @@
-componentRegister('step',{name:'Step number',category:'Widgets',description:'Numbered badge with optional title and description',fields:[['Number','1'],['Title','Your next step'],['Description','Explain what happens here.']]});
-componentRegister('arrow',{name:'Arrow / Pointer',category:'Shapes',description:'Free arrow with editable endpoints, label and arrowheads'});
+componentRegister('step',paWidgetCatalog.step);
+componentRegister('arrow',{...paWidgetCatalog.arrow,fields:undefined});
 function anMeta(state,id,key){return spData(state,id).objects[key]?.annotation;}
 function anSequenceNext(state,slide,sequence,exclude=''){
   const data=spData(state,slide.id,true);data.stepCounters??={};let max=Object.hasOwn(data.stepCounters,sequence)?data.stepCounters[sequence]:0;

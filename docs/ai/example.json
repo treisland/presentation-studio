@@ -1,0 +1,25 @@
+{
+  "format": "presentation-studio-authoring",
+  "version": 1,
+  "title": "Researching game history",
+  "slides": [
+    {
+      "title": "The history of Metal Gear Solid",
+      "blocks": [
+        { "type": "paragraph", "text": "A research starting point: how did the series develop its approach to stealth and storytelling?" },
+        { "type": "list", "items": ["Research the earlier Metal Gear games", "Build a verified release timeline", "Compare gameplay across releases"] },
+        { "type": "image-placeholder", "text": "An appropriately licensed timeline image, with attribution" }
+      ],
+      "notes": "This is an outline example, not a verified historical account. Research dates and claims before presenting."
+    },
+    {
+      "title": "Organize the research",
+      "blocks": [
+        { "type": "table", "headers": ["Question", "Evidence needed"], "rows": [["When was each game released?", "Official release records"], ["What changed?", "Gameplay examples and interviews"]] },
+        { "type": "heading", "level": 2, "text": "Review before presenting" },
+        { "type": "code", "language": "text", "text": "Claim → source → explanation" }
+      ],
+      "notes": "Replace this starter with your own findings and cite sources alongside claims."
+    }
+  ]
+}
