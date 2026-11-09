@@ -1,5 +1,7 @@
 # Direct media editing and booth operation
 
+Select a heading or paragraph, then use **Inspector → Content → Text style** to switch among Heading 1–3 and Paragraph. Inline formatting, selection, layout slots and slide identity stay with the text; each conversion is one Undo step. A converted slide title remains connected to the slide-title field. Existing custom sizes/styles still apply, so review overflow after changing type. Tables, list items, commands and structural containers keep their existing types; unlock protected content before changing it.
+
 ## Edit, Preview, Present, Booth
 
 Open **Edit → Edit blocks** for on-slide manipulation. Click text to edit it as before. The media inspector sits beside the preview and has its own scroll area. **Preview** tests audience interactions and Media Focus; dragging files does not edit the preview in that mode. **Present** closes authoring. File drops outside editing are intercepted to prevent browser navigation or accidental replacement.

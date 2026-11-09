@@ -114,7 +114,7 @@ function lcMapped(original,type) {
   }
   for(const slot of destinations){
     const node=slot.id==='masthead'?fields.find(n=>!used.has(n)&&mgHas(n,'lc-masthead')):
-      fields.find(n=>!used.has(n)&&mgHas(n,'lc-slot-'+slot.id))||fields.find(n=>!used.has(n)&&!mgHas(n,'lc-masthead')&&(slot.id==='title'?['h1','h2'].includes(n.tag):n.tag==='p'));
+      fields.find(n=>!used.has(n)&&(slot.id==='title'?n===projectHeading(source)?.node:mgHas(n,'lc-slot-'+slot.id)))||fields.find(n=>!used.has(n)&&!mgHas(n,'lc-masthead')&&(slot.id==='title'?['h1','h2'].includes(n.tag):n.tag==='p'));
     if(!node){mapping.push(slot.label+' ← editable prompt');continue;}
     used.add(node);const target=slot.target,parts=target.path.split('.');let parent=next.tree;
     for(const key of parts.slice(0,-1))parent=parent[key];
