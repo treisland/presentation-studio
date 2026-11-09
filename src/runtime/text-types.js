@@ -1,6 +1,6 @@
 // Expose existing safe text tags without replacing inline content or identity.
 const ttTypes={h1:'Heading 1',h2:'Heading 2',h3:'Heading 3',p:'Paragraph'};
-projectHeading=function(model){return projectFind(model,n=>['h1','h2','h3','h4','p'].includes(n.tag)&&(mgHas(n,'editor-title')||mgHas(n,'lc-slot-title')))[0]||projectFind(model,n=>['h1','h2'].includes(n.tag)&&!mgHas(n,'editor-body'))[0]||null;};
+projectHeading=function(model){if(/\beditor-title-removed\b/.test(model.classes||''))return null;return projectFind(model,n=>['h1','h2','h3','h4','p'].includes(n.tag)&&(mgHas(n,'editor-title')||mgHas(n,'lc-slot-title')))[0]||projectFind(model,n=>['h1','h2'].includes(n.tag)&&!mgHas(n,'editor-body'))[0]||null;};
 function ttTarget(state,slide,path){
   if(typeof path!=='string'||!/^\d+(?:\.children\.\d+)*$/.test(path))editingFail('INVALID','Select a text block.');
   const parts=path.split('.'),node=projectAt(slide,path);

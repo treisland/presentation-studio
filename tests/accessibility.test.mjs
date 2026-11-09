@@ -36,6 +36,9 @@ test('keyboard authoring edits, reorders, undoes, exports, verifies backups and 
     await page.goto('file://' + resolve('dist/presentation-studio.html'));
     await page.keyboard.press('j');
     await page.waitForFunction(() => document.querySelector('#full-editor').open);
+    // Canvas focus now follows selection; explicitly choose slide settings before editing its title.
+    await reach(page, '#ic-slide-settings');
+    await page.keyboard.press('Enter');
     await reach(page, '#fe-slide-title');
     await page.keyboard.press('Control+a');
     await page.keyboard.type('Keyboard authored presentation');

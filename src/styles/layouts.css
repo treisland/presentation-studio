@@ -53,7 +53,7 @@
 .editor-dark #lc-examples .lc-example-badge { color:#b4c6df; }
 .playback-only :is(#lc-examples,#lc-examples-open,#lc-examples-hub,#lc-examples-wizard) { display:none!important; }
 @media(max-width:850px){.lc-example-layout{grid-template-columns:1fr}#lc-example-cards{max-height:30vh}.lc-example-filters{gap:10px}#lc-examples{padding:16px}}
-#full-editor #lc-walkthrough { position:fixed;right:22px;bottom:65px;z-index:500;width:min(370px,calc(100vw - 44px));max-height:65vh;overflow:auto;padding:18px;border:2px solid #0066ff;border-radius:12px;background:#fff;color:#101c2f;box-shadow:0 8px 28px #101c2f33;font:14px/1.5 Arial; }
+#full-editor #lc-walkthrough { position:fixed;left:22px;right:auto;bottom:65px;z-index:500;width:min(370px,calc(100vw - 44px));max-height:65vh;overflow:auto;padding:18px;border:2px solid #0066ff;border-radius:12px;background:#fff;color:#101c2f;box-shadow:0 8px 28px #101c2f33;font:14px/1.5 Arial; }
 #full-editor #lc-walkthrough[hidden] { display:none!important; }
 .lc-guide-head { display:flex;align-items:start;justify-content:space-between;gap:10px; }
 #full-editor #lc-walkthrough h3 { font:700 18px/1.3 Arial;margin:0 0 12px;letter-spacing:0; }

@@ -110,7 +110,7 @@ dbOperation=function(state,op,created){
       Object.assign(meta,c);
     }else if(op.type==='design.remove'){
       if(e.kind==='grid')for(const cell of e.node.children){const object=mgObjectID(cell);if(!object)continue;if(object==='primary')delete state.media[slide.id];else state.mediaObjects[slide.id]=(state.mediaObjects[slide.id]||[]).filter(n=>n.id!==object);delete data.objects['media-'+object];}
-      if(e.node)slide.tree.splice(slide.tree.indexOf(e.node),1);
+      if(e.node){projectMarkHeadingRemoved(slide,String(slide.tree.indexOf(e.node)));slide.tree.splice(slide.tree.indexOf(e.node),1);}
       else if(e.object==='primary')delete state.media[slide.id];else state.mediaObjects[slide.id]=state.mediaObjects[slide.id].filter(n=>n.id!==e.object);
       delete data.objects[e.key];
     }else if(op.type!=='design.reorder')editingFail('INVALID','Unsupported design operation.');

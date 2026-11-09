@@ -55,8 +55,15 @@ function vbNode() {
     ? projectAt(projectModel(vbSelected.slideID), vbSelected.path)
     : null;
 }
+function projectMarkHeadingRemoved(model, path) {
+  const heading = projectHeading(model);
+  if (heading && (heading.path === path || heading.path.startsWith(path+'.'))) model.classes = 'editor-title-removed '+(model.classes || '');
+}
 function vbCanRemove() {
   if (!vbSelected) return false;
+  if (ceLocked(vbSelected.slideID) || vbMode !== 'edit' || !weEditing()) return false;
+  const entry = spEntries(projectModel(vbSelected.slideID)).find(item => item.node === projectModel(vbSelected.slideID)?.tree[Number(vbSelected.path?.split('.')[0])]);
+  if (entry && spProtected(entry)) return false;
   if (vbSelected.kind === "media")
     return !!projectState.media[vbSelected.slideID];
   if (vbSelected.kind === "logo") return true;
@@ -67,14 +74,7 @@ function vbCanRemove() {
     vbSelected.kind === "commands"
   )
     return false;
-  const heading = projectHeading(projectModel(vbSelected.slideID));
-  return (
-    !heading ||
-    !(
-      heading.path === vbSelected.path ||
-      heading.path.startsWith(vbSelected.path + ".")
-    )
-  );
+  return true;
 }
 function vbCanDuplicate() {
   const n = vbNode();
@@ -159,7 +159,7 @@ function vbSyncPanel() {
   if (selected.kind === "text" || selected.kind === "list") {
     const node = projectAt(model, selected.path);
     if (!node) return;
-    const fields = projectFields(model);
+    const fields = projectFields(model, {includeTitle:true});
     fields.forEach(({ node, path }, i) => {
       const option = [...$("fe-block-select").options].find(
         (o) => o.value === path,
@@ -441,10 +441,20 @@ function vbModify(action) {
       parent = parts.reduce((v, k) => v[k], model.tree),
       node = parent[index];
     if (action === "duplicate") {
-      parent.splice(index + 1, 0, spCloneNode(node));
+      const copy = spCloneNode(node);
+      projectWalk([copy], child => {
+        if (!child.tag) return;
+        child.attrs ||= {};
+        child.attrs.class = (child.attrs.class || '').split(/\s+/).filter(token => token !== 'editor-title' && !token.startsWith('lc-slot-')).join(' ');
+        if (['h1','h2','h3','h4','p'].includes(child.tag) && !/\beditor-body\b/.test(child.attrs.class)) child.attrs.class += ' editor-body';
+      });
+      parent.splice(index + 1, 0, copy);
       nextPath = [...parts, String(index + 1)].join(".");
     }
-    if (action === "delete") parent.splice(index, 1);
+    if (action === "delete") {
+      projectMarkHeadingRemoved(model, path);
+      parent.splice(index, 1);
+    }
     if (action === "bullets" && node.tag === "p") {
       const text = (function plain(n) {
         return "text" in n
@@ -499,7 +509,7 @@ function vbPanel() {
   }
   projectSelectTab("content");
   projectForm();
-  if (projectFields(projectModel()).some((f) => f.path === selection.path)) {
+  if (projectFields(projectModel(), {includeTitle:true}).some((f) => f.path === selection.path)) {
     projectBlockPath = selection.path;
     $("fe-block-select").value = selection.path;
     $("fe-block-text").value = projectText(node);

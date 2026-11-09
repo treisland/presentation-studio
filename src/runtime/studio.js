@@ -701,8 +701,8 @@
     studioFormExtras();
   };
   const studioCoreFields = projectFields;
-  projectFields = function (model) {
-    return studioCoreFields(model).filter(
+  projectFields = function (model, options) {
+    return studioCoreFields(model, options).filter(
       (f) =>
         projectState?.sections?.find((s) => s.id === model.group)?.kind !==
           "qa" || !/\beyebrow\b/.test(f.node.attrs?.class || ""),

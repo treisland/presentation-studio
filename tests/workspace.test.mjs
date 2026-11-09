@@ -34,6 +34,7 @@ const slide = (p, id) =>
   p.locator('.fe-slide-button[data-slide-id="' + id + '"]');
 async function media(p) {
   await slide(p, "studio-media").click();
+  await p.locator('#wp-tab-content').click();await p.locator('#we-context-media').click();
 }
 
 test("Panel collapse and keyboard sizing refit the canvas without changing project or undo data", async () => {

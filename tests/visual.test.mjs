@@ -314,7 +314,8 @@ test("inline text, formatting, cards, lists, safe paste, tables, and commands us
     await p.locator("#vb-delete").click();
     assert.equal(await p.locator("#fe-preview .card").count(), 1);
     await p.locator("#fe-preview h1").click();
-    assert.equal(await p.locator("#vb-delete").isDisabled(), true);
+    assert.equal(await p.locator("#vb-delete").isDisabled(), false);
+    assert.equal(await p.locator("#vb-duplicate").isDisabled(), false);
     await p.locator("#fe-preview h1").press("Escape");
     await addSlide(p, "table");
     const first = p.locator("#fe-preview tbody td").first();
@@ -342,7 +343,7 @@ test("inline text, formatting, cards, lists, safe paste, tables, and commands us
       (await p.locator("#vb-selection-label").innerText()).includes("Commands"),
     );
     await reveal(p,"#vb-panel");await p.locator("#vb-panel").click();
-    assert.equal(await p.locator("#fe-commands-panel").isVisible(), true);
+    assert.equal(await p.locator("#code-panel").isVisible(), true);
     const data = await pack(p, "blocks-project.json");
     assert(!JSON.stringify(data.state.slides).includes("data-vb-"));
     assert(!JSON.stringify(data.state.slides).includes("vb-target"));
