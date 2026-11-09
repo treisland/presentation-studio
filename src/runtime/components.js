@@ -171,6 +171,7 @@ async function componentSave() {
     const validated=componentValidateLibrary([...componentLibrary,item]);if(componentStore(validated)){$('component-status').textContent='Saved locally. Export your library for backup.';componentList();}
   }catch(error){projectMessage(error.message);}
 }
+function componentCanSave(){const keys=spActiveKeys(),entries=spEntries().filter(entry=>keys.includes(entry.key));return weEditing()&&!ceLocked()&&entries.length>0&&entries.every(entry=>!spProtected(entry)&&(entry.kind==='block'||entry.kind==='media'&&entry.media.canvas?.placement));}
 editingRegisterOperation('component.insert', (state, operation, created) => {
   const slide=editingSlide(state,operation.slideId),item=componentValidateLibrary([operation.component])[0],data=spData(state,slide.id,true),groups=new Map();
   if(slide.tree.filter(dbID).length+item.entries.filter(entry=>entry.node).length>60)editingFail('INVALID','At most 60 free blocks per slide.');
@@ -208,22 +209,27 @@ function componentList() {
   const list=$('component-items');if(!list)return;list.replaceChildren();
   const search=$('component-search').value.toLowerCase(),category=$('component-category').value;
   if(category!=='Library')for(const [type,definition]of componentTypes){
+    if(category==='All'&&definition.category==='Widgets')continue;
     if(category!=='All'&&category!==definition.category||!(definition.name+' '+definition.description).toLowerCase().includes(search))continue;
-    const card=document.createElement('article'),title=document.createElement('h3'),description=document.createElement('p'),preview=document.createElement('div');title.textContent=definition.name;description.textContent=definition.description;preview.className='component-card-preview';preview.textContent=definition.fields?.map(field=>field[1]).join(' · ')||definition.name;card.append(title,preview,description,componentButton('Insert '+definition.name,()=>{const result=componentRun({type:'block.create',kind:type});if(result.ok){$('component-add').close();weInspect('text');}}));list.append(card);
+    const card=document.createElement('article'),title=document.createElement('h3'),description=document.createElement('p'),preview=document.createElement('div');title.textContent=definition.name;description.textContent=definition.description;preview.className='component-card-preview component-preview-'+type;preview.setAttribute('aria-hidden','true');
+    if(definition.fields)for(const [label,value]of definition.fields){const line=document.createElement('span');line.textContent=value;preview.append(line);}else{const shape=document.createElement('span');shape.textContent=type==='text'?'Aa':'';preview.append(shape);}
+    card.append(preview,title,description,componentButton('Insert '+definition.name,()=>{const result=componentRun({type:'block.create',kind:type});if(result.ok){$('component-add').close();weInspect('text');}}));list.append(card);
   }
-  if(category==='All'||category==='Media')list.append(componentButton('Insert image or video…',()=>{$('component-add').close();$('db-add-media').click();}));
-  if(category==='All'||category==='Library')for(const item of componentLibrary){
+  if((category==='All'||category==='Media')&&'image video media upload'.includes(search)){const card=document.createElement('article'),preview=document.createElement('div'),title=document.createElement('h3'),description=document.createElement('p');preview.className='component-card-preview component-preview-media';preview.textContent='▧';preview.setAttribute('aria-hidden','true');title.textContent='Image / Video';description.textContent='Upload media from your device';card.append(preview,title,description,componentButton('Insert image or video…',()=>{$('component-add').close();$('db-add-media').click();}));list.append(card);}
+  if(category==='Library')for(const item of componentLibrary){
     if(!item.name.toLowerCase().includes(search))continue;
     const card=document.createElement('article'),name=document.createElement('input'),preview=document.createElement('p');name.value=item.name;name.maxLength=80;name.setAttribute('aria-label','Component name');preview.textContent=item.entries.map(entry=>entry.node?projectText(entry.node):entry.media.name||'Media').join(' · ').slice(0,180);
-    card.append(name,preview,componentButton('Insert '+item.name,()=>componentInsert(item)),componentButton('Rename',()=>{const value=name.value.trim();if(!value)return;componentStore(componentLibrary.map(entry=>entry.id===item.id?{...entry,name:value}:entry));componentList();}),componentButton('Duplicate preset',()=>{componentStore(componentValidateLibrary([...componentLibrary,{...item,name:item.name+' copy'}]));componentList();}),componentButton('Delete preset',()=>{componentStore(componentLibrary.filter(entry=>entry.id!==item.id),[...componentTrash.slice(-9),item]);componentList();}));list.append(card);
+    const heading=document.createElement('h3'),menu=document.createElement('details'),summary=document.createElement('summary');heading.textContent=item.name;summary.textContent='Options';summary.setAttribute('aria-label','Manage '+item.name);menu.append(summary,name,componentButton('Rename',()=>{const value=name.value.trim();if(!value)return;componentStore(componentLibrary.map(entry=>entry.id===item.id?{...entry,name:value}:entry));componentList();}),componentButton('Duplicate preset',()=>{componentStore(componentValidateLibrary([...componentLibrary,{...item,name:(item.name.slice(0,75)+' copy')}]));componentList();}),componentButton('Delete preset',()=>{componentStore(componentLibrary.filter(entry=>entry.id!==item.id),[...componentTrash.slice(-9),item]);componentList();}));preview.className='component-card-preview';card.append(preview,heading,componentButton('Insert '+item.name,()=>componentInsert(item)),menu);list.append(card);
   }
-  if(!list.childNodes.length){const empty=document.createElement('p');empty.textContent='No matching blocks or saved components.';list.append(empty);}
+  if(!list.childNodes.length){const empty=document.createElement('p');empty.className='component-empty';empty.textContent=category==='Library'&&!search?'Your reusable designs live here. Select a free block or group on a slide, then choose Save as component from More.':'No results. Try another search or tab.';list.append(empty);}
+  const active=category==='Library'?'Library':category==='Widgets'?'Widgets':'All';for(const tab of document.querySelectorAll('#component-tabs [role=tab]')){const selected=tab.dataset.category===active;tab.setAttribute('aria-selected',String(selected));tab.tabIndex=selected?0:-1;}
 }
 function componentPaint() {
   if(!componentReady||!projectReady)return;
   const entries=spEntries(),keys=spActiveKeys(),selected=entries.filter(entry=>keys.includes(entry.key)),locked=!weEditing()||vbMode!=='edit'||ceLocked()||selected.some(spProtected),toolbar=$('component-toolbar');
   toolbar.querySelectorAll('[data-selection-action]').forEach(control=>control.disabled=locked||!selected.length);
   $('component-open').disabled=!weEditing()||ceLocked();
+  if($('component-save-action'))$('component-save-action').hidden=!componentCanSave();
   $('component-group').disabled=locked||selected.length<2||selected.some(entry=>entry.meta.group);
   $('component-ungroup').disabled=locked||!selected.some(entry=>entry.meta.group);
   $('component-selection').textContent=selected.length?selected.length+' selected'+(selected.some(entry=>entry.meta.group)?' · grouped':''):'Select a block to format or arrange';
@@ -281,6 +287,7 @@ projectInit=function(){
   const fields=document.createElement('section');fields.id='component-widget-fields';fields.dataset.wpPart='content';$('wp-fields').prepend(fields);
   const dialog=document.createElement('dialog');dialog.id='component-add';dialog.innerHTML='<h2>Add blocks and components</h2><p>My components are saved in this browser profile. Export your library for backup or transfer. Inserted copies are independent.</p><label>Search<input id="component-search" type="search"></label><label>Category<select id="component-category"><option>All</option><option>Text</option><option>Shapes</option><option>Media</option><option>Widgets</option><option>Library</option></select></label><div id="component-items"></div><label>Save selected objects as<input id="component-name" maxlength="80" placeholder="Component name"></label><button id="component-save">Save selection to library</button><button id="component-export">Export library</button><label>Import library<input id="component-import" type="file" accept=".json,application/json"></label><button id="component-restore">Restore last deleted preset</button><button id="component-tour">Quick walkthrough</button><p id="component-status" role="status"></p><button id="component-close">Close</button>';
   document.body.append(dialog);$('component-open').onclick=()=>{componentList();dialog.showModal();$('component-search').focus();};$('component-close').onclick=()=>{dialog.close();$('component-open').focus();};dialog.addEventListener('close',()=>$('component-open').focus());
+  componentLibraryLayout(dialog);
   $('component-search').oninput=componentList;$('component-category').onchange=componentList;$('component-save').onclick=componentSave;
   $('component-tour').onclick=()=>{$('component-status').textContent='1. Insert a block or widget. 2. Select objects in Layers (checkboxes select several). 3. Format above the canvas; Enter edits text and Escape finishes. 4. Group free blocks and floating images, name the selection and Save. 5. Export your library, then insert independent copies from Library.';};
   $('component-export').onclick=()=>{const link=document.createElement('a'),url=URL.createObjectURL(new Blob([JSON.stringify({kind:'presentation-studio-components',version:1,items:componentLibrary},null,2)],{type:'application/json'}));link.href=url;link.download='presentation-studio-components.json';link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
@@ -301,6 +308,20 @@ projectInit=function(){
   });
   componentReady=true;componentReadLibrary();componentPaint();
 };
+function componentLibraryLayout(dialog){
+  const heading=dialog.querySelector('h2'),intro=dialog.querySelector('p'),header=document.createElement('header'),tabs=document.createElement('div'),search=document.createElement('div'),footer=document.createElement('footer'),manage=document.createElement('details'),summary=document.createElement('summary');
+  dialog.setAttribute('aria-labelledby','component-library-title');heading.id='component-library-title';heading.textContent='Add to slide';intro.textContent='Choose a block, widget or reusable component.';header.className='component-library-header';header.append(heading,$('component-close'),intro);dialog.prepend(header);
+  tabs.id='component-tabs';tabs.setAttribute('role','tablist');tabs.setAttribute('aria-label','Library category');
+  const category=$('component-category');category.hidden=true;category.querySelector('[value="All"]')?.setAttribute('label','Blocks');
+  for(const [name,value]of [['Blocks','All'],['Widgets','Widgets'],['My components','Library']]){const tab=componentButton(name,()=>{category.value=value;componentList();});tab.dataset.category=value;tab.setAttribute('role','tab');tab.setAttribute('aria-controls','component-items');tabs.append(tab);}
+  tabs.addEventListener('keydown',event=>{if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;event.preventDefault();const buttons=[...tabs.children],index=buttons.indexOf(document.activeElement),next=event.key==='Home'?0:event.key==='End'?buttons.length-1:(index+(event.key==='ArrowRight'?1:-1)+buttons.length)%buttons.length;buttons[next].click();buttons[next].focus();});
+  search.className='component-library-search';const input=$('component-search');input.placeholder='Search blocks and components';input.setAttribute('aria-label','Search blocks and components');search.append(input,componentButton('Clear search',()=>{input.value='';componentList();input.focus();}));header.after(tabs,search);
+  $('component-items').setAttribute('role','tabpanel');
+  const save=document.createElement('details'),saveSummary=document.createElement('summary');save.id='component-save-panel';saveSummary.textContent='Save selection as component';save.append(saveSummary,$('component-name').closest('label'),$('component-save'));dialog.append(save);
+  summary.textContent='Manage library';manage.id='component-manage';manage.append(summary,$('component-export'),$('component-import').closest('label'),$('component-restore'),$('component-tour'));footer.append(manage);const notice=document.createElement('p');notice.textContent='Saved in this browser profile. Export a library backup for transfer or recovery.';footer.append(notice,$('component-status'));dialog.append(footer);
+  const open=$('component-open').onclick;$('component-open').onclick=()=>{save.hidden=!componentCanSave();open();};
+  const name=$('component-name');name.addEventListener('focus',()=>{save.open=true;});
+}
 function componentOrganizeToolbar(toolbar,textTools,mediaTools){
   const actions=$('component-open').parentElement,colors=$('component-colors');
   const makePanel=(name,label,nodes)=>{
@@ -327,7 +348,7 @@ function componentOrganizeToolbar(toolbar,textTools,mediaTools){
   }
   makePanel('media','Image',[mediaTools]);
   const more=makePanel('more','More ⋯',[...['duplicate','lock','delete'].map(name=>$('component-'+name)),$('we-panel-tools')]);
-  const save=componentButton('Save to library…',()=>{more.hidePopover();add.click();$('component-name').focus();});more.prepend(save);
+  const save=componentButton('Save to library…',()=>{more.hidePopover();add.click();$('component-save-panel').open=true;$('component-name').focus();});save.id='component-save-action';more.prepend(save);
   const view=$('we-view-tools');toolbar.append(view);view.classList.add('component-view-controls');
   const arrangeTrigger=$('component-arrange-trigger');
   const arrangeHome=document.createComment('arrange control');arrangeTrigger.before(arrangeHome);

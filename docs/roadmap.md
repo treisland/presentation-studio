@@ -10,6 +10,7 @@ Stable 0.5.1 is published. The maintainer authorized 0.6.0 Blocks, Widgets and R
 - **Deferred:** camera overlays, template publishing, accounts and collaboration until the core workflow is dependable.
 
 - **0.6.0 — Blocks, Widgets and Reusable Components:** contextual formatting, unified Add/Library, static widgets, one-level grouping and independent portable component presets. See [scope and acceptance](blocks-components.md). Manual beta review remains pending.
+- **0.6.0 Library usability follow-up:** compact dialog typography, Blocks/Widgets/My components tabs, searchable consistent visual cards including Media, separate Save selection flow, per-component management menus and library import/export/recovery under Manage library. Keep navigation visible while results scroll and support small screens and keyboard access.
 - **0.7.0 — AI assistance:** architecture/privacy decisions, OpenRouter/Ollama connections, selected-text rewriting, proposal acceptance and evaluation. Existing issues #15–#19 retain membership in milestone #3.
 - **0.8.0 — File-based MCP:** optional companion, transactional editing, previews/readiness, separate ZIP exports and Hermes integration. Existing issues #20–#22 retain membership in milestone #4. Live session editing remains discovery #23.
 - **Unscheduled format discovery — #73:** portrait/square/print/scrolling canvases and their reflow/export contracts require separate decisions. Current collections remain 16:9 slides, without email, print-ready or website-publishing promises.
