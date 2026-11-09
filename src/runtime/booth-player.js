@@ -229,6 +229,8 @@ function boothStandalone() {
       } catch {}
     }
     current = id;
+    const chrome={header:true,footer:true,logo:true,number:true,decoration:true,...data.visibility?.defaults,...data.visibility?.slides?.[id]};
+    for(const [part,selector]of Object.entries({header:':scope > header',footer:':scope > footer',logo:'header .brand img',number:'footer #counter,footer .meta > :last-child',decoration:':scope > .grid'}))for(const element of stage.querySelectorAll(selector))element.style.visibility=chrome[part]?'':'hidden';
     elapsed = 0;
     paint();
   }
