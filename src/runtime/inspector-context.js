@@ -74,7 +74,7 @@ function icPaint() {
     const slide = projectMeta.id+':'+projectSelected;
     if (slide !== icSlide) {icSlide = slide; icDestination = '';icInspectorTarget=null;}
     const context = icSelection(), {kind,locked} = context, changed = context.identity !== icIdentity;
-    if (changed) { icIdentity = context.identity; $('wp-fields').scrollTop = 0; $('ic-text-editor').open = false; }
+    if (changed) { icIdentity = context.identity; $('wp-fields').scrollTop = 0;if(!(icInspectorTarget?.slide===projectSelected&&context.kind==='text'&&context.path===icInspectorTarget.path))$('ic-text-editor').open = false; }
     $('we-inspector').dataset.icKind = kind;
     $('wp-selection-title').textContent = context.title;
     $('wp-selection-detail').textContent = context.detail;
@@ -182,6 +182,7 @@ function icNavigate(kind) {
   icPaint();
 }
 function icExpandTextEditor() {
+  const context=icSelection();if(context.kind==='text'&&context.path)icInspectorTarget={slide:projectSelected,path:context.path};
   vbEnd(false); projectFlush(); icPaint();
   wePanels.inspector.open = true; wePanelView(); wpChooseTab('content');
   $('ic-text-editor').open = true; $('fe-block-text').focus();
@@ -212,6 +213,7 @@ projectInit = function() {
     icPaint();
   };
   $('ic-text-editor').addEventListener('toggle',()=>{if(editor.open){const context=icSelection();if(context.kind==='text'&&context.path)icInspectorTarget={slide:projectSelected,path:context.path};vbEnd(false);}});
+  editor.querySelector('summary').addEventListener('pointerdown',()=>{if(!editor.open){const context=icSelection();if(context.kind==='text'&&context.path)icInspectorTarget={slide:projectSelected,path:context.path};}});
   const panel = $('vb-panel').onclick;
   $('vb-panel').onclick = event => { const context = icSelection();if(context.kind === 'text')icExpandTextEditor();else if(context.kind === 'code')icNavigate('code');else panel?.call($('vb-panel'),event); };
   for (const [selector,kind] of [['#we-context-slide','slide'],['[data-fe-tab="commands"]','code'],['[data-fe-tab="table"]','table'],['[data-fe-tab="notes"]','notes'],['[data-fe-tab="content"]','text']]) {
