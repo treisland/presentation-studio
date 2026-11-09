@@ -1,0 +1,27 @@
+#lw-panel { width: min(900px, calc(100vw - 32px)); max-height: calc(100dvh - 40px); overflow: auto; box-sizing: border-box; background: #142237; color: #e7eefb; border: 1px solid #60718a; border-radius: 12px; padding: 24px; font: 14px/1.45 Arial, sans-serif; }
+#lw-panel::backdrop { background: #020a16b8; }
+#lw-panel .lw-heading { position: sticky; top: -24px; z-index: 1; background: #142237; padding: 12px 0; display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+#lw-tabs { display: flex; flex-wrap: wrap; gap: 8px; }
+#lw-tabs [aria-selected="false"] { background: #233955; }
+#lw-panel [hidden] { display: none !important; }
+#lw-panel h2 { font-size: 24px; margin: 0; letter-spacing: normal; line-height: 1.25; }
+#lw-panel h3 { font-size: 18px; margin: 0 0 12px; letter-spacing: normal; line-height: 1.35; }
+#lw-panel section { border-top: 1px solid #43546d; margin-top: 20px; padding-top: 20px; }
+#lw-panel p, #lw-panel li { line-height: 1.5; overflow-wrap: anywhere; }
+#lw-panel label { display: grid; gap: 8px; margin: 14px 0; }
+#lw-panel input, #lw-panel textarea { box-sizing: border-box; width: 100%; min-width: 0; padding: 10px; background: #091526; color: #e7eefb; border: 1px solid #7f91ac; border-radius: 6px; }
+#lw-panel textarea { resize: vertical; font-family: monospace; }
+.lw-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+#lw-panel button { min-height: 36px; white-space: normal; }
+#lw-panel button:disabled { opacity: .5; cursor: default; }
+#lw-panel button:focus-visible, #lw-panel input:focus-visible, #lw-panel textarea:focus-visible { outline: 3px solid #9bc5ff; outline-offset: 2px; }
+#lw-files { max-height: 260px; overflow: auto; padding-left: 0; list-style: none; }
+#lw-files li { padding: 8px 0; border-bottom: 1px solid #43546d; }
+#lw-message { padding: 10px; background: #233955; }
+#lw-review { max-height: 240px; overflow: auto; }
+.pa-content { display: grid; gap: 12px; min-width: 0; }
+.pa-content p, .pa-content pre { margin: 0; }
+.pa-content pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+.pa-placeholder { padding: 12px; border: 2px dashed currentColor; }
+.pa-sources { font-size: 14px; }
+@media (max-width: 600px) { #lw-panel { padding: 16px; } .lw-actions > button { flex: 1 1 140px; } }

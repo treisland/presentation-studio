@@ -36,6 +36,8 @@ Slide trees are validated against allowed nodes and attributes; imported raw HTM
 
 ## Persistence
 
+Portable authoring v1 uses `authoring-contract.js` as the single schema/validation definition; its maintained adapter emits existing schema-v2 project packs. `local-workspaces.js` handles bounded file decoding, permission-scoped handles, import review, external-change fingerprints and explicit writes. Browser drafts remain recovery; linked file save status is independent. Handles live in a separate preference database and never enter project packs. See [scope and security](local-workspaces.md).
+
 - In-memory state supports bounded undo/redo and checkpoints.
 - IndexedDB stores browser recovery drafts and media blobs by project ID.
 - Editable ZIP exports contain the durable structured state and referenced assets.

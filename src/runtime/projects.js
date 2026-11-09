@@ -384,39 +384,7 @@ async function hubChooseFile(file) {
   if (!file || hubWorking) return;
   try {
     hubMessage("Reading " + file.name + "…");
-    let raw, zip;
-    if (file.name.toLowerCase().endsWith(".zip")) {
-      zip = await JSZip.loadAsync(file);
-      const config = zip.file("presentation.json");
-      if (!config)
-        throw new Error(
-          "This ZIP does not contain presentation.json. Choose an editable project ZIP.",
-        );
-      raw = JSON.parse(await config.async("string"));
-    } else raw = JSON.parse(await file.text());
-    const pack = projectValidatePack(raw);
-    if (pack.playbackOnly)
-      throw new Error(
-        "This is a playback-only export. Choose the editable project ZIP.",
-      );
-    const assets = new Map();
-    for (const path of projectReferenced(pack)) {
-      const entry = zip?.file(path);
-      if (entry)
-        assets.set(
-          path,
-          new Blob([await entry.async("uint8array")], { type: hubMime(path) }),
-        );
-      else if (!zip) {
-        await hubDatabase();
-        const blob = await projectDBGet("assets", pack.meta.id + "|" + path);
-        if (blob) assets.set(path, blob);
-      }
-      if (!assets.has(path))
-        throw new Error(
-          "Media is missing from this file. Open the complete editable ZIP; JSON alone does not include media bytes.",
-        );
-    }
+    const { pack, assets } = await lwLoad(file, { browserAssets: true });
     await hubGuard(async () => {
       // Commit the incoming project before replacing the active state.
       const priorName = await hubKeepPriorVersion(pack);
@@ -444,7 +412,7 @@ async function hubChooseFile(file) {
     hubError(e);
   }
 }
-async function hubExportPack(pack, assets) {
+async function hubPackBlob(pack, assets) {
   const refs = [...projectReferenced(pack)];
   if (refs.some((path) => !assets.has(path)))
     throw new Error(
@@ -479,7 +447,10 @@ async function hubExportPack(pack, assets) {
     "README.txt",
     "Editable Presentation Studio project. Unzip the entire package, keep assets beside index.html, and open index.html. Browser drafts are recovery copies; this ZIP is a portable backup.",
   );
-  const blob = await zip.generateAsync({ type: "blob", compression: "STORE" });
+  return zip.generateAsync({ type: "blob", compression: "STORE" });
+}
+async function hubExportPack(pack, assets) {
+  const blob = await hubPackBlob(pack, assets);
   mediaDownload(
     blob,
     (mediaFilename(pack.meta.name).replace(/\.+$/, "") || "presentation") +

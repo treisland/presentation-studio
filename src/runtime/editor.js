@@ -1754,15 +1754,8 @@
     projectFlush();
     projectMessage("Reading project…");
     try {
-      let raw,
-        zip = null;
-      if (file.name.toLowerCase().endsWith(".zip")) {
-        zip = await JSZip.loadAsync(file);
-        const config = zip.file("presentation.json");
-        if (!config) throw new Error("The ZIP is missing presentation.json.");
-        raw = JSON.parse(await config.async("string"));
-      } else raw = JSON.parse(await file.text());
-      if (raw.schemaVersion === 1) {
+      const loaded = await lwLoad(file, { allowLegacy: true, browserAssets: true, allowMissingAssets: true });
+      if (loaded.legacy) {
         await projectLegacyMediaImport(file);
         projectFlush();
         projectMessage(
@@ -1770,35 +1763,7 @@
         );
         return;
       }
-      const pack = projectValidatePack(raw);
-      if (pack.playbackOnly)
-        throw new Error(
-          "This is a playback-only export. Import the editable project ZIP to continue editing.",
-        );
-      const assets = new Map();
-      if (zip)
-        for (const asset of projectReferenced(pack)) {
-          const entry = zip.file(asset);
-          if (!entry) throw new Error("The project ZIP is missing " + asset);
-          const ext = asset.split(".").pop().toLowerCase(),
-            mime =
-              {
-                png: "image/png",
-                jpg: "image/jpeg",
-                jpeg: "image/jpeg",
-                webp: "image/webp",
-                svg: "image/svg+xml",
-                gif: "image/gif",
-                avif: "image/avif",
-                mp4: "video/mp4",
-                webm: "video/webm",
-                ogg: "video/ogg",
-              }[ext] || "application/octet-stream";
-          assets.set(
-            asset,
-            new Blob([await entry.async("uint8array")], { type: mime }),
-          );
-        }
+      const { pack, assets } = loaded;
       const beforeImport = projectCopy(projectState),
         wasDirty = mediaDirty;
       const accept = () => {

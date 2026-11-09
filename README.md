@@ -24,6 +24,8 @@ Download and unzip a release or a successful **Validate and build** Actions arti
 
 Click **Edit** or press **J**. Use **Project → New presentation** for **Blank**, **Start from an example**, or **Import**. **Project → Start from an example** opens the filtered preview gallery; see [the example guide](docs/examples.md). **Presentations** (or **P**) opens recent browser drafts and project ZIP/JSON files. Export an editable ZIP to save a complete portable copy; playback ZIPs are for delivery.
 
+The 0.7.0 implementation adds **Project → AI & local workspace**: download provider-independent authoring instructions, validate generated JSON, connect a local presentation folder, reload external edits and explicitly save linked files. Browser recovery and disk-save status remain separate. Folder/save capabilities depend on browser permissions; ordinary import/export remains available. See [the workspace guide and manual acceptance checklist](docs/local-workspaces.md). Final manual acceptance is pending; no new release is authorized by this feature work.
+
 ![Generic Studio demo](docs/images/studio-demo.png)
 
 ## What's in the demo?
