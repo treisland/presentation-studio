@@ -5,6 +5,17 @@ export async function reveal(page, selector) {
     const part = await page.locator(selector).evaluate(el => el.closest('[data-wp-part]')?.dataset.wpPart || (el.closest('#we-inspector .fe-tabs') ? 'content' : null));
     if (['content','arrange','style'].includes(part)) await page.locator('#wp-tab-' + part).click();
   }
+  // Contextual Inspector fields require the explicit destination when no matching object is selected.
+  const mediaContext = await page.locator(selector).evaluate(el => !!el.closest('#ce-panel'));
+  if (mediaContext && await page.locator('#ce-panel').getAttribute('data-ic-visible') === 'false') {
+    await page.locator('#wp-tab-content').click();await page.locator('#we-context-media').click();
+    const part=await page.locator(selector).evaluate(el=>el.closest('[data-wp-part]')?.dataset.wpPart);
+    if(['content','arrange','style'].includes(part))await page.locator('#wp-tab-'+part).click();
+  }
+  const slideContext=await page.locator(selector).evaluate(el=>el.id==='fe-slide-title'||!!el.closest('#ic-slide-fields'));
+  if(slideContext&&await page.locator('#fe-slide-title').getAttribute('data-ic-visible')==='false')await page.locator('#ic-slide-settings').click();
+  const gridContext=await page.locator(selector).evaluate(el=>!!el.closest('#mg-panel'));
+  if(gridContext&&await page.locator('#mg-panel').getAttribute('data-ic-visible')==='false')await page.locator('#fe-preview .mg-cell-action').first().click();
   const ids = await page.locator(selector).evaluate((element) => {
     const ids = [];
     for (let node = element.parentElement; node; node = node.parentElement)

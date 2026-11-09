@@ -79,7 +79,7 @@ test('Layers batch appearance, naming, visibility, locks, reorder and rotation a
 test('blank and confirmed Clear keep slide identity/background and recover removed media in one Undo',async()=>{const{p,errors}=await setup();try{
  await addSlide(p,'blank');let s=await read(p),slide=s.state.slides.find(s=>s.template==='blank');assert.deepEqual(slide.tree,[]);
  assert.equal((await apply(p,[{type:'design.background',color:{role:'surface'}}])).ok,true);await block(p);const before=await pack(p);
- await p.locator('#wp-tab-content').click();await p.locator('#sp-clear').click();await p.locator('#fe-confirm-cancel').click();assert.deepEqual((await read(p)).state,before.state);
+  await p.locator('#ic-slide-settings').click();await p.locator('#sp-clear').click();await p.locator('#fe-confirm-cancel').click();assert.deepEqual((await read(p)).state,before.state);
  await p.locator('#sp-clear').click();await p.locator('#fe-confirm-accept').click();s=await read(p);const clear=s.state.slides.find(s=>s.id===slide.id);assert.deepEqual(clear.tree,[]);assert.equal(clear.group,slide.group);assert.deepEqual(s.state.design.slides[slide.id].background,{role:'surface',opacity:1});
  await p.locator('#fe-undo').click();assert.deepEqual((await read(p)).state,before.state);assert.deepEqual(errors,[]);
  }finally{await p.close();}});

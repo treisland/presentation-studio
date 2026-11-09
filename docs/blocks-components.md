@@ -24,6 +24,14 @@ Excluded: linked instance updates, timers, interactive widgets, cloud/shared lib
 
 ## Beta manual review checklist
 
+### Selection-aware Inspector — issue #108
+
+Content follows the selected text, widget, code block, table/cell, image/video or media-grid cell. Unrelated editors are hidden. Style and Arrange remain in the same tabs; a selection change reveals the top of the relevant panel without moving keyboard focus. Slide settings stays available in the Inspector header, while Notes and Project settings remain explicit destinations. Shared selections show a summary, shared/mixed Style values and a member chooser for individual content editing. Group membership is preserved when inspecting a member.
+
+Edit ordinary text and table cells on the canvas. Text also offers Edit text on canvas and a collapsed Edit text in Inspector alternative; replacing plain text removes inline formatting as the editor warns. Widget named fields and code variants remain Inspector controls. The alternative editor and member/view state stay outside saved projects. Lock/read-only status disables editing. Finish text editing returns to object inspection.
+
+Manual review pending: put Code and free text on one slide, select each from canvas and Layers and verify only relevant controls appear; edit text in both surfaces and switch objects before the debounce saves. Check two text blocks, widget subfields, group members, table cells, hidden/locked objects, deletion/Undo, preserved focus and scrolling, keyboard and screen-reader names, legacy projects, Inspector collapse/reopen and laptop zoom. Export/reopen editable and offline playback ZIPs. Approval of earlier follow-ups does not approve this new change or authorize publication.
+
 ### Visibility — issue #106
 
 Use Layers Show/Hide or Inspector Style → Visibility to hide selected elements without deleting them. Hidden elements remain in editable backups and Undo/Redo. Enable Show hidden elements in editor to inspect dimmed objects; this view is not included in playback. Group visibility preserves each child's own hidden setting, and locked members prevent group visibility changes.

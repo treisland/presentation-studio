@@ -253,7 +253,7 @@ function componentPaint() {
   if(definition?.fields&&wpKind==='block')$('wp-selection-title').textContent=definition.name;
   const identity=projectMeta.id+':'+projectSelected+':'+dbSelected;if(fields.dataset.identity!==identity||!fields.contains(document.activeElement)){
     fields.replaceChildren();fields.dataset.identity=identity;
-    if(definition?.fields)definition.fields.forEach(([label],index)=>{const field=document.createElement('label'),input=document.createElement('textarea');field.textContent=label;input.value=projectText(widget.children[index]);input.disabled=locked;input.onchange=()=>componentRun({type:'component.field',blockId:dbSelected,index,text:input.value});field.append(input);fields.append(field);});
+    if(definition?.fields){const blockId=dbSelected,slideId=projectSelected;definition.fields.forEach(([label],index)=>{const field=document.createElement('label'),input=document.createElement('textarea');field.textContent=label;input.value=projectText(widget.children[index]);input.disabled=locked;input.onchange=()=>componentRun({type:'component.field',slideId,blockId,index,text:input.value});field.append(input);fields.append(field);});}
   }
   const canvas=projectPreviewNode?.querySelector('.slide');if(canvas){const overflow=[...canvas.querySelectorAll('.db-block')].some(element=>element.scrollHeight>element.clientHeight+2||element.scrollWidth>element.clientWidth+2);$('component-overflow').textContent=overflow?'Some block content does not fit. Resize the block or shorten its text.':'';}
 }
