@@ -239,6 +239,9 @@ test('cancelled folder selection, empty nested folders and filtered results expl
     await page.evaluate(()=>{window.showDirectoryPicker=async()=>{throw new DOMException('Cancelled','AbortError');};});
     await page.locator('#lw-connect').click();await page.waitForFunction(()=>document.querySelector('#lw-message').textContent.includes('cancelled'));
     assert.match(await page.locator('#lw-message').textContent(),/Select Folder/);
+    assert.match(await page.locator('#lw-message').textContent(),/Original browser error: AbortError: Cancelled/);
+    assert.match(await page.locator('#lw-message').textContent(),/"protocol":"file:"/);
+    assert.match(await page.locator('#lw-message').textContent(),/localhost or HTTPS/);
     await page.evaluate(()=>{window.showDirectoryPicker=async()=>__fs.folder;});await page.locator('#lw-connect').click();
     await page.locator('#lw-files button').first().waitFor();
     await page.locator('#lw-search').fill('not-a-filename');assert.equal(await page.locator('#lw-search-empty').isVisible(),true);
@@ -281,4 +284,21 @@ test('a real browser directory handle lists JSON/ZIP files and survives preferen
     await page.locator('#lw-files button').filter({hasText:'project.json'}).click();await page.locator('#lw-review h3').waitFor();
     assert.deepEqual(errors,[]);
   }finally{await page.close();await new Promise(resolve=>server.close(resolve));}
+});
+
+test('standalone picker probe compares direct and dialog calls without reading files or storing handles',async()=>{
+  const page=await browser.newPage();
+  try{
+    await page.addInitScript(()=>{
+      window.__probeCalls=[];
+      window.showDirectoryPicker=async options=>{__probeCalls.push(options||null);return{kind:'directory',name:'PRIVATE_TEST_FOLDER',entries(){throw Error('Must not enumerate');}};};
+      window.showOpenFilePicker=async()=>[{kind:'file',name:'PRIVATE_TEST_FILE',getFile(){throw Error('Must not read');}}];
+    });
+    await page.goto('file://'+resolve('dist/folder-picker-probe.html'));
+    await page.locator('#plain').click();await page.locator('#explicit').click();await page.locator('#modal').click();await page.locator('#inside').click();await page.locator('#close').click();await page.locator('#file').click();
+    assert.deepEqual(await page.evaluate(()=>__probeCalls),[null,{mode:'read'},{mode:'read'}]);
+    const log=await page.locator('#log').textContent();assert.match(log,/resolved/);assert.doesNotMatch(log,/PRIVATE_TEST/);
+    await page.evaluate(()=>{window.showDirectoryPicker=async()=>{throw new DOMException('Original native rejection','AbortError');};});
+    await page.locator('#plain').click();assert.match(await page.locator('#log').textContent(),/Original native rejection/);
+  }finally{await page.close();}
 });

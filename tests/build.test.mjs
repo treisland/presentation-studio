@@ -119,7 +119,9 @@ test('public distributions have no vendor content and retain only identifier-onl
     assert(html.includes('MIT License'));assert(html.includes('Independent community project'));
     const pack=JSON.parse(html.match(/<script id="project-config" type="application\/json">([\s\S]*?)<\/script>/)[1]);assert.equal(pack.kind,'presentation-studio-project');
   }
-  assert.deepEqual((await readdir(new URL('../dist',import.meta.url))).filter(x=>x.endsWith('.html')).sort(),['presentation-studio-blank.html','presentation-studio.html']);
+  const probe=await read('dist/folder-picker-probe.html');
+  assert(!terms.test(probe));assert(!/<script[^>]+src=/i.test(probe));
+  assert.deepEqual((await readdir(new URL('../dist',import.meta.url))).filter(x=>x.endsWith('.html')).sort(),['folder-picker-probe.html','presentation-studio-blank.html','presentation-studio.html']);
 });
 
 

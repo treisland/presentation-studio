@@ -20,6 +20,9 @@ for (const [name, content] of Object.entries(authoringFiles)) if (name.endsWith(
 authoringFiles["capabilities.json"] = vm.runInContext("JSON.stringify(paCatalog(), null, 2)", authoringContext);
 authoringFiles["CAPABILITIES.md"] = vm.runInContext("paCapabilityGuide()", authoringContext);
 await mkdir(resolve(root, "dist/ai-authoring"), { recursive: true });
+const pickerProbe = await read("tools/folder-picker-probe.html");
+new vm.Script(pickerProbe.match(/<script>([\s\S]*?)<\/script>/)[1], { filename: "folder-picker-probe.html" });
+await writeFile(resolve(root, "dist/folder-picker-probe.html"), pickerProbe);
 for (const [name, content] of Object.entries({ ...authoringFiles, "presentation.schema.json": authoringSchema }))
   await writeFile(resolve(root, "dist/ai-authoring", name), content);
 const styles = (await Promise.all(config.styles.map(read))).join("\n");

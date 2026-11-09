@@ -11,6 +11,17 @@ function lwDeadline(operation, message, milliseconds = 2000) {
   });
 }
 function lwMessage(message) { $("lw-message").textContent = message; }
+function lwPickerContext() {
+  return { protocol: location.protocol, secure: window.isSecureContext, topLevel: window.top === window,
+    userGesture: navigator.userActivation?.isActive ?? "unavailable", focused: document.hasFocus() };
+}
+function lwPickerFailure(error, context) {
+  return "The browser did not return a folder handle. Selection may have been cancelled or declined; this error alone does not identify the cause. Confirm Select Folder if prompted.\n" +
+    "Original browser error: " + (error.name || "Error") + ": " + (error.message || String(error)) + "\n" +
+    "Picker context: " + JSON.stringify(context) + "\n" +
+    (context.protocol === "file:" ? "This copy is running from a local HTML file. Compare the same build on localhost or HTTPS to check whether the file context is involved. " : "") +
+    "Use Create / import for individual JSON/ZIP files while this is investigated. Browser security settings do not need to be weakened.";
+}
 function lwButton(label, id, action) {
   const button = document.createElement("button");
   button.textContent = label; if (id) button.id = id;
@@ -437,12 +448,12 @@ function lwMount() {
   const supports = !!window.showDirectoryPicker && window.isSecureContext;
   $("lw-support").textContent = supports ? "Choose a dedicated presentations folder, then confirm Select Folder in the system picker. Files appear here afterward. Top-level JSON/ZIP files only; read access first." : "Live folder access is unavailable in this browser/context (including Firefox). Use Create / import for JSON/ZIP files and Save a copy for editable ZIP downloads.";
   const connect = lwButton("Open folder", "lw-connect", async () => {
+    const context = lwPickerContext();
     lwMessage("Choose a presentation folder and confirm Select Folder. Waiting for the system picker…");
     let folder;
     try { folder = await window.showDirectoryPicker({ mode: "read" }); }
     catch (error) {
-      if (error.name === "AbortError") { lwMessage("Folder selection was cancelled or the browser declined access. Confirm Select Folder and any read-access prompt. Try a dedicated presentations subfolder rather than a protected system folder."); return; }
-      throw new Error("Could not open the folder picker: " + error.message + ". Use Create / import to open individual files.");
+      lwMessage(lwPickerFailure(error, context)); return;
     }
     await lwPermission(folder); lwFolder = folder; lwRemembered = folder;
     const generation = ++lwConnectionGeneration;

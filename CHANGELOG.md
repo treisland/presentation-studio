@@ -3,6 +3,7 @@
 ## Unreleased
 
 - Fix blank folder-selection feedback: list filenames before optional storage/metadata, isolate unreadable files, clear stale searches and explain cancellation, empty folders and unsupported-browser fallback.
+- Preserve original folder-picker errors and browser context for diagnosing native chooser rejection; avoid presenting a restricted folder as an established cause.
 
 - Extend portable authoring with Auto/explicit native-element layouts, editable Library widgets, balanced typography, safe visual import review and layout/fit/repair feedback; preserve earlier authoring-v1 inputs.
 

@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Folder picker isolation test</title>
+<style>
+body{max-width:850px;margin:35px auto;padding:20px;font:16px/1.5 system-ui;background:#142237;color:#e7eefb}button,input{font:inherit;margin:8px 8px 8px 0;padding:10px}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#091526;padding:16px}dialog{max-width:600px;background:#142237;color:#e7eefb;border:1px solid #8291a7;padding:24px}label{display:block;margin:20px 0}h1{font-size:26px}
+</style>
+<h1>Folder picker isolation test</h1>
+<p>This page runs without Studio's editor, event handlers or storage. It never enumerates a selected folder, reads file contents, writes files, stores handles or uploads anything. Use an ordinary test folder.</p>
+<button id="plain">Choose folder — minimal call</button>
+<button id="explicit">Choose folder — explicit read</button>
+<button id="modal">Open dialog comparison</button>
+<button id="file">Choose a file — native API comparison</button>
+<label>Optional browser folder-input comparison (snapshot only; no upload)<input id="snapshot" type="file" webkitdirectory multiple></label>
+<p>If minimal works but the dialog comparison fails, report that distinction. If all native API buttons fail, the issue also occurs outside Studio. The folder-input comparison tests a different browser selection mechanism.</p>
+<button id="copy">Copy diagnostic log</button><pre id="log" role="status"></pre>
+<dialog id="dialog"><h2>Dialog comparison</h2><button id="inside">Choose folder inside dialog</button><button id="close">Close dialog</button></dialog>
+<script>
+const output=document.getElementById('log');
+function context(){return{protocol:location.protocol,secure:isSecureContext,topLevel:top===self,userGesture:navigator.userActivation?.isActive,focused:document.hasFocus(),browser:navigator.userAgent};}
+function log(value){output.textContent+=JSON.stringify(value,null,2)+'\n';}
+log({available:{directory:typeof window.showDirectoryPicker==='function',file:typeof window.showOpenFilePicker==='function'},context:context()});
+async function pick(kind,options){
+  const before=context();log({test:kind,event:'requested',context:before});
+  try{
+    // This is the first API call, directly from the user's click; no preceding await.
+    const result=kind==='file'?await window.showOpenFilePicker():await window.showDirectoryPicker(options);
+    log({test:kind,event:'resolved',handleKind:kind==='file'?result[0]?.kind:result.kind});
+  }catch(error){log({test:kind,event:'rejected',name:error.name,message:error.message,context:before});}
+}
+document.getElementById('plain').onclick=()=>pick('minimal');
+document.getElementById('explicit').onclick=()=>pick('explicit-read',{mode:'read'});
+document.getElementById('inside').onclick=()=>pick('dialog-read',{mode:'read'});
+document.getElementById('file').onclick=()=>pick('file');
+document.getElementById('modal').onclick=()=>document.getElementById('dialog').showModal();
+document.getElementById('close').onclick=()=>document.getElementById('dialog').close();
+document.getElementById('snapshot').onchange=event=>log({test:'folder-input',event:'selected',fileCount:event.target.files.length});
+document.getElementById('copy').onclick=async()=>{try{await navigator.clipboard.writeText(output.textContent);}catch{const range=document.createRange();range.selectNodeContents(output);const selection=getSelection();selection.removeAllRanges();selection.addRange(range);}};
+for(const id of ['plain','explicit','inside'])document.getElementById(id).disabled=typeof window.showDirectoryPicker!=='function';
+document.getElementById('file').disabled=typeof window.showOpenFilePicker!=='function';
+</script></html>
