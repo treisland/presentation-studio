@@ -570,7 +570,7 @@ function vbAttach(root) {
         environment = e.target.value;
         updateEnvironment();
         slide.querySelector("pre").textContent =
-          model.commands[environment] || "";
+          commandText(model.commands,environment);
       };
     for (const v of root.querySelectorAll("video")) {
       v.controls = true;
