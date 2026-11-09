@@ -19,4 +19,7 @@
 .component-quote { border-left:8px solid var(--project-accent,#0066ff); }
 #component-widget-fields textarea { display:block; width:100%; }
 #component-overflow { color:#a13b00; }
+.editor-dark #component-toolbar,.editor-dark #component-add { background:#152238; color:#eaf2ff; border-color:#51627b; }
+.editor-dark .component-card-preview { background:#24354d; color:#eaf2ff; }
+.editor-dark #component-overflow { color:#ffc078; }
 @media(max-width:900px) { .component-tools { gap:3px; } }
