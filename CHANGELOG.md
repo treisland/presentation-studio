@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.6.0-beta.1 — 2026-11-09
+
 - Add per-type element names and Layers search/custom overrides, opt-in template section/text/card positioning with reset, numbered Step widgets with independent sequences/manual overrides, and free Arrow/Pointer annotations with editable endpoints and portable playback/booth rendering.
 - Allow template/demo primary-heading deletion and independent duplication with lock/Undo protection. Keep the slide name when its visible heading is removed, strip title/layout-slot roles from copies, and show/edit the selected heading in the Inspector instead of its eyebrow sibling.
 - Make Inspector Content, Style and Arrange follow the selected object, with selection breadcrumbs, group-member inspection, stable tabs, explicit slide settings and an opt-in plain-text editor. Keep canvas text editing primary and preserve structured widget/code/table editors and legacy workflows.
@@ -11,7 +13,8 @@
 - Keep Text format available while editing text inside free blocks and widgets.
 - Redesign the Library with scoped dialog typography, Blocks/Widgets/My components tabs, consistent preview cards and Media insertion, search/clear, per-preset Options and separate library management/recovery controls.
 - Replace the cramped scrolling beta toolbar with contextual Text format, Appearance, Image, Arrange and More popovers; keep Add/Library and view controls reachable without horizontal scrolling.
-- Prepare 0.6.0 beta review: contextual block formatting, searchable Add/Library, editable Callout/Quote/Metric widgets, one-level groups and independent portable component presets with local deletion recovery. Publication/manual gates remain pending.
+- Add contextual block formatting, searchable Add/Library, editable Callout/Quote/Metric widgets, one-level groups and independent portable component presets with local deletion recovery.
+- Record maintainer approval of the merged beta and confirmation of manual release gates. Exact manual environment versions were not supplied; see the versioned validation record and limitations.
 
 ## 0.5.1 — 2026-11-08
 

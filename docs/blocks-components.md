@@ -1,5 +1,7 @@
 # 0.6.0 — Blocks, Widgets and Reusable Components beta
 
+Release status: the maintainer approved the merged beta and confirmed manual release gates on 2026-11-09. The [versioned release validation](releases/0.6.0-beta.1-validation.md) supersedes the historical pending-review status in the implementation checklists below. Publication still requires the protected release-plan and immutable artifact gates.
+
 Library design acceptance: compact scoped dialog typography; Blocks, Widgets and My components tabs; searchable consistent visual previews including Media; aligned Insert actions; per-component rename/duplicate/delete menus; import/export/recovery under Manage library; separate Save selection naming flow. Header/search stay visible while results scroll, with responsive cards and visible keyboard focus. This follow-up belongs to 0.6.0 beta and does not authorize publication.
 
 ## Tables and Code / Commands — issue #104

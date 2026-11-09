@@ -1,9 +1,11 @@
 {
   "version": "0.6.0-beta.1",
-  "publish": false,
+  "publish": true,
   "notes": "docs/releases/0.6.0-beta.1.md",
-  "manualGatesPassed": false,
+  "manualGatesPassed": true,
   "evidence": [
-    "docs/blocks-components.md"
+    "docs/releases/0.6.0-beta.1-validation.md",
+    "docs/blocks-components.md",
+    "docs/authoring-customization.md"
   ]
 }
