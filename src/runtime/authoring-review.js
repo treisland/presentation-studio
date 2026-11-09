@@ -60,7 +60,7 @@ function paRenderReview(candidate, summary) {
     const index = Number(select.value), documentCopy = projectCopy(candidate.authoringDoc);
     documentCopy.slides[index].layout = override.value;
     const built = paBuild(documentCopy, candidate.pack.meta.id);
-    // Retain the actual disk snapshot/fingerprint. A review-only layout choice is unsaved disk work.
+    // Retain import identity while applying a review-only layout choice.
     lwReview({ ...candidate, ...built, authoringDoc: documentCopy, reviewChanged: true, previewIndex: index });
   });
   const warnings = document.createElement("ul"); warnings.id = "pa-review-warnings";

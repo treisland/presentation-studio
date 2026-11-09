@@ -2,13 +2,9 @@
 
 ## Unreleased
 
-- Fix blank folder-selection feedback: list filenames before optional storage/metadata, isolate unreadable files, clear stale searches and explain cancellation, empty folders and unsupported-browser fallback.
-- Preserve original folder-picker errors and browser context for diagnosing native chooser rejection; avoid presenting a restricted folder as an established cause.
-
-- Extend portable authoring with Auto/explicit native-element layouts, editable Library widgets, balanced typography, safe visual import review and layout/fit/repair feedback; preserve earlier authoring-v1 inputs.
-
-- Add provider-independent AI authoring instructions/schema/examples and validated JSON import with review and repair feedback.
-- Add permission-scoped local presentation folder browsing, explicit reload/save/copy, external-change protection, separate browser recovery status and optional five-snapshot ZIP backups. Existing editable formats and offline exports remain supported; final manual acceptance is pending.
+- Simplify 0.7.0 to portable AI presentations: individual JSON/editable-ZIP import, safe review and repair, ordinary editable ZIP downloads and independent browser recovery. Defer folder browsing, linked saves/reloads, native save pickers and folder snapshots; retain existing projects, files and old workspace preferences.
+- Extend portable authoring with Auto/explicit native-element layouts, editable Library widgets, balanced typography, visual import review and fit/repair feedback; preserve earlier authoring-v1 inputs.
+- Add provider-independent AI instructions/schema/catalog/examples. Explain truncated JSON without changing the active project. Final manual acceptance remains pending.
 
 ## 0.6.0-beta.1 — 2026-11-09
 

@@ -1,4 +1,4 @@
-import { readFile, writeFile, mkdir, readdir } from "node:fs/promises";
+import { readFile, writeFile, mkdir, readdir, unlink } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { resolve, dirname } from "node:path";
 import vm from "node:vm";
@@ -20,9 +20,8 @@ for (const [name, content] of Object.entries(authoringFiles)) if (name.endsWith(
 authoringFiles["capabilities.json"] = vm.runInContext("JSON.stringify(paCatalog(), null, 2)", authoringContext);
 authoringFiles["CAPABILITIES.md"] = vm.runInContext("paCapabilityGuide()", authoringContext);
 await mkdir(resolve(root, "dist/ai-authoring"), { recursive: true });
-const pickerProbe = await read("tools/folder-picker-probe.html");
-new vm.Script(pickerProbe.match(/<script>([\s\S]*?)<\/script>/)[1], { filename: "folder-picker-probe.html" });
-await writeFile(resolve(root, "dist/folder-picker-probe.html"), pickerProbe);
+// Remove only this obsolete generated diagnostic when rebuilding an older checkout.
+await unlink(resolve(root, "dist/folder-picker-probe.html")).catch(error => { if (error.code !== "ENOENT") throw error; });
 for (const [name, content] of Object.entries({ ...authoringFiles, "presentation.schema.json": authoringSchema }))
   await writeFile(resolve(root, "dist/ai-authoring", name), content);
 const styles = (await Promise.all(config.styles.map(read))).join("\n");
