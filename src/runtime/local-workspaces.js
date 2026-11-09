@@ -59,6 +59,15 @@ function lwSafePath(path) {
   return typeof path === "string" && path.length <= 500 && /^assets\/[\w./ -]+$/i.test(path) &&
     !path.split("/").some(part => !part || part === "." || part === "..") && !/[\\:%?#]/.test(path);
 }
+function lwParseJSON(text) {
+  try { return JSON.parse(text); }
+  catch (error) {
+    throw new Error("Could not parse JSON: " + error.message +
+      (/end of JSON|unterminated|unexpected end/i.test(error.message) || !text.trim()
+        ? ". The file may be empty or truncated. Ask your LLM to return the complete JSON, including closing brackets, and save/download the whole response."
+        : ". Supply one complete JSON document without Markdown fences or commentary."));
+  }
+}
 function lwCheckJSON(raw) {
   let count = 0;
   function visit(value, depth = 0) {
@@ -122,16 +131,17 @@ async function lwLoad(file, { folder = null, identity = null, browserAssets = fa
       decoded.set(path, bytes);
     }
     if (!decoded.has("presentation.json")) throw new Error("ZIP is missing presentation.json.");
-    raw = JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(decoded.get("presentation.json")));
+    raw = lwParseJSON(new TextDecoder("utf-8", { fatal: true }).decode(decoded.get("presentation.json")));
   } else {
     if (file.size > lwLimits.json) throw new Error("JSON exceeds the 20 MB limit.");
-    raw = JSON.parse(await file.text());
+    raw = lwParseJSON(await file.text());
   }
   lwCheckJSON(raw);
   if (allowLegacy && raw?.schemaVersion === 1) return { legacy: true };
   const authoring = raw?.format === "presentation-studio-authoring";
   if (authoring && file.size > paLimits.bytes) throw new Error("Authoring JSON exceeds the 2 MB limit.");
-  const pack = authoring ? paConvert(raw, identity) : projectValidatePack(raw);
+  const built = authoring ? paBuild(raw, identity) : { pack: projectValidatePack(raw) };
+  const pack = built.pack;
   if (pack.playbackOnly) throw new Error("Choose an editable project, not a playback export.");
   const assets = new Map();
   for (const path of projectReferenced(pack)) {
@@ -156,9 +166,10 @@ async function lwLoad(file, { folder = null, identity = null, browserAssets = fa
       assets.set(path, blob);
     } else throw new Error("JSON references media. Open it from its project folder or use a complete editable ZIP.");
   }
-  return { pack, assets, fingerprint, authoring };
+  return { ...built, assets, fingerprint, authoring, ...(authoring ? { authoringDoc: raw } : {}) };
 }
 function lwReview(candidate) {
+  lwPreviewCleanup();
   lwCandidate = candidate;
   const summary = $("lw-review"); summary.replaceChildren();
   const title = document.createElement("h3"); title.textContent = candidate.pack.meta.name; summary.append(title);
@@ -173,7 +184,12 @@ function lwReview(candidate) {
     const item = document.createElement("li"), words = slide.tree.map(projectText).join(" ").split(/\s+/).length;
     item.textContent = slide.title + (words > 80 ? " — may be crowded; review layout" : ""); list.append(item);
   }
-  summary.append(list); $("lw-repair").value = ""; lwStatus();
+  const outline = document.createElement("details"), outlineTitle = document.createElement("summary");
+  outlineTitle.textContent = "Slide outline (" + candidate.pack.state.slides.length + ")";
+  outline.append(outlineTitle, list); summary.append(outline);
+  if (candidate.authoringDoc) paRenderReview(candidate, summary);
+  $("lw-repair").value = ""; lwStatus();
+  summary.scrollIntoView({ block: "start" });
 }
 async function lwStage(file, options = {}) {
   const epoch = ++lwEpoch;
@@ -202,9 +218,9 @@ async function lwAccept(copy = false) {
     for (const [path, blob] of incoming.assets) mediaRemember(path, blob);
     projectDraftPending = null; projectAcceptPack(pack);
     if (!copy && incoming.handle) lwLinked = { handle: incoming.handle, folder: incoming.folder, fingerprint: incoming.fingerprint,
-      content: hubContent(projectPack()), loaded: { pack: projectCopy(pack), assets: new Map(incoming.assets) }, authoring: incoming.authoring, changed: false };
+      content: incoming.reviewChanged ? "" : hubContent(projectPack()), loaded: { pack: projectCopy(pack), assets: new Map(incoming.assets) }, authoring: incoming.authoring, changed: false };
     hubSaveState = "saved"; lwCandidate = null;
-    $("lw-panel").close(); projectStatus(); projectRecoveryBanner();
+    lwPreviewCleanup(); $("lw-panel").close(); projectStatus(); projectRecoveryBanner();
     if ($("full-editor").open) { projectList(); projectForm(); projectPreview(); }
   });
 }
@@ -393,6 +409,7 @@ function lwMount() {
   $("lw-pack").onclick = () => lwRun(async () => {
     const zip = new JSZip(); for (const [name, content] of Object.entries(lwPackFiles)) zip.file(name, content);
     zip.file("presentation.schema.json", JSON.stringify(paSchema(), null, 2));
+    zip.file("capabilities.json", JSON.stringify(paCatalog(), null, 2));
     mediaDownload(await zip.generateAsync({ type: "blob" }), "studio-ai-authoring-v1.zip");
   });
   $("lw-file").onchange = event => {
@@ -419,7 +436,7 @@ function lwMount() {
   });
   const close = () => {
     if (lwBusy) { lwEpoch++; lwMessage("Cancelling import after the current read. Disk saves must finish before closing."); return; }
-    lwCandidate = null; dialog.close();
+    lwCandidate = null; lwPreviewCleanup(); dialog.close();
   };
   $("lw-close").onclick = close;
   dialog.addEventListener("cancel", event => { event.preventDefault(); close(); });

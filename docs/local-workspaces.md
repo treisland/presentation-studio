@@ -4,6 +4,8 @@ Approved scope: issue #115, milestone 0.7.0. Final manual review is required; th
 
 ## Three workstreams
 
+The approved [native layouts and Library elements extension](ai-layouts-and-elements.md) adds Auto/explicit compositions, native widgets, safe previews and per-slide overrides to the authoring workstream. Earlier authoring-v1 files remain supported; no project-format bump is introduced. The reported real LLM test successfully used repair after an incomplete JSON file, but the revised visual workflow still requires manual acceptance.
+
 1. Portable AI authoring: [instructions](ai/AUTHORING.md), versioned generated JSON schema, neutral example, downloadable pack and pasted/file JSON validation with summaries and repair feedback. One adapter creates ordinary editable project packs. Import never silently drops unsupported authoring fields.
 2. Local workspaces: explicitly selected, read-only folder access, bounded top-level listing of JSON/ZIP files, search, modification dates, refresh, saved handle/reconnect and disconnect. Do not recursively inspect unrelated files. Focus-time checks and explicit reload detect external changes. Unavailable/invalid files leave current work intact.
 3. Local saving/recovery: explicit linked native-file Save and Save a copy as complete editable ZIP; permissions requested only at save time. Browser recovery continues independently. Save checks disk content fingerprints twice, including after snapshot preparation. Network shares and cross-tab writers have no guaranteed distributed lock; do not claim collaborative editing or race-free synchronization.

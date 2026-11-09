@@ -51,6 +51,7 @@
     "src/runtime/example-gallery.js",
     "src/runtime/example-walkthroughs.js",
     "src/runtime/text-types.js",
+    "src/runtime/authoring-definitions.js",
     "src/runtime/components.js",
     "src/runtime/code-library.js",
     "src/runtime/visibility.js",
@@ -59,6 +60,8 @@
     "src/runtime/template-position.js",
     "src/runtime/annotations.js",
     "src/runtime/authoring-contract.js",
+    "src/runtime/authoring-layouts.js",
+    "src/runtime/authoring-review.js",
     "src/runtime/local-workspaces.js",
     "src/runtime/boot.js"
   ],

@@ -8,11 +8,17 @@ const config = JSON.parse(await read("build.config.json"));
 const authoringFiles = {
   "AUTHORING.md": await read("docs/ai/AUTHORING.md"),
   "example.json": await read("docs/ai/example.json"),
+  "project-update.json": await read("docs/ai/project-update.json"),
+  "technical-walkthrough.json": await read("docs/ai/technical-walkthrough.json"),
 };
 const authoringContext = vm.createContext({ URL });
+vm.runInContext(await read("src/runtime/authoring-definitions.js"), authoringContext);
 vm.runInContext(await read("src/runtime/authoring-contract.js"), authoringContext);
 const authoringSchema = vm.runInContext("JSON.stringify(paSchema(), null, 2)", authoringContext);
-vm.runInContext("paValidate(" + authoringFiles["example.json"] + ")", authoringContext);
+for (const [name, content] of Object.entries(authoringFiles)) if (name.endsWith(".json"))
+  vm.runInContext("paValidate(" + content + ")", authoringContext, { filename: name });
+authoringFiles["capabilities.json"] = vm.runInContext("JSON.stringify(paCatalog(), null, 2)", authoringContext);
+authoringFiles["CAPABILITIES.md"] = vm.runInContext("paCapabilityGuide()", authoringContext);
 await mkdir(resolve(root, "dist/ai-authoring"), { recursive: true });
 for (const [name, content] of Object.entries({ ...authoringFiles, "presentation.schema.json": authoringSchema }))
   await writeFile(resolve(root, "dist/ai-authoring", name), content);

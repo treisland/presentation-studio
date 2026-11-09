@@ -26,6 +26,8 @@ Click **Edit** or press **J**. Use **Project → New presentation** for **Blank*
 
 The 0.7.0 implementation adds **Project → AI & local workspace**: download provider-independent authoring instructions, validate generated JSON, connect a local presentation folder, reload external edits and explicitly save linked files. Browser recovery and disk-save status remain separate. Folder/save capabilities depend on browser permissions; ordinary import/export remains available. See [the workspace guide and manual acceptance checklist](docs/local-workspaces.md). Final manual acceptance is pending; no new release is authorized by this feature work.
 
+AI authoring also supports Auto/explicit layouts, native Library widgets and safe slide previews with fit warnings and layout overrides. Downloaded instructions include a generated capability catalog and three complete examples. See [the native authoring plan](docs/ai-layouts-and-elements.md).
+
 ![Generic Studio demo](docs/images/studio-demo.png)
 
 ## What's in the demo?

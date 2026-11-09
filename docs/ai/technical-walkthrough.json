@@ -1,0 +1,23 @@
+{
+  "format": "presentation-studio-authoring",
+  "version": 1,
+  "title": "A small data-quality walkthrough",
+  "slides": [
+    { "title": "Inspect before changing", "layout": "hero", "blocks": [
+      { "type": "callout", "heading": "Keep the original", "text": "Work on a copy and record what you changed." }
+    ] },
+    { "title": "Review the sample records", "layout": "table", "blocks": [
+      { "type": "table", "headers": ["Record", "Status"], "rows": [["A", "Ready"], ["B", "Needs review"], ["C", "Ready"]] },
+      { "type": "paragraph", "text": "Check unexpected values before drawing conclusions." }
+    ] },
+    { "title": "Show a small filtering example", "layout": "code", "blocks": [
+      { "type": "code", "language": "Python", "text": "records = [\"Ready\", \"Needs review\", \"Ready\"]\nready = [item for item in records if item == \"Ready\"]\nprint(len(ready))" },
+      { "type": "paragraph", "text": "This code is displayed for explanation. Studio never executes it." }
+    ], "notes": "Explain the condition and result verbally. This is a fictional teaching example." },
+    { "title": "From observation to a reviewed result", "layout": "flexible", "blocks": [
+      { "type": "paragraph", "text": "Observation: one record needs a closer look." },
+      { "type": "arrow", "label": "Review first", "description": "Direction from observation toward a reviewed conclusion; not an attached connector." },
+      { "type": "paragraph", "text": "Outcome: document the decision, including uncertainty." }
+    ] }
+  ]
+}
