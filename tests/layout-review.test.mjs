@@ -1,3 +1,4 @@
+import {selectStartingExample} from './ui.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {chromium} from 'playwright';
@@ -21,7 +22,7 @@ test('Comic image captions fit inside every gallery and wizard preview frame',as
  const{page:p,errors}=await openExample(browser,'comic-demo');try{
   const fits=async selector=>{await p.waitForFunction(selector=>[...document.querySelectorAll(selector+' img')].every(n=>n.complete&&n.naturalWidth>0),selector);const frames=await p.locator(selector+' .lc-library-visual').evaluateAll(nodes=>nodes.map(n=>{const b=n.getBoundingClientRect(),c=n.querySelector('figcaption')?.getBoundingClientRect(),v=n.querySelector('.media-viewport')?.getBoundingClientRect();return !!c&&!!v&&c.height>0&&v.height>0&&c.bottom<=b.bottom+1&&c.top>=v.bottom-1;}));assert(frames.length>0);assert(frames.every(Boolean));};
   await click(p,'#lc-examples-open');await p.getByRole('button',{name:'Preview Comic demo',exact:true}).click();await p.locator('#lc-preview-next').click();await fits('#lc-example-preview');assert.equal(await p.locator('#lc-example-preview figcaption').count(),3);await p.screenshot({path:'test-results/comic-preview-captions.png'});await p.locator('#lc-examples-close').click();
-  await click(p,'#studio-new-open');if(await p.locator('#hub-switch').evaluate(n=>n.open))await p.locator('#hub-save-switch').click();await p.locator('#nx-wizard').waitFor({state:'visible'});await p.locator('[name=nx-start][value=comic-demo]').check();await p.locator('#nx-wizard-next').click();await p.locator('#nx-wizard-next').click();await fits('#nx-wizard-preview');assert.deepEqual(errors,[]);
+  await click(p,'#studio-new-open');if(await p.locator('#hub-switch').evaluate(n=>n.open))await p.locator('#hub-save-switch').click();await p.locator('#nx-wizard').waitFor({state:'visible'});await selectStartingExample(p,'comic-demo');await p.locator('#nx-wizard-next').click();await p.locator('#nx-wizard-next').click();await fits('#nx-wizard-preview');assert.deepEqual(errors,[]);
  }finally{await p.close();}
 });
 

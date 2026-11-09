@@ -1,3 +1,4 @@
+import {selectStartingExample} from './ui.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {chromium} from 'playwright';
@@ -6,7 +7,7 @@ import {readFile} from 'node:fs/promises';
 import {click} from './ui.mjs';
 const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH,args:['--no-sandbox']});test.after(()=>browser.close());
 const read=p=>p.evaluate(()=>window.presentationStudioEditing.read());
-async function setup(choice='editorial-demo',dark=false){const p=await browser.newPage({acceptDownloads:true,viewport:{width:1366,height:768}}),errors=[];p.setDefaultTimeout(10000);p.on('pageerror',e=>errors.push(e.message));await p.goto('file://'+resolve('dist/presentation-studio.html'));await p.locator('#open-full-editor').click();await click(p,'#studio-new-open');await p.locator('[name=nx-start][value='+choice+']').check();if(dark){for(let i=0;i<3;i++)await p.locator('#nx-wizard-next').click();await p.locator('#nx-wizard-theme').selectOption('dark');await p.locator('#nx-wizard-next').click();}else await p.locator('#nx-wizard-defaults').click();await p.locator('#nx-wizard').waitFor({state:'hidden'});return{p,errors};}
+async function setup(choice='editorial-demo',dark=false){const p=await browser.newPage({acceptDownloads:true,viewport:{width:1366,height:768}}),errors=[];p.setDefaultTimeout(10000);p.on('pageerror',e=>errors.push(e.message));await p.goto('file://'+resolve('dist/presentation-studio.html'));await p.locator('#open-full-editor').click();await click(p,'#studio-new-open');await selectStartingExample(p,choice);if(dark){for(let i=0;i<3;i++)await p.locator('#nx-wizard-next').click();await p.locator('#nx-wizard-theme').selectOption('dark');await p.locator('#nx-wizard-next').click();}else await p.locator('#nx-wizard-defaults').click();await p.locator('#nx-wizard').waitFor({state:'hidden'});return{p,errors};}
 test('Editorial examples preserve masthead, column reading order and fit in both themes and review sizes',async()=>{
  for(const dark of [false,true]){const{p,errors}=await setup('editorial-demo',dark);try{const snapshot=await read(p);assert.equal(snapshot.state.slides.length,5);assert.equal(snapshot.state.brand.presentationTheme,dark?'dark':'light');
   for(const size of [{width:1366,height:768},{width:1920,height:1080}]){await p.setViewportSize(size);for(const slide of snapshot.state.slides){await p.locator('.fe-slide-button[data-slide-id="'+slide.id+'"]').click();assert.equal(await p.locator('#fe-layout-warning').isVisible(),false,slide.template);await p.screenshot({path:'test-results/'+slide.template+'-'+size.width+(dark?'-dark':'')+'.png'});}}

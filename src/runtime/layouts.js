@@ -57,7 +57,7 @@ function lcMaterializeExample(state){
   for(const value of [state,state.startingState].filter(Boolean))for(const cfg of lcExampleMedia(value))if(assets.has(cfg.src))cfg.src=assets.get(cfg.src).path;
 }
 function lcExampleInfo(choice){const match=String(choice).match(/^([a-z]+)-(starter|demo)$/);return match&&Object.hasOwn(lcExamples,match[1])?{...lcExamples[match[1]],id:match[1],demo:match[2]==='demo'}:null;}
-function lcExampleLabel(choice){const info=lcExampleInfo(choice);return info?info.label+(info.demo?' finished example':' starter'):null;}
+function lcExampleLabel(choice){if(choice==='template')return'Studio demo';const info=lcExampleInfo(choice);return info?info.label+(info.demo?' finished example':' starter'):null;}
 function lcRegister(entries){for(const [id,layout]of Object.entries(entries)){if(Object.hasOwn(lcLayouts,id))throw Error('Duplicate composition '+id);lcLayouts[id]=layout;studioTemplateInfo[id]=[layout.name,layout.purpose];}}
 function lcBounds(model) {
   return lcLayouts[model?.template]?.imageBounds || {x:.05,y:.23,w:.9,h:.72};
@@ -103,7 +103,7 @@ function lcMapped(original,type) {
   function walk(nodes,protectedRoot=false) {
     for(const node of nodes){
       const protectedNode=protectedRoot||!!spNodeID(node)||['table','pre','ul','ol'].includes(node.tag)||mgHas(node,'mg-grid')||mgHas(node,'terminal');
-      if(!protectedNode&&['h1','h2','p'].includes(node.tag)&&!mgHas(node,'eyebrow')&&projectText(node).trim())fields.push(node);
+      if(!protectedNode&&['h1','h2','h3','h4','p'].includes(node.tag)&&!mgHas(node,'eyebrow')&&projectText(node).trim())fields.push(node);
       else if(!protectedNode)walk(node.children||[],false);
     }
   }
@@ -114,7 +114,7 @@ function lcMapped(original,type) {
   }
   for(const slot of destinations){
     const node=slot.id==='masthead'?fields.find(n=>!used.has(n)&&mgHas(n,'lc-masthead')):
-      fields.find(n=>!used.has(n)&&mgHas(n,'lc-slot-'+slot.id))||fields.find(n=>!used.has(n)&&!mgHas(n,'lc-masthead')&&(slot.id==='title'?['h1','h2'].includes(n.tag):n.tag==='p'));
+      fields.find(n=>!used.has(n)&&(slot.id==='title'?n===projectHeading(source)?.node:mgHas(n,'lc-slot-'+slot.id)))||fields.find(n=>!used.has(n)&&!mgHas(n,'lc-masthead')&&(slot.id==='title'?['h1','h2'].includes(n.tag):n.tag==='p'));
     if(!node){mapping.push(slot.label+' ← editable prompt');continue;}
     used.add(node);const target=slot.target,parts=target.path.split('.');let parent=next.tree;
     for(const key of parts.slice(0,-1))parent=parent[key];
@@ -201,6 +201,7 @@ studioGalleryRefresh=function(){
 };
 
 function lcExampleState(choice,name){
+  if(choice==='template')return lcStudioState(name);
   if(!['portfolio-starter','portfolio-demo'].includes(choice)){const info=lcExampleInfo(choice);return info?.make?info.make(name,info.demo):null;}
   const state=studioBlankState(name),slide=state.slides[0],demo=choice==='portfolio-demo';
   const preset=projectCreateTemplate('portfolio-case',demo?'A calmer community library':'Your project story');
@@ -247,10 +248,6 @@ projectInit=function(){
   const status=document.createElement('p');status.id='lc-mapping-status';status.setAttribute('role','status');
   $('studio-gallery-apply').before(mapping,status);
   for(const id of Object.keys(lcLayouts))for(const select of [$('fe-slide-template'),$('fe-new-template'),$('nx-wizard-layout')])if(select&&!Array.from(select.options).some(o=>o.value===id))select.add(new Option(lcLayouts[id].name,id));
-  const options=document.querySelector('#nx-wizard .studio-start-options');
-  if(options)for(const [id,entry]of Object.entries(lcExamples))for(const mode of entry.starterOnly?['starter']:['starter','demo']){
-    const value=id+'-'+mode,label=document.createElement('label'),input=document.createElement('input'),b=document.createElement('b'),span=document.createElement('span');input.type='radio';input.name='nx-start';input.value=value;input.onchange=()=>{$('nx-wizard-header').value=entry.label.toUpperCase();nxWizardPage();};b.textContent=lcExampleLabel(value);span.textContent=(mode==='demo'?entry.demoDescription:entry.starterDescription)+' 16:9 slide format.';label.append(input,b,span);options.append(label);
-  }
 };
 
 // Examples remain ordinary validated projects, with fresh identities and a reset copy.
@@ -275,8 +272,9 @@ function lcMakeExample(name,collection,pages,demo){
 
 const lcMediaApply=mediaApply;
 mediaApply=function(slide){
-  lcMediaApply(slide);if(!slide.classList.contains('lc-case'))return;
   const library=slide.studioPreviewModel?.previewLibrary;
+  if(library&&!lcLayouts[slide.studioPreviewModel.template]){lcPaintStudioPreview(slide,library);return;}
+  lcMediaApply(slide);if(!slide.classList.contains('lc-case'))return;
   if(library)lcPaintLibraryPreview(slide,library);
   const credits=slide.querySelector('.lc-slot-credits');if(credits)slide.append(credits);
 };

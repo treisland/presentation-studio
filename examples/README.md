@@ -1,6 +1,6 @@
 # Examples
 
-The five-slide Portfolio starter and finished example are bundled in **New presentation**. Each creates an independent editable copy covering case study, process, results, gallery and details/credits. The finished fictional library project uses original `portfolio-library.svg`, `portfolio-signs.svg`, `portfolio-workshop.svg` and `portfolio-plan.svg`, licensed with the project under Apache 2.0; it requires no remote assets. See `docs/layout-collections.md` for the compositions and safe layout-change workflow.
+The five-slide Portfolio starter and finished example are available through **Start from an example**. Each creates an independent editable copy covering case study, process, results, gallery and details/credits. The finished fictional library project uses original `portfolio-library.svg`, `portfolio-signs.svg`, `portfolio-workshop.svg` and `portfolio-plan.svg`, licensed with the project under Apache 2.0; it requires no remote assets. See `docs/layout-collections.md` for the compositions and safe layout-change workflow.
 
 Comic starter / finished example add four story compositions and three original `comic-seed-*.svg` illustrations. The fictional seed-sharing story keeps dialogue and captions editable. All included original artwork is Apache 2.0.
 

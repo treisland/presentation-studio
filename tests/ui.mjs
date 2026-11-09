@@ -17,6 +17,18 @@ export async function click(page, selector) {
   await reveal(page, selector);
   await page.locator(selector).click();
 }
+export async function selectStartingExample(page, choice) {
+  await page.locator('#nx-wizard').waitFor({state:'visible'});
+  await click(page,'#lc-examples-wizard');
+  const id=choice==='template'?'studio':choice.split('-')[0],mode=choice==='template'?'demo':choice.split('-')[1];
+  await page.locator('.lc-example-card[data-example="'+id+'"] button').click();
+  await page.locator(mode==='starter'?'#lc-use-starter':'#lc-use-demo').click();
+  if(await page.locator('#hub-switch').evaluate(n=>n.open))await page.locator('#hub-save-switch').click();
+  await page.locator('#lc-examples').waitFor({state:'hidden'});
+  await page.locator('#nx-wizard-name').waitFor({state:'visible'});
+  // Return to the start page so existing setup tests exercise all four steps.
+  await page.locator('#nx-wizard-back').click();
+}
 export async function addSlide(page, template) {
   await page.locator("#studio-gallery-open").click();
   await page.locator('[data-template="' + template + '"]').click();

@@ -1,3 +1,4 @@
+import {selectStartingExample} from './ui.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {chromium} from 'playwright';
@@ -11,7 +12,7 @@ async function setup(){const p=await browser.newPage({viewport:{width:1366,heigh
 const read=p=>p.evaluate(()=>window.presentationStudioEditing.read());
 const apply=(p,operations)=>p.evaluate(operations=>{const api=window.presentationStudioEditing,s=api.read();return api.apply({apiVersion:1,projectId:s.projectId,expectedRevision:s.revision,operations});},operations);
 async function pack(p){const download=p.waitForEvent('download');await click(p,'#fe-export-json');return JSON.parse(await readFile(await(await download).path(),'utf8'));}
-async function example(p,choice){await click(p,'#studio-new-open');if(await p.locator('#hub-switch').evaluate(d=>d.open))await p.locator('#hub-save-switch').click();await p.locator('[name=nx-start][value='+choice+']').check();await p.locator('#nx-wizard-defaults').click();await p.locator('#nx-wizard').waitFor({state:'hidden'});}
+async function example(p,choice){await click(p,'#studio-new-open');if(await p.locator('#hub-switch').evaluate(d=>d.open))await p.locator('#hub-save-switch').click();await selectStartingExample(p,choice);await p.locator('#nx-wizard-defaults').click();await p.locator('#nx-wizard').waitFor({state:'hidden'});}
 
 test('Portfolio composition exposes editable slots and an empty image target without replacing the theme',async()=>{const{p,errors}=await setup();try{
  const before=await read(p);await addSlide(p,'portfolio-case');const after=await read(p),model=after.state.slides.find(s=>s.template==='portfolio-case');assert(model);assert.deepEqual(after.state.brand,before.state.brand);

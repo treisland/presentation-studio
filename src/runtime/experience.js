@@ -622,6 +622,8 @@ projectForm = function () {
   }
 };
 
+let nxWizardExampleChoice=null;
+function nxStartingChoice(){return nxWizardExampleChoice||document.querySelector('input[name="nx-start"]:checked')?.value||'blank';}
 function nxWizardPage() {
   $("nx-wizard").scrollTop = 0;
   document
@@ -630,7 +632,8 @@ function nxWizardPage() {
   $("nx-wizard-progress").textContent =
     `Step ${nxWizardStep + 1} of 4 · ${["Starting point", "Branding", "Starter layout", "Appearance and playback"][nxWizardStep]}`;
   $("nx-wizard-back").disabled = nxWizardStep === 0;
-  const choice = document.querySelector('input[name="nx-start"]:checked').value;
+  const choice = nxStartingChoice();
+  $('nx-selected-example').hidden=!nxWizardExampleChoice;$('nx-selected-example').textContent=nxWizardExampleChoice?'Selected example: '+lcExampleLabel(choice)+'. Continue setup or choose another starting point.':'';
   $("nx-wizard-next").textContent =
     choice === "import" && nxWizardStep === 0
       ? "Choose project file"
@@ -650,7 +653,7 @@ function nxWizardPage() {
 }
 function nxWizardPreview() {
   const type = $("nx-wizard-layout").value,
-    choice = document.querySelector('input[name="nx-start"]:checked').value;
+    choice = nxStartingChoice();
   const example=lcExampleState(choice, 'Preview');
   const candidate =
     (example?{...example.slides[0],previewLibrary:example}:null) || (choice === "template"
@@ -662,7 +665,7 @@ function nxWizardPreview() {
           ...projectCreateTemplate(type, "Your presentation"),
         });
   const preset = nxPresets.find(p => p.id === $("nx-wizard-preset").value);
-  const base = preset?.brand || (choice === "template" ? studioDefaultTemplate.brand : studioBlankState("Preview").brand);
+  const base = preset?.brand || example?.brand || studioBlankState("Preview").brand;
   const brand = {
     ...nxThemeBrand($("nx-wizard-theme").value, false, base),
     accent: $("nx-wizard-accent").value,
@@ -687,6 +690,7 @@ function nxOpenWizard() {
   setPlaying(false);
   mediaPauseAll();
   nxWizardStep = 0;
+  nxWizardExampleChoice=null;
   nxWizardLogo = null;
   if (nxWizardLogoURL) URL.revokeObjectURL(nxWizardLogoURL); nxWizardLogoURL = null;
   $("nx-wizard-name").value = "Untitled presentation";
@@ -707,7 +711,7 @@ function nxOpenWizard() {
   nxWizardPage();
 }
 async function nxFinishWizard(defaults = false) {
-  const choice = document.querySelector('input[name="nx-start"]:checked').value;
+  const choice = nxStartingChoice();
   if (choice === "import") {
     $("nx-wizard").close();
     $("fe-import-file").click();
@@ -848,7 +852,7 @@ function nxBind() {
   $("nx-wizard-next").onclick = () => {
     if (
       nxWizardStep === 3 ||
-      document.querySelector('input[name="nx-start"]:checked').value ===
+      nxStartingChoice() ===
         "import"
     )
       nxFinishWizard();
@@ -861,6 +865,7 @@ function nxBind() {
   document.querySelectorAll('input[name="nx-start"]').forEach(
     (e) =>
       (e.onchange = () => {
+        nxWizardExampleChoice=null;
         const useTemplate = e.value === "template" && e.checked;
         $("nx-wizard-header").value = useTemplate ? studioDefaultTemplate.brand.headerTitle : "PRESENTATION";
         nxWizardPage();

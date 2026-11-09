@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Preserve converted Heading 3 titles in their title slot during retained-content layout changes, including Undo and editable reopening.
+
+- Remove duplicated starter/demo choices from New presentation. The dedicated gallery retains all examples, including Studio demo, and continues into naming/theme setup before creation.
+
+- Expose Heading 1–3 and Paragraph conversion in Inspector Content while retaining inline formatting, text selection, layout identity, title synchronization, locks and Undo.
+
 ## 0.5.0 — 2026-11-08
 
 - Promote the published, maintainer-approved 0.5.0 candidate to stable without runtime, dependency or project-format changes. Includes the five layout collections, examples, gallery, walkthroughs and reviewed retention/caption/selected-cell fixes.

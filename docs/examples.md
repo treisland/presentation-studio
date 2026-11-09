@@ -1,8 +1,8 @@
 # Starting from an example
 
-Choose **Project → Start from an example**, the matching action in Recent presentations, or **Start from an example** beside the Blank/Import choices in New presentation. The gallery provides three core starter/demo pairs and two lightweight starters. Every use creates a fresh project and fresh slide identities. Starting another presentation uses the same save-before-switch guard as Blank and Import; browser recovery is not a replacement for an editable ZIP backup.
+Choose **Project → Start from an example**, the matching action in Recent presentations, or **Start from an example** beside the Blank/Import choices in New presentation. The gallery provides three core starter/demo pairs, two lightweight starters and the original eight-slide Studio demo. Individual examples are not duplicated in New presentation. Creation makes a separate project; collection copies also receive fresh slide identities. Starting another presentation uses the same save-before-switch guard as Blank and Import; browser recovery is not a replacement for an editable ZIP backup.
 
-Filter by purpose and image layout, then Preview a collection. Previous/Next visits every slide; Preview content switches between prompts and finished content where a demo exists. **Read preview text and image descriptions** exposes the same content in a text view. Previews do not change the active project or history. Close/Escape returns to the entry control or Project menu. Use starter / Use demo creates the selected separate copy only after the existing work can be saved; Cancel or a failed save keeps the current project. Unavailable artwork disables the affected demo and leaves other available starters/examples usable.
+Filter by purpose and image layout, then Preview a collection. Previous/Next visits every slide; Preview content switches between prompts and finished content where available. **Read preview text and image descriptions** exposes the same content in a text view. Previews do not change the active project or history. Close/Escape returns to the entry control or Project menu. Use starter / Use demo continues to naming and appearance setup after the existing work can be saved. Create presentation or Use defaults then creates the separate copy. Closing setup, cancelling save-before-switch or a failed save keeps the current project. Unavailable artwork disables the affected demo and leaves other available starters/examples usable.
 
 | Collection | Slides | Starter | Finished example |
 | --- | --- | --- | --- |
@@ -11,6 +11,7 @@ Filter by purpose and image layout, then Preview a collection. Previous/Next vis
 | Editorial | 5 | Newspaper cover, blog lead, columns, image feature and closing prompts | Fictional Community Notebook with original diagrams and source credits |
 | Newsletter | 4 | Lead, recurring update cards, curated reading and closing | Lightweight starter only; no finished-demo claim |
 | Flyer | 3 | Event, announcement and portfolio-cover prompts with replaceable original artwork | Lightweight starter only; no finished-demo claim |
+| Studio | 8 | No separate starter; use Blank instead | Original generic Studio demo, including sample media, commands and a searchable question |
 
 All are **16:9 slides**. Newsletter does not mean email HTML or sending. Flyer does not mean print-ready dimensions, bleed, CMYK, PDF or portrait output. Editorial does not mean scrolling web articles or hosted publishing.
 
