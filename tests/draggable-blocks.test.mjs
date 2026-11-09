@@ -18,6 +18,7 @@ async function setup(legacy = false) {
   await p.locator('#open-full-editor').click(); return p;
 }
 async function add(p, kind) {
+  await reveal(p,'#db-palette');
   if (await p.locator('#db-palette').getAttribute('open') === null) await p.locator('#db-palette > summary').press('Enter');
   await p.locator('[data-db-kind="' + kind + '"]').press('Enter');
   return (await read(p)).state;
@@ -48,7 +49,7 @@ test('palette and keyboard arrangement preserve original content and unique IDs 
     assert.notEqual(blocks((await read(p)).state).at(-1).attrs.style, node.attrs.style);
     await p.locator('#fe-undo').click();
     assert.equal(blocks((await read(p)).state).at(-1).attrs.style, node.attrs.style);
-    await p.locator('#db-palette > summary').press('Enter');
+    await reveal(p,'#db-palette');await p.locator('#db-palette > summary').press('Enter');
     await p.locator('[data-db-kind=text]').press('Escape');
     assert.equal(await p.locator('#db-palette').getAttribute('open'), null);
     assert.equal(await p.locator('#full-editor').evaluate(el => el.open), true);

@@ -267,7 +267,7 @@ test("inline text, formatting, cards, lists, safe paste, tables, and commands us
     await selectText(p, "#fe-preview h1 strong", 1, 4);
     await reveal(p,"#vb-bold");
     await p.locator("#vb-bold").click();
-    await p.locator("#vb-done").click();
+    await reveal(p,"#vb-done");await p.locator("#vb-done").click();
     assert.deepEqual(
       await p.locator("#fe-preview h1 strong").allTextContents(),
       ["H", "o"],
@@ -324,7 +324,7 @@ test("inline text, formatting, cards, lists, safe paste, tables, and commands us
     await p.keyboard.type("Updated detail");
     await reveal(p,"#vb-bold");
     await p.locator("#vb-bold").click();
-    await p.locator("#vb-done").click();
+    await reveal(p,"#vb-done");await p.locator("#vb-done").click();
     await tab(p, "Tables");
     assert.equal(
       await p.getByLabel("Row 1 column 1", { exact: true }).inputValue(),

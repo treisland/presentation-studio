@@ -7,6 +7,21 @@ const browser=await chromium.launch({headless:true,executablePath:process.env.CH
 test.after(()=>browser.close());
 const blockID=node=>node.attrs.class.match(/\bblock-[\w-]+\b/)?.[0];
 
+test('context toolbar fits narrow panels, popovers stay on screen and Escape restores focus',async()=>{
+  const {page,errors}=await openExample(browser,'portfolio-demo');
+  try{
+    await page.setViewportSize({width:1024,height:768});
+    await page.locator('#component-open').click();await page.getByRole('button',{name:'Insert Metric card',exact:true}).click();
+    assert.equal(await page.locator('#component-toolbar').evaluate(element=>element.scrollWidth<=element.clientWidth+1),true);
+    await page.locator('#component-colors-trigger').click();
+    const popup=page.locator('#component-colors-popover');assert.equal(await popup.evaluate(element=>element.matches(':popover-open')),true);
+    const bounds=await popup.boundingBox();assert(bounds.x>=0&&bounds.x+bounds.width<=1024);
+    await page.locator('#component-fill').focus();await page.locator('#component-fill').press('Escape');
+    assert.equal(await popup.evaluate(element=>element.matches(':popover-open')),false);assert.equal(await page.locator('#component-colors-trigger').evaluate(element=>element===document.activeElement),true);
+    assert.deepEqual(errors,[]);
+  }finally{await page.close();}
+});
+
 test('grouped image library transfer remaps media and preserves offline editable restoration',async()=>{
   const {page,errors}=await openExample(browser,'template');
   try {
