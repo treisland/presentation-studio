@@ -23,6 +23,19 @@ test('Content text style preserves rich text, selection, slots, title identity a
  }finally{await p.close();}
 });
 
+test('converted Heading 3 title retains its title role across layout changes, Undo and reopening',async()=>{
+ const{page:p,errors}=await openExample(browser,'portfolio-demo');try{
+  const id=(await snapshot(p)).state.slides[0].id;
+  await p.locator('#fe-preview .lc-slot-title').dblclick();await p.locator('#tt-type').selectOption('h3');await p.locator('#fe-slide-title').fill('Retained Heading 3 title');await p.locator('#fe-slide-title').press('Tab');
+  const before=await snapshot(p),title=slot(before.state.slides[0].tree,'title');assert.equal(title.tag,'h3');
+  assert.equal((await operations(p,[{type:'layout.apply',slideId:id,template:'hero',keep:true}])).ok,true);
+  const changed=await snapshot(p),slide=changed.state.slides[0];assert.equal(slide.title,'Retained Heading 3 title');assert.equal(await p.locator('#fe-preview h3.editor-title').textContent(),'Retained Heading 3 title');assert.equal(await p.locator('#fe-preview .lc-retained h3.editor-title').count(),0);
+  await p.locator('#fe-undo').click();assert.deepEqual((await snapshot(p)).state,before.state);
+  assert.equal((await operations(p,[{type:'layout.apply',slideId:id,template:'hero',keep:true}])).ok,true);const expected=await snapshot(p);
+  const q=await importZip(browser,await exportZip(p),expected.projectId);try{assert.deepEqual((await snapshot(q)).state,expected.state);assert.equal(await q.locator('#fe-preview h3.editor-title').textContent(),'Retained Heading 3 title');}finally{await q.close();}assert.deepEqual(errors,[]);
+ }finally{await p.close();}
+});
+
 test('text type rejects unsafe targets and locks atomically, and survives editable/playback reopening',async()=>{
  const{page:p,errors}=await openExample(browser,'editorial-demo');try{
   const before=await snapshot(p),slide=before.state.slides[0],path=await p.locator('#fe-preview .lc-slot-lead').getAttribute('data-vb-path');

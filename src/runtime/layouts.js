@@ -103,7 +103,7 @@ function lcMapped(original,type) {
   function walk(nodes,protectedRoot=false) {
     for(const node of nodes){
       const protectedNode=protectedRoot||!!spNodeID(node)||['table','pre','ul','ol'].includes(node.tag)||mgHas(node,'mg-grid')||mgHas(node,'terminal');
-      if(!protectedNode&&['h1','h2','p'].includes(node.tag)&&!mgHas(node,'eyebrow')&&projectText(node).trim())fields.push(node);
+      if(!protectedNode&&['h1','h2','h3','h4','p'].includes(node.tag)&&!mgHas(node,'eyebrow')&&projectText(node).trim())fields.push(node);
       else if(!protectedNode)walk(node.children||[],false);
     }
   }
