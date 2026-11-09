@@ -300,6 +300,7 @@ function boothExportData(options) {
   const groups = new Set(state.slides.map((s) => s.group));
   state.sections = state.sections.filter((s) => groups.has(s.id));
   for (const slide of state.slides) {
+    for(const entry of spEntries(slide,state))if(entry.node){const meta=entry.meta,styles=[];for(const [slot,property]of [['text','color'],['fill','background-color'],['border','border-color']])if(meta.style?.[slot]!=null)styles.push(property+':'+spCSS(meta.style[slot],studioPalette(state.brand)));if(meta.rotation!=null)styles.push('rotate:'+meta.rotation+'deg');if(styles.length)entry.node.attrs.style=(entry.node.attrs.style||'')+';'+styles.join(';');}
     delete slide.notes;
     delete slide.templateBase;
     delete slide.templateClasses;
@@ -363,7 +364,7 @@ async function boothExport() {
       json +
       "<\/script><script>(" +
       boothStandalone.toString() +
-      ")();<\/script></html>";
+      ")("+authoringGeometry.toString()+");<\/script></html>";
     const refs = projectReferenced({
       brand: data.brand,
       media: data.media,

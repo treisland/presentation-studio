@@ -1,7 +1,8 @@
 // Serialized into booth exports: no dependency on authoring code or project history.
 const boothStandaloneStyles = `#booth-controls{position:fixed;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:500}#booth-controls button,dialog button{padding:9px 14px;border:1px solid #9db5db;border-radius:7px;background:#10213c;color:white;cursor:pointer}#booth-controls [hidden]{display:none}#booth-title{font:18px Arial}dialog{max-width:620px;width:90vw;padding:24px;border-radius:12px;border:1px solid #9db5db;background:white;color:#10213c;font:16px Arial}dialog::backdrop{background:#081426bb}dialog input{display:block;width:100%;font:18px Arial;margin:12px 0;padding:10px}#booth-question-list{max-height:60vh;overflow:auto;display:grid;gap:10px}#booth-slides .slide.active{opacity:1;visibility:visible;transform:none}#booth-slides .slide:not(.active){display:none}#booth-slides .ce-hidden{display:none}#booth-slides video{object-position:var(--media-pos)}.bp-focus{position:absolute;inset:0;background:#080e18;z-index:300;padding:30px 40px;display:flex;flex-direction:column;gap:15px}.bp-focus nav{display:flex;gap:12px;justify-content:flex-end;position:relative;z-index:5;flex:none;height:60px}.bp-focus button{font:22px Arial;padding:12px;background:#10213c;color:#fff;border:1px solid #97b4da;border-radius:8px}.bp-target{flex:1;min-height:0}.bp-focused.media-box{position:absolute!important;inset:auto;background:#071121;border:0;padding:0;z-index:2;display:flex!important}.bp-focused .media-asset{object-fit:contain!important;object-position:center!important;transform-origin:center}.bp-focused figcaption{background:#10213c;color:#fff}.bp-focused .mf-expand,.bp-focused .media-shade,.bp-focused:before{display:none!important}`;
-function boothStandalone() {
+function boothStandalone(geometry) {
   "use strict";
+  geometry ||= () => {};
   const data = JSON.parse(document.getElementById("booth-data").textContent),
     p = data.options,
     $ = (id) => document.getElementById(id),
@@ -32,6 +33,7 @@ function boothStandalone() {
       el.rel = "noopener noreferrer";
     }
     for (const child of node.children || []) el.append(dom(child));
+    geometry(el);
     return el;
   }
   function placement(box, cfg) {
@@ -159,6 +161,7 @@ function boothStandalone() {
       slide.append(media(cfg, model));
       if (cfg.canvas?.placement) slide.classList.add("ce-free");
     } else model.tree.forEach((node) => slide.append(dom(node)));
+    for(const block of slide.querySelectorAll(':scope > .media-original > .db-block'))slide.append(block);
     for (const object of data.mediaObjects[model.id] || [])
       slide.append(media(object.media, model));
     slide.querySelectorAll("a").forEach((a) => {
@@ -208,6 +211,7 @@ function boothStandalone() {
   function paint() {
     for (const [id, slide] of nodes) {
       slide.classList.toggle("active", id === current);
+      geometry(slide);
       for (const v of slide.querySelectorAll("video")) {
         const cfg = configs.get(v.closest("figure"));
         v.controls = p.video || unlocked;

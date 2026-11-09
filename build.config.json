@@ -54,6 +54,9 @@
     "src/runtime/code-library.js",
     "src/runtime/visibility.js",
     "src/runtime/inspector-context.js",
+    "src/runtime/element-names.js",
+    "src/runtime/template-position.js",
+    "src/runtime/annotations.js",
     "src/runtime/boot.js"
   ],
   "vendor": "vendor/jszip-3.10.1.min.js"

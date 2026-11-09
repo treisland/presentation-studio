@@ -24,6 +24,10 @@ Excluded: linked instance updates, timers, interactive widgets, cloud/shared lib
 
 ## Beta manual review checklist
 
+### Names, template customization and annotations — issue #111
+
+See [the full behavior and manual checklist](authoring-customization.md) for type-numbered Layer names, custom overrides/search, Customize position / Reset position to template, Step number sequences and free Arrow / Pointer editing. This follow-up remains held for fresh manual review and does not authorize publication.
+
 ### Selection-aware Inspector — issue #108
 
 Template-heading correction (#110): demo/template headings support Duplicate block and Delete block. Copies retain their text/formatting but become ordinary content, without the title/layout-slot role. Removing the original visible title preserves the slide name and IDs; later changes to the slide name do not rename another heading or the copy. Undo restores the removed heading and its title role. Inspector summaries and the optional text editor follow the selected heading, including when it shares a container with an eyebrow. Editing the original title text still synchronizes the slide name.

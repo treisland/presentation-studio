@@ -64,7 +64,7 @@ test('Layers batch appearance, naming, visibility, locks, reorder and rotation a
  let r=await apply(p,[{type:'design.appearance',keys:[a,b],style:{fill:{role:'accent'},border:{hex:'#ff0000'},borderWidth:3}}]);assert.equal(r.ok,true);
  let after=await read(p);assert.equal(after.state.design.slides[slide.id].objects[a].style.borderWidth,3);assert.equal(after.state.design.slides[slide.id].objects[b].style.borderWidth,3);assert.equal(after.state.slides.find(s=>s.id===slide.id).tree.map(n=>n.children).length,2);
  await p.locator('#fe-undo').click();assert.deepEqual((await read(p)).state,before.state);
- r=await apply(p,[{type:'design.meta',keys:[a],changes:{name:'Main panel',rotation:30}}]);assert.equal(r.ok,true);await p.locator('#wp-tab-layers').click();assert.equal(await p.getByRole('button',{name:'block: Main panel',exact:true}).count(),1);
+ r=await apply(p,[{type:'design.meta',keys:[a],changes:{name:'Main panel',rotation:30}}]);assert.equal(r.ok,true);await p.locator('#wp-tab-layers').click();assert.equal(await p.getByRole('button',{name:'Rectangle: Main panel',exact:true}).count(),1);
  assert.equal(await p.locator('#fe-preview .'+a).evaluate(el=>el.style.rotate),'30deg');
  assert.equal((await apply(p,[{type:'design.meta',keys:[a],changes:{locked:true}}])).ok,true);
  const locked=await read(p);assert.equal((await apply(p,[{type:'block.remove',blockId:a}])).code,'LOCKED');assert.equal((await apply(p,[{type:'design.appearance',keys:[a,b],style:{fill:'transparent'}}])).code,'LOCKED');assert.deepEqual((await read(p)).state,locked.state);
