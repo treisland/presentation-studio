@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Prepare 0.6.0 beta review: contextual block formatting, searchable Add/Library, editable Callout/Quote/Metric widgets, one-level groups and independent portable component presets with local deletion recovery. Publication/manual gates remain pending.
+
 ## 0.5.1 — 2026-11-08
 
 - Preserve converted Heading 3 titles in their title slot during retained-content layout changes, including Undo and editable reopening.

@@ -1,0 +1,22 @@
+#component-toolbar { flex:0 0 56px; box-sizing:border-box; display:flex; align-items:center; gap:8px; padding:5px; border:1px solid var(--editor-border,#aaa); border-radius:8px; background:var(--editor-surface,#fff); color:var(--editor-ink,#172033); overflow:auto; }
+.component-tools { display:flex; flex:none; flex-wrap:nowrap; gap:6px; align-items:center; }
+#component-toolbar button,#component-toolbar label { flex:none; white-space:nowrap; }
+#component-selection { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); }
+#component-text-tools > div { display:flex; align-items:center; gap:4px; }
+#component-text-tools [hidden] { display:none; }
+.component-tools label { display:flex; align-items:center; gap:5px; margin:3px; }
+.component-tools input[type=number] { width:70px; }
+.component-tools input[type=color] { width:36px; height:30px; }
+#component-add { width:min(900px,90vw); max-height:85vh; overflow:auto; }
+#component-items { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:12px; margin:12px 0; }
+#component-items article { padding:12px; border:1px solid #999; border-radius:8px; }
+#component-items button { margin:4px; }
+.component-card-preview { padding:12px; background:#eef3fa; color:#172033; border-radius:5px; }
+.slide > .component-widget { flex-direction:column; align-items:flex-start; gap:12px; }
+.component-widget :is(h3,p) { margin:0; color:inherit; max-width:100%; overflow-wrap:anywhere; }
+.component-widget h3 { font-size:42px; }
+.component-widget p { font-size:26px; }
+.component-quote { border-left:8px solid var(--project-accent,#0066ff); }
+#component-widget-fields textarea { display:block; width:100%; }
+#component-overflow { color:#a13b00; }
+@media(max-width:900px) { .component-tools { gap:3px; } }

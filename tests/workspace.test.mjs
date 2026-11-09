@@ -392,6 +392,8 @@ test("Dragging media while zoomed uses slide coordinates, and view state is abse
       width = await p
         .locator("#fe-preview .slide")
         .evaluate((el) => el.getBoundingClientRect().width);
+    const hit = await p.evaluate(({x,y})=>{const target=document.elementFromPoint(x,y),viewport=document.querySelector('#we-viewport');return{floating:!!target?.closest('.ce-floating'),target:target?.outerHTML.slice(0,180),viewport:viewport.getBoundingClientRect().toJSON()};},{x:r.x+r.width/2,y:r.y+r.height/2});
+    assert(hit.floating,JSON.stringify(hit));
     await p.mouse.move(r.x + r.width / 2, r.y + r.height / 2);
     await p.mouse.down();
     await p.mouse.move(r.x + r.width / 2 - 30, r.y + r.height / 2, {

@@ -654,7 +654,7 @@ function vbAttach(root) {
           vbSession &&
           !vbSession.el.contains(document.activeElement) &&
           !$("vb-toolbar").contains(document.activeElement) &&
-          !document.activeElement?.closest("#we-font-controls,#wp-selection-header,#tt-control")
+          !document.activeElement?.closest("#we-font-controls,#wp-selection-header,#tt-control,#component-toolbar")
         ) {
           vbEnd(true);
         }

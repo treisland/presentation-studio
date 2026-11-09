@@ -1,5 +1,7 @@
 # Architecture
 
+`components.js` introduces a block-definition registry and explicitly registered editing operations for widgets, groups and preset insertion. Existing editing operations retain their current fallback; duplicate new registrations fail at startup. Components reuse safe AST blocks and optional design group identities. Browser-local presets contain independent node/media/style snapshots; media is embedded for library transfer and remapped to fresh paths on insertion. The library never enters project history, while inserted content uses the normal validated transaction/checkpoint pipeline. See [component scope and manual review](blocks-components.md).
+
 The versioned [local editing API](editing-api.md) stages supported metadata, template creation and existing-media placement operations on a detached candidate. UI controls reuse its validation/model helpers, while atomic batches enforce revision checks, existing design locks, one undo step and a pre-change checkpoint. It is local authoring code, not a remote or authenticated endpoint.
 
 The repository is the source of truth for the studio engine and included examples. Each build inlines the source, styles, template bootstrap, and vendored JSZip into portable HTML. The application makes no required runtime CDN requests and has no server-side persistence.
