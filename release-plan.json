@@ -1,9 +1,9 @@
 {
-  "version": "0.5.0",
+  "version": "0.5.1",
   "publish": true,
-  "notes": "docs/releases/0.5.0.md",
+  "notes": "docs/releases/0.5.1.md",
   "manualGatesPassed": true,
   "evidence": [
-    "docs/releases/0.5.0-evidence.md"
+    "docs/releases/0.5.1-evidence.md"
   ]
 }
