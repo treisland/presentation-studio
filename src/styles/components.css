@@ -24,6 +24,26 @@
 #code-panel textarea,#code-panel input:not([type=checkbox]),#code-panel select { display:block; width:100%; box-sizing:border-box; }
 .command-labels { font:14px/1.4 Arial,sans-serif; }
 #component-items textarea,#component-items input { max-width:100%; }
+#component-add #component-items.data-library-results { grid-template-columns:repeat(2,minmax(0,1fr)); }
+#component-add .data-library-card label { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+#component-add .data-library-card input[type=number] { width:90px; padding:8px; border:1px solid #8291a7; border-radius:6px; }
+#component-add .data-library-card label:has(textarea) { display:block; }
+#component-add .data-library-card textarea { display:block; width:100%; margin-top:6px; padding:12px; resize:vertical; border:1px solid #8291a7; border-radius:7px; font:13px/1.5 monospace; }
+.editor-dark #component-add .data-library-card :is(input,textarea) { background:#101c2f; color:#eaf2ff; }
+#component-add .data-library-preview { height:150px; min-height:150px; }
+.data-library-preview table { width:100%; border-collapse:collapse; font:11px/1.3 Arial,sans-serif; }
+.data-library-preview :is(td,th) { padding:5px; border:1px solid #8291a780; }
+.data-library-preview th { background:#0066ff; color:white; }
+.data-library-preview tr:nth-child(even) { background:#8291a722; }
+.data-library-preview pre { width:100%; margin:0; white-space:pre-wrap; overflow-wrap:anywhere; text-align:left; font:12px/1.5 monospace; background:transparent; color:inherit; padding:0; }
+.slide > .data-block { display:block; padding:12px; overflow:visible; }
+.slide > .data-block[hidden] { display:none!important; }
+.data-block > .data-content { box-sizing:border-box; width:100%; height:100%; overflow:auto; }
+.data-block table { width:100%; height:100%; table-layout:fixed; font-size:24px; }
+.data-block :is(td,th) { overflow-wrap:anywhere; }
+.data-block .terminal { box-sizing:border-box; width:100%; height:100%; overflow:auto; }
+.data-block .terminal pre { white-space:pre-wrap; overflow-wrap:anywhere; font-size:24px; }
+@media(max-width:600px) { #component-add #component-items.data-library-results { grid-template-columns:minmax(0,1fr); } }
 #component-tabs [aria-selected=true] { outline:2px solid #4b9aff; outline-offset:2px; }
 .component-library-search { display:flex; gap:8px; padding:0 22px 16px; flex:none; }
 .component-library-search input { min-width:0; flex:1; padding:10px 12px; border:1px solid #8291a7; border-radius:7px; }

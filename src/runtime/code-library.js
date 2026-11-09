@@ -22,7 +22,7 @@ function commandChoices(raw){const value=commandEditable(raw);return[...(value.s
 function commandText(raw,key){if(!Object.hasOwn(raw||{},'shared'))return raw?.[key]||'';const choices=commandChoices(raw);return(choices.find(item=>item.id===key)||choices.find(item=>item.id===raw.initial)||choices[0])?.text||'';}
 function commandPaint(node,raw){
   if(!raw)return;
-  const terminal=node.querySelector('.terminal');if(!terminal)return;terminal.hidden=!!raw.hidden;
+  const terminal=node.querySelector('.terminal');if(!terminal)return;terminal.hidden=!!raw.hidden;const block=terminal.closest('.data-block');if(block)block.hidden=!!raw.hidden;
   const choices=Object.hasOwn(raw,'shared')?commandChoices(raw):raw.powershell===raw.bash?[{id:'shared',name:'Shared',text:raw.powershell,language:'',environment:''}]:[['powershell','Windows · PowerShell'],['bash','Linux / macOS · Bash']].filter(([id])=>raw[id]?.trim()).map(([id,name])=>({id,name,text:raw[id],language:'',environment:''}));let select=terminal.querySelector('select');
   if(!select){select=document.createElement('select');terminal.prepend(select);}
   select.setAttribute('aria-label','Code variant');select.replaceChildren(...choices.map(item=>new Option(item.name,item.id)));select.closest('label')?.setAttribute('aria-label','Code variant');
@@ -34,13 +34,25 @@ function commandPaint(node,raw){
   const paint=()=>{const item=choices.find(choice=>choice.id===select.value)||choices[0];const pre=terminal.querySelector('pre');if(pre)pre.textContent=item?.text||'';info.textContent=[item?.language,item?.environment].filter(Boolean).join(' · ');info.hidden=!info.textContent;};
   select.onchange=()=>{if(Object.hasOwn(raw,'shared')){node.dataset.commandVariant=select.value;paint();}else{environment=select.value;updateEnvironment();}};paint();
 }
-editingRegisterOperation('code.update',(state,operation)=>{const slide=editingSlide(state,operation.slideId);if(spEntries(slide,state).some(entry=>entry.node&&projectFind({tree:[entry.node]},node=>mgHas(node,'terminal')).length&&spProtected(entry)))editingFail('LOCKED','Unlock the code block first.');slide.commands=commandNormalize(operation.commands);if(!projectFind(slide,node=>mgHas(node,'terminal')).length)slide.tree.push(projectCreateTemplate('code',slide.title).tree[1]);});
-editingRegisterOperation('table.insert',(state,operation)=>{
+function dataBlock(kind,children){const node=projectNode('div','db-block db-'+kind+' data-block '+projectID('block'),[projectNode('div','data-content',children)]);dbPlace(node,{x:.12,y:.22,w:.7,h:.55});return node;}
+editingRegisterOperation('code.update',(state,operation,created)=>{const slide=editingSlide(state,operation.slideId);if(spEntries(slide,state).some(entry=>entry.node&&projectFind({tree:[entry.node]},node=>mgHas(node,'terminal')).length&&spProtected(entry)))editingFail('LOCKED','Unlock the code block first.');slide.commands=commandNormalize(operation.commands);if(!projectFind(slide,node=>mgHas(node,'terminal')).length){const template=projectCreateTemplate('code',slide.title),node=dataBlock('code',[projectFind(template,node=>mgHas(node,'terminal'))[0].node]);slide.tree.push(node);created.push(dbID(node));}});
+editingRegisterOperation('table.insert',(state,operation,created)=>{
   const slide=editingSlide(state,operation.slideId),rows=operation.rows,columns=operation.columns;
   if(!Number.isInteger(rows)||rows<1||rows>30||!Number.isInteger(columns)||columns<1||columns>12)editingFail('INVALID','Choose 1–30 rows and 1–12 columns.');
   const row=(tag,index)=>projectNode('tr','',Array.from({length:columns},(_,column)=>projectNode(tag,'',[tag==='th'?'Column '+(column+1):'Row '+(index+1)])));
-  slide.tree.push(projectNode('table','editor-table',[...(operation.header?[projectNode('thead','',[row('th',0)])]:[]),projectNode('tbody','',Array.from({length:rows},(_,index)=>row('td',index)))]));
+  const node=dataBlock('table',[projectNode('table','editor-table',[...(operation.header?[projectNode('thead','',[row('th',0)])]:[]),projectNode('tbody','',Array.from({length:rows},(_,index)=>row('td',index)))])]);slide.tree.push(node);created.push(dbID(node));
 });
+editingRegisterOperation('data.convert',(state,operation,created)=>{
+  const slide=editingSlide(state,operation.slideId),kind=operation.kind;if(!['table','code'].includes(kind))editingFail('INVALID','Choose a table or code block.');
+  const match=projectFind(slide,node=>kind==='table'?node.tag==='table':mgHas(node,'terminal')).find(item=>!projectFind(slide,root=>dbID(root)&&projectFind({tree:[root]},node=>node===item.node).length).length);
+  if(!match)editingFail('NOT_FOUND','No unpositioned '+kind+' content was found.');
+  const root=slide.tree[Number(match.path.split('.')[0])],entry=spEntries(slide,state).find(item=>item.node===root);if(entry&&spProtected(entry))editingFail('LOCKED','Unlock the content first.');
+  const parts=match.path.split('.');let parent=slide.tree;for(const key of parts.slice(0,-1))parent=parent[key];parent.splice(Number(parts.at(-1)),1);const node=dataBlock(kind,[match.node]);slide.tree.push(node);created.push(dbID(node));
+});
+function dataAfterRemove(state,slideID){const slide=state.slides.find(item=>item.id===slideID);if(slide&&!projectFind(slide,node=>mgHas(node,'terminal')).length)slide.commands=null;}
+for(const type of ['component.remove','block.remove']){const previous=editingOperations.get(type);editingOperations.set(type,(state,operation,created)=>{previous(state,operation,created);dataAfterRemove(state,operation.slideId);});}
+const dataOperation=dbOperation;
+dbOperation=function(state,operation,created){if(operation.type==='block.duplicate'){const slide=editingSlide(state,operation.slideId),node=slide.tree.find(item=>dbID(item)===operation.blockId);if(node&&projectFind({tree:[node]},item=>mgHas(item,'terminal')).length)editingFail('INVALID','One code block per slide is supported. Save it to Library to copy it to another slide.');}const result=dataOperation(state,operation,created);if(result&&operation.type==='design.remove')dataAfterRemove(state,operation.slideId);return result;};
 const codeBindSlide=projectBindSlide;
 projectBindSlide=function(node,model){codeBindSlide(node,model);commandPaint(node,model.commands);};
 const codeEnvironment=updateEnvironment;
@@ -68,6 +80,7 @@ projectInit=function(){
   $('code-add-variant').onclick=()=>codeCommit(value=>{const id=projectID('variant');value.variants.push({id,name:'Variant '+(value.variants.length+1),text:'',language:'',environment:''});panel.dataset.variant=id;});
   $('code-remove-variant').onclick=()=>codeCommit(value=>{const id=$('code-edit-choice').value;value.variants=value.variants.filter(item=>item.id!==id);if(value.initial===id)value.initial='shared';panel.dataset.variant='shared';});
   $('fe-table-add').hidden=true;$('fe-enable-commands').hidden=true;codeLibrarySetup();codeInspector();
+  const convert=document.createElement('div');convert.dataset.wpPart='arrange';convert.append(componentButton('Make existing table movable',()=>componentRun({type:'data.convert',kind:'table'})),componentButton('Make existing code movable',()=>componentRun({type:'data.convert',kind:'code'})));$('wp-fields').append(convert);
 };
 function codeLibrarySetup(){
   const tab=componentButton('Data & Code',()=>{$('component-category').value='Data';componentList();for(const sibling of $('component-tabs').children){const selected=sibling===tab;sibling.setAttribute('aria-selected',String(selected));sibling.tabIndex=selected?0:-1;}});tab.setAttribute('role','tab');tab.setAttribute('aria-controls','component-items');tab.dataset.category='Data';$('component-tabs').append(tab);$('component-category').add(new Option('Data & Code','Data'));
@@ -77,13 +90,16 @@ componentList=function(){
   if($('component-category').value!=='Data')return codeList();
   const list=$('component-items');list.replaceChildren();for(const type of ['Table','Code / Commands']){
     if(!type.toLowerCase().includes($('component-search').value.toLowerCase()))continue;
-    const card=document.createElement('article'),heading=document.createElement('h3'),preview=document.createElement('div');heading.textContent=type;preview.className='component-card-preview';preview.textContent=type==='Table'?'▦':'</>';card.append(preview,heading);
+    const card=document.createElement('article'),heading=document.createElement('h3'),preview=document.createElement('div');heading.textContent=type;preview.className='component-card-preview data-library-preview';card.className='data-library-card';card.append(preview,heading);
     if(type==='Table'){
       const rows=document.createElement('input'),columns=document.createElement('input'),header=document.createElement('input');rows.type=columns.type='number';rows.min=columns.min=1;rows.max=30;columns.max=12;rows.value=3;columns.value=3;header.type='checkbox';header.checked=true;
       for(const [label,input]of [['Rows',rows],['Columns',columns],['Header row',header]]){const field=document.createElement('label');field.textContent=label;field.append(input);card.append(field);}
+      const summary=document.createElement('p');summary.className='data-table-summary';card.append(summary);
+      const paint=()=>{preview.replaceChildren();const table=document.createElement('table'),count=Math.min(4,Math.max(1,Number(rows.value)||1)),width=Math.min(4,Math.max(1,Number(columns.value)||1));for(let index=0;index<count+(header.checked?1:0);index++){const row=document.createElement('tr');for(let column=0;column<width;column++){const cell=document.createElement(header.checked&&index===0?'th':'td');cell.textContent=header.checked&&index===0?'Column '+(column+1):'Value';row.append(cell);}table.append(row);}preview.append(table);summary.textContent=rows.value+' rows × '+columns.value+' columns'+(header.checked?' · Header included':'');};for(const input of [rows,columns,header])input.addEventListener('input',paint);paint();
       card.append(componentButton('Insert Table',()=>{const result=componentRun({type:'table.insert',rows:Number(rows.value),columns:Number(columns.value),header:header.checked});if(result.ok){$('component-add').close();weInspect('table');}}));
     }else{
-      const content=document.createElement('textarea'),field=document.createElement('label');field.textContent='Content';content.rows=5;content.placeholder='Paste code or commands';field.append(content);card.append(field,componentButton('Insert Code / Commands',()=>{const slide=projectSelected;const insert=()=>{if(projectSelected!==slide){projectMessage('The slide changed. Insert again.');return;}const result=componentRun({type:'code.update',commands:{...commandEditable(null),shared:content.value}});if(result.ok){$('component-add').close();weInspect('text');codeInspector(true);}};if(projectModel().commands)projectConfirm('Replace this slide’s code block?','The slide supports one code block. Existing content and variants can be restored with Undo.',insert);else insert();}));
+      const content=document.createElement('textarea'),field=document.createElement('label'),sample=document.createElement('pre');sample.textContent='print("Hello, world!")\n# Your code, your environment';preview.append(sample);field.textContent='Content';content.rows=5;content.placeholder='Paste your code or command here…';content.spellcheck=false;content.oninput=()=>sample.textContent=content.value||'print("Hello, world!")\n# Your code, your environment';field.append(content);const note=document.createElement('p');note.textContent='Display and copy only. Labels and variants are optional.';card.append(field,note,componentButton('Insert Code / Commands',()=>{const slide=projectSelected;const insert=()=>{if(projectSelected!==slide){projectMessage('The slide changed. Insert again.');return;}const result=componentRun({type:'code.update',commands:{...commandEditable(null),shared:content.value}});if(result.ok){$('component-add').close();weInspect('text');codeInspector(true);}};if(projectModel().commands)projectConfirm('Replace this slide’s code block?','The slide supports one code block. Existing content and variants can be restored with Undo.',insert);else insert();}));
     }list.append(card);
   }
+  list.classList.add('data-library-results');
 };

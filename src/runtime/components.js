@@ -162,7 +162,7 @@ async function componentSave() {
     vbEnd(false);projectFlush();const snapshot=studioEditing.read(),slide=projectModel(),keys=spActiveKeys(),targets=componentTargets(projectState,slide,keys),name=$('component-name').value.trim();
     if(!name)throw Error('Give the component a name.');
     targets.forEach(componentRect);
-    const item={id:projectID('preset'),name,entries:targets.map(entry=>({node:entry.node&&projectCopy(entry.node),media:entry.media&&projectCopy(entry.media),meta:projectCopy(entry.meta)})),assets:{}};
+    const item={id:projectID('preset'),name,entries:targets.map(entry=>({node:entry.node&&projectCopy(entry.node),media:entry.media&&projectCopy(entry.media),commands:entry.node&&projectFind({tree:[entry.node]},node=>mgHas(node,'terminal')).length?projectCopy(slide.commands):undefined,meta:projectCopy(entry.meta)})),assets:{}};
     for(const entry of targets)if(entry.media)for(const path of [entry.media.src,entry.media.poster].filter(Boolean)){
       const blob=mediaBlobs.get(path);if(!blob)throw Error('Missing component media: '+path);
       item.assets[path]=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=reject;reader.readAsDataURL(blob);});
@@ -178,6 +178,7 @@ editingRegisterOperation('component.insert', (state, operation, created) => {
   for(const entry of item.entries){
     let key;
     if(entry.node){
+      if(entry.commands){if(slide.commands)editingFail('INVALID','This slide already has a code block. Insert the component on another slide.');slide.commands=commandNormalize(entry.commands);}
       const node=entry.node;key=projectID('block');node.attrs??={};node.attrs.class=(node.attrs.class||'').replace(/\b(?:block|layer)-[\w-]+\b/g,'').trim()+' '+key;
       if(!dbID(node)){node.attrs.class+=' db-block db-text';dbPlace(node,{x:.2,y:.2,w:.5,h:.3});}
       slide.tree.push(node);created.push(key);
@@ -206,7 +207,7 @@ async function componentInsert(item) {
 }
 function componentButton(label, action) {const button=document.createElement('button');button.type='button';button.textContent=label;button.onclick=()=>{try{Promise.resolve(action()).catch(error=>projectMessage(error.message));}catch(error){projectMessage(error.message);}};return button;}
 function componentList() {
-  const list=$('component-items');if(!list)return;list.replaceChildren();
+  const list=$('component-items');if(!list)return;list.replaceChildren();list.classList.remove('data-library-results');
   const search=$('component-search').value.toLowerCase(),category=$('component-category').value;
   if(category!=='Library')for(const [type,definition]of componentTypes){
     if(category==='All'&&definition.category==='Widgets')continue;

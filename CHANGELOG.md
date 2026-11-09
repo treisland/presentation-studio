@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Make Library Tables and Code movable/resizable/removable free blocks with lock/Undo protection; add explicit conversion for older layout content and polished live Library previews.
 - Add Data & Code Library insertion for Tables and shared Code/Commands, with optional language/environment labels, named variants, default/OS preferences and block hiding. Preserve legacy platform content and offline exports.
 - Keep Text format available while editing text inside free blocks and widgets.
 - Redesign the Library with scoped dialog typography, Blocks/Widgets/My components tabs, consistent preview cards and Media insertion, search/clear, per-preset Options and separate library management/recovery controls.

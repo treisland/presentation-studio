@@ -186,7 +186,7 @@ function boothStandalone() {
       );
     let select = slide.querySelector(".terminal select");
     if(!select&&model.commands&&slide.querySelector('.terminal')){select=document.createElement('select');select.setAttribute('aria-label','Code variant');for(const [key,label]of [['powershell','Windows · PowerShell'],['bash','Linux / macOS · Bash']])if(model.commands[key]?.trim())select.add(new Option(label,key));slide.querySelector('.terminal').prepend(select);}
-    if (model.commands?.hidden)slide.querySelector('.terminal')?.setAttribute('hidden','');
+    if (model.commands?.hidden){const terminal=slide.querySelector('.terminal');terminal?.setAttribute('hidden','');terminal?.closest('.data-block')?.setAttribute('hidden','');}
     if (select && model.commands && Object.hasOwn(model.commands,'shared')) {
       const raw=model.commands,choices=[...(raw.shared.trim()?[{id:'shared',name:'Shared',text:raw.shared,language:raw.language,environment:raw.environment}]:[]),...raw.variants.filter(item=>item.text.trim())];
       select.replaceChildren(...choices.map(item=>new Option(item.name,item.id)));select.value=raw.initial;
