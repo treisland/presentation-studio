@@ -234,7 +234,7 @@ function componentPaint() {
   $('component-ungroup').disabled=locked||!selected.some(entry=>entry.meta.group);
   $('component-selection').textContent=selected.length?selected.length+' selected'+(selected.some(entry=>entry.meta.group)?' · grouped':''):'Select a block to format or arrange';
   if($('component-more-trigger')){
-    const text=wpKind==='text',media=wpKind==='media',multiple=selected.length>1;
+    const text=vbSelected?.kind==='text'&&!!vbNode(),media=wpKind==='media',multiple=selected.length>1;
     $('component-text-trigger').hidden=!text;
     $('component-media-trigger').hidden=!media;
     $('component-arrange-trigger').hidden=!selected.length;

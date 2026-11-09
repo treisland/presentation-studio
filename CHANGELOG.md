@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Keep Text format available while editing text inside free blocks and widgets.
 - Redesign the Library with scoped dialog typography, Blocks/Widgets/My components tabs, consistent preview cards and Media insertion, search/clear, per-preset Options and separate library management/recovery controls.
 - Replace the cramped scrolling beta toolbar with contextual Text format, Appearance, Image, Arrange and More popovers; keep Add/Library and view controls reachable without horizontal scrolling.
 - Prepare 0.6.0 beta review: contextual block formatting, searchable Add/Library, editable Callout/Quote/Metric widgets, one-level groups and independent portable component presets with local deletion recovery. Publication/manual gates remain pending.

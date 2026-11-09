@@ -7,6 +7,17 @@ const browser=await chromium.launch({headless:true,executablePath:process.env.CH
 test.after(()=>browser.close());
 const blockID=node=>node.attrs.class.match(/\bblock-[\w-]+\b/)?.[0];
 
+test('free block text exposes the text formatting popover and retains editable content',async()=>{
+  const {page,errors}=await openExample(browser,'portfolio-demo');
+  try{
+    await page.locator('#component-open').click();await page.getByRole('button',{name:'Insert Text',exact:true}).click();
+    await page.locator('#fe-preview .db-text p').dblclick();
+    await page.locator('#component-text-trigger').click();await page.locator('#tt-type').selectOption('h3');
+    assert.equal(await page.locator('#fe-preview .db-text h3').textContent(),'Edit this text');
+    assert.deepEqual(errors,[]);
+  }finally{await page.close();}
+});
+
 test('Library has compact fixed navigation, responsive cards and an accessible empty state',async()=>{
   const {page,errors}=await openExample(browser,'portfolio-demo');
   try{
