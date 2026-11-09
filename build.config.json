@@ -52,6 +52,7 @@
     "src/runtime/text-types.js",
     "src/runtime/components.js",
     "src/runtime/code-library.js",
+    "src/runtime/visibility.js",
     "src/runtime/boot.js"
   ],
   "vendor": "vendor/jszip-3.10.1.min.js"

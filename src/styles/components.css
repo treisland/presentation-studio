@@ -38,6 +38,11 @@
 .data-library-preview pre { width:100%; margin:0; white-space:pre-wrap; overflow-wrap:anywhere; text-align:left; font:12px/1.5 monospace; background:transparent; color:inherit; padding:0; }
 .slide > .data-block { display:block; padding:12px; overflow:visible; }
 .slide > .data-block[hidden] { display:none!important; }
+.visibility-concealed { visibility:hidden!important; pointer-events:none!important; }
+#fe-preview.visibility-show-hidden .sp-hidden,#fe-preview.visibility-show-hidden .data-block[hidden],#fe-preview.visibility-show-hidden .terminal[hidden] { display:revert!important; opacity:.35; pointer-events:auto; outline:3px dashed #9b6ce5; }
+#fe-preview.visibility-show-hidden .visibility-concealed { visibility:visible!important; opacity:.35; }
+#visibility-panel label { display:block; margin:10px 0; }
+#visibility-panel small { opacity:.75; }
 .data-block > .data-content { box-sizing:border-box; width:100%; height:100%; overflow:auto; }
 .data-block table { width:100%; height:100%; table-layout:fixed; font-size:24px; }
 .data-block :is(td,th) { overflow-wrap:anywhere; }

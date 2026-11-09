@@ -333,6 +333,7 @@ function boothExportData(options) {
     options,
     loop: ordered,
     presentation: state.presentation,
+    visibility: state.visibility,
   };
 }
 async function boothExport() {

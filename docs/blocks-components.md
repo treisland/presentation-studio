@@ -24,6 +24,14 @@ Excluded: linked instance updates, timers, interactive widgets, cloud/shared lib
 
 ## Beta manual review checklist
 
+### Visibility — issue #106
+
+Use Layers Show/Hide or Inspector Style → Visibility to hide selected elements without deleting them. Hidden elements remain in editable backups and Undo/Redo. Enable Show hidden elements in editor to inspect dimmed objects; this view is not included in playback. Group visibility preserves each child's own hidden setting, and locked members prevent group visibility changes.
+
+Choose Presentation defaults for shared header, footer, logo, slide number and decoration visibility. This slide creates overrides; Reset slide visibility to defaults removes those overrides. Hiding chrome preserves layout space. Playback and booth output omit hidden elements while editable projects retain their content.
+
+Manual review pending: hide/show blocks, images, tables, code and groups; reveal and select hidden objects in Layers; verify locks and Undo/Redo; set defaults, override a slide and reset; reopen an editable backup in a clean profile and confirm offline playback/booth exclude hidden content. Check keyboard navigation and screen-reader labels. This follow-up does not authorize publication.
+
 1. Extract the beta ZIP and open presentation-studio.html. Open the editor and Add / Library; search/filter and insert Text, Circle, Callout, Quote and Metric. Inspect the original previews and Quick walkthrough. Repeat from presentation-studio-blank.html.
 2. Edit widget fields in Inspector Content and directly on the canvas. Enter on a focused block edits its text; Escape/Done ends editing. Verify Move/Resize handles, duplicate/delete, theme styling, custom colors/opacity, font size, bold/italic and text alignment. Open Text format, Appearance, Arrange and More popovers for relevant controls. The toolbar requires no horizontal scrolling; detailed controls remain in the Inspector. Escape closes a popover and returns focus to its trigger.
 3. Select several free blocks and floating media using Layers. Group, move a member, resize, align the group, duplicate and ungroup. Internal spacing must survive group alignment. Locked members must prevent mutations; Undo/Redo restores each operation as one step. Nested groups are intentionally rejected.
