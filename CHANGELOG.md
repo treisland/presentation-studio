@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.5.1 — 2026-11-08
+
 - Preserve converted Heading 3 titles in their title slot during retained-content layout changes, including Undo and editable reopening.
 
 - Remove duplicated starter/demo choices from New presentation. The dedicated gallery retains all examples, including Studio demo, and continues into naming/theme setup before creation.
