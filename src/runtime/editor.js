@@ -490,18 +490,8 @@
         hidden: !!s.hidden,
         notes: String(s.notes || "").slice(0, 20000),
         topic: String(s.topic || "General").slice(0, 150),
-        commands: s.commands
-          ? {
-              powershell: String(s.commands.powershell || "").slice(0, 100000),
-              bash: String(s.commands.bash || "").slice(0, 100000),
-            }
-          : null,
-        templateCommands: s.templateCommands
-          ? {
-              powershell: String(s.templateCommands.powershell || ""),
-              bash: String(s.templateCommands.bash || ""),
-            }
-          : null,
+        commands: commandNormalize(s.commands),
+        templateCommands: commandNormalize(s.templateCommands),
         _trashIndex: Number(s._trashIndex) || 0,
       };
     }

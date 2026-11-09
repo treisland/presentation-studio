@@ -2,24 +2,28 @@
 
 ## Current delivery plan
 
-Stable 0.4.0 is published after maintainer testing/sign-off; see [the evidence record](releases/0.4.0-evidence.md). The maintainer authorized proceeding with 0.5.0, beginning with shared foundations and the first Portfolio review checkpoint. Feature PRs do not select release versions. See [release stages and contribution flow](release-process.md). GitHub milestones and linked issues hold acceptance criteria and delivery state.
+Stable 0.5.1 is published. The maintainer authorized 0.6.0 Blocks, Widgets and Reusable Components as a beta review milestone; manual testing follows implementation. See [the scoped plan](blocks-components.md), issue #101 and [release gates](release-process.md). Publication remains disabled until manual sign-off.
 
 - **Completed — 0.4.0 stable delivery:** styling/swatches/picker, blank/clear, snapping, Layers and reviewed removal fixes. See [stable notes](releases/0.4.0.md) and [feature guide](styling-and-precision.md).
-- **Now — 0.5.0 layout collections and examples:** shared foundations and the first Portfolio checkpoint passed maintainer review and merged. The expanded five collections, three starter/demo pairs, two lightweight starters, example gallery and optional walkthroughs have passed the maintainer’s combined manual review and merged through protected integration #90. The maintainer authorized the release plan; 0.5.0-rc.1 candidate preparation follows before stable promotion. See [the validation record](0.5.0-validation.md). See [the scoped plan](layout-collections.md) and #63–#72; retain focused correction #78 and final manual/release gates.
+- **Completed — 0.5.0 layout collections and examples:** five collections, starters/demos, gallery and optional walkthroughs passed review and stable publication. See [the validation record](0.5.0-validation.md) and [stable notes](releases/0.5.0.md).
 - **Completed — 0.3.0 canvas enhancements:** responsive workspace, shared editing API, additive media, draggable blocks, Media Grid, accessible Media Focus and Inspector polish. Detailed environment follow-ups #7/#9 remain visible.
 - **Deferred:** camera overlays, template publishing, accounts and collaboration until the core workflow is dependable.
 
-- **0.6.0 — AI assistance:** architecture/privacy decisions, OpenRouter/Ollama connections, selected-text rewriting, proposal acceptance and evaluation. Notes and editorial review remain stretch scope. Existing issues #15–#19 retain membership in this renamed milestone.
-- **0.7.0 — File-based MCP:** optional companion, transactional editing, previews/readiness, separate ZIP exports and Hermes integration. Existing issues #20–#22 retain membership in this renamed milestone. Live session editing remains discovery #23.
+- **0.6.0 — Blocks, Widgets and Reusable Components:** contextual formatting, unified Add/Library, static widgets, one-level grouping and independent portable component presets. See [scope and acceptance](blocks-components.md). Manual beta review remains pending.
+- **0.6.0 Library usability follow-up:** compact dialog typography, Blocks/Widgets/My components tabs, searchable consistent visual cards including Media, separate Save selection flow, per-component management menus and library import/export/recovery under Manage library. Keep navigation visible while results scroll and support small screens and keyboard access.
+- **0.6.0 Data & Code — #104:** Library insertion of Tables and Code/Commands; shared snippet default, optional language/environment labels, optional named variants/default/OS preference, empty-variant suppression and independent block hiding. Preserve legacy pairs and display/copy-only offline playback. Fresh manual review required.
+- **0.6.0 positionable Data & Code:** free-block Table/Code containers with movement, resize, snapping, locks and Undo; real miniature Library previews, readable setup controls and responsive two-column cards. Retain table/copy interactions and offline exports; manual review remains required.
+- **0.7.0 — AI assistance:** architecture/privacy decisions, OpenRouter/Ollama connections, selected-text rewriting, proposal acceptance and evaluation. Existing issues #15–#19 retain membership in milestone #3.
+- **0.8.0 — File-based MCP:** optional companion, transactional editing, previews/readiness, separate ZIP exports and Hermes integration. Existing issues #20–#22 retain membership in milestone #4. Live session editing remains discovery #23.
 - **Unscheduled format discovery — #73:** portrait/square/print/scrolling canvases and their reflow/export contracts require separate decisions. Current collections remain 16:9 slides, without email, print-ready or website-publishing promises.
 
 Backup verification design: inspect/validate the selected ZIP without importing it into the active project or draft database. Prove restoration separately in a clean profile. Accessibility baseline: Windows with Chrome and NVDA; record exact tested versions before claiming support. Automated matching-Chromium checks are distinct from these manual checks. Other browsers and OBS remain unverified until evidence is recorded.
 
-Track [0.4.0 candidate/stable delivery](https://github.com/treisland/presentation-studio/milestone/5), [0.5.0 layouts/examples](https://github.com/treisland/presentation-studio/milestone/6), [0.6.0 AI](https://github.com/treisland/presentation-studio/milestone/3) and [0.7.0 MCP](https://github.com/treisland/presentation-studio/milestone/4).
+Track [0.6.0 blocks/components](https://github.com/treisland/presentation-studio/milestone/8), [0.7.0 AI](https://github.com/treisland/presentation-studio/milestone/3) and [0.8.0 MCP](https://github.com/treisland/presentation-studio/milestone/4).
 
 ## 0.5.1 scoped usability corrections
 
-The maintainer authorized draft patch development for existing Heading 1–3/Paragraph conversion and removal of duplicated New presentation examples in favor of the gallery (#93/#94, milestone 0.5.1). No new block types, containers or formats are included. Stable 0.5.0 candidate sign-off and manual patch review precede merging; a separate plan authorizes patch publication. See [the draft review checklist](0.5.1-manual-test-plan.md).
+Stable 0.5.1 is published after patch review and the separate approved release plan (#99/#100). It contains Heading 1–3/Paragraph conversion, retained Heading 3 titles and simplified New presentation example selection. See [the review checklist](0.5.1-manual-test-plan.md).
 
 ## Historical development milestones
 

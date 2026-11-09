@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Make Library Tables and Code movable/resizable/removable free blocks with lock/Undo protection; add explicit conversion for older layout content and polished live Library previews.
+- Add Data & Code Library insertion for Tables and shared Code/Commands, with optional language/environment labels, named variants, default/OS preferences and block hiding. Preserve legacy platform content and offline exports.
+- Keep Text format available while editing text inside free blocks and widgets.
+- Redesign the Library with scoped dialog typography, Blocks/Widgets/My components tabs, consistent preview cards and Media insertion, search/clear, per-preset Options and separate library management/recovery controls.
+- Replace the cramped scrolling beta toolbar with contextual Text format, Appearance, Image, Arrange and More popovers; keep Add/Library and view controls reachable without horizontal scrolling.
+- Prepare 0.6.0 beta review: contextual block formatting, searchable Add/Library, editable Callout/Quote/Metric widgets, one-level groups and independent portable component presets with local deletion recovery. Publication/manual gates remain pending.
+
 ## 0.5.1 — 2026-11-08
 
 - Preserve converted Heading 3 titles in their title slot during retained-content layout changes, including Undo and editable reopening.

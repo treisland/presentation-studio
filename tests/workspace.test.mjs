@@ -59,7 +59,7 @@ test("Panel collapse and keyboard sizing refit the canvas without changing proje
       assert((await p.locator('#we-viewport').boundingBox()).width > initial.width);
       await p.locator('#we-toggle-slides').press('Enter');
       await p.locator('#we-toggle-inspector').press('Enter');
-      await p.locator('#we-panel-sizes > summary').press('Enter');
+      await reveal(p,'#we-panel-sizes');await p.locator('#we-panel-sizes > summary').press('Enter');
       const slider = await p.locator('#we-size-slides').boundingBox();
       await p.mouse.click(slider.x + slider.width * 0.75, slider.y + slider.height / 2);
       assert.notEqual(await p.locator('#we-size-slides').inputValue(), '210');
@@ -75,7 +75,7 @@ test("Panel collapse and keyboard sizing refit the canvas without changing proje
       assert.equal(await p.locator('#full-editor').evaluate(el => el.open), true);
       await p.locator('#we-fit').click();
       await fits();
-      await p.locator('#we-panel-sizes > summary').click();
+      await reveal(p,'#we-panel-sizes');await p.locator('#we-panel-sizes > summary').click();
       await p.locator('#we-panel-reset').click();
       assert.equal(await p.locator('#we-size-slides').inputValue(), '210');
       await p.locator('#we-panel-reset').press('Escape');
@@ -392,6 +392,8 @@ test("Dragging media while zoomed uses slide coordinates, and view state is abse
       width = await p
         .locator("#fe-preview .slide")
         .evaluate((el) => el.getBoundingClientRect().width);
+    const hit = await p.evaluate(({x,y})=>{const target=document.elementFromPoint(x,y),viewport=document.querySelector('#we-viewport');return{floating:!!target?.closest('.ce-floating'),target:target?.outerHTML.slice(0,180),viewport:viewport.getBoundingClientRect().toJSON()};},{x:r.x+r.width/2,y:r.y+r.height/2});
+    assert(hit.floating,JSON.stringify(hit));
     await p.mouse.move(r.x + r.width / 2, r.y + r.height / 2);
     await p.mouse.down();
     await p.mouse.move(r.x + r.width / 2 - 30, r.y + r.height / 2, {

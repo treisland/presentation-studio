@@ -570,7 +570,7 @@ function vbAttach(root) {
         environment = e.target.value;
         updateEnvironment();
         slide.querySelector("pre").textContent =
-          model.commands[environment] || "";
+          commandText(model.commands,environment);
       };
     for (const v of root.querySelectorAll("video")) {
       v.controls = true;
@@ -654,7 +654,7 @@ function vbAttach(root) {
           vbSession &&
           !vbSession.el.contains(document.activeElement) &&
           !$("vb-toolbar").contains(document.activeElement) &&
-          !document.activeElement?.closest("#we-font-controls,#wp-selection-header,#tt-control")
+          !document.activeElement?.closest("#we-font-controls,#wp-selection-header,#tt-control,#component-toolbar")
         ) {
           vbEnd(true);
         }

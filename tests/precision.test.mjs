@@ -10,7 +10,7 @@ test.after(()=>browser.close());
 async function setup(){const p=await browser.newPage({viewport:{width:1366,height:768},acceptDownloads:true}),errors=[];p.on('pageerror',e=>errors.push(e.message));await p.goto('file://'+resolve('dist/presentation-studio.html'));await p.locator('#open-full-editor').click();return{p,errors};}
 const read=p=>p.evaluate(()=>window.presentationStudioEditing.read());
 const apply=(p,operations)=>p.evaluate(operations=>{const api=window.presentationStudioEditing,s=api.read();return api.apply({apiVersion:1,projectId:s.projectId,expectedRevision:s.revision,operations:operations.map(o=>({slideId:s.state.slides.find(s=>s.template==='blank')?.id||s.state.slides[0].id,...o}))});},operations);
-async function block(p,kind='rectangle'){await p.locator('#db-palette > summary').click();await p.locator('[data-db-kind='+kind+']').click();return await p.locator('#db-list').inputValue();}
+async function block(p,kind='rectangle'){await reveal(p,'#db-palette');await p.locator('#db-palette > summary').click();await p.locator('[data-db-kind='+kind+']').click();return await p.locator('#db-list').inputValue();}
 async function pack(p){const event=p.waitForEvent('download');await click(p,'#fe-export-json');return JSON.parse(await readFile(await(await event).path(),'utf8'));}
 
 test('theme swatches, custom colors, opacity, presets and named palette survive Undo and pack validation',async()=>{const{p,errors}=await setup();try{

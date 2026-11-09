@@ -76,7 +76,7 @@ For a localhost preview, run `npm run serve`, then open `http://127.0.0.1:4173`.
 
 [Quick start](docs/quick-start.md) · [Architecture](docs/architecture.md) · [Contributing](CONTRIBUTING.md) · [Content and branding](docs/content-and-branding.md) · [Open-source release](docs/open-source-release.md) · [Roadmap](docs/roadmap.md) · [Troubleshooting](docs/troubleshooting.md)
 
-Version 0.5.1. Usability patch for text-type editing and New presentation example selection. Released under the [Apache License 2.0](LICENSE). Third-party notices apply. See the [release notes](docs/releases/0.5.1.md) for support scope, recovery guidance and evidence limitations.
+Version 0.6.0-beta.1. Blocks, widgets and reusable components beta review; manual testing and publication remain pending. Released under the [Apache License 2.0](LICENSE). Third-party notices apply. See the [beta notes](docs/releases/0.6.0-beta.1.md) and [component guide](docs/blocks-components.md).
 
 ## Development process
 

@@ -1,4 +1,6 @@
 export async function reveal(page, selector) {
+  const popup=await page.locator(selector).evaluate(element=>element.closest('[popover]')?.id);
+  if(popup&&!await page.locator('#'+popup).evaluate(element=>element.matches(':popover-open')))await page.locator('[data-component-target="'+popup+'"]').click();
   if (await page.locator('#wp-tabs').count()) {
     const part = await page.locator(selector).evaluate(el => el.closest('[data-wp-part]')?.dataset.wpPart || (el.closest('#we-inspector .fe-tabs') ? 'content' : null));
     if (['content','arrange','style'].includes(part)) await page.locator('#wp-tab-' + part).click();

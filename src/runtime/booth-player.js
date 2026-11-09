@@ -184,8 +184,17 @@ function boothStandalone() {
               ?.writeText(slide.querySelector("pre")?.textContent || "")
               .catch(() => {})),
       );
-    const select = slide.querySelector(".terminal select");
-    if (select && model.commands) {
+    let select = slide.querySelector(".terminal select");
+    if(!select&&model.commands&&slide.querySelector('.terminal')){select=document.createElement('select');select.setAttribute('aria-label','Code variant');for(const [key,label]of [['powershell','Windows · PowerShell'],['bash','Linux / macOS · Bash']])if(model.commands[key]?.trim())select.add(new Option(label,key));slide.querySelector('.terminal').prepend(select);}
+    if (model.commands?.hidden){const terminal=slide.querySelector('.terminal');terminal?.setAttribute('hidden','');terminal?.closest('.data-block')?.setAttribute('hidden','');}
+    if (select && model.commands && Object.hasOwn(model.commands,'shared')) {
+      const raw=model.commands,choices=[...(raw.shared.trim()?[{id:'shared',name:'Shared',text:raw.shared,language:raw.language,environment:raw.environment}]:[]),...raw.variants.filter(item=>item.text.trim())];
+      select.replaceChildren(...choices.map(item=>new Option(item.name,item.id)));select.value=raw.initial;
+      if(raw.detectOS){const os=/Win/i.test(navigator.platform)?'windows':/Mac/i.test(navigator.platform)?'macos':'linux';select.value=choices.find(item=>item.environment.toLowerCase()===os)?.id||raw.initial;}
+      if(!select.value)select.value=choices[0]?.id||'';select.hidden=choices.length<=1;if(select.parentElement?.matches('label'))select.parentElement.hidden=choices.length<=1;
+      const code=slide.querySelector('pre'),info=document.createElement('p');info.className='command-labels';select.after(info);
+      const paint=()=>{const item=choices.find(entry=>entry.id===select.value)||choices[0];if(code)code.textContent=item?.text||'';info.textContent=[item?.language,item?.environment].filter(Boolean).join(' · ');info.hidden=!info.textContent;};select.onchange=paint;paint();
+    } else if (select && model.commands) {
       select.value = "powershell";
       const code = slide.querySelector("pre");
       if (code) code.textContent = model.commands.powershell;

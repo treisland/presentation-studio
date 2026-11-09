@@ -14,7 +14,8 @@
     "src/styles/media-grid.css",
     "src/styles/panel-polish.css",
     "src/styles/precision.css",
-    "src/styles/layouts.css"
+    "src/styles/layouts.css",
+    "src/styles/components.css"
   ],
   "scripts": [
     "src/runtime/prelude.js",
@@ -49,6 +50,8 @@
     "src/runtime/example-gallery.js",
     "src/runtime/example-walkthroughs.js",
     "src/runtime/text-types.js",
+    "src/runtime/components.js",
+    "src/runtime/code-library.js",
     "src/runtime/boot.js"
   ],
   "vendor": "vendor/jszip-3.10.1.min.js"

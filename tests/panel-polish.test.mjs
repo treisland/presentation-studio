@@ -38,7 +38,7 @@ test('edge rails, sticky panel controls and keyboard tabs preserve project/histo
  }finally{await p.close();}});
 
 test('top-level block actions work across sections, support undo and respect locks',async()=>{const{p,errors}=await setup();try{
- await p.locator('#db-palette > summary').click();await p.locator('[data-db-kind=circle]').click();
+ await reveal(p,'#db-palette');await p.locator('#db-palette > summary').click();await p.locator('[data-db-kind=circle]').click();
  assert.equal(await p.locator('#wp-selection-title').textContent(),'Circle block');
  await p.locator('#wp-tab-style').click();assert.equal(await p.locator('#db-remove').isVisible(),true);assert.equal(await p.locator('#db-remove').textContent(),'Delete block');
  const before=await read(p);await p.locator('#db-duplicate').click();assert.equal((await read(p)).slides[0].tree.length,before.slides[0].tree.length+1);await p.locator('#fe-undo').click();
