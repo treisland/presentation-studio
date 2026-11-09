@@ -113,3 +113,15 @@ test('template headings retain lock protection for duplicate and delete',async()
   assert.equal(await page.locator('#vb-delete').isDisabled(),true);assert.equal(await page.locator('#vb-duplicate').isDisabled(),true);await page.locator('#fe-preview h1').press('Delete');assert.deepEqual((await snapshot(page)).state,locked.state);assert.deepEqual(errors,[]);
  }finally{await page.close();}
 });
+
+test('Inspector canvas-edit action preserves list items and table form refreshes after structural edits and Undo',async()=>{
+ const {page,errors}=await openExample(browser,'template');try{
+  const listSlide=(await snapshot(page)).state.slides[0];await page.locator('#fe-preview .lead').click();await reveal(page,'#vb-bullets');await page.locator('#vb-bullets').click();
+  const list=page.locator('#fe-preview ul').first(),count=await list.locator('li').count();await list.locator('li').first().click();await page.locator('#wp-tab-content').click();await page.locator('#ic-edit-inline').click();
+  await page.locator('#fe-preview li[contenteditable=true]').fill('Edited list item');await page.keyboard.press('Escape');assert.equal(await list.locator('li').count(),count);
+  const id=listSlide.id,result=await operations(page,[{type:'table.insert',slideId:id,rows:2,columns:2,header:true}]);await selectLayer(page,result.created[0]);
+  const before=await page.locator('#fe-table-grid input').count();await page.locator('#fe-row-add').click();assert.equal(await page.locator('#fe-table-grid input').count(),before+2);
+  await page.locator('#fe-table-grid input').last().fill('Fresh cell');await page.locator('#fe-table-grid input').last().press('Tab');await page.waitForTimeout(400);assert.equal(await page.locator('#fe-preview td').last().textContent(),'Fresh cell');
+  await page.locator('#fe-undo').click();assert.notEqual(await page.locator('#fe-table-grid input').last().inputValue(),'Fresh cell');assert.deepEqual(errors,[]);
+ }finally{await page.close();}
+});

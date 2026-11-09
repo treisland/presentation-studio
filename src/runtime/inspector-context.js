@@ -1,6 +1,7 @@
 // Selection-derived Inspector view state stays outside projects and Undo history.
 let icReady = false, icPainting = false, icIdentity = '', icDestination = '', icSlide = '', icBlock = '', icMember = '';
 let icInspectorTarget = null;
+let icTableSignature = '';
 
 function icContains(node, predicate) {
   return !!node && projectFind({tree:[node]}, predicate).length > 0;
@@ -119,8 +120,9 @@ function icPaint() {
       projectBlockPath = context.path; $('fe-block-select').value = context.path;
       $('fe-block-text').value = projectText(projectAt(projectModel(),context.path));
     }
-    if (kind === 'table' && context.path && projectTablePath !== context.path && !$('fe-table-panel').contains(document.activeElement)) {
-      projectTablePath = context.path; projectTableForm();
+    const tableSignature=kind==='table'?projectSelected+':'+context.path+':'+JSON.stringify(projectAt(projectModel(),context.path)):'';
+    if (kind === 'table' && context.path && (projectTablePath !== context.path || icTableSignature !== tableSignature) && !document.activeElement?.matches('#fe-table-grid input')) {
+      projectTablePath = context.path; projectTableForm();icTableSignature=tableSignature;
     }
     $('fe-block-text').disabled = locked || !projectBlockPath;
     for (const input of $('fe-table-panel').querySelectorAll('input,button,select')) input.disabled = locked || !projectTablePath;
@@ -204,8 +206,9 @@ projectInit = function() {
   const parent = componentButton('Finish text editing',()=>{const key=dbSelected;vbEnd(false);vbSetSelection(null);if(key)spSelect(key);icPaint();});parent.id = 'ic-select-parent';$('wp-selection-header').prepend(parent);
   const slideSettings = componentButton('Slide settings',()=>icNavigate('slide'));slideSettings.id='ic-slide-settings';$('wp-selection-header').prepend(slideSettings);
   $('ic-edit-inline').onclick = () => {
-    const context = icSelection(), element = [...projectPreviewNode.querySelectorAll('[data-vb-path]')].find(item => item.dataset.vbPath === context.path);
-    if (element) vbStart({el:element,path:context.path,kind:'text',slideID:projectSelected});
+    const context = icSelection(), node=projectAt(projectModel(),context.path),path=['ul','ol'].includes(node?.tag)?context.path+'.children.0':context.path;
+    const element = [...projectPreviewNode.querySelectorAll('[data-vb-path]')].find(item => item.dataset.vbPath === path);
+    if (element) vbStart({el:element,path,kind:'text',slideID:projectSelected});
     icPaint();
   };
   $('ic-text-editor').addEventListener('toggle',()=>{if(editor.open){const context=icSelection();if(context.kind==='text'&&context.path)icInspectorTarget={slide:projectSelected,path:context.path};vbEnd(false);}});
