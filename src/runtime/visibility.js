@@ -63,9 +63,10 @@ projectPack=function(playback=false){
   const pack=visibilityPack(playback);if(!playback)return pack;
   for(const slide of pack.state.slides){
     const entries=spEntries(slide,pack.state),hidden=entries.filter(entry=>visibilityEntryHidden(pack.state,slide.id,entry));
+    const hiddenMedia=new Set(hidden.flatMap(entry=>entry.kind==='grid'?entry.node.children.map(mgObjectID).filter(Boolean):entry.object?[entry.object]:[]));
     slide.tree=slide.tree.filter(node=>!hidden.some(entry=>entry.node===node));
-    if(hidden.some(entry=>entry.object==='primary'))delete pack.state.media[slide.id];
-    if(pack.state.mediaObjects?.[slide.id])pack.state.mediaObjects[slide.id]=pack.state.mediaObjects[slide.id].filter(item=>!hidden.some(entry=>entry.object===item.id));
+    if(hiddenMedia.has('primary'))delete pack.state.media[slide.id];
+    if(pack.state.mediaObjects?.[slide.id])pack.state.mediaObjects[slide.id]=pack.state.mediaObjects[slide.id].filter(item=>!hiddenMedia.has(item.id));
     if(slide.commands?.hidden||!projectFind(slide,node=>mgHas(node,'terminal')).length)slide.commands=null;
   }return pack;
 };

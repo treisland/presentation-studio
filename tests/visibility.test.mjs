@@ -1,4 +1,4 @@
-import test from 'node:test';import assert from 'node:assert/strict';import {chromium} from 'playwright';import {openExample,snapshot,operations,exportZip,importZip} from './collection-ui.mjs';import {reveal} from './ui.mjs';
+import test from 'node:test';import assert from 'node:assert/strict';import {chromium} from 'playwright';import {openExample,snapshot,operations,exportZip,importZip,dropDiagram} from './collection-ui.mjs';import {reveal,addSlide} from './ui.mjs';
 const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH,args:['--no-sandbox']});test.after(()=>browser.close());
 test('hidden blocks remain editable/recoverable but are removed from playback packs',async()=>{
  const {page,errors}=await openExample(browser,'portfolio-demo');try{
@@ -42,5 +42,20 @@ test('table and code visibility agree across Layers, groups and code settings',a
   const commands=(await snapshot(page)).state.slides[0].commands;
   assert.equal((await operations(page,[{type:'code.update',slideId:id,commands:{...commands,hidden:false}},{type:'visibility.element',slideId:id,keys:[keys[0]],visible:true},{type:'component.group',slideId:id,keys},{type:'visibility.element',slideId:id,keys:[keys[1]],visible:false},{type:'visibility.element',slideId:id,keys:[keys[0]],visible:true}])).ok,true);
   assert.equal(await page.locator('#fe-preview .terminal').isVisible(),true);assert.equal((await snapshot(page)).state.slides[0].commands.hidden,false);assert.deepEqual(errors,[]);
+ }finally{await page.close();}
+});
+
+test('hidden grid members stay out of playback and slide duplication retains visibility maps',async()=>{
+ const {page,errors}=await openExample(browser,'portfolio-demo');try{
+  await addSlide(page,'media-grid');await dropDiagram(page);
+  let state=(await snapshot(page)).state;const active=await page.locator('#fe-preview .slide').getAttribute('data-media-id'),slide=state.slides.find(slide=>slide.id===active),index=slide.tree.findIndex(node=>node.attrs?.class?.includes('mg-grid'));
+  assert.equal((await operations(page,[{type:'visibility.element',slideId:slide.id,keys:['node-'+index],visible:false}])).ok,true);
+  const playback=await page.evaluate(async bytes=>{const zip=await JSZip.loadAsync(new Uint8Array(bytes));return JSON.parse(await zip.file('presentation.json').async('string'));},[...await exportZip(page,'#fe-playback')]);
+  assert.equal(playback.state.media[slide.id],undefined);assert.equal((playback.state.mediaObjects?.[slide.id]||[]).length,0);
+  const blocks=await operations(page,[{type:'block.create',slideId:slide.id,kind:'text'},{type:'block.create',slideId:slide.id,kind:'circle'}]);
+  assert.equal((await operations(page,[{type:'component.group',slideId:slide.id,keys:blocks.created},{type:'visibility.element',slideId:slide.id,keys:blocks.created,visible:false},{type:'visibility.chrome',slideId:slide.id,scope:'slide',part:'header',visible:false}])).ok,true);
+  state=(await snapshot(page)).state;await page.locator('#we-context-slide').click();await page.locator('#wp-duplicate').click();
+  const duplicate=(await snapshot(page)).state,newSlide=duplicate.slides.find(item=>!state.slides.some(old=>old.id===item.id));assert(newSlide);
+  assert.deepEqual(duplicate.visibility.slides[newSlide.id],state.visibility.slides[slide.id]);assert.deepEqual(duplicate.visibility.groups[newSlide.id],state.visibility.groups[slide.id]);assert.deepEqual(errors,[]);
  }finally{await page.close();}
 });
