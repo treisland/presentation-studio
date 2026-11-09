@@ -1,6 +1,6 @@
 # 0.6.0 customization review — issue #111
 
-This is an unpublished beta follow-up. Fresh maintainer manual review and protected platform checks are required; publication remains disabled.
+The maintainer approved this beta follow-up and confirmed the release gates on 2026-11-09. See the [versioned validation record](releases/0.6.0-beta.1-validation.md); publication still requires the protected release-plan, exact commit validation and immutable artifact checks.
 
 ## Element names
 
