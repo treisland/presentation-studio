@@ -6,6 +6,11 @@
 
 - Expose Heading 1–3 and Paragraph conversion in Inspector Content while retaining inline formatting, text selection, layout identity, title synchronization, locks and Undo.
 
+## 0.5.0 — 2026-11-08
+
+- Promote the published, maintainer-approved 0.5.0 candidate to stable without runtime, dependency or project-format changes. Includes the five layout collections, examples, gallery, walkthroughs and reviewed retention/caption/selected-cell fixes.
+- Record published-candidate sign-off and retain recovery guidance and documented environment limitations.
+
 ## 0.5.0-rc.1 — 2026-11-08
 
 - Preserve custom Editorial mastheads during retained layout changes, keep Comic preview captions visible, and direct visual walkthrough steps to the selected-cell inspector.
