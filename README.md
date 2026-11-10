@@ -80,7 +80,7 @@ For a localhost preview, run `npm run serve`, then open `http://127.0.0.1:4173`.
 
 [Quick start](docs/quick-start.md) · [Architecture](docs/architecture.md) · [Contributing](CONTRIBUTING.md) · [Content and branding](docs/content-and-branding.md) · [Open-source release](docs/open-source-release.md) · [Roadmap](docs/roadmap.md) · [Troubleshooting](docs/troubleshooting.md)
 
-Version 0.7.0. Maintainer-approved stable promotion of portable AI presentations and the authoring improvements from 0.6.0-beta.1. Released under the [Apache License 2.0](LICENSE). Third-party notices apply. See the [stable notes](docs/releases/0.7.0.md), [validation record](docs/releases/0.7.0-validation.md) and [portable workflow](docs/local-workspaces.md).
+Version 0.9.0-beta.1. Maintainer-approved beta of the polished workbench, Layers, alignment and selection-driven Inspector with persistent slide notes. Includes the existing portable AI and authoring workflow. Released under the [Apache License 2.0](LICENSE). Third-party notices apply. See the [beta notes](docs/releases/0.9.0-beta.1.md), [validation record](docs/releases/0.9.0-beta.1-validation.md) and [Content inspector guide](docs/content-inspector.md).
 
 ## Development process
 
