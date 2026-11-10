@@ -37,6 +37,32 @@ function dbClampPlacement(node,placement){
   const x=Math.max(0,Math.min(.995,placement.x)),y=Math.max(0,Math.min(.995,placement.y));
   return {...placement,x,y,w:Math.max(.005,Math.min(1-x,placement.w)),h:Math.max(.005,Math.min(1-y,placement.h))};
 }
+function dbResize(p, direction, dx, dy, min, snap = null) {
+  let left = p.x, top = p.y, right = p.x + p.w, bottom = p.y + p.h;
+  if (direction.includes("w")) left = Math.max(0, Math.min(right - min, left + dx));
+  if (direction.includes("e")) right = Math.max(p.x + min, Math.min(1, right + dx));
+  if (direction.includes("n")) top = Math.max(0, Math.min(bottom - min, top + dy));
+  if (direction.includes("s")) bottom = Math.max(p.y + min, Math.min(1, bottom + dy));
+  if (snap) {
+    const x = direction.includes("w") ? left : right, y = direction.includes("n") ? top : bottom;
+    const snapped = snap({ x: 0, y: 0, w: x, h: y });
+    if (/[ew]/.test(direction) && x >= .05) {
+      if (direction.includes("w")) left = Math.max(0, Math.min(p.x + p.w - min, snapped.w));
+      else right = Math.max(p.x + min, Math.min(1, snapped.w));
+    }
+    if (/[ns]/.test(direction) && y >= .05) {
+      if (direction.includes("n")) top = Math.max(0, Math.min(p.y + p.h - min, snapped.h));
+      else bottom = Math.max(p.y + min, Math.min(1, snapped.h));
+    }
+  }
+  return { ...p, x: left, y: top, w: Math.max(min, right - left), h: Math.max(min, bottom - top) };
+}
+const dbView = weView;
+weView = function (...args) {
+  const result = dbView(...args);
+  if (projectPreviewNode && weMounted) $("fe-preview").style.setProperty("--db-scale", weScale());
+  return result;
+};
 function dbPlace(node, placement, layer = dbRect(node).layer) {
   if (!placement || !["x", "y", "w", "h"].every(k => Number.isFinite(placement[k])) ||
       placement.x < 0 || placement.y < 0 || placement.w < (mgHas(node,'db-template')?.005:.05) || placement.h < (mgHas(node,'db-template')?.005:.05) ||
@@ -117,13 +143,17 @@ function dbAttach() {
       block.append(clip);
     }
     block.tabIndex = 0;
-    for (const kind of ["move", "resize"]) {
+    for (const direction of ["move", "se", "s", "sw", "w", "nw", "n", "ne", "e"]) {
+      const move = direction === "move", kind = move ? "move" : "resize";
       const button = document.createElement("button");
-      button.type = "button"; button.className = "db-handle db-" + kind; button.dataset.dbDrag = kind;
-      button.setAttribute("aria-label", (kind === "move" ? "Move" : "Resize") + " content block");
-      button.textContent = kind === "move" ? "Move" : "↘";
-      button.disabled = ceLocked();
-      button.onclick = () => { dbSelected = [...block.classList].find(c => c.startsWith("block-")); dbPanel(); block.focus(); };
+      button.type = "button"; button.className = "db-handle " + (move ? "db-move" : direction === "se" ? "db-resize db-resize-se" : "db-resize-" + direction); button.dataset.dbDrag = kind;
+      if (!move) button.dataset.dbDirection = direction;
+      const names = { se: "bottom right", s: "bottom", sw: "bottom left", w: "left", nw: "top left", n: "top", ne: "top right", e: "right" };
+      button.setAttribute("aria-label", move ? "Move content block" : "Resize content block" + (direction === "se" ? "" : " " + names[direction]));
+      button.title = move ? "Move content block" : "Resize " + names[direction];
+      button.textContent = move ? "⠿" : "";
+      button.disabled = ceLocked() || !!spMeta(dbID({attrs:{class:block.className}})).locked;
+      button.onclick = () => { dbSelected = [...block.classList].find(c => c.startsWith("block-")); dbPanel(); button.focus(); };
       block.append(button);
     }
   }
@@ -154,7 +184,7 @@ function dbFinish(cancel = false) {
   dbDrag = null;
   try { gesture.el.releasePointerCapture(gesture.pointer); } catch {}
   gesture.el.style.cssText = gesture.style;
-  if (!cancel && projectSelected === gesture.slideId) dbRun({ type: "block.place", blockId: gesture.id, placement: gesture.next }, gesture.snapshot);
+  if (!cancel && projectSelected === gesture.slideId && weEditing() && vbMode === "edit" && !ceLocked() && !spMeta(gesture.id).locked && ["x", "y", "w", "h"].some(key => Math.abs(gesture.next[key] - gesture.p[key]) > .00000001)) dbRun({ type: "block.place", blockId: gesture.id, placement: gesture.next }, gesture.snapshot);
   else dbAttach();
 }
 const dbInit = projectInit;
@@ -201,7 +231,7 @@ projectInit = function () {
     if (!block) return;
     dbPanel();
     dbDrag = { el: block, id: dbSelected, slideId: projectSelected, p: dbRect(dbNode()), next: dbRect(dbNode()),
-      bounds: block.closest(".slide").getBoundingClientRect(), x: e.clientX, y: e.clientY, mode: handle.dataset.dbDrag,
+      bounds: block.closest(".slide").getBoundingClientRect(), x: e.clientX, y: e.clientY, mode: handle.dataset.dbDrag, direction: handle.dataset.dbDirection || "se",
       style: block.style.cssText, pointer: e.pointerId, snapshot: studioEditing.read() };
     block.setPointerCapture(e.pointerId);
   }, true);
@@ -210,10 +240,15 @@ projectInit = function () {
     e.preventDefault(); const d = dbDrag, p = { ...d.p }, dx = (e.clientX - d.x) / d.bounds.width, dy = (e.clientY - d.y) / d.bounds.height;
     if (d.mode === "move") {
       p.x = Math.max(0, Math.min(1 - p.w, p.x + dx)); p.y = Math.max(0, Math.min(1 - p.h, p.y + dy));
+      const snapped = spSnap(p,d.el.closest('.slide'),d.id,false,e.altKey);
+      Object.assign(p, dbClampPlacement(dbNode(), { ...p, x: snapped.x, y: snapped.y }));
     } else {
-      const min=d.el.classList.contains('db-template')?.005:.05;p.w = Math.max(min, Math.min(1-p.x, p.w+dx)); p.h = Math.max(min, Math.min(1-p.y, p.h+dy));
+      Object.assign(p, dbResize(d.p, d.direction, dx, dy, d.el.classList.contains('db-template') ? .005 : .05,
+        value => spSnap(value,d.el.closest('.slide'),d.id,true,e.altKey)));
+      for (const guide of d.el.closest('.slide').querySelectorAll('.sp-snap-guide')) {
+        if ((guide.style.height && !/[ew]/.test(d.direction)) || (guide.style.width && !/[ns]/.test(d.direction))) guide.remove();
+      }
     }
-    Object.assign(p,spSnap(p,d.el.closest('.slide'),d.id,d.mode==='resize',e.altKey));
     d.next = p; Object.assign(d.el.style, { left: p.x*100+"%", top:p.y*100+"%", width:p.w*100+"%", height:p.h*100+"%" });
   }, true);
   window.addEventListener("pointerup", e => { if (dbDrag?.pointer === e.pointerId) dbFinish(); }, true);
@@ -224,15 +259,19 @@ projectInit = function () {
     if (e.key === "Escape" && dbDrag) { e.preventDefault(); e.stopImmediatePropagation(); dbFinish(true); return; }
     const block = e.target.closest?.(".db-block");
     if(block&&spMeta(dbID({attrs:{class:block.className}})).locked)return;
-    if (!block || !projectPreviewNode.contains(block) || !weEditing() || vbMode !== "edit" || !["ArrowLeft","ArrowRight","ArrowUp","ArrowDown"].includes(e.key) ||
+    if (!block || !projectPreviewNode.contains(block) || !weEditing() || vbMode !== "edit" || ceLocked() || !["ArrowLeft","ArrowRight","ArrowUp","ArrowDown"].includes(e.key) ||
         (e.target !== block && !e.target.matches(".db-handle"))) return;
     e.preventDefault(); e.stopImmediatePropagation(); dbSelected = [...block.classList].find(c => c.startsWith("block-"));
-    const p = dbRect(dbNode()), delta = e.shiftKey ? 0.01 : 0.002, handleKind = e.target.dataset.dbDrag;
-    if (e.target.dataset.dbDrag === "resize") { p.w += e.key === "ArrowLeft" ? -delta : e.key === "ArrowRight" ? delta : 0; p.h += e.key === "ArrowUp" ? -delta : e.key === "ArrowDown" ? delta : 0; }
-    else { p.x += e.key === "ArrowLeft" ? -delta : e.key === "ArrowRight" ? delta : 0; p.y += e.key === "ArrowUp" ? -delta : e.key === "ArrowDown" ? delta : 0; }
-    dbRun({ type:"block.place", blockId: dbSelected, placement: dbClampPlacement(dbNode(),p) });
+    let p = dbRect(dbNode());
+    const delta = e.shiftKey ? 0.01 : 0.002, handleKind = e.target.dataset.dbDrag, direction = e.target.dataset.dbDirection || "se";
+    const dx = e.key === "ArrowLeft" ? -delta : e.key === "ArrowRight" ? delta : 0, dy = e.key === "ArrowUp" ? -delta : e.key === "ArrowDown" ? delta : 0;
+    if (handleKind === "resize") p = dbResize(p, direction, dx, dy, mgHas(dbNode(),'db-template') ? .005 : .05);
+    else p = dbClampPlacement(dbNode(), { ...p, x: Math.max(0, Math.min(1 - p.w, p.x + dx)), y: Math.max(0, Math.min(1 - p.h, p.y + dy)) });
+    const before = dbRect(dbNode());
+    if (!["x", "y", "w", "h"].some(key => Math.abs(p[key] - before[key]) > .00000001)) return;
+    dbRun({ type:"block.place", blockId: dbSelected, placement: p });
     const root = projectPreviewNode.querySelector('.' + dbSelected);
-    (handleKind ? root?.querySelector('[data-db-drag="' + handleKind + '"]') : root)?.focus();
+    (handleKind ? root?.querySelector(handleKind === "resize" ? '[data-db-direction="' + direction + '"]' : '.db-move') : root)?.focus();
   }, true);
   $("full-editor").addEventListener("close", () => dbFinish(true));
   dbAttach();

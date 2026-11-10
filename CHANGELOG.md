@@ -2,7 +2,8 @@
 
 ## Unreleased
 
-No additional changes recorded.
+- Redesign the editor as a canvas-first workbench with shared light/dark styling, clearer action hierarchy, responsive panels, rail resizing, focused Inspector and consistent Library/AI dialogs.
+- Add direct Snap and editable ZIP Export actions, explicit template Move / resize access, and clearer multi-direction block resizing while retaining locks, cancellation, Undo, recovery and offline compatibility. Manual review is pending for the 0.8.0 milestone.
 
 ## 0.7.0 — 2026-11-09
 

@@ -253,7 +253,11 @@ function componentPaint() {
     fields.replaceChildren();fields.dataset.identity=identity;
     if(definition?.fields){const blockId=dbSelected,slideId=projectSelected;definition.fields.forEach(([label],index)=>{const field=document.createElement('label'),input=document.createElement('textarea');field.textContent=label;input.value=projectText(widget.children[index]);input.disabled=locked;input.onchange=()=>componentRun({type:'component.field',slideId,blockId,index,text:input.value});field.append(input);fields.append(field);});}
   }
-  const canvas=projectPreviewNode?.querySelector('.slide');if(canvas){const overflow=[...canvas.querySelectorAll('.db-block')].some(element=>element.scrollHeight>element.clientHeight+2||element.scrollWidth>element.clientWidth+2);$('component-overflow').textContent=overflow?'Some block content does not fit. Resize the block or shorten its text.':'';}
+  const canvas=projectPreviewNode?.querySelector('.slide');if(canvas){const overflow=[...canvas.querySelectorAll('.db-block')].some(element=>{
+    if(!element.querySelector('.db-handle,.an-endpoint'))return element.scrollHeight>element.clientHeight+2||element.scrollWidth>element.clientWidth+2;
+    const measured=element.cloneNode(true);measured.querySelectorAll('.db-handle,.an-endpoint').forEach(handle=>handle.remove());measured.style.visibility='hidden';measured.style.pointerEvents='none';element.after(measured);
+    const exceeds=measured.scrollHeight>measured.clientHeight+2||measured.scrollWidth>measured.clientWidth+2;measured.remove();return exceeds;
+  });$('component-overflow').textContent=overflow?'Some block content does not fit. Resize the block or shorten its text.':'';}
 }
 editingRegisterOperation('component.field',(state,operation)=>{
   const slide=editingSlide(state,operation.slideId),entry=componentTargets(state,slide,[operation.blockId],false)[0];
@@ -353,6 +357,7 @@ function componentOrganizeToolbar(toolbar,textTools,mediaTools){
   const arrangeHome=document.createComment('arrange control');arrangeTrigger.before(arrangeHome);
   const compactTriggers=['text','colors','media'].map(name=>{const trigger=$('component-'+name+'-trigger'),home=document.createComment(name+' control');trigger.before(home);return{trigger,home};});
   const resize=new ResizeObserver(()=>{
+    if(typeof wbToolbarLayout==='function'){wbToolbarLayout();return;}
     const narrow=toolbar.clientWidth<520;
     if(narrow&&arrangeTrigger.parentElement!==more)more.prepend(arrangeTrigger);
     else if(!narrow&&arrangeTrigger.parentElement===more)arrangeHome.after(arrangeTrigger);

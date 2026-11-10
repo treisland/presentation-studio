@@ -16,7 +16,8 @@
     "src/styles/precision.css",
     "src/styles/layouts.css",
     "src/styles/components.css",
-    "src/styles/local-workspaces.css"
+    "src/styles/local-workspaces.css",
+    "src/styles/editor-workbench.css"
   ],
   "scripts": [
     "src/runtime/prelude.js",
@@ -63,6 +64,7 @@
     "src/runtime/authoring-layouts.js",
     "src/runtime/authoring-review.js",
     "src/runtime/local-workspaces.js",
+    "src/runtime/editor-workbench.js",
     "src/runtime/boot.js"
   ],
   "vendor": "vendor/jszip-3.10.1.min.js"
