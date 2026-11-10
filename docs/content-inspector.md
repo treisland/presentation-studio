@@ -1,5 +1,7 @@
 # Selection-driven Content inspector
 
+The maintainer accepted this workflow on 2026-11-10 as part of the integrated 0.9.0-beta.1 build and confirmed the manual beta gates. See the [validation record](releases/0.9.0-beta.1-validation.md); the checklist below remains useful for subsequent changes.
+
 The Library adds objects; the Inspector edits the selected object. Content, Arrange and Style remain the main Inspector tabs. The former Slide / Text / Tables / Commands / Notes / Media category row is retired from the interface.
 
 Select an element on the canvas or in the left Layers dock. Content shows that element's editing tools. **Find an element in Layers** provides a keyboard-reachable route when nothing is selected or objects overlap. Hidden and locked elements remain inspectable through Layers; editing still respects locks.
