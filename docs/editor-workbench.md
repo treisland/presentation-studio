@@ -1,6 +1,6 @@
 # 0.8.0 — Editor workbench and direct manipulation
 
-Approved next milestone: [#124](https://github.com/treisland/presentation-studio/issues/124). The design follows the maintainer-approved concept: calm light/dark surfaces, a larger canvas, blue selection and primary actions, compact controls and clear positioning affordances. Feature review and a separate release plan remain required; the package version is not advanced by this feature PR.
+Implemented through [#124](https://github.com/treisland/presentation-studio/issues/124) / PR #125. The maintainer accepted the integrated workbench and Inspector build on 2026-11-10 and authorized 0.9.0-beta.1 with confirmed manual gates. See the [beta validation record](releases/0.9.0-beta.1-validation.md). The design follows the approved concept: calm light/dark surfaces, a larger canvas, blue selection and primary actions, compact controls and clear positioning affordances.
 
 ## Editing workspace
 

@@ -1,11 +1,12 @@
 {
-  "version": "0.7.0",
+  "version": "0.9.0-beta.1",
   "publish": true,
-  "notes": "docs/releases/0.7.0.md",
+  "notes": "docs/releases/0.9.0-beta.1.md",
   "manualGatesPassed": true,
   "evidence": [
-    "docs/releases/0.7.0-validation.md",
-    "docs/releases/0.7.0-rc.1-validation.md",
-    "docs/local-workspaces.md"
+    "docs/releases/0.9.0-beta.1-validation.md",
+    "docs/editor-workbench.md",
+    "docs/layers-style-workflow.md",
+    "docs/content-inspector.md"
   ]
 }

@@ -1,6 +1,6 @@
 # 0.9.0 — Layers and Style workflow
 
-Approved scope: [#126](https://github.com/treisland/presentation-studio/issues/126), following the accepted Layers/Style concepts. This is the next milestone after 0.8.0 workbench polish. Its PR is stacked on held PR #125 until that prerequisite is accepted and merged. Neither feature development nor a concept approval authorizes publication; new manual acceptance and separate release preparation remain required.
+Implemented through [#126](https://github.com/treisland/presentation-studio/issues/126) / PR #127 after the 0.8.0 workbench prerequisite PR #125. The maintainer accepted the integrated implementation on 2026-11-10 and explicitly authorized beta delivery with confirmed manual gates. See the separate [0.9.0-beta.1 validation record](releases/0.9.0-beta.1-validation.md). Publication still requires protected release preparation and validated artifacts.
 
 ## Shared navigator
 
