@@ -1,11 +1,11 @@
 {
-  "version": "0.7.0-rc.1",
+  "version": "0.7.0",
   "publish": true,
-  "notes": "docs/releases/0.7.0-rc.1.md",
+  "notes": "docs/releases/0.7.0.md",
   "manualGatesPassed": true,
   "evidence": [
+    "docs/releases/0.7.0-validation.md",
     "docs/releases/0.7.0-rc.1-validation.md",
-    "docs/releases/0.6.0-beta.1-validation.md",
     "docs/local-workspaces.md"
   ]
 }
