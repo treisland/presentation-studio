@@ -1,3 +1,4 @@
+import {inspectContent} from './ui.mjs';
 import { reveal } from './ui.mjs';
 import test from "node:test";
 import assert from "node:assert/strict";
@@ -34,7 +35,7 @@ const slide = (p, id) =>
   p.locator('.fe-slide-button[data-slide-id="' + id + '"]');
 async function media(p) {
   await slide(p, "studio-media").click();
-  await p.locator('#wp-tab-content').click();await p.locator('#we-context-media').click();
+  await p.locator('#wp-tab-content').click();await inspectContent(p,'Media');
 }
 
 test("Panel collapse and keyboard sizing refit the canvas without changing project or undo data", async () => {
@@ -149,7 +150,7 @@ test("Context inspector follows text, table and media selection and preserves me
     );
     assert.equal(await p.locator("#fe-table-panel").isVisible(), true);
     await reveal(p,"#we-context-slide");
-    await p.locator("#we-context-slide").click();
+    await inspectContent(p,'Slide');
     await reveal(p,"#fe-slide-title");
     await p.locator("#fe-slide-title").fill("Updated table title");
     await p.waitForTimeout(400);
@@ -266,8 +267,8 @@ test("Thumbnails are inert previews, sections collapse/search, and indicators re
     await p.locator("#fe-search").fill("");
     await overview.click();
     await reveal(p,"#we-context-slide");
-    await p.locator("#we-context-slide").click();
-    await p.locator("#fe-hidden").check();
+    await inspectContent(p,'Slide');
+    await reveal(p,'#fe-hidden');await p.locator("#fe-hidden").check();
     await reveal(p,"#ce-slide-lock");
     await p.locator("#ce-slide-lock").click();
     assert((await slide(p, "studio-welcome").innerText()).includes("Locked"));
@@ -445,22 +446,21 @@ test("Interactive Preview fits the canvas and keeps Media Focus controls visible
 test("Inspector and settings tabs support keyboard navigation without leaving their tablist", async () => {
   const { p, context, errors } = await setup();
   try {
-    await reveal(p,"#we-context-slide");
-    await p.locator("#we-context-slide").focus();
+    await p.locator('#wp-tab-content').focus();
     await p.keyboard.press("ArrowRight");
     assert.equal(
-      await p.locator("#we-inspector").getAttribute("data-context"),
-      "text",
+      await p.locator('#wp-tab-arrange').getAttribute('aria-selected'),
+      'true',
     );
     await p.keyboard.press("End");
     assert.equal(
-      await p.locator("#we-inspector").getAttribute("data-context"),
-      "media",
+      await p.locator('#wp-tab-style').getAttribute('aria-selected'),
+      'true',
     );
     await p.keyboard.press("Home");
     assert.equal(
-      await p.locator("#we-inspector").getAttribute("data-context"),
-      "slide",
+      await p.locator('#wp-tab-content').getAttribute('aria-selected'),
+      'true',
     );
     await p.locator("#we-settings-open").click();
     await p.getByRole("tab", { name: "Branding", exact: true }).focus();

@@ -1,3 +1,4 @@
+import {inspectContent} from './ui.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';import {chromium} from 'playwright';import {openExample,snapshot,operations,exportZip,importZip,dropDiagram} from './collection-ui.mjs';import {reveal,addSlide} from './ui.mjs';
 const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH,args:['--no-sandbox']});test.after(()=>browser.close());
 test('hidden blocks remain editable/recoverable but are removed from playback packs',async()=>{
@@ -54,7 +55,7 @@ test('hidden grid members stay out of playback and slide duplication retains vis
   assert.equal(playback.state.media[slide.id],undefined);assert.equal((playback.state.mediaObjects?.[slide.id]||[]).length,0);
   const blocks=await operations(page,[{type:'block.create',slideId:slide.id,kind:'text'},{type:'block.create',slideId:slide.id,kind:'circle'}]);
   assert.equal((await operations(page,[{type:'component.group',slideId:slide.id,keys:blocks.created},{type:'visibility.element',slideId:slide.id,keys:blocks.created,visible:false},{type:'visibility.chrome',slideId:slide.id,scope:'slide',part:'header',visible:false}])).ok,true);
-  state=(await snapshot(page)).state;await page.locator('#we-context-slide').click();await page.locator('#wp-duplicate').click();
+  state=(await snapshot(page)).state;await inspectContent(page,'Slide');await page.locator('#wp-duplicate').click();
   const duplicate=(await snapshot(page)).state,newSlide=duplicate.slides.find(item=>!state.slides.some(old=>old.id===item.id));assert(newSlide);
   assert.deepEqual(duplicate.visibility.slides[newSlide.id],state.visibility.slides[slide.id]);assert.deepEqual(duplicate.visibility.groups[newSlide.id],state.visibility.groups[slide.id]);assert.deepEqual(errors,[]);
  }finally{await page.close();}

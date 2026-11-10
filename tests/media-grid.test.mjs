@@ -1,3 +1,4 @@
+import {inspectContent} from './ui.mjs';
 import { reveal } from './ui.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -60,16 +61,16 @@ test('divider drag uses scaled coordinates, cancellation is read-only, keyboard 
  await p.locator('#fe-undo').click();assert.deepEqual((await read(p)).state,before.state);
  await handle.press('ArrowRight');await handle.press('ArrowRight');assert.match(root((await read(p)).state).attrs.class,/mg-c-5200-4800/);
     await reveal(p,"#we-context-media");
- await choose(p,0);await p.locator('#we-context-media').click();await click(p,'#ce-object-lock');const locked=await pack(p);const response=await apply(p,{type:'grid.configure',rows:[5000,5000],cols:[6000,4000],gap:2});assert.equal(response.code,'LOCKED');assert.deepEqual(await pack(p),locked);
+ await choose(p,0);await inspectContent(p,'Media');await click(p,'#ce-object-lock');const locked=await pack(p);const response=await apply(p,{type:'grid.configure',rows:[5000,5000],cols:[6000,4000],gap:2});assert.equal(response.code,'LOCKED');assert.deepEqual(await pack(p),locked);
  assert.deepEqual(errors,[]);
  }finally{await p.close();}});
 
 test('stale image-crop mode cannot move grid video outside its saved cell',async()=>{const{p,errors}=await setup();try{
  await drop(p,0);await choose(p,1);await upload(p,'pattern.webm',await readFile('tests/fixtures/media/pattern.webm'),'video/webm');
     await reveal(p,"#we-context-media");
- await choose(p,0);await p.locator('#we-context-media').click();await click(p,'#ce-crop');
+ await choose(p,0);await inspectContent(p,'Media');await click(p,'#ce-crop');
     await reveal(p,"#we-context-slide");
- await p.locator('#we-context-slide').click();await choose(p,1);const before=await pack(p);
+ await inspectContent(p,'Slide');await choose(p,1);const before=await pack(p);
  const video=p.locator('#fe-preview video.media-asset'),r=await video.boundingBox();
  await p.mouse.move(r.x+r.width/2,r.y+r.height/2);await p.mouse.down();await p.mouse.move(r.x+r.width/2+25,r.y+r.height/2+10,{steps:5});await p.mouse.up();
  assert.deepEqual(await pack(p),before,'Video drag in crop mode must not mutate placement or history');assert.deepEqual(errors,[]);

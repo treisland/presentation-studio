@@ -1,3 +1,4 @@
+import {selectElement} from './ui.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {chromium} from 'playwright';
@@ -73,7 +74,7 @@ test('Layers batch appearance, naming, visibility, locks, reorder and rotation a
  await p.getByRole('button',{name:'Show Main panel',exact:true}).click();assert.equal(await p.locator('#fe-preview .'+a).isVisible(),true);
  assert.equal((await apply(p,[{type:'design.reorder',keys:[a],direction:'forward'}])).ok,true);
  after=await read(p);assert(after.state.design.slides[slide.id].objects[a].z>after.state.design.slides[slide.id].objects[b].z);assert.equal(JSON.stringify(after.state.slides.find(s=>s.id===slide.id).tree.map(n=>n.children)),content);assert.deepEqual(errors,[]);
- await p.locator('#wp-tab-arrange').click();await p.locator('#db-list').selectOption(a);await reveal(p,'#db-layer');await p.locator('#db-layer').fill('500');await p.locator('#db-layer').press('Tab');assert.equal(await p.locator('#fe-preview .'+a).evaluate(el=>Number(getComputedStyle(el).zIndex)),500);
+ await p.locator('#wp-tab-arrange').click();await selectElement(p,a);await reveal(p,'#db-layer');await p.locator('#db-layer').fill('500');await p.locator('#db-layer').press('Tab');assert.equal(await p.locator('#fe-preview .'+a).evaluate(el=>Number(getComputedStyle(el).zIndex)),500);
  }finally{await p.close();}});
 
 test('blank and confirmed Clear keep slide identity/background and recover removed media in one Undo',async()=>{const{p,errors}=await setup();try{

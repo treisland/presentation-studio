@@ -1,3 +1,4 @@
+import {selectElement} from './ui.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {chromium} from 'playwright';
@@ -42,8 +43,8 @@ test('top-level block actions work across sections, support undo and respect loc
  assert.equal(await p.locator('#wp-selection-title').textContent(),'Circle block');
  await p.locator('#wp-tab-style').click();assert.equal(await p.locator('#db-remove').isVisible(),true);assert.equal(await p.locator('#db-remove').textContent(),'Delete block');
  const before=await read(p);await p.locator('#db-duplicate').click();assert.equal((await read(p)).slides[0].tree.length,before.slides[0].tree.length+1);await p.locator('#fe-undo').click();
- await p.locator('#wp-tab-arrange').click();await p.locator('#db-list').selectOption({index:1});await p.locator('#wp-tab-style').click();await p.locator('#db-remove').click();assert.equal((await read(p)).slides[0].tree.length,before.slides[0].tree.length-1);await p.locator('#fe-undo').click();assert.deepEqual(await read(p),before);
- await p.locator('#wp-tab-arrange').click();await p.locator('#db-list').selectOption({index:1});await p.locator('#wp-tab-style').click();await click(p,'#ce-slide-lock');assert.equal(await p.locator('#db-remove').isDisabled(),true);assert.equal(await p.locator('#db-duplicate').isDisabled(),true);
+ await p.locator('#wp-tab-arrange').click();await selectElement(p,await p.locator('#db-list option').nth(1).getAttribute('value'));await p.locator('#wp-tab-style').click();await p.locator('#db-remove').click();assert.equal((await read(p)).slides[0].tree.length,before.slides[0].tree.length-1);await p.locator('#fe-undo').click();assert.deepEqual(await read(p),before);
+ await p.locator('#wp-tab-arrange').click();await selectElement(p,await p.locator('#db-list option').nth(1).getAttribute('value'));await p.locator('#wp-tab-style').click();await click(p,'#ce-slide-lock');assert.equal(await p.locator('#db-remove').isDisabled(),true);assert.equal(await p.locator('#db-duplicate').isDisabled(),true);
  assert.deepEqual(errors,[]);
  }finally{await p.close();}});
 

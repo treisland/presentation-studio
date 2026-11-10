@@ -17,7 +17,7 @@ export async function reveal(page, selector) {
   // Contextual Inspector fields require the explicit destination when no matching object is selected.
   const mediaContext = await page.locator(selector).evaluate(el => !!el.closest('#ce-panel'));
   if (mediaContext && await page.locator('#ce-panel').getAttribute('data-ic-visible') === 'false') {
-    await page.locator('#wp-tab-content').click();await page.locator('#we-context-media').click();
+    await inspectContent(page,'Media');
     const part=await page.locator(selector).evaluate(el=>el.closest('[data-wp-part]')?.dataset.wpPart);
     if(['content','arrange','style'].includes(part))await page.locator('#wp-tab-'+part).click();
   }
@@ -44,6 +44,7 @@ export async function openColorEditor(page, slot, tab='theme') {
   await page.locator('#is-tab-'+tab).click();
 }
 export async function click(page, selector) {
+  if(await page.locator('#ci-notes').count()&&['#we-context-media','#we-context-slide'].includes(selector)){await inspectContent(page,selector.endsWith('media')?'Media':'Slide');return;}
   await reveal(page, selector);
   await page.locator(selector).click();
 }
@@ -79,6 +80,41 @@ export async function selectTab(page, name) {
     else if (!project && open) await page.locator("#we-settings-close").click();
     if (name === "Content") name = "Slide";
   }
+  if(await page.locator('#ci-notes').count()&&['Slide','Text','Tables','Commands','Notes','Media'].includes(name)){await inspectContent(page,name);return;}
   if (await page.locator('#wp-tabs').count() && !await page.locator('#we-settings').evaluate(el=>el.open)) await page.locator('#wp-tab-content').click();
   await page.getByRole("tab", { name, exact: true }).click();
+}
+export async function inspectContent(page, name) {
+  if(!await page.locator('#we-inspector').isVisible())await page.locator('#we-toggle-inspector').click();
+  if(name==='Slide'){await page.locator('#wp-tab-content').click();if(await page.locator('#ic-slide-settings').isVisible())await page.locator('#ic-slide-settings').click();return;}
+  if(name==='Notes'){if(!await page.locator('#ci-notes').evaluate(node=>node.open))await page.locator('#ci-notes > summary').click();return;}
+  await page.locator('#wp-tab-content').click();
+  const kind=await page.locator('#we-inspector').getAttribute('data-ic-kind');
+  if(name==='Media'&&['media','grid'].includes(kind))return;
+  const selector={Media:'.media-box',Tables:'table',Commands:'.terminal',Text:'h1,p'}[name];
+  const element=page.locator('#fe-preview').locator(selector).first();
+  if(await element.count()) {
+    const key=await element.evaluate(node=>node.closest('[data-sp-key]')?.dataset.spKey);
+    if(key)await selectElement(page,key);
+    else await element.click();
+    const prefix={Tables:'table:',Commands:'code:',Text:'text:'}[name];
+    if(prefix&&await page.locator('#ci-field-target').isVisible()){
+      const value=await page.locator('#ci-field-select option').evaluateAll((options,prefix)=>options.find(option=>option.value.startsWith(prefix))?.value,prefix);
+      if(value)await page.locator('#ci-field-select').selectOption(value);
+    }
+    if(name==='Tables')await reveal(page,'#fe-table-grid');
+    return;
+  }
+  if(name==='Media'){
+    await page.locator('#component-open').click();await page.getByRole('tab',{name:'Blocks',exact:true}).click();await page.locator('#component-search').fill('image');
+    const chooser=page.waitForEvent('filechooser');
+    await page.getByRole('button',{name:'Insert image or video…',exact:true}).click();
+    await chooser;
+  }
+}
+export async function selectElement(page,key) {
+  const slides=await page.locator('#ld-tab-slides').getAttribute('aria-selected')==='true';
+  await page.locator('#ld-reveal-layers').click();
+  await page.locator('.sp-layer-row[data-key="'+key+'"] button').first().click();
+  if(slides)await page.locator('#ld-tab-slides').click();
 }

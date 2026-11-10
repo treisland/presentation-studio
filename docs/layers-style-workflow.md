@@ -22,6 +22,10 @@ Presets and copy/paste appearance remain available. Border width retains its act
 
 Under **Align to slide**, Horizontal offers Left, Center and Right; Vertical offers Top, Middle and Bottom. Each command moves the selected block on one axis only. For top-left, choose Left then Top; for bottom-right, Right then Bottom; for center-top, Center then Top. These controls position the whole object rather than aligning text inside it. They do not resize the object or change its layer. Each click is one undoable command; moving/resizing a template item first makes these controls available. Locks and read-only mode disable them. The two labeled groups wrap in narrow panels and retain tooltips, accessible names and normal keyboard button controls.
 
+## Selection-driven Content
+
+Content follows the selected text, widget, table, code, media or grid cell. The old category row is retired; insertion belongs in the Library. A scoped nested-field picker and collapsed alternatives retain legacy text/table editing, while Slide notes live in a persistent drawer without replacing object selection. See the [Content workflow and manual review](content-inspector.md).
+
 ## Compatibility and review
 
 Dock location, color-editor state and focus are editor view state, not project content. Saved formats, stable IDs, grouping, recovery, history/media, legacy imports and editable/offline playback exports retain their existing contracts. No provider, folder, MCP, dependency or release-plan changes are introduced.

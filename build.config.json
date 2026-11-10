@@ -19,7 +19,8 @@
     "src/styles/local-workspaces.css",
     "src/styles/editor-workbench.css",
     "src/styles/layer-dock.css",
-    "src/styles/inspector-style.css"
+    "src/styles/inspector-style.css",
+    "src/styles/content-inspector.css"
   ],
   "scripts": [
     "src/runtime/prelude.js",
@@ -70,6 +71,7 @@
     "src/runtime/inspector-icons.js",
     "src/runtime/layer-dock.js",
     "src/runtime/inspector-style.js",
+    "src/runtime/content-inspector.js",
     "src/runtime/boot.js"
   ],
   "vendor": "vendor/jszip-3.10.1.min.js"

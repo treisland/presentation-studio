@@ -1,3 +1,4 @@
+import {reveal} from './ui.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';import {chromium} from 'playwright';import {openExample,snapshot,operations,exportZip,importZip} from './collection-ui.mjs';
 const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH,args:['--no-sandbox']});test.after(()=>browser.close());
 test('existing layout tables and commands convert explicitly without losing content',async()=>{
@@ -31,7 +32,7 @@ test('Table and Code containers move, resize, reject locked removal and restore 
 test('Inspector adds custom variants and edits optional language and environment independently',async()=>{
  const {page,errors}=await openExample(browser,'portfolio-demo');try{
   await page.locator('#component-open').click();await page.getByRole('tab',{name:'Data & Code',exact:true}).click();await page.locator('#component-items textarea').fill('npm install');await page.getByRole('button',{name:'Insert Code / Commands',exact:true}).click();
-  await page.locator('#code-add-variant').click();const variant=await page.locator('#code-edit-choice').inputValue();assert.match(variant,/^variant-/);
+  await reveal(page,'#code-add-variant');await page.locator('#code-add-variant').click();const variant=await page.locator('#code-edit-choice').inputValue();assert.match(variant,/^variant-/);
   await page.locator('#code-name').fill('Python');await page.locator('#code-name').press('Tab');await page.locator('#code-text').fill('print("Hi")');await page.locator('#code-text').press('Tab');await page.locator('#code-language').fill('Python');await page.locator('#code-language').press('Tab');await page.locator('#code-initial').selectOption(variant);
   assert.equal(await page.locator('#fe-preview .terminal pre').textContent(),'print("Hi")');assert.equal(await page.locator('#fe-preview .command-labels').textContent(),'Python');assert.deepEqual(errors,[]);
  }finally{await page.close();}
