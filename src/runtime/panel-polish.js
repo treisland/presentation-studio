@@ -41,7 +41,7 @@ function wpPaint() {
   if(['block','text'].includes(s.kind)){remove.hidden=true;duplicate.hidden=true;}else remove.hidden=false;
   $('wp-empty-hint').hidden=s.kind!=='slide';
   $('wp-style-hint').hidden=!['block','slide'].includes(s.kind);
-  for(const input of $('db-arrange').querySelectorAll('input,select'))input.disabled=readOnly||s.kind!=='block';
+  for(const input of $('db-arrange').querySelectorAll('input,select,button'))input.disabled=readOnly||s.kind!=='block'||!!spMeta(dbSelected).locked;
   const cfg=ceConfig();for(const id of ['ce-fit','ce-crop','ce-caption','ce-alt','ce-hidden'])$(id).disabled=!cfg||ceLocked(projectSelected,ceSelected)||vbMode!=='edit';
   // Grid fields live in their existing panel; their guards remain authoritative.
   wpChooseTab(wpTab);

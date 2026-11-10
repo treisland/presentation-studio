@@ -114,6 +114,15 @@ function dbRun(operation, snapshot = null) {
   return result;
 }
 function dbNode() { return projectModel()?.tree.find(n => dbID(n) === dbSelected); }
+function dbAlign(choice) {
+  const node = dbNode();
+  if (!node || !weEditing() || vbMode !== 'edit' || ceLocked() || spMeta(dbSelected).locked) return;
+  const p = dbRect(node);
+  if (['left', 'center', 'right'].includes(choice)) p.x = choice === 'left' ? 0 : choice === 'center' ? (1 - p.w) / 2 : 1 - p.w;
+  else if (['top', 'middle', 'bottom'].includes(choice)) p.y = choice === 'top' ? 0 : choice === 'middle' ? (1 - p.h) / 2 : 1 - p.h;
+  else return;
+  dbRun({ type: 'block.place', blockId: dbSelected, placement: p });
+}
 function dbPanel() {
   if (!$("db-list")) return;
   const nodes = projectModel()?.tree.filter(dbID) || [], select = $("db-list");
@@ -204,20 +213,25 @@ projectInit = function () {
   const panel = document.createElement("section"); panel.id = "db-panel";
   panel.innerHTML = '<label for="db-list">Content blocks</label><select id="db-list"></select><div id="db-arrange" hidden><div class="db-fields">' +
     ["x", "y", "w", "h"].map(k => '<label>' + ({x:"Left",y:"Top",w:"Width",h:"Height"}[k]) + ' %<input id="db-' + k + '" type="number" min="0" max="100" step="0.5"></label>').join("") +
-    '<label>Layer<input id="db-layer" type="number" min="0" max="40" step="1"></label></div><label for="db-align">Align block</label><select id="db-align"><option value="">Choose alignment</option><option>Left</option><option>Center</option><option>Right</option><option>Top</option><option>Middle</option><option>Bottom</option></select><button id="db-duplicate">Duplicate block</button><button id="db-remove">Remove block</button><p>Move/resize handles support arrows. Shift moves faster; Escape cancels dragging. Alt bypasses snapping.</p></div>';
+    '<label>Layer<input id="db-layer" type="number" min="0" max="40" step="1"></label></div><p class="db-align-label">Align to slide</p><div id="db-alignment"></div><button id="db-duplicate">Duplicate block</button><button id="db-remove">Remove block</button><p>Move/resize handles support arrows. Shift moves faster; Escape cancels dragging. Alt bypasses snapping.</p></div>';
   $("we-common").append(panel);
+  for (const [axis, choices] of [['Horizontal', ['left', 'center', 'right']], ['Vertical', ['top', 'middle', 'bottom']]]) {
+    const group = document.createElement('fieldset'), legend = document.createElement('legend');
+    legend.textContent = axis; group.append(legend);
+    const actions = document.createElement('div');
+    for (const choice of choices) {
+      const button = document.createElement('button'); button.type = 'button'; button.id = 'db-align-' + choice;
+      const name = 'Align block ' + choice + ' to slide'; button.setAttribute('aria-label', name); button.title = name;
+      button.append(workbenchIcon('align' + choice[0].toUpperCase() + choice.slice(1)));
+      button.onclick = () => dbAlign(choice); actions.append(button);
+    }
+    group.append(actions); $('db-alignment').append(group);
+  }
   $("db-list").onchange = e => { dbSelected = e.target.value; dbPanel(); };
   for (const key of ["x", "y", "w", "h", "layer"]) $("db-" + key).onchange = e => {
     const node = dbNode(); if (!node) return;
     const p = dbRect(node); p[key] = Number(e.target.value) / (key === "layer" ? 1 : 100);
     dbRun({ type: "block.place", blockId: dbSelected, placement: p, layer: p.layer });
-  };
-  $("db-align").onchange = e => {
-    const node = dbNode(); if (!node) return;
-    const p = dbRect(node), choice = e.target.value;
-    if (["Left", "Center", "Right"].includes(choice)) p.x = choice === "Left" ? 0 : choice === "Center" ? (1 - p.w) / 2 : 1 - p.w;
-    if (["Top", "Middle", "Bottom"].includes(choice)) p.y = choice === "Top" ? 0 : choice === "Middle" ? (1 - p.h) / 2 : 1 - p.h;
-    dbRun({ type: "block.place", blockId: dbSelected, placement: p }); e.target.value = "";
   };
   $("db-duplicate").onclick = () => dbRun({ type: "block.duplicate", blockId: dbSelected });
   $("db-remove").onclick = () => dbRun({ type: "block.remove", blockId: dbSelected });

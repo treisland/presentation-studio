@@ -18,7 +18,13 @@ function workbenchIcon(name) {
     reset: 'M4 10a8 8 0 1 1 1 8 M4 4v6h6',
     copy: 'M8 8h13v13H8Z M16 4V2H2v14h2',
     paste: 'M8 4H4v18h16V4h-4 M8 2h8v5H8Z',
-    close: 'm6 6 12 12 M6 18 18 6'
+    close: 'm6 6 12 12 M6 18 18 6',
+    alignLeft: 'M4 3v18 M8 6h12 M8 12h8 M8 18h12',
+    alignCenter: 'M12 3v18 M4 6h16 M7 12h10 M4 18h16',
+    alignRight: 'M20 3v18 M4 6h12 M8 12h8 M4 18h12',
+    alignTop: 'M3 4h18 M6 8v12 M12 8v8 M18 8v12',
+    alignMiddle: 'M3 12h18 M6 4v16 M12 7v10 M18 4v16',
+    alignBottom: 'M3 20h18 M6 4v12 M12 8v8 M18 4v12'
   };
   const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   icon.setAttribute('viewBox', '0 0 24 24'); icon.setAttribute('width', '18'); icon.setAttribute('height', '18');

@@ -18,6 +18,10 @@ Choose a property to open its color editor. Theme, Custom and Project sections r
 
 Presets and copy/paste appearance remain available. Border width retains its actual pixel units; opacity is a percentage. Color reset restores inheritance for the active property, not an unrelated full-object reset. Contrast estimates retain their stated limitations for opacity, images and non-solid backgrounds.
 
+## Alignment in Arrange
+
+Under **Align to slide**, Horizontal offers Left, Center and Right; Vertical offers Top, Middle and Bottom. Each command moves the selected block on one axis only. For top-left, choose Left then Top; for bottom-right, Right then Bottom; for center-top, Center then Top. These controls position the whole object rather than aligning text inside it. They do not resize the object or change its layer. Each click is one undoable command; moving/resizing a template item first makes these controls available. Locks and read-only mode disable them. The two labeled groups wrap in narrow panels and retain tooltips, accessible names and normal keyboard button controls.
+
 ## Compatibility and review
 
 Dock location, color-editor state and focus are editor view state, not project content. Saved formats, stable IDs, grouping, recovery, history/media, legacy imports and editable/offline playback exports retain their existing contracts. No provider, folder, MCP, dependency or release-plan changes are introduced.
@@ -30,6 +34,6 @@ Manual review should cover:
 2. Keyboard navigation between Slides/Layers, row selection, multi-selection, search, rename, visibility, locks and reordering. Hide template text/cards and confirm neighboring elements remain in place; show them again and Undo. Inspect screen-reader names, state announcements and focus after rerendering.
 3. Style with a single object, nested text, no selection, mixed selection and a locked batch. Verify the target is explicit and unsupported controls do not imply broader edits.
 4. Theme/custom/project colors, valid/invalid hex, opacity, no fill, scoped reset, presets and copy/paste. Cancel drafts and change the selection while a color editor is open; no stale or partial edit may occur.
-5. Template/media/grid/table/code selections and existing positioning controls. Hide primary media with different text/media ratios and check text positions in playback and booth output. Save a complete editable ZIP with media/history, restore it in a clean profile and verify legacy imports/offline playback.
+5. Template/media/grid/table/code selections and existing positioning controls. Combine Horizontal/Vertical alignment for top-left, bottom-right and center-top; verify only the chosen axis moves and Undo restores it. Check a Library widget, customized template text and locks. Hide primary media with different text/media ratios and check text positions in playback and booth output. Save a complete editable ZIP with media/history, restore it in a clean profile and verify legacy imports/offline playback.
 
 Automated regression results are recorded in the PR. They do not establish manual screen-reader or final visual acceptance.

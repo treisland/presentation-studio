@@ -27,6 +27,64 @@ async function pack(p) {
   const d = p.waitForEvent('download'); await click(p, '#fe-export-json');
   return JSON.parse(await readFile(await (await d).path(), 'utf8'));
 }
+test('Library alignment separates horizontal and vertical axes, preserves size/content and supports keyboard Undo and locks', async () => {
+  const p = await setup();
+  try {
+    await p.locator('#component-open').click();
+    await p.getByRole('tab', {name:'Widgets',exact:true}).click();
+    await p.getByRole('button', {name:'Insert Callout',exact:true}).click();
+    await reveal(p,'#db-x');
+    for (const [key,value] of [['w','40'],['h','20'],['x','31'],['y','23'],['layer','7']]) {
+      await p.locator('#db-'+key).fill(value); await p.locator('#db-'+key).press('Tab');
+    }
+    const original = await read(p), node = blocks(original.state).at(-1), id = idOf(node);
+    const rect = async () => {
+      const current = blocks((await read(p)).state).find(n=>idOf(n)===id);
+      return Object.fromEntries(['left','top','width','height'].map(key=>[key,Number(current.attrs.style.match(new RegExp(key+':([\\d.]+)%'))[1])]));
+    };
+    const initial = await rect();
+    assert.equal(await p.locator('#db-align').count(),0);
+    for (const axis of ['Horizontal','Vertical']) assert.equal(await p.getByRole('group',{name:axis,exact:true}).isVisible(),true);
+    await p.getByRole('button',{name:'Align block left to slide',exact:true}).click();
+    assert.deepEqual(await rect(),{...initial,left:0});
+    await p.locator('#db-align-top').click();assert.deepEqual(await rect(),{...initial,left:0,top:0});
+    await p.locator('#db-align-center').focus();await p.keyboard.press('Enter');
+    assert.deepEqual(await rect(),{...initial,left:30,top:0});
+    assert.equal(await p.evaluate(()=>document.activeElement.id),'db-align-center');
+    await p.locator('#db-align-middle').press('Space');assert.deepEqual(await rect(),{...initial,left:30,top:40});
+    await p.locator('#db-align-right').click();const beforeBottom = await read(p);
+    await p.locator('#db-align-bottom').click();assert.deepEqual(await rect(),{...initial,left:60,top:80});
+    const aligned = blocks((await read(p)).state).find(n=>idOf(n)===id);
+    assert.deepEqual(aligned.children,node.children);assert.match(aligned.attrs.style,/z-index:7/);
+    await p.locator('#fe-undo').click();assert.deepEqual((await read(p)).state,beforeBottom.state);
+    await p.setViewportSize({width:390,height:740});await reveal(p,'#db-align-left');
+    for (const dark of [false,true]) {
+      await p.evaluate(dark=>document.body.classList.toggle('editor-dark',dark),dark);
+      assert.equal(await p.locator('#db-alignment').evaluate(el=>el.scrollWidth<=el.clientWidth),true);
+    }
+    const slideId = original.state.slides[0].id;
+    assert.equal((await p.evaluate(({slideId,id})=>{const api=window.presentationStudioEditing,s=api.read();return api.apply({apiVersion:1,projectId:s.projectId,expectedRevision:s.revision,operations:[{type:'design.meta',slideId,keys:[id],changes:{locked:true}}]});},{slideId,id})).ok,true);
+    assert.equal(await p.locator('#db-alignment button:disabled').count(),6);
+    const locked = await read(p);await p.locator('#db-align-left').evaluate(button=>button.click());assert.deepEqual((await read(p)).state,locked.state);
+    await p.locator('#fe-undo').click();
+    await click(p,'#ce-slide-lock');assert.equal(await p.locator('#db-alignment button:disabled').count(),6);
+  } finally { await p.close(); }
+});
+test('customized template content uses both slide-alignment axes without changing content or reset metadata', async () => {
+  const p = await setup();
+  try {
+    await p.locator('#fe-preview h1').first().click();await click(p,'#tp-customize');
+    await reveal(p,'#db-align-right');
+    const before = await read(p), node = blocks(before.state).at(-1), id = idOf(node);
+    await p.locator('#db-align-right').click();await p.locator('#db-align-bottom').click();
+    const after = await read(p), result = blocks(after.state).find(n=>idOf(n)===id);
+    assert.deepEqual(result.children,node.children);
+    assert.deepEqual(after.state.design,before.state.design);
+    const values = Object.fromEntries(['left','top','width','height'].map(key=>[key,Number(result.attrs.style.match(new RegExp(key+':([\\d.]+)%'))[1])]));
+    assert(Math.abs(values.left+values.width-100)<.001);assert(Math.abs(values.top+values.height-100)<.001);
+    await p.locator('#fe-undo').click();await p.locator('#fe-undo').click();assert.deepEqual((await read(p)).state,before.state);
+  } finally { await p.close(); }
+});
 test('palette and keyboard arrangement preserve original content and unique IDs with undo', async () => {
   const p = await setup();
   try {
@@ -62,8 +120,8 @@ test('palette and keyboard arrangement preserve original content and unique IDs 
     await reveal(p,"#db-layer");
     await reveal(p,"#db-layer");
     await p.locator('#db-layer').fill('8'); await p.locator('#db-layer').press('Tab');
-    await reveal(p,"#db-align");
-    await p.locator('#db-align').selectOption('Center');
+    await reveal(p,"#db-align-center");
+    await p.locator('#db-align-center').click();
     const arranged = blocks((await read(p)).state).at(-1);
     assert(arranged.attrs.style.includes('width:40%'));
     assert(arranged.attrs.style.includes('left:30%'));

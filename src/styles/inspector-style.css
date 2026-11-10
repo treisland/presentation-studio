@@ -1,5 +1,13 @@
 /* Inspector chrome only; all color edits use the original precision controls. */
 #full-editor #we-inspector[data-wp-tab="style"] #db-panel > :is(label[for="db-list"], #db-list) { display: none; }
+#full-editor .db-align-label { margin: 12px 0 4px; color: var(--wb-muted); }
+#full-editor #db-alignment { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
+#full-editor #db-alignment fieldset { flex: 1 1 96px; min-width: 0; border: 0; padding: 0; margin: 0; }
+#full-editor #db-alignment legend { padding: 0; margin-bottom: 5px; color: var(--wb-muted); font-size: 11px; }
+#full-editor #db-alignment fieldset > div { display: grid; grid-template-columns: repeat(3,minmax(32px,1fr)); gap: 2px; padding: 2px; border: 1px solid var(--wb-line); border-radius: 6px; background: var(--wb-raised); }
+body #full-editor #db-alignment button { display: flex; align-items: center; justify-content: center; min-width: 32px; min-height: 32px; padding: 5px; margin: 0; background: transparent; color: var(--wb-ink); border-color: transparent; }
+#full-editor #db-alignment button svg { width: 18px; height: 18px; }
+#full-editor #db-alignment button:focus-visible { outline: 2px solid var(--wb-focus); outline-offset: -1px; }
 #full-editor .is-legacy-target { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 #full-editor #sp-style h3 { margin: 0 0 8px; }
 #full-editor :is(#sp-selection, #is-scope) { margin: 4px 0 8px; color: var(--wb-muted); font: 12px/1.45 var(--wb-font); }
