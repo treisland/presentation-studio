@@ -1,6 +1,6 @@
 # 0.7.0 — Native AI layouts and Library elements
 
-The initial native authoring extension (#115 / merged PR #116) is retained in the revised portable scope (#119 / draft-hold PR #118). Final manual acceptance remains pending. Live filesystem work #117 is deferred outside 0.7.0; implementation alone does not authorize merge or publication.
+The initial native authoring extension (#115 / merged PR #116) is retained in the revised portable scope (#119 / merged PR #118). Maintainer feature acceptance is recorded; release preparation is tracked in #120. Live filesystem work #117 is deferred outside 0.7.0; implementation alone does not authorize merge or publication.
 
 ## Delivery sequence and acceptance
 

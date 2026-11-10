@@ -1,6 +1,6 @@
 # 0.7.0 — Portable AI authoring, import/export and recovery
 
-Approved revised scope: #119, milestone 0.7.0, draft/hold PR #118. Initial #115/#116 is merged; this revision defers live filesystem access. Final manual review of this build and separate release preparation are required. Direct providers, MCP, containers and collaboration remain outside scope.
+Approved revised scope: #119, milestone 0.7.0, merged PR #118. Initial #115/#116 is merged; this revision defers live filesystem access. Feature review passed; separate 0.7.0-rc.1 release preparation is tracked in #120. Direct providers, MCP, containers and collaboration remain outside scope.
 
 ## Supported workflow
 
@@ -39,4 +39,4 @@ Unbundled developer source tools/folder-picker-probe.html remains for future res
 - Import existing JSON and a complete editable ZIP. Invalid/truncated/future-format input must leave current work intact. Export a media/history project and restore the ZIP in a clean profile; verify offline playback and legacy import.
 - Reload and exercise browser recovery separately from ZIP restoration. Confirm keyboard and screen-reader behavior; record exact versions/results.
 
-Automated tests do not establish manual accessibility or LLM output quality. Final acceptance is pending; this feature revision does not authorize publication.
+Automated tests do not establish manual accessibility or LLM output quality. Feature acceptance passed. Release gates and publication are tracked separately in the 0.7.0-rc.1 validation record.
