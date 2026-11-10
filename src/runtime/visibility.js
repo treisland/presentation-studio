@@ -90,7 +90,9 @@ mediaApply=function(slide){
 function visibilitySpacer(node,element){
   // Playback omits content and stable identities, retaining only the measured
   // empty layout box. Reuse the existing portable template-placeholder format.
-  if(!element||['absolute','fixed'].includes(getComputedStyle(element).position))return null;
+  // Grid roots are validated configuration, not layout boxes. Their rendered
+  // media frames are omitted separately; an empty grid would fail reimport.
+  if(!element||mgHas(node,'mg-grid')||['absolute','fixed'].includes(getComputedStyle(element).position))return null;
   const tokens=(node.attrs?.class||'').split(/\s+/).filter(token=>token&&!/^(?:block|layer)-/.test(token));
   const attrs={class:[...tokens,'tp-placeholder','tp-w-'+element.offsetWidth,'tp-h-'+element.offsetHeight].join(' ')};
   if(node.attrs?.style)attrs.style=node.attrs.style;

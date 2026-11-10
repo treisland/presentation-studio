@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {chromium} from 'playwright';
 import {resolve,dirname} from 'node:path';
 import {mkdir,writeFile} from 'node:fs/promises';
-import {openExample,snapshot,operations,exportZip} from './collection-ui.mjs';
+import {openExample,snapshot,operations,exportZip,dropDiagram} from './collection-ui.mjs';
 import {reveal,addSlide,selectTab} from './ui.mjs';
 import {archivePath} from './archive-path.mjs';
 const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH,args:['--no-sandbox']});
@@ -166,4 +166,35 @@ test('playback omits hidden text/identities while empty spacers preserve survivi
     }finally{await playback.close();}
     assert.deepEqual(errors,[]);
   }finally{await page.close();}
+});
+
+test('a hidden media grid reopens as the exported project offline without an invalid empty grid or hidden assets',async()=>{
+ const {page,errors}=await openExample(browser,'portfolio-demo');try{
+  await addSlide(page,'media-grid');await dropDiagram(page);
+  const source=await snapshot(page),slideId=await active(page),slide=source.state.slides.find(item=>item.id===slideId);
+  const hiddenAssets=[source.state.media[slideId]?.src,...(source.state.mediaObjects?.[slideId]||[]).map(item=>item.media.src)].filter(Boolean);
+  const gridIndex=slide.tree.findIndex(node=>node.attrs?.class?.split(/\s+/).includes('mg-grid'));
+  await hide(page,slideId,'node-'+gridIndex);
+  const expected=await snapshot(page),bytes=await exportZip(page,'#fe-playback');
+  const files=await page.evaluate(async bytes=>{const zip=await JSZip.loadAsync(new Uint8Array(bytes)),files=[];for(const file of Object.values(zip.files))if(!file.dir)files.push([file.name,[...await file.async('uint8array')]]);return files;},[...bytes]);
+  const pack=JSON.parse(Buffer.from(files.find(([name])=>name==='presentation.json')[1]).toString());
+  for(const asset of hiddenAssets)assert(!files.some(([name])=>name===asset),'Hidden grid asset is excluded: '+asset);
+  const folder=resolve('test-results/visibility-layout/hidden-grid-playback');await mkdir(folder,{recursive:true});
+  for(const [name,data]of files){const target=archivePath(folder,name);await mkdir(dirname(target),{recursive:true});await writeFile(target,Buffer.from(data));}
+  const playback=await browser.newPage();try{
+    await playback.context().setOffline(true);await playback.goto('file://'+resolve(folder,'index.html'));
+    const ids=pack.state.slides.map(item=>item.id);
+    // Playback intentionally does not expose the authoring API. Verify the real
+    // rendered project, including its unique slide IDs, rather than bypassing it.
+    await playback.waitForFunction(ids=>{const actual=[...document.querySelectorAll('#stage .slide[data-media-id]')].map(node=>node.dataset.mediaId);return JSON.stringify(actual)===JSON.stringify(ids);},ids,{timeout:5000});
+    assert.equal(pack.meta.id,expected.projectId);
+    const restoredSlide=playback.locator('.slide[data-media-id="'+slideId+'"]');
+    assert.equal(await restoredSlide.count(),1,'The exported grid slide survives instead of falling back to built-in content');
+    assert.equal(await restoredSlide.getAttribute('data-title'),pack.state.slides.find(item=>item.id===slideId).title);
+    assert.equal(await restoredSlide.locator('.mg-grid').count(),0);
+    assert.equal(pack.state.media[slideId],undefined);assert.equal((pack.state.mediaObjects?.[slideId]||[]).length,0);
+    assert.equal(await playback.locator('.slide[data-media-id="'+slideId+'"] .media-box').count(),0);
+  }finally{await playback.close();}
+  assert.deepEqual(errors,[]);
+ }finally{await page.close();}
 });
