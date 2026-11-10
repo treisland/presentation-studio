@@ -9,10 +9,22 @@
 .db-circle-content { position:absolute;inset:0;border-radius:inherit;overflow:hidden;padding:24px;display:flex;align-items:center;justify-content:center;color:inherit; }
 :is(.presentation-canvas,.me-preview-stage) .slide > .db-callout { border-left: 14px solid var(--project-accent, #0066ff); background: var(--project-surface-alt, #eef3fa); }
 .db-handle { display: none; }
-[data-block-mode="edit"] .db-block .db-handle { display: block; position: absolute; z-index: 50; padding: 5px 10px; font: 18px Arial; touch-action: none; }
-[data-block-mode="edit"] .db-selected { outline: 5px solid #0066ff; outline-offset: 3px; }
-.db-move { left: 0; top: 0; cursor: move; }
-.db-resize { right: 0; bottom: 0; cursor: nwse-resize; }
+[data-block-mode="edit"] .slide > .db-block { overflow: visible; }
+[data-block-mode="edit"] .db-block > .db-handle { position: absolute; z-index: 50; box-sizing: border-box; margin: 0; padding: 0; min-width: 0; min-height: 0; width: 24px; height: 24px; border: 0; border-radius: 4px; background: transparent; color: #fff; font: 20px/1 Arial; touch-action: none; transform: translate(-50%, -50%) scale(calc(1 / var(--db-scale, .4))); }
+[data-block-mode="edit"] .db-block:is(.db-selected,:focus-within) > .db-handle { display: block; }
+[data-block-mode="edit"] .db-selected { outline: calc(2px / var(--db-scale, .4)) solid #0066ff; outline-offset: 0; }
+[data-block-mode="edit"] .db-handle:focus-visible { outline: 3px solid #102a56; outline-offset: 2px; }
+[data-block-mode="edit"] .db-handle:disabled { cursor: not-allowed; opacity: .5; }
+[data-block-mode="edit"] .db-handle[data-db-direction]::after { content: ""; position: absolute; inset: 7px; border: 1.5px solid #0066ff; border-radius: 2px; background: #fff; box-shadow: 0 1px 3px #102a5633; }
+[data-block-mode="edit"] .db-block > .db-move { left: 0; top: 0; width: 30px; height: 26px; margin-left: calc(16px / var(--db-scale, .4)); margin-top: calc(-24px / var(--db-scale, .4)); background: #0066ff; cursor: move; }
+.db-resize, .db-resize-se { left: 100%; top: 100%; cursor: nwse-resize; }
+.db-resize-s { left: 50%; top: 100%; cursor: ns-resize; }
+.db-resize-sw { left: 0; top: 100%; cursor: nesw-resize; }
+.db-resize-w { left: 0; top: 50%; cursor: ew-resize; }
+.db-resize-nw { left: 0; top: 0; cursor: nwse-resize; }
+.db-resize-n { left: 50%; top: 0; cursor: ns-resize; }
+.db-resize-ne { left: 100%; top: 0; cursor: nesw-resize; }
+.db-resize-e { left: 100%; top: 50%; cursor: ew-resize; }
 #db-palette { position: relative; }
 #db-palette summary { cursor: pointer; padding: 7px; }
 #db-palette > div { position: absolute; top: 100%; left: 0; z-index: 30; padding: 12px; background: #fff; border: 1px solid #aebfd5; border-radius: 8px; display: grid; gap: 6px; }

@@ -1,0 +1,285 @@
+/* Editor chrome only. Never target slide descendants or presentation tokens. */
+body {
+  --wb-font: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --wb-bg: #f3f5f8;
+  --wb-surface: #ffffff;
+  --wb-raised: #f8fafc;
+  --wb-hover: #e9eef5;
+  --wb-line: #dce2ea;
+  --wb-ink: #243247;
+  --wb-muted: #59697d;
+  --wb-blue: #245edb;
+  --wb-blue-hover: #194dc0;
+  --wb-selected: #eaf0ff;
+  --wb-selected-ink: #234fb2;
+  --wb-focus: #3979ee;
+  --wb-danger: #b02d42;
+  --wb-shadow: 0 20px 64px #15243b26;
+}
+body.editor-dark {
+  --wb-bg: #151a23;
+  --wb-surface: #1d2430;
+  --wb-raised: #252e3c;
+  --wb-hover: #303b4b;
+  --wb-line: #394557;
+  --wb-ink: #e4eaf3;
+  --wb-muted: #acb9cc;
+  --wb-blue: #316fe5;
+  --wb-blue-hover: #427ff2;
+  --wb-selected: #273c62;
+  --wb-selected-ink: #bcd3ff;
+  --wb-focus: #8ab5ff;
+  --wb-danger: #ff9aab;
+  --wb-shadow: 0 20px 64px #0007;
+}
+
+/* Flex shell sizes the canvas from actual header/footer height, including wraps. */
+body #full-editor {
+  box-sizing: border-box;
+  width: calc(100vw - 16px);
+  height: calc(100dvh - 16px);
+  max-width: 1920px;
+  max-height: none;
+  border: 1px solid var(--wb-line);
+  border-radius: 12px;
+  background: var(--wb-bg);
+  color: var(--wb-ink);
+  box-shadow: var(--wb-shadow);
+}
+#full-editor[open] { display: flex; flex-direction: column; }
+body #full-editor .we-body,
+body #full-editor .we-body[data-slides][data-inspector] {
+  flex: 1 1 0;
+  height: auto;
+  min-height: 0;
+  grid-template-columns: var(--wp-slides, min(var(--we-slides-width, 210px), 22vw)) 24px minmax(0, 1fr) 24px var(--wp-inspector, var(--we-inspector-width, 300px));
+}
+/* Collapse remains controlled by the existing state attributes and resize inputs. */
+#full-editor .we-body[data-slides="closed"] { --wp-slides: 0px; }
+#full-editor .we-body[data-inspector="closed"] { --wp-inspector: 0px; }
+body #full-editor .fe-top {
+  flex: none;
+  min-height: 64px;
+  box-sizing: border-box;
+  padding: 8px 16px;
+  gap: 16px;
+  background: var(--wb-surface);
+  border-bottom: 1px solid var(--wb-line);
+  font-family: var(--wb-font);
+}
+#full-editor #wb-brand { flex: none; font: 700 16px/1.25 var(--wb-font); letter-spacing: -.3px; color: var(--wb-ink); }
+#full-editor #wb-document { min-width: 0; flex: 1 1 160px; }
+#full-editor #fe-title { max-width: 360px; font: 600 14px/1.4 var(--wb-font); letter-spacing: -.2px; }
+#full-editor #fe-status { margin: 2px 0 0; font: 11px/1.4 var(--wb-font); color: var(--wb-muted); }
+#full-editor .fe-top-actions { flex: none; gap: 8px; align-items: center; }
+body #full-editor .fe-bottom {
+  flex: none;
+  box-sizing: border-box;
+  min-height: 40px;
+  padding: 8px 16px;
+  gap: 8px;
+  flex-wrap: wrap;
+  background: var(--wb-surface);
+  color: var(--wb-muted);
+  border-top: 1px solid var(--wb-line);
+  font: 12px/1.4 var(--wb-font);
+}
+#full-editor #fe-summary { color: var(--wb-muted); white-space: normal; }
+
+/* Explicit chrome regions keep button, label and font rules off the canvas. */
+body :is(#full-editor .fe-top, #full-editor .fe-bottom, #we-slides, #we-inspector, #component-toolbar, #we-settings, #component-add, #lw-panel, #pa-reflow, #full-editor .component-popover) {
+  font-family: var(--wb-font);
+  color: var(--wb-ink);
+  scrollbar-color: var(--wb-line) transparent;
+  scrollbar-width: thin;
+}
+body :is(#full-editor .fe-top, #full-editor .fe-bottom, #we-slides, #we-inspector, #component-toolbar, #we-settings, #component-add, #lw-panel, #pa-reflow, #full-editor .component-popover) :is(button, summary) {
+  box-sizing: border-box;
+  min-height: 32px;
+  padding: 6px 10px;
+  border: 1px solid var(--wb-line);
+  border-radius: 6px;
+  background: var(--wb-surface);
+  color: var(--wb-ink);
+  font: 500 12px/1.4 var(--wb-font);
+  letter-spacing: normal;
+  text-transform: none;
+  cursor: pointer;
+}
+body :is(#full-editor .fe-top, #we-slides, #we-inspector, #component-toolbar, #we-settings, #component-add, #lw-panel, #pa-reflow, #full-editor .component-popover) button:hover:not(:disabled) { background: var(--wb-hover); }
+body :is(#full-editor .fe-top, #we-slides, #we-inspector, #component-toolbar, #we-settings, #component-add, #lw-panel, #pa-reflow, #full-editor .component-popover) button:disabled { opacity: .45; cursor: default; }
+body :is(#full-editor .fe-top, #we-slides, #we-inspector, #component-toolbar, #we-settings, #component-add, #lw-panel, #pa-reflow, #full-editor .component-popover) :is(button, input, select, textarea, summary, [role="separator"]):focus-visible {
+  outline: 2px solid var(--wb-focus);
+  outline-offset: 2px;
+}
+body :is(#we-slides, #we-inspector, #we-settings, #component-add, #lw-panel, #pa-reflow, #component-toolbar, #full-editor .component-popover) :is(input, select, textarea):not([type="checkbox"]):not([type="radio"]):not([type="color"]):not([type="file"]) {
+  box-sizing: border-box;
+  max-width: 100%;
+  min-width: 0;
+  padding: 8px;
+  border: 1px solid var(--wb-line);
+  border-radius: 6px;
+  background: var(--wb-surface);
+  color: var(--wb-ink);
+  font: 13px/1.4 var(--wb-font);
+  margin-bottom: 8px;
+}
+body :is(#we-slides, #we-inspector, #we-settings, #component-add, #lw-panel, #pa-reflow) label { color: var(--wb-muted); font: 12px/1.45 var(--wb-font); }
+body #full-editor #fe-show {
+  background: var(--wb-blue);
+  border-color: var(--wb-blue);
+  color: #fff;
+  font: 600 12px/1.4 var(--wb-font);
+  padding: 8px 16px;
+  border-radius: 6px;
+}
+body #full-editor #fe-show:hover:not(:disabled) { background: var(--wb-blue-hover); border-color: var(--wb-blue-hover); }
+body #full-editor #wb-export { border-color: var(--wb-line); background: var(--wb-surface); color: var(--wb-ink); }
+body #full-editor #wb-snap[aria-pressed="true"],
+body #component-toolbar button[aria-pressed="true"] { background: var(--wb-selected); color: var(--wb-selected-ink); border-color: var(--wb-focus); }
+
+/* Open canvas surround; no changes to the slide stage, transform or hit targets. */
+#full-editor #we-center { grid-column: 3; grid-row: 1; gap: 8px; padding: 8px; background: var(--wb-bg); min-height: 0; }
+#full-editor #we-viewport #component-overflow { position: absolute; bottom: 8px; left: 12px; z-index: 6; max-width: calc(100% - 24px); margin: 0; padding: 6px 10px; border-radius: 6px; background: var(--wb-surface); color: var(--wb-ink); font: 12px/1.4 var(--wb-font); pointer-events: none; }
+body #full-editor #we-viewport { min-height: 120px; border: 0; border-radius: 4px; background: var(--wb-bg); }
+#full-editor #we-center .fe-preview-heading { gap: 8px; font-family: var(--wb-font); }
+#full-editor #we-center .fe-preview-heading strong { font: 600 13px/1.4 var(--wb-font); color: var(--wb-ink); }
+#full-editor #we-center .fe-preview-heading small,
+#full-editor :is(#we-zoom-value, #we-view-status, #vb-mode-hint) { font: 11px/1.4 var(--wb-font); color: var(--wb-muted); }
+body #full-editor #component-toolbar {
+  flex-wrap: nowrap;
+  flex: 0 0 auto;
+  min-height: 44px;
+  height: auto;
+  align-content: center;
+  gap: 8px;
+  padding: 4px 8px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--wb-surface);
+  color: var(--wb-ink);
+}
+#full-editor #component-toolbar .component-tools { gap: 4px; }
+#full-editor #component-toolbar .component-view-controls { flex: 0 1 auto; flex-wrap: wrap; margin-left: auto; gap: 4px; }
+#full-editor #component-toolbar :is(button, summary) { min-height: 30px; padding: 5px 8px; }
+#full-editor #component-toolbar #we-zoom { width: 80px; margin: 0; padding: 4px; }
+#full-editor #component-toolbar #we-zoom-value { min-width: 40px; }
+#full-editor #component-toolbar #wb-customize { color: var(--wb-selected-ink); background: var(--wb-selected); }
+body #full-editor .component-popover,
+body #full-editor #we-panel-sizes > div { background: var(--wb-surface); color: var(--wb-ink); border-color: var(--wb-line); box-shadow: var(--wb-shadow); }
+
+/* Slide navigation and the original 24px reveal/resize rails. */
+body #full-editor #we-slides { grid-column: 1; grid-row: 1; padding: 12px 8px; gap: 8px; background: var(--wb-surface); border: 0; }
+#full-editor #we-slides .fe-inline { gap: 4px; margin: 0; }
+#full-editor #we-slides :is(input, select) { margin: 0; }
+#full-editor #we-slides #fe-count { margin: 0; color: var(--wb-muted); font: 11px/1.4 var(--wb-font); }
+body #full-editor .we-section-toggle { background: transparent; border: 0; padding: 8px 4px; color: var(--wb-muted); font-weight: 600; }
+#full-editor .wp-slide-row { margin-bottom: 8px; border-radius: 8px; }
+#full-editor .wp-slide-row:has(.fe-slide-button[aria-current="true"]),
+#full-editor .wp-slide-row:focus-within { border-color: var(--wb-focus); background: var(--wb-selected); }
+/* Existing dark theme uses !important on thumbnail buttons; match only here. */
+body #full-editor #we-slides .fe-slide-button {
+  padding: 6px;
+  margin: 0;
+  border: 1px solid transparent !important;
+  background: transparent !important;
+  color: var(--wb-ink) !important;
+  box-shadow: none;
+}
+body #full-editor #we-slides .fe-slide-button.selected { border-color: var(--wb-focus) !important; background: var(--wb-selected) !important; }
+#full-editor .we-thumbnail { border: 1px solid var(--wb-line); border-radius: 4px; box-shadow: 0 2px 6px #0000000a; }
+#full-editor #we-slides .fe-slide-button strong { font: 600 12px/1.4 var(--wb-font); }
+body #full-editor #we-slides :is(.we-slide-badges, .fe-slide-button small) { color: var(--wb-muted); font: 11px/1.4 var(--wb-font); }
+#full-editor .wp-slide-actions { gap: 4px; }
+body #full-editor .wp-slide-actions button { min-height: 28px; padding: 4px; border-color: transparent; background: transparent; font-size: 11px; }
+body #full-editor .wp-rail { padding-top: 8px; gap: 8px; background: var(--wb-raised); border: 0; color: var(--wb-muted); }
+body #full-editor .wp-rail button { width: 24px; min-height: 32px; padding: 0; border: 0; background: transparent; color: var(--wb-muted); font: 22px/1 var(--wb-font); }
+body #full-editor .wp-rail span { color: var(--wb-muted); font: 11px/1.4 var(--wb-font); letter-spacing: .2px; }
+#full-editor .wb-panel-resize { flex: 1 1 auto; min-height: 80px; width: 24px; position: relative; cursor: col-resize; touch-action: none; }
+#full-editor .wb-panel-resize::before { content: ""; position: absolute; top: 50%; left: 10px; width: 3px; height: 32px; border-radius: 3px; background: var(--wb-line); }
+#full-editor .wb-panel-resize:hover::before,
+#full-editor .wb-panel-resize:focus-visible::before { background: var(--wb-focus); }
+#full-editor .wb-panel-resize:focus-visible { outline: 2px solid var(--wb-focus); outline-offset: -3px; }
+
+/* Inspector tabs never split a word, even at the minimum sidebar width. */
+body #full-editor #we-inspector { grid-column: 5; grid-row: 1; border: 0; background: var(--wb-surface); color: var(--wb-ink); overflow-wrap: normal; }
+body #full-editor #wp-selection-header { padding: 12px; background: var(--wb-surface); border-bottom: 1px solid var(--wb-line); }
+#full-editor .wp-selection-heading { gap: 4px 8px; }
+#full-editor #wp-selection-title { font: 600 14px/1.4 var(--wb-font); }
+body #full-editor .wp-selection-heading small,
+body #full-editor :is(#wp-selection-detail, .wp-hint, #we-inspector .fe-hint) { color: var(--wb-muted); font: 12px/1.5 var(--wb-font); }
+#full-editor #wp-selection-detail { margin: 8px 0; }
+#full-editor .wp-selection-actions { flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+body #full-editor .wp-selection-actions button { padding: 5px 8px; min-height: 28px; font-size: 11px; }
+body #full-editor #wp-delete { color: var(--wb-danger); background: var(--wb-surface); border-color: var(--wb-line); }
+#full-editor #wp-tabs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; padding: 4px; margin-top: 12px; background: var(--wb-raised); border-radius: 8px; }
+body #full-editor #wp-tabs button { min-width: 0; padding: 6px 2px; white-space: nowrap; word-break: normal; overflow-wrap: normal; border-color: transparent; background: transparent; color: var(--wb-muted); font-size: 12px; }
+body #full-editor #wp-tabs [aria-selected="true"] { background: var(--wb-surface); color: var(--wb-selected-ink); border-color: var(--wb-line); box-shadow: 0 1px 3px #0000000d; }
+body #full-editor #ic-slide-settings { min-height: 28px; margin: 0 0 8px; padding: 4px 0; border-color: transparent; background: transparent; color: var(--wb-muted); font: 500 12px/1.4 var(--wb-font); }
+body #full-editor #ic-slide-settings:hover:not(:disabled) { color: var(--wb-selected-ink); background: var(--wb-raised); }
+#full-editor #wp-fields { padding: 12px; }
+body #full-editor #we-inspector .fe-panel { background: var(--wb-surface); border-color: var(--wb-line); padding: 8px 0; }
+#full-editor #we-inspector .fe-form-grid { gap: 8px; }
+#full-editor #we-inspector .fe-tabs { gap: 4px; margin: 8px 0; }
+body #full-editor #we-inspector .fe-tabs button { padding: 5px 8px; white-space: nowrap; word-break: normal; overflow-wrap: normal; }
+body #full-editor #we-inspector :is(#vb-toolbar, .fe-list-row) { background: var(--wb-raised); border-color: var(--wb-line); }
+
+/* Named dialogs share chrome tokens; preview content retains its own theme. */
+body :is(#component-add, #we-settings, #lw-panel, #pa-reflow) { background: var(--wb-surface); color: var(--wb-ink); border: 1px solid var(--wb-line); border-radius: 12px; box-shadow: var(--wb-shadow); color-scheme: light; }
+body.editor-dark :is(#component-add, #we-settings, #lw-panel, #pa-reflow) { color-scheme: dark; }
+:is(#component-add, #lw-panel, #pa-reflow)::backdrop { background: #11182780; }
+body #full-editor #we-settings { inset: 72px 24px 48px var(--wb-settings-left, 258px); padding: 24px; }
+body #full-editor #we-settings h2,
+body #component-add h2,
+body #lw-panel > .lw-heading h2,
+body #pa-reflow h2 { font: 650 20px/1.3 var(--wb-font); letter-spacing: -.4px; }
+body #component-add :is(h3, p, button, input, select, summary) { font-family: var(--wb-font); }
+body #component-add .component-library-header { padding: 24px 24px 16px; gap: 8px 16px; }
+#component-add #component-tabs { gap: 8px; padding: 0 24px 16px; }
+body #component-add #component-tabs button { white-space: nowrap; background: var(--wb-raised); color: var(--wb-muted); }
+body #component-add #component-tabs [aria-selected="true"] { outline: none; background: var(--wb-selected); color: var(--wb-selected-ink); border-color: var(--wb-focus); font-weight: 650; }
+body #component-add #component-tabs button:focus-visible { outline: 2px solid var(--wb-focus); outline-offset: 2px; }
+#component-add .component-library-search { padding: 0 24px 16px; gap: 8px; align-items: center; }
+body #component-add .component-library-search input { margin: 0; }
+body #component-add .component-library-search button { background: transparent; border-color: transparent; color: var(--wb-muted); }
+#component-add #component-items { gap: 16px; padding: 0 24px 24px; }
+body #component-add #component-items article { padding: 12px; gap: 12px; background: var(--wb-surface); border: 1px solid var(--wb-line); border-radius: 8px; }
+body #component-add #component-items article > button { background: var(--wb-raised); color: var(--wb-ink); padding: 6px 10px; }
+body #component-add .component-card-preview { border: 1px solid var(--wb-line); border-radius: 6px; background: var(--wb-raised); color: var(--wb-ink); }
+body #component-add > footer,
+body #component-add #component-save-panel { padding: 16px 24px; background: var(--wb-raised); border-color: var(--wb-line); }
+body #lw-panel .lw-heading { background: var(--wb-surface); }
+body #lw-panel > section,
+body #lw-files li { border-color: var(--wb-line); }
+body #lw-panel #lw-message { background: var(--wb-raised); color: var(--wb-ink); }
+body #lw-panel #lw-tabs [aria-selected="false"] { background: var(--wb-raised); }
+body #lw-panel #lw-tabs [aria-selected="true"],
+body #full-editor :is(#we-inspector, #we-settings) .fe-tabs [aria-selected="true"] { background: var(--wb-selected); color: var(--wb-selected-ink); border-color: var(--wb-focus); }
+body #full-editor .hub-menu-items { background: var(--wb-surface); color: var(--wb-ink); border-color: var(--wb-line); box-shadow: var(--wb-shadow); }
+
+@media (max-width: 1199px) {
+  #full-editor #fe-title { max-width: 220px; }
+  body #full-editor .fe-top { padding: 8px 12px; gap: 8px; }
+  #full-editor .fe-top-actions { gap: 4px; }
+  #full-editor #we-center { padding: 8px; }
+}
+@media (max-width: 759px) {
+  body #full-editor { width: calc(100vw - 8px); height: calc(100dvh - 8px); border-radius: 8px; }
+  body #full-editor .fe-top { flex-wrap: wrap !important; min-height: 64px; }
+  #full-editor #wb-document { flex: 1 1 140px; }
+  #full-editor .fe-top-actions { flex-wrap: wrap !important; }
+  /* The parent opens one panel at a time; leave both reveal rails reachable. */
+  body #full-editor .we-body { overflow: hidden; --we-slides-width: 180px; --we-inspector-width: 260px; }
+  #full-editor #we-center { padding: 4px; min-height: 0; }
+  #full-editor #wp-selection-header, #full-editor #wp-fields { padding: 8px; }
+  #full-editor #component-toolbar { gap: 4px; padding: 4px; }
+  #full-editor #component-toolbar .component-view-controls { margin-left: 0; }
+  body #full-editor #we-settings { inset: 8px; padding: 16px; }
+}
+@media (hover: none) {
+  #full-editor .wp-slide-actions { opacity: 1; pointer-events: auto; }
+}
+@media (forced-colors: active) {
+  #full-editor .wb-panel-resize::before { background: ButtonText; }
+  #full-editor #wp-tabs [aria-selected="true"], #component-add #component-tabs [aria-selected="true"] { outline: 2px solid Highlight; }
+}

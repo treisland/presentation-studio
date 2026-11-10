@@ -67,7 +67,7 @@ test("compact controls and recent drafts support safe switching, duplication, ba
     await page.locator("#open-full-editor").click();
     assert.equal(
       await page.locator(".fe-top-actions>button:visible").count(),
-      6,
+      7,
     );
     assert.equal(await page.getByRole("button", { name: "Check readiness", exact: true }).isVisible(), true);
     await tab(page, "Branding");
