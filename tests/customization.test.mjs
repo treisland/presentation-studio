@@ -12,7 +12,7 @@ test('type names increment without renumbering, custom copy names and reset/sear
   assert.equal((await operations(page,[{type:'element.rename',slideId:id,keys:[second],name:'Customer quote'},{type:'block.duplicate',slideId:id,blockId:second}])).ok,true);
   let state=(await snapshot(page)).state;assert(Object.values(state.design.slides[id].objects).some(item=>item.name==='Customer quote — Copy'));
   await layer(page,second);await page.locator('#en-search').fill('Customer quote');assert.equal(await page.locator('#sp-layers [data-key="'+third+'"]').isVisible(),false,await page.locator('#sp-layers [data-key="'+third+'"]').evaluate(el=>el.outerHTML)+' query='+await page.locator('#en-search').inputValue());
-  await page.locator('#en-search').fill('');await page.locator('#sp-name').fill('A custom name');await page.locator('#sp-name').press('Tab');assert.equal(meta((await snapshot(page)).state,id,second).name,'A custom name');
+  await page.locator('#en-search').fill('');await reveal(page,'#sp-name');await page.locator('#sp-name').fill('A custom name');await page.locator('#sp-name').press('Tab');assert.equal(meta((await snapshot(page)).state,id,second).name,'A custom name');
   assert.equal((await operations(page,[{type:'element.rename',slideId:id,keys:[second],name:null}])).ok,true);assert.equal(meta((await snapshot(page)).state,id,second).autoName,secondName);
   const expected=await snapshot(page),restored=await importZip(browser,await exportZip(page),expected.projectId);try{assert.deepEqual((await snapshot(restored)).state,expected.state);}finally{await restored.close();}assert.deepEqual(errors,[]);
  }finally{await page.close();}

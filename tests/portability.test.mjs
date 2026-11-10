@@ -198,14 +198,23 @@ test("theme logos, brand presets, and transition overrides survive editable and 
     await page.locator("#nx-disable-motion").uncheck();
     await page.locator("#fe-close").click();
     await page.emulateMedia({ reducedMotion: "no-preference" });
-    await page.locator("#play").click();
-    await page.locator("#next").click();
-    await page.waitForTimeout(200);
+    // Hold the real slide animations rather than racing a wall-clock sleep
+    // against a busy browser worker. Playback must stay paused until they end.
+    const transition = await page.evaluate(() => {
+      document.getElementById('play').click();
+      document.getElementById('next').click();
+      const animations=document.getAnimations().filter(animation=>animation.effect?.target.matches('#stage .slide')&&Number.isFinite(animation.effect.getComputedTiming().endTime));
+      animations.forEach(animation=>animation.pause());
+      return {active:document.body.classList.contains('nx-transitioning'),count:animations.length};
+    });
+    assert.equal(transition.active,true);assert(transition.count>0);
+    await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
     assert.equal(
       await page.locator("#fill").evaluate((e) => e.style.width),
       "0%",
     );
-    await page.waitForTimeout(650);
+    await page.evaluate(()=>document.getAnimations().filter(animation=>animation.effect?.target.matches('#stage .slide')&&Number.isFinite(animation.effect.getComputedTiming().endTime)).forEach(animation=>animation.finish()));
+    await page.waitForFunction(()=>!document.body.classList.contains('nx-transitioning')&&parseFloat(document.getElementById('fill').style.width)>0);
     assert(
       parseFloat(await page.locator("#fill").evaluate((e) => e.style.width)) >
         0,

@@ -1,3 +1,4 @@
+import {inspectContent} from './ui.mjs';
 import { reveal } from './ui.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -123,7 +124,7 @@ test('partial failure, cancellation, locks and stale UI edits leave batches unap
     assert.equal((await apply(page, [{ type: 'media.place', slideId: 'studio-media', placement: { x: 0.9, y: 0, w: 0.4, h: 0.4 } }])).code, 'INVALID');
     await page.locator('.fe-slide-button[data-slide-id="studio-media"]').click();
     await reveal(page,"#we-context-media");
-    await page.locator('#we-context-media').click();
+    await inspectContent(page,'Media');
     await reveal(page,"#ce-object-lock");
     await page.locator('#ce-object-lock').click();
     const lockedObject = await pack(page);

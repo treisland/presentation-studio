@@ -1,3 +1,4 @@
+import {inspectContent} from './ui.mjs';
 import {selectStartingExample} from './ui.mjs';
 import { reveal } from './ui.mjs';
 import { selectTab, addSlide } from './ui.mjs';
@@ -99,7 +100,7 @@ test("Default addition preserves table/text, existing media and IDs with one-ste
   try {
     await addSlide(p, 'table');
     await reveal(p,"#we-context-media");
-    await p.locator('#we-context-media').click();
+    await inspectContent(p,'Media');
     const id = await p.locator('.fe-slide-button[aria-current=true]').getAttribute('data-slide-id');
     const before = await json(p), model = before.state.slides.find(s => s.id === id);
     await upload(p, 'table-first.svg');
@@ -158,7 +159,7 @@ test("Background additions keep text foreground stacking in edit, Preview and of
   try {
     const before = await json(p);
     await reveal(p,"#we-context-media");
-    await p.locator('#we-context-media').click();
+    await inspectContent(p,'Media');
     await upload(p, 'background.svg', 'background');
     const after = await json(p);
     assert.deepEqual(after.state.slides[0].tree, before.state.slides[0].tree);

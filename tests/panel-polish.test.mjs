@@ -1,3 +1,4 @@
+import {selectElement} from './ui.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {chromium} from 'playwright';
@@ -27,7 +28,7 @@ test('Inspector media-list selection targets the matching Grid cell for removal 
 test('edge rails, sticky panel controls and keyboard tabs preserve project/history and session view state',async()=>{const{p,errors}=await setup();try{
  const before=await pack(p);
  await p.locator('#wp-tab-content').focus();await p.keyboard.press('ArrowRight');assert.equal(await p.locator('#wp-tab-arrange').getAttribute('aria-selected'),'true');
- await p.keyboard.press('End');assert.equal(await p.locator('#wp-tab-layers').getAttribute('aria-selected'),'true');await p.keyboard.press('ArrowLeft');assert.equal(await p.locator('#wp-tab-style').getAttribute('aria-selected'),'true');await p.keyboard.press('Home');
+ await p.keyboard.press('End');assert.equal(await p.locator('#wp-tab-style').getAttribute('aria-selected'),'true');await p.keyboard.press('ArrowLeft');assert.equal(await p.locator('#wp-tab-arrange').getAttribute('aria-selected'),'true');await p.keyboard.press('Home');
  const header=await p.locator('#wp-selection-header').boundingBox(),search=await p.locator('#fe-search').boundingBox();
  await p.locator('#wp-fields').evaluate(el=>el.scrollTop=el.scrollHeight);await p.locator('#fe-slide-list').evaluate(el=>el.scrollTop=el.scrollHeight);
  assert.equal((await p.locator('#wp-selection-header').boundingBox()).y,header.y);assert.equal((await p.locator('#fe-search').boundingBox()).y,search.y);
@@ -42,8 +43,8 @@ test('top-level block actions work across sections, support undo and respect loc
  assert.equal(await p.locator('#wp-selection-title').textContent(),'Circle block');
  await p.locator('#wp-tab-style').click();assert.equal(await p.locator('#db-remove').isVisible(),true);assert.equal(await p.locator('#db-remove').textContent(),'Delete block');
  const before=await read(p);await p.locator('#db-duplicate').click();assert.equal((await read(p)).slides[0].tree.length,before.slides[0].tree.length+1);await p.locator('#fe-undo').click();
- await p.locator('#db-list').selectOption({index:1});await p.locator('#db-remove').click();assert.equal((await read(p)).slides[0].tree.length,before.slides[0].tree.length-1);await p.locator('#fe-undo').click();assert.deepEqual(await read(p),before);
- await p.locator('#db-list').selectOption({index:1});await click(p,'#ce-slide-lock');assert.equal(await p.locator('#db-remove').isDisabled(),true);assert.equal(await p.locator('#db-duplicate').isDisabled(),true);
+ await p.locator('#wp-tab-arrange').click();await selectElement(p,await p.locator('#db-list option').nth(1).getAttribute('value'));await p.locator('#wp-tab-style').click();await p.locator('#db-remove').click();assert.equal((await read(p)).slides[0].tree.length,before.slides[0].tree.length-1);await p.locator('#fe-undo').click();assert.deepEqual(await read(p),before);
+ await p.locator('#wp-tab-arrange').click();await selectElement(p,await p.locator('#db-list option').nth(1).getAttribute('value'));await p.locator('#wp-tab-style').click();await click(p,'#ce-slide-lock');assert.equal(await p.locator('#db-remove').isDisabled(),true);assert.equal(await p.locator('#db-duplicate').isDisabled(),true);
  assert.deepEqual(errors,[]);
  }finally{await p.close();}});
 

@@ -1,3 +1,4 @@
+import {inspectContent} from './ui.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {chromium} from 'playwright';
@@ -19,7 +20,7 @@ test('selecting text and code exposes only relevant content and keeps pending te
   await selectLayer(page,text.created[0]);assert.equal(await page.locator('#code-panel').isVisible(),false);assert.equal(await page.locator('#ic-text-hint').isVisible(),true);
   assert.equal(await page.locator('#fe-block-text').isVisible(),false);
   await page.locator('#ic-text-editor summary').click();await page.locator('#fe-block-text').fill('Independent free text');
-  await page.locator('#we-inspector').getByRole('tab',{name:'Commands',exact:true}).click();
+  await selectLayer(page,code.created[0]);
   assert.equal(await page.locator('#code-text').inputValue(),'python app.py');
   await selectLayer(page,text.created[0]);await page.locator('#ic-text-editor summary').click();
   assert.equal(await page.locator('#fe-block-text').inputValue(),'Independent free text');
@@ -35,9 +36,9 @@ test('widget and multiple selection suppress unrelated editors; slide and notes 
   await selectLayer(page,result.created[0]);assert.equal(await page.locator('#component-widget-fields textarea').count(),2);assert.equal(await page.locator('#component-widget-fields').isVisible(),true);assert.equal(await page.locator('#ic-text-editor').isVisible(),false);
   await page.locator('#wp-tab-layers').click();await page.locator('#sp-layers [data-key="'+result.created[1]+'"] input[type=checkbox]').check();await page.locator('#wp-tab-content').click();
   assert.match(await page.locator('#wp-selection-title').textContent(),/Multiple/);assert.equal(await page.locator('#component-widget-fields').isVisible(),false);assert.equal(await page.locator('#ic-content-hint').isVisible(),true);
-  await page.locator('#we-context-slide').click();assert.equal(await page.locator('#fe-slide-title').isVisible(),true);assert.equal(await page.locator('#sp-clear').isVisible(),true);
-  await page.locator('[data-fe-tab=notes]').click();assert.equal(await page.locator('#fe-notes-text').isVisible(),true);assert.equal(await page.locator('#fe-slide-title').isVisible(),false);
-  await selectLayer(page,result.created[0]);assert.equal(await page.locator('#fe-notes-panel').isVisible(),false);assert.equal(await page.locator('#component-widget-fields').isVisible(),true);assert.deepEqual(errors,[]);
+  await inspectContent(page,'Slide');assert.equal(await page.locator('#fe-slide-title').isVisible(),true);assert.equal(await page.locator('#sp-clear').isVisible(),true);
+  await page.locator('#ci-notes > summary').click();assert.equal(await page.locator('#fe-notes-text').isVisible(),true);assert.equal(await page.locator('#fe-slide-title').isVisible(),true);
+  await selectLayer(page,result.created[0]);assert.equal(await page.locator('#fe-notes-panel').isVisible(),true);assert.equal(await page.locator('#component-widget-fields').isVisible(),true);assert.deepEqual(errors,[]);
  }finally{await page.close();}
 });
 test('table selection, nested cell identity, locks and deletion clear stale controls',async()=>{
@@ -91,7 +92,7 @@ test('demo heading duplicates independently, deletes without renaming the slide,
   let state=(await snapshot(page)).state,slide=state.slides.find(slide=>slide.id===original.id);assert.equal(slide.title,title);assert.equal(slide.id,original.id);assert.equal(await copy.textContent(),'An independent copy');assert.match(slide.classes,/editor-title-removed/);
   const removed=await snapshot(page),restored=await importZip(browser,await exportZip(page),removed.projectId);try{assert.deepEqual((await snapshot(restored)).state,removed.state);}finally{await restored.close();}
   const playback=await page.evaluate(async bytes=>{const zip=await JSZip.loadAsync(new Uint8Array(bytes));return JSON.parse(await zip.file('presentation.json').async('string'));},[...await exportZip(page,'#fe-playback')]);assert.equal(playback.state.slides.find(slide=>slide.id===original.id).title,title);
-  await page.locator('#ic-slide-settings').click();await page.locator('#fe-slide-title').fill('A new navigation name');await page.locator('#fe-slide-title').press('Tab');await page.waitForTimeout(400);assert.equal(await copy.textContent(),'An independent copy');
+  await inspectContent(page,'Slide');await page.locator('#fe-slide-title').fill('A new navigation name');await page.locator('#fe-slide-title').press('Tab');await page.waitForTimeout(400);assert.equal(await copy.textContent(),'An independent copy');
   await page.locator('#fe-undo').click();assert.deepEqual((await snapshot(page)).state,removed.state);await page.locator('#fe-undo').click();assert.deepEqual((await snapshot(page)).state,beforeDelete.state);
   assert.equal(await page.locator('#fe-preview h1:not(.editor-body)').textContent(),'Make it yours.');assert.deepEqual(errors,[]);
  }finally{await page.close();}
@@ -121,7 +122,7 @@ test('Inspector canvas-edit action preserves list items and table form refreshes
   await page.locator('#fe-preview li[contenteditable=true]').fill('Edited list item');await page.keyboard.press('Escape');assert.equal(await list.locator('li').count(),count);
   const id=listSlide.id,result=await operations(page,[{type:'table.insert',slideId:id,rows:2,columns:2,header:true}]);await selectLayer(page,result.created[0]);
   const before=await page.locator('#fe-table-grid input').count();await page.locator('#fe-row-add').click();assert.equal(await page.locator('#fe-table-grid input').count(),before+2);
-  await page.locator('#fe-table-grid input').last().fill('Fresh cell');await page.locator('#fe-table-grid input').last().press('Tab');await page.waitForTimeout(400);assert.equal(await page.locator('#fe-preview td').last().textContent(),'Fresh cell');
+  await reveal(page,'#fe-table-grid');await page.locator('#fe-table-grid input').last().fill('Fresh cell');await page.locator('#fe-table-grid input').last().press('Tab');await page.waitForTimeout(400);assert.equal(await page.locator('#fe-preview td').last().textContent(),'Fresh cell');
   await page.locator('#fe-undo').click();assert.notEqual(await page.locator('#fe-table-grid input').last().inputValue(),'Fresh cell');assert.deepEqual(errors,[]);
  }finally{await page.close();}
 });

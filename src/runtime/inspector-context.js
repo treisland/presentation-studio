@@ -9,7 +9,10 @@ function icContains(node, predicate) {
 function icSelection() {
   const model = projectModel(), entries = spEntries(), keys = wpKind === 'slide' ? [] : spActiveKeys();
   const selected = entries.filter(entry => keys.includes(entry.key));
-  const inspectorPath = document.activeElement === $('fe-block-text') ? projectBlockPath : icInspectorTarget?.slide===projectSelected && wpKind==='text' ? icInspectorTarget.path : '';
+  const target=icInspectorTarget, targetRoot=target&&entries.find(entry=>entry.node===model.tree[Number(target.path.split('.')[0])]);
+  const retainedPath=target?.slide===projectSelected&&targetRoot?.key===target.key&&['text','block'].includes(wpKind)?target.path:'';
+  const activePath=document.activeElement===$('fe-block-text')&&selected.some(entry=>entry.node===model.tree[Number(projectBlockPath.split('.')[0])])?projectBlockPath:'';
+  const inspectorPath=activePath||retainedPath;
   if (!selected.length && inspectorPath && projectAt(model,inspectorPath)) {
     const entry=entries.find(item=>item.node===model.tree[Number(inspectorPath.split('.')[0])]);
     if(entry){selected.push(entry);keys.push(entry.key);}
@@ -42,7 +45,7 @@ function icSelection() {
     title = 'Table'; detail = 'Edit cells on the canvas or use the table fields below.';
     const tables = projectFind(model, item => item.tag === 'table');
     const table = icDestination === 'table' ? tables.find(item=>item.path===projectTablePath)||tables[0] : tables.find(item => !node || icContains(node, candidate => candidate === item.node));
-    path = table?.path || projectTablePath;
+    path = table?.path || '';
     if (inlineNode && ['td','th','caption'].includes(inlineNode.tag)) {
       const cell = inline.el.closest('td,th');
       detail = cell ? 'Table → Row '+(cell.parentElement.rowIndex+1)+' → Column '+(cell.cellIndex+1) : 'Table → Caption';
@@ -85,7 +88,7 @@ function icPaint() {
     icVisible('fe-content-panel',['slide','text'].includes(kind));
     if (['slide','text'].includes(kind)) $('fe-content-panel').hidden = false;
     icVisible('ic-slide-fields',kind === 'slide');
-    icVisible('ic-text-editor',['slide','text'].includes(kind));
+    icVisible('ic-text-editor',kind === 'text');
     icVisible('ic-text-hint',kind === 'text');
     icVisible('fe-block-select',kind === 'slide' || icDestination === 'text');
     icVisible('ic-block-label',kind === 'slide' || icDestination === 'text');
@@ -93,11 +96,12 @@ function icPaint() {
     icVisible('ic-title-label',kind === 'slide');
     icVisible('we-slide-transition',kind === 'slide');
     icVisible('ic-transition-label',kind === 'slide');
-    icVisible('fe-notes-panel',kind === 'notes');
-    $('fe-notes-panel').hidden = kind !== 'notes';
+    icVisible('fe-notes-panel',true);
+    $('fe-notes-panel').hidden = false;
     icVisible('fe-table-panel',kind === 'table');
     $('fe-table-panel').hidden = kind !== 'table';
     icVisible('ce-panel',kind === 'media' || kind === 'grid');
+    $('ce-panel').hidden = !['media','grid'].includes(kind);
     icVisible('mg-panel',kind === 'grid');
     icVisible('db-arrange',['text','widget','table','code'].includes(kind) && !!dbNode());
     icVisible('sp-clear',kind === 'slide');
@@ -182,7 +186,7 @@ function icNavigate(kind) {
   icPaint();
 }
 function icExpandTextEditor() {
-  const context=icSelection();if(context.kind==='text'&&context.path)icInspectorTarget={slide:projectSelected,path:context.path};
+  const context=icSelection();if(context.kind==='text'&&context.path)icInspectorTarget={slide:projectSelected,path:context.path,key:context.selected[0]?.key};
   vbEnd(false); projectFlush(); icPaint();
   wePanels.inspector.open = true; wePanelView(); wpChooseTab('content');
   $('ic-text-editor').open = true; $('fe-block-text').focus();
@@ -212,8 +216,8 @@ projectInit = function() {
     if (element) vbStart({el:element,path,kind:'text',slideID:projectSelected});
     icPaint();
   };
-  $('ic-text-editor').addEventListener('toggle',()=>{if(editor.open){const context=icSelection();if(context.kind==='text'&&context.path)icInspectorTarget={slide:projectSelected,path:context.path};vbEnd(false);}});
-  editor.querySelector('summary').addEventListener('pointerdown',()=>{if(!editor.open){const context=icSelection();if(context.kind==='text'&&context.path)icInspectorTarget={slide:projectSelected,path:context.path};}});
+  $('ic-text-editor').addEventListener('toggle',()=>{if(editor.open){const context=icSelection();if(context.kind==='text'&&context.path)icInspectorTarget={slide:projectSelected,path:context.path,key:context.selected[0]?.key};vbEnd(false);}});
+  editor.querySelector('summary').addEventListener('pointerdown',()=>{if(!editor.open){const context=icSelection();if(context.kind==='text'&&context.path)icInspectorTarget={slide:projectSelected,path:context.path,key:context.selected[0]?.key};}});
   const panel = $('vb-panel').onclick;
   $('vb-panel').onclick = event => { const context = icSelection();if(context.kind === 'text')icExpandTextEditor();else if(context.kind === 'code')icNavigate('code');else panel?.call($('vb-panel'),event); };
   for (const [selector,kind] of [['#we-context-slide','slide'],['[data-fe-tab="commands"]','code'],['[data-fe-tab="table"]','table'],['[data-fe-tab="notes"]','notes'],['[data-fe-tab="content"]','text']]) {

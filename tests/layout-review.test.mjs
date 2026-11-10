@@ -1,3 +1,4 @@
+import {inspectContent} from './ui.mjs';
 import {selectStartingExample} from './ui.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -30,7 +31,7 @@ test('all visual guide cues use selected-cell controls without editing primary m
  const{page:p,errors}=await openExample(browser,'comic-demo');try{
   const state=(await snapshot(p)).state,slide=state.slides.find(s=>s.template==='comic-sequence');await p.locator('.fe-slide-button[data-slide-id="'+slide.id+'"]').click();await click(p,'#lc-walkthrough-open');
   for(const family of ['portfolio','comic','editorial']){await p.locator('#lc-guide-family').selectOption(family);for(let i=0;i<(family==='portfolio'?1:2);i++)await p.locator('#lc-guide-next').click();assert.equal(await p.locator('#mg-cell').evaluate(n=>n.classList.contains('lc-guide-target')),true);assert.equal(await p.locator('#fe-media.lc-guide-target').count(),0);}
-  await p.locator('#wp-tab-content').click();await p.locator('#mg-cell').selectOption({index:1});await p.locator('#we-context-media').click();await reveal(p,'#ce-caption');await p.locator('#ce-caption').fill('Changed second panel only');await p.locator('#ce-caption').press('Tab');
+  await p.locator('#wp-tab-content').click();await p.locator('#mg-cell').selectOption({index:1});await inspectContent(p,'Media');await reveal(p,'#ce-caption');await p.locator('#ce-caption').fill('Changed second panel only');await p.locator('#ce-caption').press('Tab');
   const after=(await snapshot(p)).state;assert.deepEqual(after.media[slide.id],state.media[slide.id]);assert.equal(after.mediaObjects[slide.id][0].media.caption,'Changed second panel only');assert.equal(await p.locator('#full-editor').isVisible(),true);assert.equal(await p.locator('#lc-walkthrough').isVisible(),true);assert.deepEqual(errors,[]);
  }finally{await p.close();}
 });

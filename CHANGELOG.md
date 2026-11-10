@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Omit hidden media-grid configuration roots from playback instead of creating invalid empty grid spacers; verify the exported project reopens offline with its IDs and without hidden media.
+- Make Inspector Content follow the selected object, retire legacy category navigation and generic object pickers, and add a persistent slide-scoped notes drawer. Retain scoped legacy text access, table/code/widget/media editing, pending edits, locks and Undo.
+- Replace the combined block-alignment menu with separate Horizontal and Vertical icon groups, explicitly aligned to the slide. Combine axes for corners and edge centers while preserving size, content, layer and Undo.
+- Redesign Layers and Style for the 0.9.0 milestone: a shared left Slides/Layers dock, accessible visibility/lock icons and compact right-side appearance summaries with on-demand color editing. Manual review remains pending; 0.8.0 workbench polish is a prerequisite.
+- Fix hidden content collapsing template layout or remaining visible through template display rules. Preserve neighboring geometry and exclude hidden content from playback exports while retaining empty layout spacers where needed.
+
 - Redesign the editor as a canvas-first workbench with shared light/dark styling, clearer action hierarchy, responsive panels, rail resizing, focused Inspector and consistent Library/AI dialogs.
 - Add direct Snap and editable ZIP Export actions, explicit template Move / resize access, and clearer multi-direction block resizing while retaining locks, cancellation, Undo, recovery and offline compatibility. Manual review is pending for the 0.8.0 milestone.
 

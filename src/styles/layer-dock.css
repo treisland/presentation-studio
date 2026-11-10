@@ -1,0 +1,43 @@
+/* Slides and Layers occupy the same existing navigator column. */
+#full-editor #ld-tabs { display:flex; gap:4px; padding:4px; flex:none; border-radius:8px; background:var(--wb-raised); }
+body #full-editor #ld-tabs button { flex:1; min-width:0; min-height:32px; padding:6px; background:transparent; color:var(--wb-muted); border-color:transparent; }
+body #full-editor #ld-tabs [aria-selected="true"] { background:var(--wb-surface); color:var(--wb-selected-ink); border-color:var(--wb-line); }
+#full-editor #wp-tabs { grid-template-columns:repeat(3,minmax(0,1fr)); }
+#full-editor #ld-slides-pane { display:flex; flex-direction:column; gap:8px; min-height:0; flex:1; overflow:auto; }
+#full-editor :is(#ld-slides-pane,#sp-layer-panel)[hidden] { display:none!important; }
+body #full-editor #we-slides > #sp-layer-panel { flex:1 1 0; min-width:0; min-height:0; overflow:auto; font:12px/1.5 var(--wb-font); color:var(--wb-ink); }
+#full-editor #sp-layer-panel > p { color:var(--wb-muted); margin:8px 0; }
+#full-editor #sp-layer-panel #ld-selection-count { color:var(--wb-ink); font-weight:600; }
+#full-editor #sp-layer-panel label { margin:8px 0; }
+#full-editor #sp-layers { display:block; margin-top:8px; }
+body #full-editor #sp-layers .sp-layer-row { display:grid; grid-template-columns:18px minmax(0,1fr) 30px 30px; gap:2px; padding:6px 2px; margin:4px 0; border:1px solid var(--wb-line); border-radius:6px; background:var(--wb-surface); color:var(--wb-ink); }
+body #full-editor #sp-layers .sp-layer-row.selected { background:var(--wb-selected); border-color:var(--wb-focus); }
+#full-editor #sp-layers .sp-layer-row[hidden] { display:none!important; }
+#full-editor #sp-layers .sp-layer-row input { align-self:center; width:14px; margin:0; }
+body #full-editor #sp-layers .ld-choose { display:flex; align-items:center; gap:4px; min-width:0; min-height:32px; text-align:left; padding:2px; background:transparent; border:0; color:inherit; }
+#full-editor .ld-row-text { min-width:0; display:flex; flex-direction:column; }
+body #full-editor #sp-layers .ld-choose[hidden] { display:none!important; }
+#full-editor #sp-layers .ld-inline-name { grid-column:2; min-width:0; width:100%; margin:0; padding:4px; min-height:32px; }
+#full-editor .ld-name { font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+#full-editor #sp-layers .en-preview { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:100%; color:var(--wb-muted); font-size:10px; }
+#full-editor .ld-type { display:flex; flex:none; color:var(--wb-muted); }
+#full-editor #sp-layer-panel svg { width:16px; height:16px; flex:none; }
+body #full-editor #sp-layers .ld-icon-action { display:flex; align-items:center; justify-content:center; min-width:30px; min-height:32px; padding:4px; background:transparent; color:inherit; border-color:transparent; }
+body #full-editor #sp-layers .ld-icon-action:is([data-ld-state="hidden"],[data-ld-state="locked"]) { background:var(--wb-raised); border-color:var(--wb-line); }
+body #full-editor #sp-layers .ld-icon-action.ld-reorder { display:none; }
+#full-editor .ld-reorder-options { display:flex; gap:4px; margin:8px 0; }
+#full-editor .ld-reorder-options button { display:flex; justify-content:center; align-items:center; min-width:32px; min-height:32px; }
+#full-editor #sp-layers .ld-state { grid-column:2 / -1; font-size:10px; color:var(--wb-muted); }
+#full-editor #sp-layers .ld-state:empty { display:none; }
+#full-editor #sp-layers .sp-grid-child { max-width:100%; font-size:11px; }
+#full-editor #ld-options { margin-top:12px; border-top:1px solid var(--wb-line); padding-top:8px; }
+#full-editor #ld-options summary { cursor:pointer; padding:6px 0; }
+#full-editor #ld-visibility { margin-top:12px; border-top:1px solid var(--wb-line); padding-top:8px; }
+#full-editor #ld-visibility > div { display:flex; flex-wrap:wrap; gap:4px; }
+body #full-editor #ld-visibility button { padding:6px; font-size:11px; }
+body #full-editor #ld-reveal-layers { font:10px/1.2 var(--wb-font); writing-mode:vertical-rl; min-height:56px; }
+#full-editor #ld-tabs button:focus-visible, #full-editor #sp-layer-panel :is(button,input,summary):focus-visible { outline:2px solid var(--wb-focus); outline-offset:1px; }
+@media (forced-colors:active) {
+  #full-editor #ld-tabs [aria-selected="true"], #full-editor #sp-layers .sp-layer-row.selected { outline:2px solid Highlight; }
+  #full-editor #sp-layers .ld-icon-action:is([data-ld-state="hidden"],[data-ld-state="locked"]) { border:1px solid ButtonText; }
+}

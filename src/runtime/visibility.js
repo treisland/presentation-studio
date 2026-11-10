@@ -50,8 +50,14 @@ function visibilityChrome(root,state,id){
 }
 function visibilityPaintSlide(slide){
   const id=slide.dataset.mediaId,model=projectModel(id);if(!model)return;
-  for(const entry of spEntries(model)){const element=spElement(slide,entry);if(element){element.classList.toggle('sp-hidden',visibilityEntryHidden(projectState,id,entry));if(entry.kind==='grid')for(const figure of slide.querySelectorAll('.media-box[data-mg-cell]'))figure.classList.toggle('sp-hidden',visibilityEntryHidden(projectState,id,entry));}}
+  for(const entry of spEntries(model)){const element=spElement(slide,entry);if(element){const hidden=visibilityEntryHidden(projectState,id,entry);element.classList.toggle('sp-hidden',hidden);if(entry.kind==='grid')for(const figure of slide.querySelectorAll('.media-box[data-mg-cell]'))figure.classList.toggle('sp-hidden',hidden||!!mgConfig(projectState,id,figure.dataset.objectId)?.canvas?.hidden);}}
 }
+// Native hidden/display:none would collapse template content before the shared
+// visibility pass. Keep each renderer's model flag, but conceal its existing box.
+const visibilityCommandPaint=commandPaint;
+commandPaint=function(node,raw){const result=visibilityCommandPaint(node,raw),terminal=node.querySelector('.terminal');if(terminal&&raw){terminal.hidden=false;const block=terminal.closest('.data-block');if(block)block.hidden=false;terminal.classList.toggle('visibility-code-hidden',!!raw.hidden);}return result;};
+const visibilityCanvasStyle=ceStyle;
+ceStyle=function(figure,cfg,slide){const result=visibilityCanvasStyle(figure,cfg,slide);if(cfg.canvas){figure.hidden=false;figure.classList.remove('ce-hidden');figure.classList.toggle('sp-hidden',!!cfg.canvas.hidden);}return result;};
 const visibilityApply=spApply;
 spApply=function(slide,...args){const result=visibilityApply(slide,...args);if(projectReady)visibilityPaintSlide(slide);return result;};
 const visibilityRender=render;
@@ -59,13 +65,61 @@ render=function(...args){const result=visibilityRender(...args);if(projectReady&
 const visibilityPreview=projectPreview;
 projectPreview=function(...args){const result=visibilityPreview(...args);$('fe-preview')?.classList.toggle('visibility-show-hidden',visibilityShowHidden);if(projectPreviewNode){visibilityChrome(projectPreviewNode,projectState,projectSelected);const slide=projectPreviewNode.querySelector('.slide');if(slide)visibilityPaintSlide(slide);}visibilityPanel();return result;};
 const visibilityPack=projectPack;
+// Playback retains only finite layout enums after excluding a hidden primary
+// assignment. Recreate the usual DOM pane, keeping model roots/IDs unchanged.
+function visibilityMediaLayout(slide){
+  const layout=['right','left','below','full','background','inset'].find(value=>slide.classList.contains('visibility-layout-'+value));
+  if(!layout)return false;
+  if(slide.querySelector(':scope > .media-original'))return true;
+  const pane=document.createElement('div');pane.className='media-original';
+  for(const node of [...slide.childNodes])if(!node.matches?.('.db-block,.media-box,.mg-grid'))pane.append(node);
+  slide.prepend(pane);slide.classList.add('media-on','media-'+layout);
+  const corner=['right-bottom','left-bottom','right-top','left-top'].find(value=>slide.classList.contains('visibility-corner-'+value));
+  if(corner)slide.classList.add('corner-'+corner);
+  slide.style.setProperty('--media-share',slide.classList.contains('visibility-ratio-media')?'62%':slide.classList.contains('visibility-ratio-text')?'38%':'50%');
+  if(slide.classList.contains('visibility-layout-free'))slide.classList.add('ce-free');
+  if(layout==='below')pane.style.height='auto';
+  return true;
+}
+const visibilityMediaApply=mediaApply;
+mediaApply=function(slide){
+  const result=visibilityMediaApply(slide);
+  if(!mediaGetAssignment(slide.dataset.mediaId)&&visibilityMediaLayout(slide))spApply(slide);
+  return result;
+};
+function visibilitySpacer(node,element){
+  // Playback omits content and stable identities, retaining only the measured
+  // empty layout box. Reuse the existing portable template-placeholder format.
+  // Grid roots are validated configuration, not layout boxes. Their rendered
+  // media frames are omitted separately; an empty grid would fail reimport.
+  if(!element||mgHas(node,'mg-grid')||['absolute','fixed'].includes(getComputedStyle(element).position))return null;
+  const tokens=(node.attrs?.class||'').split(/\s+/).filter(token=>token&&!/^(?:block|layer)-/.test(token));
+  const attrs={class:[...tokens,'tp-placeholder','tp-w-'+element.offsetWidth,'tp-h-'+element.offsetHeight].join(' ')};
+  if(node.attrs?.style)attrs.style=node.attrs.style;
+  return{tag:node.tag==='img'?'div':node.tag,attrs,children:[]};
+}
 projectPack=function(playback=false){
   const pack=visibilityPack(playback);if(!playback)return pack;
   for(const slide of pack.state.slides){
     const entries=spEntries(slide,pack.state),hidden=entries.filter(entry=>visibilityEntryHidden(pack.state,slide.id,entry));
     const hiddenMedia=new Set(hidden.flatMap(entry=>entry.kind==='grid'?entry.node.children.map(mgObjectID).filter(Boolean):entry.object?[entry.object]:[]));
-    slide.tree=slide.tree.filter(node=>!hidden.some(entry=>entry.node===node));
-    if(hiddenMedia.has('primary'))delete pack.state.media[slide.id];
+    const source=allSlides.find(element=>element.dataset.mediaId===slide.id),model=projectModel(slide.id),sourceEntries=model?spEntries(model):[];
+    slide.tree=slide.tree.flatMap(node=>{
+      const entry=hidden.find(entry=>entry.node===node);if(!entry)return[node];
+      const original=sourceEntries.find(item=>item.key===entry.key),element=source&&original&&spElement(source,original),spacer=visibilitySpacer(node,element);
+      return spacer?[spacer]:[];
+    });
+    if(hiddenMedia.has('primary')){
+      const cfg=pack.state.media[slide.id];
+      if(cfg&&source?.querySelector(':scope > .media-original')&&['right','left','below','full','background','inset'].includes(cfg.layout)){
+        const ratio=['media','text'].includes(cfg.ratio)?cfg.ratio:'equal',corner=String(cfg.corner).replace(' ','-');
+        const markers=['visibility-layout-'+cfg.layout,'visibility-ratio-'+ratio];
+        if(['right-bottom','left-bottom','right-top','left-top'].includes(corner))markers.push('visibility-corner-'+corner);
+        if(cfg.canvas?.placement)markers.push('visibility-layout-free');
+        slide.classes+=' '+markers.join(' ');
+      }
+      delete pack.state.media[slide.id];
+    }
     if(pack.state.mediaObjects?.[slide.id])pack.state.mediaObjects[slide.id]=pack.state.mediaObjects[slide.id].filter(item=>!hiddenMedia.has(item.id));
     if(slide.commands?.hidden||!projectFind(slide,node=>mgHas(node,'terminal')).length)slide.commands=null;
   }return pack;

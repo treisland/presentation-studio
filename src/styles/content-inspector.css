@@ -1,0 +1,26 @@
+/* Editor view state only; no project-format changes. */
+#full-editor #ci-legacy-tabs, #full-editor .ci-internal { display:none!important; }
+body #full-editor #we-inspector { max-height:none; min-height:0; align-self:stretch; }
+#full-editor #we-inspector:not([data-ic-kind="slide"]) #visibility-panel { display:none!important; }
+body #full-editor #ic-edit-inline { background:var(--wb-blue); color:#fff; border-color:var(--wb-blue); }
+body #full-editor #ic-edit-inline:hover:not(:disabled) { background:var(--wb-blue-hover); }
+#full-editor #wp-selection-header { max-height:45%; overflow:auto; box-sizing:border-box; }
+#full-editor #db-panel > :is(label[for="db-list"],#db-list) { display:none!important; }
+#full-editor #ci-field-target { display:block; margin:0 0 12px; font:12px/1.5 var(--wb-font); }
+#full-editor :is(#ci-field-target,#ci-legacy-content)[hidden] { display:none!important; }
+#full-editor #ci-notes { flex:none; max-height:42%; overflow:auto; border-top:1px solid var(--wb-line); background:var(--wb-surface); }
+#full-editor #ci-notes > summary { padding:12px; cursor:pointer; font-weight:600; }
+#full-editor #ci-notes-title { display:block; padding-left:15px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--wb-muted); font-weight:normal; font-size:11px; }
+body #full-editor #ci-notes #fe-notes-panel { padding:0 12px 12px; margin:0; border:0; }
+#full-editor #ci-notes textarea { box-sizing:border-box; width:100%; min-height:90px; }
+#full-editor :is(#ci-table-editor,#ci-code-advanced,#ci-legacy-content) { margin:12px 0; padding:10px 0; border-top:1px solid var(--wb-line); }
+#full-editor :is(#ci-table-editor,#ci-code-advanced,#ci-legacy-content) > summary { padding:4px 0; cursor:pointer; font-weight:600; }
+#full-editor #ci-table-editor { max-width:100%; overflow:auto; }
+#full-editor #ci-table-editor input { min-width:72px; }
+#full-editor .ci-code-labels { display:grid; grid-template-columns:repeat(auto-fit,minmax(110px,1fr)); gap:8px; }
+#full-editor #ci-table-count { color:var(--wb-muted); font:12px/1.5 var(--wb-font); }
+#full-editor #ci-find-selection { margin:0 0 12px; }
+@media(max-height:600px) {
+  #full-editor #wp-selection-header { max-height:45%; overflow:auto; box-sizing:border-box; }
+  #full-editor #ci-notes { max-height:35%; }
+}
