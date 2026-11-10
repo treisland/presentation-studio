@@ -2,9 +2,13 @@
 
 ## Unreleased
 
+No additional changes recorded.
+
+## 0.7.0-rc.1 — 2026-11-09
+
 - Simplify 0.7.0 to portable AI presentations: individual JSON/editable-ZIP import, safe review and repair, ordinary editable ZIP downloads and independent browser recovery. Defer folder browsing, linked saves/reloads, native save pickers and folder snapshots; retain existing projects, files and old workspace preferences.
 - Extend portable authoring with Auto/explicit native-element layouts, editable Library widgets, balanced typography, visual import review and fit/repair feedback; preserve earlier authoring-v1 inputs.
-- Add provider-independent AI instructions/schema/catalog/examples. Explain truncated JSON without changing the active project. Final manual acceptance remains pending.
+- Add provider-independent AI instructions/schema/catalog/examples. Explain truncated JSON without changing the active project. Maintainer feature sign-off is recorded; release-gate confirmation and published RC artifact acceptance are tracked separately.
 
 ## 0.6.0-beta.1 — 2026-11-09
 

@@ -24,7 +24,7 @@ Download and unzip a release or a successful **Validate and build** Actions arti
 
 Click **Edit** or press **J**. Use **Project → New presentation** for **Blank**, **Start from an example**, or **Import**. **Project → Start from an example** opens the filtered preview gallery; see [the example guide](docs/examples.md). **Presentations** (or **P**) opens recent browser drafts and project ZIP/JSON files. Export an editable ZIP to save a complete portable copy; playback ZIPs are for delivery.
 
-The revised 0.7.0 implementation adds **Project → AI presentations**: download provider-independent instructions, validate generated JSON, review layouts and native elements, then import and export portable editable ZIPs. Browser recovery remains independent of downloadable backups. Live folder access, linked saves/reloads and folder snapshots are deferred outside this milestone (#117). See [the portable workflow and manual checklist](docs/local-workspaces.md). Final review of PR #118 remains pending; feature work does not authorize a release.
+The revised 0.7.0 implementation adds **Project → AI presentations**: download provider-independent instructions, validate generated JSON, review layouts and native elements, then import and export portable editable ZIPs. Browser recovery remains independent of downloadable backups. Live folder access, linked saves/reloads and folder snapshots are deferred outside this milestone (#117). See [the portable workflow and manual checklist](docs/local-workspaces.md). PR #118 is merged with maintainer sign-off. Release preparation targets 0.7.0-rc.1; stable promotion requires acceptance of the published RC downloads.
 
 AI authoring also supports Auto/explicit layouts, native Library widgets and safe slide previews with fit warnings and layout overrides. Downloaded instructions include a generated capability catalog and three complete examples. See [the native authoring plan](docs/ai-layouts-and-elements.md).
 
@@ -80,7 +80,7 @@ For a localhost preview, run `npm run serve`, then open `http://127.0.0.1:4173`.
 
 [Quick start](docs/quick-start.md) · [Architecture](docs/architecture.md) · [Contributing](CONTRIBUTING.md) · [Content and branding](docs/content-and-branding.md) · [Open-source release](docs/open-source-release.md) · [Roadmap](docs/roadmap.md) · [Troubleshooting](docs/troubleshooting.md)
 
-Version 0.6.0-beta.1. Maintainer-approved authoring beta with widgets, reusable components, template customization and annotations. Released under the [Apache License 2.0](LICENSE). Third-party notices apply. See the [beta notes](docs/releases/0.6.0-beta.1.md), [validation record](docs/releases/0.6.0-beta.1-validation.md) and [component guide](docs/blocks-components.md).
+Version 0.7.0-rc.1. Release candidate for portable AI presentations and the authoring improvements from 0.6.0-beta.1. Released under the [Apache License 2.0](LICENSE). Third-party notices apply. See the [RC notes](docs/releases/0.7.0-rc.1.md), [validation record](docs/releases/0.7.0-rc.1-validation.md) and [portable workflow](docs/local-workspaces.md).
 
 ## Development process
 
