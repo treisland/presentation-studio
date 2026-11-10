@@ -4,6 +4,11 @@
 
 No additional changes recorded.
 
+## 0.7.0 — 2026-11-09
+
+- Promote the accepted 0.7.0 RC to stable with recorded manual gate and published-artifact sign-off. Includes the portable AI workflow and 0.6.0 authoring features; no runtime or dependency changes from the RC.
+- Keep live folder access and linked filesystem saves deferred. Preserve prior beta/RC tags, projects, media/history, recovery and offline exports. See docs/releases/0.7.0.md for scope, limitations and backup guidance.
+
 ## 0.7.0-rc.1 — 2026-11-09
 
 - Simplify 0.7.0 to portable AI presentations: individual JSON/editable-ZIP import, safe review and repair, ordinary editable ZIP downloads and independent browser recovery. Defer folder browsing, linked saves/reloads, native save pickers and folder snapshots; retain existing projects, files and old workspace preferences.
