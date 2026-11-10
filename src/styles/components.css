@@ -53,7 +53,9 @@
 #an-drag-preview {position:absolute;transform:translate(-50%,-50%);font-size:32px;color:#0066ff;pointer-events:none;z-index:1000;}
 [data-block-mode=edit] .db-arrow .an-endpoint {display:block;position:absolute;transform:translate(-50%,-50%);font-size:14px;padding:6px;z-index:60;touch-action:none;}
 .component-preview-arrow span:after {content:"➜";font-size:60px;color:var(--project-accent,#0066ff);}
-#fe-preview.visibility-show-hidden .sp-hidden,#fe-preview.visibility-show-hidden .data-block[hidden],#fe-preview.visibility-show-hidden .terminal[hidden] { display:revert!important; opacity:.35; pointer-events:auto; outline:3px dashed #9b6ce5; }
+#fe-preview.visibility-show-hidden :is(.sp-hidden,.visibility-code-hidden) { visibility:visible!important; opacity:.35; pointer-events:auto!important; outline:3px dashed #9b6ce5; }
+#fe-preview.visibility-show-hidden :is(.sp-hidden,.visibility-code-hidden) * { visibility:inherit!important; pointer-events:auto!important; }
+.visibility-code-hidden,.visibility-code-hidden * { visibility:hidden!important; pointer-events:none!important; }
 #fe-preview.visibility-show-hidden .visibility-concealed { visibility:visible!important; opacity:.35; }
 #visibility-panel label { display:block; margin:10px 0; }
 #visibility-panel small { opacity:.75; }

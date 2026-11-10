@@ -44,9 +44,9 @@ Manual review pending: put Code and free text on one slide, select each from can
 
 ### Visibility — issue #106
 
-Use Layers Show/Hide or Inspector Style → Visibility to hide selected elements without deleting them. Hidden elements remain in editable backups and Undo/Redo. Enable Show hidden elements in editor to inspect dimmed objects; this view is not included in playback. Group visibility preserves each child's own hidden setting, and locked members prevent group visibility changes.
+Use the left navigator's Layers tab and its eye buttons to hide/show elements without deleting them. Batch Hide/Show actions are under Layer options. Hidden elements remain in editable backups and Undo/Redo. Enable Show hidden elements in editor to inspect dimmed objects; this view is not included in playback. Group visibility preserves each child's own hidden setting, and locked members prevent group visibility changes.
 
-Choose Presentation defaults for shared header, footer, logo, slide number and decoration visibility. This slide creates overrides; Reset slide visibility to defaults removes those overrides. Hiding chrome preserves layout space. Playback and booth output omit hidden elements while editable projects retain their content.
+Choose Presentation defaults in Inspector Content → Visibility for shared header, footer, logo, slide number and decoration visibility. This slide creates overrides; Reset slide visibility to defaults removes those overrides. Hiding preserves layout space. Playback and booth output omit hidden content while editable projects retain it.
 
 Manual review pending: hide/show blocks, images, tables, code and groups; reveal and select hidden objects in Layers; verify locks and Undo/Redo; set defaults, override a slide and reset; reopen an editable backup in a clean profile and confirm offline playback/booth exclude hidden content. Check keyboard navigation and screen-reader labels. This follow-up does not authorize publication.
 

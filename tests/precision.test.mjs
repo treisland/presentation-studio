@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {chromium} from 'playwright';
 import {resolve} from 'node:path';
 import {readFile,writeFile,mkdir} from 'node:fs/promises';
-import {addSlide,click,reveal,selectTab} from './ui.mjs';
+import {addSlide,click,reveal,selectTab,openColorEditor} from './ui.mjs';
 import {archivePath} from './archive-path.mjs';
 const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH,args:['--no-sandbox']});
 test.after(()=>browser.close());
@@ -15,11 +15,11 @@ async function pack(p){const event=p.waitForEvent('download');await click(p,'#fe
 
 test('theme swatches, custom colors, opacity, presets and named palette survive Undo and pack validation',async()=>{const{p,errors}=await setup();try{
  await addSlide(p,'blank');const id=await block(p);await p.locator('#wp-tab-style').click();
- await p.locator('#sp-slot').selectOption('fill');await p.getByRole('button',{name:'Theme accent',exact:true}).click();
+ await openColorEditor(p,'fill');await p.getByRole('button',{name:'Theme accent',exact:true}).click();
  let s=(await read(p)).state,slide=s.slides.find(s=>s.template==='blank');assert.equal(s.design.slides[slide.id].objects[id].style.fill.role,'accent');
- await p.locator('#sp-slot').selectOption('text');await p.locator('#sp-hex').fill('#123456');await p.locator('#sp-opacity').fill('60');await p.locator('#sp-custom').click();
+ await openColorEditor(p,'text','custom');await p.locator('#sp-hex').fill('#123456');await p.locator('#sp-opacity').fill('60');await p.locator('#sp-custom').click();
  s=(await read(p)).state;assert.deepEqual(s.design.slides[slide.id].objects[id].style.text,{hex:'#123456',opacity:.6});
- await p.locator('#sp-swatch-name').fill('Project navy');await p.locator('#sp-save-color').click();assert.deepEqual((await read(p)).state.design.palette,[{name:'Project navy',hex:'#123456'}]);
+ await openColorEditor(p,'text','project');await p.locator('#sp-swatch-name').fill('Project navy');await p.locator('#sp-save-color').click();assert.deepEqual((await read(p)).state.design.palette,[{name:'Project navy',hex:'#123456'}]);
  const saved=await pack(p);await p.locator('#fe-import-file').setInputFiles({name:'styled.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(saved))});
  assert.deepEqual((await read(p)).state.design,saved.state.design);assert.deepEqual(errors,[]);
  }finally{await p.close();}});
@@ -93,9 +93,9 @@ test('design operations reject unsafe input atomically and preserve legacy proje
 test('Layers check boxes expose Mixed appearance and apply one preset atomically with keyboard focus retained',async()=>{const{p,errors}=await setup();try{
  await addSlide(p,'blank');const a=await block(p),b=await block(p,'circle');
  await apply(p,[{type:'design.appearance',keys:[a],style:{fill:{hex:'#ff0000'}}},{type:'design.appearance',keys:[b],style:{fill:{hex:'#00ff00'}}}]);
- await p.locator('#wp-tab-layers').click();await p.locator('.sp-layer-row[data-key="'+a+'"] input').check();await p.locator('#wp-tab-style').click();await p.locator('#sp-slot').selectOption('fill');assert.equal(await p.locator('#sp-value').textContent(),'Mixed');
+ await p.locator('#wp-tab-layers').click();await p.locator('.sp-layer-row[data-key="'+a+'"] input').check();await openColorEditor(p,'fill');assert.equal(await p.locator('#sp-value').textContent(),'Mixed');
  const before=await pack(p);await p.locator('#sp-preset').selectOption('outline');const after=await pack(p),slide=after.state.slides.find(s=>s.template==='blank');assert.equal(after.history.past.length,before.history.past.length+1);for(const id of [a,b])assert.equal(after.state.design.slides[slide.id].objects[id].style.fill,'transparent');
- await p.locator('#fe-undo').click();assert.deepEqual((await read(p)).state,before.state);await p.locator('#wp-tab-layers').click();const lock=p.locator('.sp-layer-row[data-key="'+a+'"] button').filter({hasText:/^Lock$/});await lock.focus();await p.keyboard.press('Enter');assert.match(await p.evaluate(()=>document.activeElement.getAttribute('aria-label')),/^Unlock/);assert.deepEqual(errors,[]);
+ await p.locator('#fe-undo').click();assert.deepEqual((await read(p)).state,before.state);await p.locator('#wp-tab-layers').click();const lock=p.locator('.sp-layer-row[data-key="'+a+'"] button[aria-label^="Lock "]');await lock.focus();await p.keyboard.press('Enter');assert.match(await p.evaluate(()=>document.activeElement.getAttribute('aria-label')),/^Unlock/);assert.deepEqual(errors,[]);
  }finally{await p.close();}});
 
 test('Grid Layers hide and lock apply to nested media without exposing independent stacking',async()=>{const{p,errors}=await setup();try{
@@ -141,12 +141,12 @@ test('deleting an unlocked sibling preserves a locked absolute block despite cha
  }finally{await p.close();}});
 
 test('custom picker and hex synchronize drafts, preserve opacity and commit only on Apply with lock/Undo protection',async()=>{const{p,errors}=await setup();try{
- await addSlide(p,'blank');const id=await block(p);await p.locator('#wp-tab-style').click();await p.locator('#sp-slot').selectOption('fill');await p.getByRole('button',{name:'Theme accent',exact:true}).click();
+ await addSlide(p,'blank');const id=await block(p);await openColorEditor(p,'fill');await p.getByRole('button',{name:'Theme accent',exact:true}).click();
  const before=await pack(p),slide=before.state.slides.find(s=>s.template==='blank');assert.equal(await p.locator('#sp-color-picker').inputValue(),before.state.brand.accent.toLowerCase());
- await p.locator('#sp-color-picker').evaluate(el=>{el.value='#abcdef';el.dispatchEvent(new Event('input',{bubbles:true}));});assert.equal(await p.locator('#sp-hex').inputValue(),'#abcdef');
- await p.locator('#sp-hex').fill('#123ABC');assert.equal(await p.locator('#sp-color-picker').inputValue(),'#123abc');await p.locator('#sp-opacity').fill('45');assert.deepEqual(await pack(p),before);
+ await openColorEditor(p,'fill','custom');await p.locator('#sp-color-picker').evaluate(el=>{el.value='#abcdef';el.dispatchEvent(new Event('input',{bubbles:true}));});assert.equal(await p.locator('#sp-hex').inputValue(),'#abcdef');
+ await p.locator('#sp-hex').fill('#123ABC');assert.equal(await p.locator('#sp-color-picker').inputValue(),'#123abc');await p.locator('#sp-opacity').fill('45');assert.deepEqual((await read(p)).state,before.state);
  await p.locator('#sp-custom').click();const applied=await pack(p);assert.deepEqual(applied.state.design.slides[slide.id].objects[id].style.fill,{hex:'#123abc',opacity:.45});assert.equal(applied.history.past.length,before.history.past.length+1);assert.equal(await p.locator('#sp-color-picker').inputValue(),'#123abc');
- await p.locator('#fe-undo').click();assert.deepEqual((await read(p)).state,before.state);await p.locator('#sp-hex').fill('#12');assert.equal(await p.locator('#sp-hex').getAttribute('aria-invalid'),'true');await p.locator('#sp-custom').click();assert.deepEqual((await read(p)).state,before.state);
+ await p.locator('#fe-undo').click();assert.deepEqual((await read(p)).state,before.state);await openColorEditor(p,'fill','custom');await p.locator('#sp-hex').fill('#12');assert.equal(await p.locator('#sp-hex').getAttribute('aria-invalid'),'true');await p.locator('#sp-custom').click();assert.deepEqual((await read(p)).state,before.state);
  assert.equal((await apply(p,[{type:'design.meta',keys:[id],changes:{locked:true}}])).ok,true);assert.equal(await p.locator('#sp-color-picker').isDisabled(),true);assert.equal(await p.locator('#sp-custom').isDisabled(),true);assert.deepEqual(errors,[]);
  }finally{await p.close();}});
 

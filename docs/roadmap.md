@@ -2,7 +2,7 @@
 
 ## Current delivery plan
 
-Stable 0.7.0 is published after accepted RC/manual gate evidence. The approved next milestone is 0.8.0 Editor workbench and direct manipulation (#124), based on the reviewed visual concept. Optional MCP discovery and native filesystem work remain deferred. See [workbench scope and acceptance](editor-workbench.md) and [release gates](release-process.md).
+Stable 0.7.0 is published after accepted RC/manual gate evidence. The 0.8.0 workbench implementation (#124 / held PR #125) awaits manual acceptance. The next approved milestone is 0.9.0 Layers and Style workflow (#126), implemented as a dependent feature PR. Optional MCP discovery and native filesystem work remain deferred. See [workbench scope and acceptance](editor-workbench.md) and [release gates](release-process.md).
 
 - **Completed — 0.4.0 stable delivery:** styling/swatches/picker, blank/clear, snapping, Layers and reviewed removal fixes. See [stable notes](releases/0.4.0.md) and [feature guide](styling-and-precision.md).
 - **Completed — 0.5.0 layout collections and examples:** five collections, starters/demos, gallery and optional walkthroughs passed review and stable publication. See [the validation record](0.5.0-validation.md) and [stable notes](releases/0.5.0.md).
@@ -21,12 +21,13 @@ Stable 0.7.0 is published after accepted RC/manual gate evidence. The approved n
 - **Deferred filesystem investigation — #117:** folder connection/reconnect, linked-file reload/save, native save pickers and folder snapshots are outside 0.7.0. Keep the native Chrome failure evidence open; do not block the portable workflow on further chooser tests.
 - **Deferred direct AI providers — #15–#19:** OpenRouter/Ollama adapters, selected-text rewriting and live-provider evaluations remain candidates outside 0.7.0. No API keys or external services are needed for portable authoring.
 - **0.8.0 — Editor workbench and direct manipulation — #124:** implement the approved visual concept with shared light/dark styles, compact action hierarchy, a larger laptop canvas, readable Inspector navigation, consistent Library/AI dialogs, resizable panels and clear move/resize/snapping controls. Preserve formats, recovery, Undo and offline exports. See [scope and manual acceptance](editor-workbench.md). Draft implementation requires manual review before merge; release preparation stays separate.
+- **0.9.0 — Layers and Style workflow — #126:** shared left Slides/Layers navigation, icon-based visibility/locks, clear naming/batch/reorder controls and a compact right Style panel with on-demand theme/custom/project color editing. Depends on 0.8.0; preserve lock/Undo/format/recovery/offline contracts. See [scope and manual review](layers-style-workflow.md). Separate manual acceptance and release preparation are required.
 - **Deferred optional MCP discovery — #20–#23:** companion/Hermes work is unscheduled and is not a dependency of editor polish. Containers and collaboration remain outside approved scope.
 - **Unscheduled format discovery — #73:** portrait/square/print/scrolling canvases and their reflow/export contracts require separate decisions. Current collections remain 16:9 slides, without email, print-ready or website-publishing promises.
 
 Backup verification design: inspect/validate the selected ZIP without importing it into the active project or draft database. Prove restoration separately in a clean profile. Accessibility baseline: Windows with Chrome and NVDA; record exact tested versions before claiming support. Automated matching-Chromium checks are distinct from these manual checks. Other browsers and OBS remain unverified until evidence is recorded.
 
-Track [0.6.0 blocks/components](https://github.com/treisland/presentation-studio/milestone/8), [0.7.0 AI](https://github.com/treisland/presentation-studio/milestone/3) and [0.8.0 editor polish](https://github.com/treisland/presentation-studio/milestone/4).
+Track [0.6.0 blocks/components](https://github.com/treisland/presentation-studio/milestone/8), [0.7.0 AI](https://github.com/treisland/presentation-studio/milestone/3), [0.8.0 editor polish](https://github.com/treisland/presentation-studio/milestone/4) and [0.9.0 Layers and Style](https://github.com/treisland/presentation-studio/milestone/9).
 
 ## 0.5.1 scoped usability corrections
 

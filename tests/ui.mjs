@@ -1,9 +1,18 @@
 export async function reveal(page, selector) {
+  if(await page.locator('#ld-tabs').count()) {
+    const navigator = await page.locator(selector).evaluate(element=>element.closest('#sp-layer-panel')?'layers':element.closest('#ld-slides-pane')?'slides':null);
+    if(navigator==='layers')await page.locator('#ld-reveal-layers').click();
+    if(navigator==='slides') {if(!await page.locator('#we-slides').isVisible())await page.locator('#we-toggle-slides').click();await page.locator('#ld-tab-slides').click();}
+  }
   const popup=await page.locator(selector).evaluate(element=>element.closest('[popover]')?.id);
-  if(popup&&!await page.locator('#'+popup).evaluate(element=>element.matches(':popover-open'))){const trigger='[data-component-target="'+popup+'"]';await reveal(page,trigger);await page.locator(trigger).click();}
+  if(popup==='is-color-popover') {
+    if(!await page.locator('#'+popup).evaluate(element=>element.matches(':popover-open')))await openColorEditor(page,await page.locator('#sp-slot').inputValue());
+    const colorTab=await page.locator(selector).evaluate(element=>element.closest('#is-panel-custom')?'custom':element.closest('#is-panel-project')?'project':element.closest('#is-panel-theme')?'theme':null);
+    if(colorTab)await page.locator('#is-tab-'+colorTab).click();
+  }else if(popup&&!await page.locator('#'+popup).evaluate(element=>element.matches(':popover-open'))){const trigger='[data-component-target="'+popup+'"]';await reveal(page,trigger);await page.locator(trigger).click();}
   if (await page.locator('#wp-tabs').count()) {
     const part = await page.locator(selector).evaluate(el => el.closest('[data-wp-part]')?.dataset.wpPart || (el.closest('#we-inspector .fe-tabs') ? 'content' : null));
-    if (['content','arrange','style'].includes(part)) await page.locator('#wp-tab-' + part).click();
+    if (['content','arrange','style'].includes(part)) {if(!await page.locator('#we-inspector').isVisible())await page.locator('#we-toggle-inspector').click();await page.locator('#wp-tab-' + part).click();}
   }
   // Contextual Inspector fields require the explicit destination when no matching object is selected.
   const mediaContext = await page.locator(selector).evaluate(el => !!el.closest('#ce-panel'));
@@ -25,6 +34,14 @@ export async function reveal(page, selector) {
   for (const id of ids)
     if ((await page.locator("#" + id).getAttribute("open")) === null)
       await page.locator("#" + id + ">summary").click();
+}
+export async function openColorEditor(page, slot, tab='theme') {
+  const popup=page.locator('#is-color-popover');
+  if(await popup.evaluate(element=>element.matches(':popover-open')))await page.getByRole('button',{name:'Close color picker',exact:true}).click();
+  if(!await page.locator('#we-inspector').isVisible())await page.locator('#we-toggle-inspector').click();
+  await page.locator('#wp-tab-style').click();
+  await page.locator('#is-color-'+slot).click();
+  await page.locator('#is-tab-'+tab).click();
 }
 export async function click(page, selector) {
   await reveal(page, selector);
@@ -48,6 +65,7 @@ export async function addSlide(page, template) {
   await page.locator("#studio-gallery-apply").click();
 }
 export async function selectTab(page, name) {
+  if(name==='Layers'&&await page.locator('#ld-reveal-layers').count()){await page.locator('#ld-reveal-layers').click();return;}
   if (await page.locator("#we-settings-open").count()) {
     const project = [
       "Branding",

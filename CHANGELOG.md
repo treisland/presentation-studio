@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Redesign Layers and Style for the 0.9.0 milestone: a shared left Slides/Layers dock, accessible visibility/lock icons and compact right-side appearance summaries with on-demand color editing. Manual review remains pending; 0.8.0 workbench polish is a prerequisite.
+- Fix hidden content collapsing template layout or remaining visible through template display rules. Preserve neighboring geometry and exclude hidden content from playback exports while retaining empty layout spacers where needed.
+
 - Redesign the editor as a canvas-first workbench with shared light/dark styling, clearer action hierarchy, responsive panels, rail resizing, focused Inspector and consistent Library/AI dialogs.
 - Add direct Snap and editable ZIP Export actions, explicit template Move / resize access, and clearer multi-direction block resizing while retaining locks, cancellation, Undo, recovery and offline compatibility. Manual review is pending for the 0.8.0 milestone.
 

@@ -1,0 +1,39 @@
+/* Inspector chrome only; all color edits use the original precision controls. */
+#full-editor #we-inspector[data-wp-tab="style"] #db-panel > :is(label[for="db-list"], #db-list) { display: none; }
+#full-editor .is-legacy-target { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+#full-editor #sp-style h3 { margin: 0 0 8px; }
+#full-editor :is(#sp-selection, #is-scope) { margin: 4px 0 8px; color: var(--wb-muted); font: 12px/1.45 var(--wb-font); }
+#full-editor #is-rows { display: grid; gap: 4px; }
+body #full-editor #is-rows button { display: grid; grid-template-columns: 18px minmax(48px, auto) 20px minmax(0, 1fr) 16px; gap: 6px; align-items: center; width: 100%; min-height: 38px; padding: 6px; text-align: left; background: var(--wb-surface); }
+#full-editor #is-rows button[hidden] { display: none; }
+#full-editor #is-rows svg { width: 16px; height: 16px; }
+#full-editor .is-row-value { text-align: right; overflow-wrap: anywhere; color: var(--wb-muted); font-size: 11px; }
+#full-editor .is-row-swatch { width: 18px; height: 18px; border: 1px solid var(--wb-line); border-radius: 4px; background: linear-gradient(var(--is-color),var(--is-color)), repeating-conic-gradient(var(--wb-line) 0% 25%, var(--wb-surface) 0% 50%) 0 / 8px 8px; }
+#full-editor .is-row-swatch[data-mixed="true"] { background: linear-gradient(135deg,var(--wb-ink) 50%,var(--wb-surface) 50%); }
+#full-editor .is-style-tools { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+#full-editor .is-style-tools label { min-width: 0; }
+#full-editor .is-style-tools :is(input,select) { width: 100%; margin-bottom: 0; }
+body #full-editor #is-color-popover { box-sizing: border-box; position: fixed; inset: 80px 24px auto auto; width: 340px; max-width: calc(100vw - 24px); max-height: calc(100dvh - 104px); overflow: auto; margin: 0; padding: 14px; border: 1px solid var(--wb-line); border-radius: 10px; background: var(--wb-surface); color: var(--wb-ink); box-shadow: var(--wb-shadow); font: 12px/1.45 var(--wb-font); color-scheme: light; }
+body.editor-dark #full-editor #is-color-popover { color-scheme: dark; }
+#full-editor #is-color-popover header { position: static; inset: auto; transform: none; width: auto; max-width: none; height: auto; min-height: 0; padding: 0; margin: 0 0 12px; display: flex; flex: none; align-items: center; justify-content: space-between; gap: 8px; background: transparent; color: var(--wb-ink); font: inherit; letter-spacing: normal; text-transform: none; }
+#full-editor #is-color-popover header svg { width: 16px; height: 16px; }
+#full-editor #is-color-popover [role="tablist"] { display: flex; gap: 4px; margin-bottom: 12px; }
+#full-editor #is-color-popover [role="tab"] { flex: 1; }
+body #full-editor #is-color-popover :is(button,input) { box-sizing: border-box; min-height: 32px; padding: 6px 8px; border: 1px solid var(--wb-line); border-radius: 5px; color: var(--wb-ink); background: var(--wb-surface); font: inherit; }
+body #full-editor #is-color-popover button { cursor: pointer; }
+body #full-editor #is-color-popover button:hover:not(:disabled) { background: var(--wb-hover); }
+body #full-editor #is-color-popover [aria-selected="true"] { background: var(--wb-selected); color: var(--wb-selected-ink); border-color: var(--wb-focus); }
+#full-editor #is-color-popover :is(button,input):focus-visible { outline: 2px solid var(--wb-focus); outline-offset: 2px; }
+#full-editor #is-color-popover :disabled { opacity: .5; cursor: default; }
+#full-editor #is-color-popover label { display: grid; gap: 4px; margin-bottom: 8px; color: var(--wb-muted); }
+#full-editor #is-color-popover input { max-width: 100%; min-width: 0; }
+#full-editor #is-color-popover input[aria-invalid="true"] { border-color: var(--wb-danger); }
+#full-editor #is-color-popover .is-color-common { margin-top: 12px; padding-top: 8px; border-top: 1px solid var(--wb-line); }
+#full-editor #is-color-popover :is(#sp-value,#sp-contrast) { color: var(--wb-muted); font-size: 12px; }
+#full-editor #is-color-popover #sp-swatches { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+body #full-editor #is-color-popover .sp-swatch { width: auto; height: auto; text-align: left; display: flex; align-items: center; gap: 6px; }
+#full-editor #is-color-popover .sp-swatch::before { content: ''; flex: none; width: 18px; height: 18px; background: var(--sp-color); border: 1px solid var(--wb-line); border-radius: 4px; }
+#full-editor #is-color-popover #sp-project-colors > div { display: flex; gap: 4px; margin-bottom: 4px; }
+#full-editor #is-color-popover #sp-project-colors .sp-swatch { flex: 1; }
+@media (max-width: 759px) { body #full-editor #is-color-popover { inset: 12px 12px auto auto; max-height: calc(100dvh - 24px); } }
+@media (forced-colors: active) { #full-editor .is-row-swatch, #full-editor #is-color-popover .sp-swatch::before { forced-color-adjust: none; } #full-editor #is-color-popover [aria-selected="true"] { outline: 2px solid Highlight; } }
