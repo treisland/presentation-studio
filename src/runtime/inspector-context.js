@@ -67,7 +67,7 @@ function icSelection() {
   if (entry?.meta.name && !['multiple','slide','notes'].includes(kind)) title += ' · '+entry.meta.name;
   if (entry?.meta.group && kind !== 'multiple') detail = 'Group → '+detail;
   const locked = !weEditing() || vbMode !== 'edit' || ceLocked() || selected.some(spProtected);
-  return {kind,title,detail,path,locked,selected,identity:projectMeta.id+':'+projectSelected+':'+kind+':'+keys.join(',')+':'+(kind==='text'?path:inline?.path || '')+':'+(member?.key||'')};
+  return {kind,title,detail,path,locked,selected,identity:projectMeta.id+':'+projectSelected+':'+kind+':'+keys.join(',')+':'+(['text','table'].includes(kind)?path:inline?.path || '')+':'+(member?.key||'')};
 }
 function icVisible(id, visible) { if ($(id)) $(id).dataset.icVisible = String(!!visible); }
 function icPaint() {
