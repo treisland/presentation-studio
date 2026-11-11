@@ -67,6 +67,8 @@ function gsPaint(){
   if(!gsReady||gsPainting||!projectReady)return;gsPainting=true;
   try{
     const scene=projectMeta.id+':'+projectSelected;if(gsScene!==scene){gsScene=scene;gsEditing='';}
+    const rawKeys=componentPreviousKeys();
+    if(gsEditing&&(!rawKeys.length||rawKeys.some(key=>spMeta(key).group!==gsEditing)))gsEditing='';
     const entries=spEntries(),keys=spActiveKeys(),selected=entries.filter(entry=>keys.includes(entry.key)),group=gsGroup();
     if(gsEditing&&!entries.some(entry=>entry.meta.group===gsEditing))gsEditing='';
     const editable=weEditing()&&vbMode==='edit'&&!ceLocked(),locked=!editable||selected.some(spProtected);
@@ -143,6 +145,7 @@ projectInit=function(...args){
     if(!weEditing()||vbMode!=='edit'||ceLocked()||event.button!==0||weSpace||ceDrag||ceRelocate||dbDrag||!preview.contains(event.target))return;
     const handle=event.target.closest('[data-gs-gesture]'),entry=gsEntryAt(event.target);
     if(event.target.closest('[contenteditable=true]')&&vbSession)return;
+    if(gsEditing&&entry&&entry.meta.group!==gsEditing)gsEditing='';
     if(entry && !gsEntries().some(item=>item.key===entry.key) && event.shiftKey){event.preventDefault();event.stopImmediatePropagation();gsSuppressClick=true;return;}
     if(event.shiftKey&&entry){event.preventDefault();event.stopImmediatePropagation();gsToggle(entry.key);gsSuppressClick=true;return;}
     if(entry?.meta.group&&!gsEditing&&!handle&&!event.target.closest('.db-handle,.ce-handle')){

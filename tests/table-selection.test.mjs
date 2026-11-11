@@ -163,3 +163,12 @@ test('editing a grouped table keeps table structure and group actions reachable 
     const count=await page.locator('#fe-preview tbody tr').count();await page.locator('#tbl-action-row').selectOption('row-after');assert.equal(await page.locator('#fe-preview tbody tr').count(),count+1);await page.locator('#gs-ungroup').click();assert.equal(await page.locator('#fe-preview .gs-selected').count(),2);assert.deepEqual(errors,[]);
   }finally{await page.close();}
 });
+
+test('selecting another object exits group member editing instead of retaining stale group context',async()=>{
+  const {page,errors,id}=await empty();try{
+    const result=await operations(page,[{type:'block.create',slideId:id,kind:'rectangle',placement:{x:.1,y:.2,w:.15,h:.15}},{type:'block.create',slideId:id,kind:'circle',placement:{x:.35,y:.2,w:.15,h:.15}},{type:'block.create',slideId:id,kind:'rectangle',placement:{x:.7,y:.2,w:.15,h:.15}}]);const [first,second,outside]=result.created;
+    assert.equal((await operations(page,[{type:'component.group',slideId:id,keys:[first,second]}])).ok,true);
+    await page.locator('#fe-preview .'+first).click();await page.locator('#gs-edit').click();assert.equal(await page.locator('#gs-exit').isVisible(),true);
+    await page.locator('#fe-preview .'+outside).click();assert.equal(await page.locator('#gs-exit').isVisible(),false);assert.equal(await page.locator('#fe-preview .gs-selected').count(),1);assert.deepEqual(errors,[]);
+  }finally{await page.close();}
+});
