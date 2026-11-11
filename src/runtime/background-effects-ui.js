@@ -63,7 +63,8 @@ function bgPanel(scope){
     previewController.update(legacyPreview?null:draft,palette,{motion:playing&&!document.hidden&&!nxMotionDisabled()});
     for(const card of cards){card.sample.style.background=palette.background;card.sample.style.transform='scale('+Math.max(1,card.frame.clientWidth)/1920+')';card.controller.update({...draft||bgEngine.defaults,effect:card.effect,mode:'static'},palette,{motion:false});card.button.setAttribute('aria-pressed',String(fields.source.value==='custom'&&fields.effect.value===card.effect));}
     animate.textContent=playing?'Stop motion preview':'Preview motion';animate.setAttribute('aria-pressed',String(playing));
-    animate.disabled=legacyPreview||draft.effect==='none';
+    animate.disabled=legacyPreview||draft.effect==='none'||draft.mode==='static';
+    if(draft.mode==='static')status.textContent='Static background selected. Choose Animated to preview motion.';
     if(playing&&nxMotionDisabled())status.textContent='Reduced motion is active. Showing a static composition.';
   }
   function change(){
@@ -106,7 +107,7 @@ const bgInit=projectInit;
 projectInit=function(...args){
   const result=bgInit(...args);if(bgReady)return result;
   const panel=document.createElement('section');panel.id='fe-background-panel';panel.hidden=true;panel.setAttribute('role','tabpanel');panel.setAttribute('aria-labelledby','we-tab-background');panel.append(bgPanel('presentation'));$('we-project-panels').append(panel);
-  weProjectTabs.add('background');const tab=document.createElement('button');tab.id='we-tab-background';tab.type='button';tab.dataset.feTab='background';tab.setAttribute('role','tab');tab.setAttribute('aria-controls',panel.id);tab.setAttribute('aria-selected','false');tab.tabIndex=-1;tab.textContent='Background';tab.onclick=()=>projectSelectTab('background');$('we-project-tabs').append(tab);
+  weProjectTabs.add('background');const tab=document.createElement('button');tab.id='we-tab-background';tab.type='button';tab.dataset.feTab='background';tab.setAttribute('role','tab');tab.setAttribute('aria-controls',panel.id);tab.setAttribute('aria-selected','false');tab.tabIndex=-1;tab.textContent='Background';tab.onclick=()=>projectSelectTab('background');$('we-project-tabs').querySelector('[data-fe-tab="settings"]').after(tab);
   const slide=document.createElement('details');slide.className='bg-slide-settings';const summary=document.createElement('summary');summary.textContent='Background';slide.append(summary,bgPanel('slide'));slide.addEventListener('toggle',bgRefreshPanels);$('ic-slide-fields').append(slide);
   const toggle=document.createElement('button');toggle.id='bg-viewer-motion';toggle.type='button';toggle.onclick=()=>{bgViewerMotion=!bgViewerMotion;bgSync();};$('hub-player-more').querySelector('.hub-menu-items').append(toggle);
   bgReady=true;

@@ -29,11 +29,15 @@ Defaults are restrained. Custom palettes and high intensity can still reduce rea
 
 Visibility is balanced by preset: Waves uses layered strokes and translucent ribbon shading, while Constellation uses a connected network with brighter points. Thin line effects receive more contrast than broad filled effects at the same intensity. On dark slides, theme-linked decoration is lightened for visibility; explicit custom colors remain unchanged. The quiet-area mask continues protecting content. Gallery cards, editing previews, playback and booth share these rendering rules without changing saved settings or the format version.
 
+Waves uses self-contained vector curves rather than simple circular arcs. Constellation gently drifts as one connected network, keeping points and connections together; it no longer relies on faint opacity changes alone. Aurora layers accent-tinted veils with distinct hues for theme-linked slots, while custom slots retain their chosen hue. Orbit has a visible moving dot and Geometric Drift has a wider floating path. All five effects move in explicit motion previews and playback. The Background settings tab follows Presentation settings. Choose Animated and then Preview motion to animate the settings sample; Static disables that preview action with an explanation. Editing canvases and preset thumbnails intentionally remain still.
+
 ## Motion and previews
 
 Editor canvases, slide navigator cards, theme previews and AI import previews remain static. **Preview motion** animates only the explicit sample; closing the preview/settings, changing projects or hiding the page stops/pauses it. Only one settings preview runs at a time. Motion previews do not mutate the project or restart navigator refreshes during text editing.
 
 Presentation **More → Pause background motion** changes only this viewing session. It does not rewrite saved settings. The independent booth player has the same motion choice. Reduced-motion preferences and the presentation's Disable motion setting take precedence; a static composition remains visible. Hidden pages pause rendering and resume only if permitted.
+
+Background motion is independent of slide autoplay: pausing slide progression keeps an Animated background moving until Pause background motion is chosen. Media focus, reduced motion, Disable motion and hidden-page safeguards still pause it. None and Static remain motion-free.
 
 Matching resolved effect settings and colors reuse the same stage layer across slide changes. Different effects/settings restart at their deterministic representative phase; this release does not morph between unrelated effect types. No external assets, shaders, services or executable custom uploads are used.
 

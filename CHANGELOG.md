@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Bring backgrounds closer to the concept with flowing vector Waves ribbons, a denser gently drifting Constellation network, layered chromatic Aurora veils and clearer orbital/geometric motion. Clarify Static preview behavior and place Background immediately after Presentation settings.
+- Fix paused slide autoplay unintentionally freezing Animated backgrounds; keep the viewer background switch, reduced motion, Disable motion and media-focus pause safeguards independent.
+
 - Improve background preset visibility with stronger Waves linework/ribbon shading, a connected Constellation network and brighter points, clearer Orbit/Aurora/Drift decoration, and lighter theme-linked colors on dark slides. Preserve quiet content areas, explicit custom colors and existing saved settings.
 
 ## 0.12.0-beta.1 — 2026-11-11

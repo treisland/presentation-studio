@@ -83,6 +83,40 @@ test('editable v3 ZIP restores effects, IDs and history in a clean profile',asyn
   }finally{await page.close();}
 });
 
+test('each animated preset visibly changes geometry in explicit previews and playback; static mode is explicit',async()=>{
+  const {page,errors}=await openExample(browser,'portfolio-demo');try{
+    await page.emulateMedia({reducedMotion:'no-preference'});
+    const probe=async selector=>page.locator(selector).first().evaluate(el=>{
+      const animation=el.getAnimations()[0],running=animation?.playState;
+      if(!animation)return {running,changed:false};
+      animation.pause();animation.currentTime=0;const before=getComputedStyle(el).transform;
+      animation.currentTime=Number(animation.effect.getTiming().duration)*.4;const after=getComputedStyle(el).transform;animation.play();
+      return {running,changed:before!==after};
+    });
+    for(const effect of ['orbit','aurora','waves','constellation','drift']){
+      await set(page,{effect});await page.locator('#we-settings-open').click();await page.locator('#we-tab-background').click();
+      assert.equal(await page.locator('#we-project-tabs [data-fe-tab="settings"]').evaluate(el=>el.nextElementSibling.id),'we-tab-background');
+      await page.locator('#bg-presentation-preview').click();
+      assert.deepEqual(await probe('#bg-presentation .bg-preview .bg-particle'),{running:'running',changed:true},effect+' preview');
+      await page.locator('#we-settings-close').click();await page.locator('#fe-close').click();
+      await page.waitForFunction(()=>document.querySelector('#stage > .bg-effect')?.dataset.motion==='on');
+      if(!await page.locator('body').evaluate(el=>el.classList.contains('paused')))await page.locator('#play').click();
+      assert.deepEqual(await probe('#stage > .bg-effect .bg-particle'),{running:'running',changed:true},effect+' playback');
+      if(effect==='drift'){
+        await page.locator('#hub-player-more > summary').click();await page.locator('#bg-viewer-motion').click();
+        assert.equal(await page.locator('#stage > .bg-effect .bg-particle').first().evaluate(el=>getComputedStyle(el).animationPlayState),'paused');
+        await page.locator('#hub-player-more > summary').click();await page.locator('#bg-viewer-motion').click();
+      }
+      await page.emulateMedia({reducedMotion:'reduce'});
+      assert.equal(await page.locator('#stage > .bg-effect .bg-particle').first().evaluate(el=>getComputedStyle(el).animationPlayState),'paused');
+      await page.emulateMedia({reducedMotion:'no-preference'});await page.locator('#open-full-editor').click();
+    }
+    await set(page,{effect:'constellation',mode:'static'});await page.locator('#we-settings-open').click();await page.locator('#we-tab-background').click();
+    assert.equal(await page.locator('#bg-presentation-preview').isDisabled(),true);assert.match(await page.locator('#bg-presentation [role=status]').textContent(),/Choose Animated/);
+    assert.deepEqual(errors,[]);
+  }finally{await page.close();}
+});
+
 test('AI background settings preview safely and create guarded native projects without mutating active work',async()=>{
   const {page,errors}=await openExample(browser,'portfolio-demo');try{
     await set(page,{effect:'orbit'});
