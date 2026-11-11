@@ -11,6 +11,11 @@ LABEL org.opencontainers.image.title="Presentation Studio" \
       org.opencontainers.image.revision="${REVISION}"
 
 WORKDIR /app
+# Runtime uses Node built-ins only. Do not ship unused package managers and
+# their vulnerable transitive dependencies from the upstream development image.
+RUN rm -rf /usr/local/lib/node_modules /opt/yarn-* \
+    /usr/local/bin/npm /usr/local/bin/npx /usr/local/bin/corepack \
+    /usr/local/bin/yarn /usr/local/bin/yarnpkg /usr/local/bin/pnpm /usr/local/bin/pnpx
 # site/ must already be built or extracted from a verified release. Never rebuild here.
 COPY docker/server.mjs docker/healthcheck.mjs ./docker/
 COPY site/ ./site/
