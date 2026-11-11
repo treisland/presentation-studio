@@ -12,6 +12,9 @@ test('promotion rejects prereleases on stable, ambiguous tags, downgrade and con
  const data=Buffer.from('approved');verifyPayload(data,{name:'index.html',size:data.length,digest:'sha256:'+hash(data)});
  assert.throws(()=>verifyPayload(Buffer.from('tampered'),{name:'index.html',size:data.length,digest:'sha256:'+hash(data)}));
  assert.throws(()=>verifyRelease({draft:true},'0.10.0'));assert.throws(()=>buildIdentity('<html>old release</html>'));
+ const sourceInfo={version:'0.10.0',commit:'unknown',channel:'development',dirty:true};
+ assert.deepEqual(buildIdentity('<script id="studio-build-info" type="application/json">'+JSON.stringify(sourceInfo)+'</script>'),sourceInfo);
+ assert.throws(()=>buildIdentity('<script id="studio-build-info" type="application/json">'+JSON.stringify({...sourceInfo,channel:'stable'})+'</script>'));
  assert.throws(()=>authorizedDistribution({},'stable','both'));assert.throws(()=>authorizedDistribution({distribution:{channels:['beta'],targets:['pages']}},'beta','docker'));
  authorizedDistribution({distribution:{channels:['stable'],targets:['pages','docker']}},'stable','both');
  previousDeployment({review:true,channel:'review',version:'0.10.0-beta.1',commit:'preview'},{version:'0.10.0-beta.1',commit:'release'},'beta');

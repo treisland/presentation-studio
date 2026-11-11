@@ -94,7 +94,7 @@ jobs:
             diff -r existing-site site
           else
             grep -Eiq 'manifest unknown|not found' manifest-error.txt || { cat manifest-error.txt >&2; exit 1; }
-            docker buildx build --platform linux/amd64 --provenance=mode=max --sbom=true --build-arg VERSION="$VERSION" --build-arg REVISION="$COMMIT" --tag "$IMAGE:$VERSION" --push .
+            docker buildx build --target prebuilt --platform linux/amd64 --provenance=mode=max --sbom=true --build-arg VERSION="$VERSION" --build-arg REVISION="$COMMIT" --tag "$IMAGE:$VERSION" --push .
           fi
           docker buildx imagetools inspect "$IMAGE:$VERSION" | tee distribution-image.txt
       - name: Explicitly advance channel aliases without downgrading

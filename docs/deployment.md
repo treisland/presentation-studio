@@ -25,12 +25,15 @@ App versions differ from file-format versions. Current imports are native editab
 
 ## Local Docker review
 
+From a fresh checkout, Docker/Compose builds the app inside a dedicated build stage. Host Node/npm and pre-generated `site/`, `dist/` or `node_modules/` are not required:
+
 ```sh
-npm ci
-npm run build
-node scripts/site.mjs local
 docker compose up --build -d
 ```
+
+If your installation uses the legacy command name, use `docker-compose up --build -d`. Direct `docker build -t pres-studio .` also selects the source target by default. Only the static payload and hardened server enter the final runtime; builder tooling and source files stay out. Source builds are always marked `development`. Without Git in the build context, the commit is `unknown`; optionally pass a full source SHA with `REVISION` to record a hint, which never marks a source build as a clean approved release.
+
+Release distribution explicitly uses `docker build --target prebuilt ...` after verified release preparation. That target still requires canonical `site/` assets and never silently rebuilds them. For a local prebuilt-target test, run `npm ci`, `npm run build`, `node scripts/site.mjs local`, then `docker build --target prebuilt -t pres-studio-prebuilt .`. CI independently exercises a fresh-checkout Compose start and exact prebuilt payload serving, and scans both runtime images. This fixes reported usability issue #132 within PR #131.
 
 Open `http://127.0.0.1:4173`. Compose exposes only loopback. Stop with `docker compose down`. Server and app data are separate: browser recovery remains in the browser; rebuilding/replacing a container neither backs up nor synchronizes presentations. Download editable ZIPs. Shared network hosting requires explicit port exposure and an HTTPS reverse proxy; authentication is outside this static app. Multi-architecture certification remains deferred until ARM64 is tested.
 

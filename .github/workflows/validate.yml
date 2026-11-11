@@ -52,6 +52,18 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           persist-credentials: false
+      - name: Fresh-checkout Docker-only Compose startup
+        run: |
+          test ! -e site && test ! -e dist && test ! -e node_modules
+          trap 'docker compose down' EXIT
+          docker compose up --build -d
+          for i in $(seq 1 20); do curl --fail http://127.0.0.1:4173/healthz && break; sleep 1; done
+          curl --fail http://127.0.0.1:4173/version.json -o source-version.json
+          node -e 'const i=require("./source-version.json");if(i.channel!=="development"||i.commit!=="unknown"||!i.dirty)throw Error("Source builds must be development")'
+          id=$(docker compose ps -q studio)
+          docker tag "$(docker inspect --format '{{.Image}}' "$id")" studio-source-review
+          test "$(docker inspect --format '{{.Config.User}}' "$id")" = '1000:1000'
+          test "$(docker inspect --format '{{.HostConfig.ReadonlyRootfs}}' "$id")" = true
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: '22'
@@ -59,7 +71,7 @@ jobs:
       - run: npm run build
       - run: node scripts/site.mjs local
       - run: python -m unittest discover -s tests -p test_preview.py
-      - run: docker build -t studio-review .
+      - run: docker build --target prebuilt -t studio-review .
       - name: Smoke test non-root read-only container and exact payload
         run: |
           docker run -d --name studio-review --read-only --cap-drop ALL --security-opt no-new-privileges -p 127.0.0.1:4173:8080 studio-review
@@ -73,6 +85,13 @@ jobs:
         uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # 0.35.0
         with:
           image-ref: studio-review
+          format: table
+          severity: HIGH,CRITICAL
+          exit-code: '1'
+      - name: Scan source-built runtime dependencies
+        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # 0.35.0
+        with:
+          image-ref: studio-source-review
           format: table
           severity: HIGH,CRITICAL
           exit-code: '1'

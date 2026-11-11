@@ -14,7 +14,7 @@ export function buildIdentity(html){
   const text=html.match(/<script id="studio-build-info" type="application\/json">([^<]+)<\/script>/)?.[1];
   if(!text)throw Error('This release predates embedded build identity. A new approved release is required.');
   const info=JSON.parse(text);
-  if(typeof info.version!=='string'||! /^[a-f0-9]{40}$/.test(info.commit)||!['stable','beta','rc','development'].includes(info.channel))throw Error('Invalid embedded build identity.');
+  if(typeof info.version!=='string'||!(/^[a-f0-9]{40}$/.test(info.commit)||info.commit==='unknown'&&info.channel==='development')||!['stable','beta','rc','development'].includes(info.channel))throw Error('Invalid embedded build identity.');
   return info;
 }
 export function verifyRelease(release,version){

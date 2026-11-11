@@ -13,6 +13,13 @@ try {
   dirty = !!execFileSync('git', ['status','--porcelain','--untracked-files=no'], {cwd:root,encoding:'utf8'}).trim();
   tagged = execFileSync('git', ['tag','--points-at','HEAD'], {cwd:root,encoding:'utf8'}).split(/\r?\n/).includes('v'+version);
 } catch { /* Source archives remain identifiable as development builds. */ }
+// Docker source contexts deliberately omit .git. A supplied revision is only a
+// development hint, never permission to label rebuilt source as a clean release.
+if (process.env.STUDIO_SOURCE_COMMIT !== undefined) {
+  const supplied=process.env.STUDIO_SOURCE_COMMIT;
+  if(supplied!=='unknown'&&!/^[a-f0-9]{40}$/.test(supplied))throw Error('Invalid source build revision.');
+  commit=supplied;tagged=false;dirty=true;
+}
 const buildInfo = {version, commit, channel: tagged && !dirty ? (version.match(/-(alpha|beta|rc)\./)?.[1] || 'stable') : 'development', dirty,
   imports:{native:[2],legacy:[1],authoring:[1],library:[1]}};
 const authoringFiles = {

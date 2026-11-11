@@ -1,11 +1,29 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { request } from 'node:http';
-import { mkdtemp, mkdir, writeFile, rm, symlink, unlink } from 'node:fs/promises';
+import { mkdtemp, mkdir, writeFile, readFile, cp, rm, symlink, unlink } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { once } from 'node:events';
 import { createStaticServer, loadSite } from '../docker/server.mjs';
+import {execFileSync} from 'node:child_process';
+
+test('source-only builds stage a development site without Git or npm dependencies',async t=>{
+  const root=await mkdtemp(join(tmpdir(),'studio-source-'));t.after(()=>rm(root,{recursive:true,force:true}));
+  for(const path of ['package.json','build.config.json','LICENSE','THIRD_PARTY_NOTICES.md','src','templates','vendor','examples','docs/ai'])await cp(new URL('../'+path,import.meta.url),join(root,path),{recursive:true});
+  await mkdir(join(root,'scripts'));
+  for(const file of ['build.mjs','site.mjs','delivery.mjs'])await cp(new URL('../scripts/'+file,import.meta.url),join(root,'scripts',file));
+  const env={...process.env,STUDIO_SOURCE_COMMIT:'unknown'};
+  execFileSync(process.execPath,['scripts/build.mjs'],{cwd:root,env});
+  execFileSync(process.execPath,['scripts/site.mjs','local'],{cwd:root,env});
+  const info=JSON.parse(await readFile(join(root,'site/version.json'),'utf8'));
+  assert.equal(info.channel,'development');assert.equal(info.commit,'unknown');assert.equal(info.dirty,true);
+  assert.equal((await loadSite(join(root,'site'))).has('/index.html'),true);
+  // Providing a source revision is a hint, never clean release authorization.
+  execFileSync(process.execPath,['scripts/build.mjs'],{cwd:root,env:{...env,STUDIO_SOURCE_COMMIT:'a'.repeat(40)}});
+  const hinted=JSON.parse(await readFile(join(root,'dist/version.json'),'utf8'));
+  assert.equal(hinted.commit,'a'.repeat(40));assert.equal(hinted.channel,'development');assert.equal(hinted.dirty,true);
+});
 
 async function fixture(t) {
   const root = await mkdtemp(join(tmpdir(), 'studio-static-'));

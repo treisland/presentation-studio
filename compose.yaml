@@ -2,6 +2,7 @@ services:
   studio:
     build:
       context: .
+      target: source
       args:
         VERSION: ${VERSION:-development}
         REVISION: ${REVISION:-unknown}

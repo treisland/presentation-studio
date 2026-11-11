@@ -4,6 +4,8 @@
 
 **0.10.0 — Distribution and deployment — #130:** version/About UI and import compatibility policy; hardened static Docker/GHCR delivery; Actions-based stable/beta Pages hosting for pres-studio.com (Namecheap DNS), verified release promotion and isolated review deployment. npm publishing remains deferred. Manual acceptance follows deployment; existing release gates remain unchanged. See [deployment and testing](deployment.md).
 
+Included follow-up **#132** in PR #131: Docker-only fresh-checkout Compose startup, a dedicated source build stage with development identity, an explicit verified-prebuilt release target and independent CI smoke/security coverage for both paths.
+
 Stable 0.7.0 remains published. The maintainer accepted the integrated 0.8.0 workbench (#124 / PR #125) and 0.9.0 Inspector/Layers work (#126 / PR #127), approved protected merges and explicitly authorized the combined 0.9.0-beta.1 prerelease (#128). Manual beta gates are confirmed in the [validation record](releases/0.9.0-beta.1-validation.md). Publication still requires the merged release plan, exact-main checks, immutable tag workflow and artifact verification. No separate 0.8.0 release is backfilled. Optional MCP discovery and native filesystem work remain deferred.
 
 - **Completed — 0.4.0 stable delivery:** styling/swatches/picker, blank/clear, snapping, Layers and reviewed removal fixes. See [stable notes](releases/0.4.0.md) and [feature guide](styling-and-precision.md).
