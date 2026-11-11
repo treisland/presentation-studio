@@ -48,9 +48,11 @@ editingRegisterOperation('table.structure',(state,operation)=>{
     if (action === 'row-before' || action === 'row-after') {
       if (grid.body.length >= 30) editingFail('INVALID','A table supports at most 30 data rows.');
       const node = projectNode('tr','',Array.from({length:grid.columns},()=>projectNode('td','',[''])));
-      if (row.header) {
+      if (row.header && row.parent === table) {
+        table.children.splice(table.children.indexOf(row.node)+1,0,node);
+      } else if (row.header) {
         let body = table.children.find(node=>node.tag === 'tbody');
-        if (!body) {body=projectNode('tbody');table.children.push(body);}body.children.unshift(node);
+        if (!body) {body=projectNode('tbody');const first=grid.body[0],index=first?.parent===table?table.children.indexOf(first.node):table.children.indexOf(row.parent)+1;table.children.splice(index,0,body);}body.children.unshift(node);
       } else row.parent.children.splice(row.parent.children.indexOf(row.node)+(action==='row-after'?1:0),0,node);
     } else if (action === 'row-delete') {
       if (grid.rows.length <= 1) editingFail('INVALID','Keep at least one table row.');
@@ -133,6 +135,11 @@ function tblSelectCell(element) {
   const grid=tblGrid(table),rows=[...tableElement.rows];tblCell={slide:projectSelected,path,row:rows.indexOf(element.parentElement),column:element.cellIndex};
   if(tblCell.row<0||tblCell.column>=grid.columns)tblCell=null;
 }
+const tblInlineSelection=vbSetSelection;
+vbSetSelection=function(selection){
+  if(tblReady&&selection?.slideID===projectSelected&&selection.el?.matches('td,th'))tblSelectCell(selection.el);
+  return tblInlineSelection(selection);
+};
 projectTableForm=function(){
   if(!tblReady)return;
   const tables=projectFind(projectModel(),node=>node.tag==='table'),select=$('fe-table-select');

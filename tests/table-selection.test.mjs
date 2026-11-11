@@ -173,3 +173,27 @@ test('selecting another object exits group member editing instead of retaining s
     await page.locator('#fe-preview .'+outside).click();assert.equal(await page.locator('#gs-exit').isVisible(),false);assert.equal(await page.locator('#fe-preview .gs-selected').count(),1);assert.deepEqual(errors,[]);
   }finally{await page.close();}
 });
+
+test('Tab and Shift+Tab retarget contextual column actions to the active cell',async()=>{
+  const {page,errors,id}=await empty();try{
+    await insertTable(page,id,false);const first=page.locator('#fe-preview td').first();await first.click();await first.press('Tab');
+    assert.match(await page.locator('#tbl-context').textContent(),/Row 1 · Column 2/);
+    await page.locator('#fe-preview td[contenteditable=true]').press('Shift+Tab');assert.match(await page.locator('#tbl-context').textContent(),/Row 1 · Column 1/);
+    await page.locator('#fe-preview td[contenteditable=true]').press('Tab');await page.locator('#tbl-action-column').selectOption('column-delete');
+    assert.equal(await page.locator('#fe-preview tbody tr').first().locator('td').count(),2);await page.locator('#fe-undo').click();assert.equal(await page.locator('#fe-preview tbody tr').first().locator('td').count(),3);assert.deepEqual(errors,[]);
+  }finally{await page.close();}
+});
+
+test('imported direct-row headers insert immediately below the header and preserve captions and rich cells',async()=>{
+  const {page,errors,id}=await empty();let imported;
+  try{
+    await insertTable(page,id);const pack=JSON.parse(await exportZip(page,'#fe-export-json'));
+    const table=findTable(pack.state).node,head=table.children.find(node=>node.tag==='thead').children[0],rows=table.children.find(node=>node.tag==='tbody').children;
+    const caption={tag:'caption',attrs:{'aria-label':'Milestone caption'},children:[{text:'Project milestones'}]};rows[0].attrs={'aria-label':'First milestone'};rows[0].children[0].children=[{tag:'strong',attrs:{},children:[{text:'Row 1'}]}];
+    table.children=[caption,head,...rows];
+    imported=await browser.newPage();imported.on('pageerror',e=>errors.push(e.message));await imported.goto('file://'+resolve('dist/presentation-studio.html'));await imported.locator('#open-full-editor').click();await imported.locator('#fe-import-file').setInputFiles({name:'direct-rows.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(pack))});await imported.waitForFunction(id=>window.presentationStudioEditing.read().projectId===id,pack.meta.id);
+    const before=findTable((await snapshot(imported)).state),result=await action(imported,before,'row-after',0,0),direct=result.node.children.filter(node=>node.tag==='tr');
+    assert.deepEqual(direct.map(row=>row.children[0].children[0]?.text||row.children[0].children[0]?.children?.[0]?.text||''),['Column 1','','Row 1','Row 2','Row 3']);
+    assert.deepEqual(result.node.children[0],caption);assert.deepEqual(direct[2],rows[0]);await imported.locator('#fe-undo').click();assert.deepEqual(findTable((await snapshot(imported)).state).node,before.node);assert.deepEqual(errors,[]);
+  }finally{await imported?.close();await page.close();}
+});
