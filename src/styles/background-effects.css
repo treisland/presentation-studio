@@ -10,19 +10,21 @@
 .bg-effect[data-quiet=true][data-position=left] { mask-image:linear-gradient(270deg,transparent 20%,#000 55%); }
 .bg-effect[data-quiet=true][data-position=full] { mask-image:radial-gradient(ellipse at center,transparent 15%,#000 90%); }
 .bg-effect[data-position=corners] { mask-image:radial-gradient(ellipse at center,transparent 35%,#000 100%); }
-.bg-particle { position:absolute;display:block;box-sizing:border-box;color:var(--bg-0);animation-duration:var(--bg-duration,60s);animation-timing-function:ease-in-out;animation-iteration-count:infinite;animation-delay:calc(var(--bg-i)*-3s - 7s);animation-play-state:paused; }
-.bg-particle:nth-child(3n+2) { color:var(--bg-1); }
-.bg-particle:nth-child(3n) { color:var(--bg-2); }
+.bg-particle { position:absolute;display:block;box-sizing:border-box;color:var(--bg-render-0,var(--bg-0));animation-duration:var(--bg-duration,60s);animation-timing-function:ease-in-out;animation-iteration-count:infinite;animation-delay:calc(var(--bg-i)*-3s - 7s);animation-play-state:paused; }
+.bg-particle:nth-child(3n+2) { color:var(--bg-render-1,var(--bg-1)); }
+.bg-particle:nth-child(3n) { color:var(--bg-render-2,var(--bg-2)); }
 .bg-effect[data-motion=on] .bg-particle { animation-play-state:running; }
-.bg-effect[data-effect=orbit] .bg-particle { width:72%;aspect-ratio:1;border:2px solid currentColor;border-radius:50%;left:14%;top:12%;animation-name:bg-orbit; }
+.bg-effect[data-effect=orbit] .bg-particle { width:72%;aspect-ratio:1;border:3px solid currentColor;border-radius:50%;left:14%;top:12%;animation-name:bg-orbit; }
 .bg-effect[data-effect=orbit] .bg-particle:nth-child(2) { inset:3% auto auto 5%;width:90%; }
 .bg-effect[data-effect=orbit] .bg-particle:nth-child(3) { inset:20% auto auto 23%;width:54%; }
 .bg-effect[data-effect=orbit] .bg-particle:nth-child(4) { inset:29% auto auto 32%;width:36%; }
 .bg-effect[data-effect=orbit] .bg-particle:last-child:after { content:'';position:absolute;width:18px;height:18px;background:currentColor;border-radius:50%;left:12%;top:12%;box-shadow:0 0 28px currentColor; }
-.bg-effect[data-effect=aurora] .bg-particle { width:100%;height:130%;left:calc(var(--bg-i)*18% - 22%);top:-15%;border-radius:44% 70% 35% 80%;background:linear-gradient(130deg,transparent 10%,currentColor 38%,transparent 65%);transform:rotate(-28deg);animation-name:bg-aurora; }
-.bg-effect[data-effect=waves] .bg-particle { width:130%;height:55%;left:-5%;top:calc(10% + var(--bg-i)*8%);border-top:calc(2px + var(--bg-i)*1px) solid currentColor;border-radius:50%;transform:rotate(-25deg);animation-name:bg-wave; }
-.bg-effect[data-effect=constellation] .bg-particle { width:10px;height:10px;border-radius:50%;background:currentColor;left:var(--bg-x);top:var(--bg-y);margin:-5px 0 0 -5px;animation-name:bg-glow; }
-.bg-effect[data-effect=constellation] .bg-link { width:var(--bg-link-length);height:1px;margin:0;border-radius:0;transform:rotate(var(--bg-link-angle));transform-origin:left;opacity:.5;animation-name:bg-glow; }
+.bg-effect[data-effect=aurora] .bg-particle { width:100%;height:130%;left:calc(var(--bg-i)*22% - 26%);top:-15%;border-radius:44% 70% 35% 80%;background:linear-gradient(130deg,transparent 15%,currentColor 38%,transparent 60%);transform:rotate(-28deg);animation-name:bg-aurora; }
+.bg-effect[data-effect=waves] .bg-particle { width:140%;height:60%;left:-15%;top:calc(8% + var(--bg-i)*5%);border-top:3px solid currentColor;border-radius:50%;transform:rotate(-25deg);animation-name:bg-wave; }
+.bg-effect[data-effect=waves] .bg-particle:before { content:'';position:absolute;inset:9px 0 0;border-top:2px solid currentColor;border-radius:50%;opacity:.65; }
+.bg-effect[data-effect=waves] .bg-particle:nth-child(3n+1):after { content:'';position:absolute;inset:0;border-radius:50%;background:linear-gradient(180deg,currentColor,transparent 28%);opacity:.24; }
+.bg-effect[data-effect=constellation] .bg-particle { width:14px;height:14px;border-radius:50%;background:currentColor;left:var(--bg-x);top:var(--bg-y);margin:-7px 0 0 -7px;animation-name:bg-glow; }
+.bg-effect[data-effect=constellation] .bg-link { width:var(--bg-link-length);height:2.5px;margin:0;border-radius:0;transform:rotate(var(--bg-link-angle));transform-origin:left;animation-name:bg-glow; }
 .bg-effect[data-effect=drift] .bg-particle { width:calc(7% + var(--bg-i)*1%);aspect-ratio:1;background:currentColor;border-radius:18%;left:var(--bg-x);top:var(--bg-y);animation-name:bg-drift; }
 .bg-effect[data-effect=drift] .bg-particle:nth-child(3n) { background:transparent;border:2px solid currentColor;border-radius:50%; }
 .bg-effect[data-effect=drift] .bg-particle:nth-child(4n) { clip-path:polygon(50% 0,100% 100%,0 100%);border-radius:0; }
@@ -30,7 +32,7 @@
 @keyframes bg-aurora { 0%,100% { transform:translate(-5%,-3%) rotate(-28deg) scale(.9); } 50% { transform:translate(7%,5%) rotate(-16deg) scale(1.08); } }
 @keyframes bg-wave { 0%,100% { transform:translate(-4%,5%) rotate(-25deg); } 50% { transform:translate(4%,-5%) rotate(-18deg); } }
 @keyframes bg-drift { 0%,100% { transform:translate(0,0) rotate(0); } 50% { transform:translate(35px,-28px) rotate(12deg); } }
-@keyframes bg-glow { 0%,100% { opacity:.35; } 50% { opacity:.7; } }
+@keyframes bg-glow { 0%,100% { opacity:.8; } 50% { opacity:1; } }
 @media(prefers-reduced-motion:reduce) { .bg-effect .bg-particle { animation-play-state:paused!important; } }
 body.nx-no-motion .bg-effect .bg-particle { animation-play-state:paused!important; }
 .bg-panel { padding:12px;margin-block:12px;border:1px solid var(--wb-line,#8090a6);border-radius:10px;container-type:inline-size; }

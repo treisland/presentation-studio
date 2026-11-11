@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Improve background preset visibility with stronger Waves linework/ribbon shading, a connected Constellation network and brighter points, clearer Orbit/Aurora/Drift decoration, and lighter theme-linked colors on dark slides. Preserve quiet content areas, explicit custom colors and existing saved settings.
+
 ## 0.12.0-beta.1 — 2026-11-11
 
 - Add theme-aware Orbit, Aurora, Waves, Constellation and Geometric Drift backgrounds, presentation defaults/slide overrides, independent grid visibility, static/motion modes, accessible previews and viewer motion controls (#150–#154, #158).

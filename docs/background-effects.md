@@ -27,6 +27,8 @@ Colors follow the presentation's accent, secondary, muted or background role. Th
 
 Defaults are restrained. Custom palettes and high intensity can still reduce readability; review dense text, tables/code and video throughout motion, not only on a title slide. Backgrounds remain behind content, inert and excluded from content selection/dragging. No flashing or abrupt opacity jumps are designed into the animations.
 
+Visibility is balanced by preset: Waves uses layered strokes and translucent ribbon shading, while Constellation uses a connected network with brighter points. Thin line effects receive more contrast than broad filled effects at the same intensity. On dark slides, theme-linked decoration is lightened for visibility; explicit custom colors remain unchanged. The quiet-area mask continues protecting content. Gallery cards, editing previews, playback and booth share these rendering rules without changing saved settings or the format version.
+
 ## Motion and previews
 
 Editor canvases, slide navigator cards, theme previews and AI import previews remain static. **Preview motion** animates only the explicit sample; closing the preview/settings, changing projects or hiding the page stops/pauses it. Only one settings preview runs at a time. Motion previews do not mutate the project or restart navigator refreshes during text editing.

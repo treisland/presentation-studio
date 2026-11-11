@@ -123,6 +123,8 @@ test('theme-linked colors follow dark/light themes while explicit custom slots a
       await selectTab(page,'Branding');await page.locator('#te-open-gallery').click();await page.locator('[data-scheme="indigo"]').click();await page.locator('#te-appearance').selectOption(appearance);await page.locator('#te-apply').click();await page.locator('#we-settings-close').click();
       const values=await page.locator('#fe-preview > .me-preview-stage').evaluate(root=>({accent:getComputedStyle(root).getPropertyValue('--project-accent').trim(),linked:root.querySelector('.bg-effect').style.getPropertyValue('--bg-0'),custom:root.querySelector('.bg-effect').style.getPropertyValue('--bg-1'),grid:getComputedStyle(root.querySelector('.grid')).visibility}));
       assert.equal(values.linked,values.accent);assert.equal(values.custom,'#aa33cc');assert.equal(values.grid,'hidden');
+      const rendered=await page.locator('#fe-preview > .me-preview-stage > .bg-effect').evaluate(el=>({linked:el.style.getPropertyValue('--bg-render-0'),custom:el.style.getPropertyValue('--bg-render-1')}));
+      assert.equal(rendered.custom,'#aa33cc');if(appearance==='dark')assert.match(rendered.linked,/color-mix/);else assert.equal(rendered.linked,values.accent);
       for(const effect of Object.keys(engine.names))await set(page,{effect,grid:false,colors:['accent','#aa33cc','muted']});
     }assert.deepEqual(errors,[]);
   }finally{await page.close();}

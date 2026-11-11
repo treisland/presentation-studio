@@ -34,21 +34,28 @@ function backgroundEffectsEngine() {
       if(colors.some(color=>!/^#[0-9a-f]{6}$/i.test(color)))throw Error('Invalid background palette.');
       root.classList.add('bg-custom');
       root.classList.toggle('bg-grid-off',!config.grid);
-      const next=JSON.stringify([config,colors]);
+      const next=JSON.stringify([config,colors,palette?.background]);
       if(!layer){layer=document.createElement('div');layer.className='bg-effect';layer.setAttribute('aria-hidden','true');layer.inert=true;root.prepend(layer);}
       if(next!==signature){
         signature=next;layer.replaceChildren();layer.dataset.effect=config.effect;layer.dataset.position=config.position;layer.dataset.quiet=String(config.quiet);
         const background=palette?.background||'#f4f6f8',brightness=[1,3,5].reduce((sum,i)=>sum+parseInt(background.slice(i,i+2),16),0);
-        layer.style.setProperty('--bg-opacity',String(config.intensity/100*.32*(brightness<384?.8:1)));layer.style.setProperty('--bg-duration',config.speed+'s');layer.style.setProperty('--bg-scale',String(config.scale/100));
-        colors.forEach((color,i)=>layer.style.setProperty('--bg-'+i,color));
+        // Thin lines/points need more contrast than broad filled decorations.
+        const strength={none:0,orbit:.42,aurora:.38,waves:.75,constellation:.95,drift:.48}[config.effect];
+        layer.style.setProperty('--bg-opacity',String(config.intensity/100*strength*(brightness<384?1.1:1)));layer.style.setProperty('--bg-duration',config.speed+'s');layer.style.setProperty('--bg-scale',String(config.scale/100));
+        colors.forEach((color,i)=>{
+          layer.style.setProperty('--bg-'+i,color);
+          layer.style.setProperty('--bg-render-'+i,brightness<384&&!/^#/.test(config.colors[i])?'color-mix(in srgb, '+color+' 58%, white)':color);
+        });
         const scene=document.createElement('div');scene.className='bg-scene';layer.append(scene);
-        const counts={none:0,orbit:5,aurora:3,waves:6,constellation:20,drift:10},count=config.quality==='reduced'?Math.min(counts[config.effect],6):counts[config.effect];
-        const points=Array.from({length:12},(_,i)=>({x:(i*37+13)%90,y:(i*23+17)%80}));
+        const counts={none:0,orbit:5,aurora:3,waves:10,constellation:22,drift:10},count=config.quality==='reduced'?Math.min(counts[config.effect],6):counts[config.effect];
+        const points=[{x:9,y:24},{x:24,y:12},{x:39,y:31},{x:55,y:18},{x:76,y:8},{x:92,y:29},{x:17,y:64},{x:38,y:87},{x:59,y:57},{x:91,y:88}];
+        const links=[[0,1],[0,2],[1,3],[2,3],[2,6],[2,8],[3,4],[3,8],[4,5],[5,9],[6,7],[7,8]];
         for(let i=0;i<count;i++){
           const element=document.createElement('span');element.className='bg-particle';element.style.setProperty('--bg-i',String(i));
           element.style.setProperty('--bg-x',((i*37+13)%90)+'%');element.style.setProperty('--bg-y',((i*23+17)%80)+'%');
-          if(config.effect==='constellation'&&i>=12){
-            element.classList.add('bg-link');const a=points[i-12],b=points[i-11],aspect=['left','right'].includes(config.position)?1080*.96/(1920*.66):1080/1920,dx=b.x-a.x,dy=(b.y-a.y)*aspect;
+          if(config.effect==='constellation'&&i<points.length){element.style.setProperty('--bg-x',points[i].x+'%');element.style.setProperty('--bg-y',points[i].y+'%');}
+          if(config.effect==='constellation'&&i>=points.length){
+            element.classList.add('bg-link');const [from,to]=links[i-points.length],a=points[from],b=points[to],aspect=['left','right'].includes(config.position)?1080*.96/(1920*.66):1080/1920,dx=b.x-a.x,dy=(b.y-a.y)*aspect;
             element.style.setProperty('--bg-x',a.x+'%');element.style.setProperty('--bg-y',a.y+'%');element.style.setProperty('--bg-link-length',Math.hypot(dx,dy)+'%');element.style.setProperty('--bg-link-angle',Math.atan2(dy,dx)*180/Math.PI+'deg');
           }
           scene.append(element);
