@@ -6,7 +6,7 @@ Approved scope is [issue #135](https://github.com/treisland/presentation-studio/
 
 Insert from **Add / Library → Data & Code**. Click a cell to select its row and column and edit text directly. The canvas action bar offers row insertion above/below and column insertion left/right, plus deletion of the selected row or column. Header cells insert data rows below the header. At least one row and one column must remain; limits are 30 data rows and 12 columns. Merged or irregular imported tables retain their content and styling but structure controls are unavailable until a supported rectangular table is used.
 
-Inspector **Content** retains the optional **Edit cells in panel** disclosure. Panel fields replace that cell's text; structural edits preserve other cells' rich text, links, classes, attributes and row containers. Locked tables, slides and presentations reject changes. Undo restores a whole structural or style operation.
+Inspector **Content** retains the optional **Edit cells in panel** disclosure. Panel fields replace that cell's text and finish the previous inline session while retaining the selected table and panel focus. The canvas updates after the edit flushes; returning to a canvas cell continues from the panel value. Structural edits preserve other cells' rich text, links, classes, attributes and row containers. Locked tables, slides and presentations reject changes. Undo restores a whole structural or style operation.
 
 Existing template tables support the same cell actions without converting them to free blocks. Focus can move from a canvas cell to the table action bar or table Inspector controls without dismissing the selected table; choosing another object or slide changes the editing context normally.
 

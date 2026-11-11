@@ -3,6 +3,7 @@
 ## Unreleased
 
 - Keep existing template table selection active while using row/column actions and table Inspector controls, so focusing a dropdown no longer dismisses the editing tools (#139).
+- End inline cell editing when panel fields take over, retaining panel focus and table context so returning to the canvas cannot overwrite panel edits.
 
 ## 0.11.0-beta.1 — 2026-11-11
 

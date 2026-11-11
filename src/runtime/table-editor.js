@@ -151,7 +151,9 @@ projectTableForm=function(){
   grid.rows.forEach((row,r)=>{const tr=document.createElement('tr');row.cells.forEach((node,c)=>{
     const td=document.createElement(row.header?'th':'td'),input=document.createElement('input');input.type='text';input.value=projectText(node);
     input.setAttribute('aria-label',row.header?'Column '+(c+1)+' heading':'Row '+(grid.body.indexOf(row)+1)+' column '+(c+1));
-    input.onfocus=()=>{tblCell={slide:projectSelected,path:projectTablePath,row:r,column:c};tblPaint();};
+    // Panel fields own subsequent edits. Retain table selection, but end the
+    // inline session without rebuilding this focused input or retaining stale DOM.
+    input.onfocus=()=>{icDestination='table';vbEnd(false,false);tblCell={slide:projectSelected,path:projectTablePath,row:r,column:c};tblPaint();};
     input.oninput=()=>projectEdit(()=>projectSetText(node,input.value));td.append(input);tr.append(td);
   });view.append(tr);});container.append(view);
 };

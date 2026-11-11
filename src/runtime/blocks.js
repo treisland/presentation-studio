@@ -241,7 +241,7 @@ function vbWrite() {
   vbSyncPanel();
   projectCheckLayout();
 }
-function vbEnd(rebuild = true) {
+function vbEnd(rebuild = true, syncPanel = true) {
   if (vbClosing) return;
   vbClosing = true;
   const session = vbSession;
@@ -255,7 +255,7 @@ function vbEnd(rebuild = true) {
   vbSkipPreview = true;
   projectFlush();
   vbSkipPreview = false;
-  if (session) vbSyncPanel();
+  if (session && syncPanel) vbSyncPanel();
   vbClosing = false;
   if (rebuild) {
     vbSelected = null;

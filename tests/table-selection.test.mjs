@@ -87,6 +87,23 @@ test('template table Inspector keeps pending cell edits and clears context for a
   }finally{await page.close();}
 });
 
+test('panel cell edits repaint the canvas and survive returning to inline editing',async()=>{
+  const {page,errors}=await openExample(browser,'template');try{
+    const slide=(await snapshot(page)).state.slides.find(item=>item.template==='table');
+    await page.locator('.fe-slide-button[data-slide-id="'+slide.id+'"]').click();
+    const cell=page.locator('#fe-preview tbody td').first();await cell.click();await cell.fill('Inline before panel');
+    await page.locator('#ci-table-editor > summary').click();
+    const field=page.getByRole('textbox',{name:'Row 1 column 1',exact:true});await field.fill('Panel value');await page.waitForTimeout(500);
+    assert.equal(await cell.textContent(),'Panel value');assert.equal(await field.evaluate(el=>el===document.activeElement),true);
+    assert.equal(await page.locator('#tbl-toolbar').isVisible(),true);
+    await cell.click();await cell.press('End');await page.keyboard.type(' plus inline');await page.waitForTimeout(500);
+    assert.equal(await cell.textContent(),'Panel value plus inline');
+    const pack=JSON.parse(await exportZip(page,'#fe-export-json'));
+    assert.match(JSON.stringify(pack.state.slides.find(item=>item.id===slide.id).tree),/Panel value plus inline/);
+    assert.deepEqual(errors,[]);
+  }finally{await page.close();}
+});
+
 test('headerless tables retain all cells through contextual insertion, deletion and header toggles',async()=>{
   const {page,errors,id}=await empty();try{
     let table=await insertTable(page,id,false);const original=table.node.children[0].children;
