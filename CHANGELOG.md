@@ -5,6 +5,7 @@
 ## 0.11.0-beta.2 — 2026-11-11
 
 - Keep existing template table selection active while using row/column actions and table Inspector controls, so focusing a dropdown no longer dismisses the editing tools (#139).
+- Keep slide navigator thumbnails and titles stable during text editing; refresh at item/slide boundaries and completed actions while preserving card DOM, scroll/focus and a fixed two-line title area (#143).
 
 ## 0.11.0-beta.1 — 2026-11-11
 

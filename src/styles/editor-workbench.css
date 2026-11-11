@@ -188,7 +188,7 @@ body #full-editor #we-slides .fe-slide-button {
 }
 body #full-editor #we-slides .fe-slide-button.selected { border-color: var(--wb-focus) !important; background: var(--wb-selected) !important; }
 #full-editor .we-thumbnail { border: 1px solid var(--wb-line); border-radius: 4px; box-shadow: 0 2px 6px #0000000a; }
-#full-editor #we-slides .fe-slide-button strong { font: 600 12px/1.4 var(--wb-font); }
+#full-editor #we-slides .fe-slide-button strong { font: 600 12px/1.4 var(--wb-font); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; height: 2.8em; overflow-wrap: anywhere; }
 body #full-editor #we-slides :is(.we-slide-badges, .fe-slide-button small) { color: var(--wb-muted); font: 11px/1.4 var(--wb-font); }
 #full-editor .wp-slide-actions { gap: 4px; }
 body #full-editor .wp-slide-actions button { min-height: 28px; padding: 4px; border-color: transparent; background: transparent; font-size: 11px; }

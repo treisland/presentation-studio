@@ -78,6 +78,7 @@
     "src/runtime/app-info.js",
     "src/runtime/table-editor.js",
     "src/runtime/canvas-selection.js",
+    "src/runtime/slide-thumbnails.js",
     "src/runtime/boot.js"
   ],
   "vendor": "vendor/jszip-3.10.1.min.js"
