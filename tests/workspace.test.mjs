@@ -1,4 +1,5 @@
 import {inspectContent} from './ui.mjs';
+import {snapshot,operations} from './collection-ui.mjs';
 import { reveal } from './ui.mjs';
 import test from "node:test";
 import assert from "node:assert/strict";
@@ -475,4 +476,75 @@ test("Inspector and settings tabs support keyboard navigation without leaving th
   } finally {
     await context.close();
   }
+});
+
+test('navigator freezes a text-edit snapshot, keeps card geometry and refreshes at item boundaries', async()=>{
+ const {p,context,errors}=await setup();try{
+  const card=p.locator('.fe-slide-button[aria-current=true]');
+  await card.locator('.we-thumb-canvas').waitFor();
+  const oldTitle=await card.locator('strong').textContent();
+  await p.locator('#fe-preview h1').first().click();await p.waitForTimeout(50);
+  await card.evaluate(el=>{window.navProbe={card:el,thumb:el.querySelector('.we-thumb-canvas'),height:el.getBoundingClientRect().height,scroll:document.querySelector('#fe-slide-list').scrollTop,changes:0};new MutationObserver(()=>window.navProbe.changes++).observe(el.querySelector('.we-thumbnail'),{childList:true,subtree:true,characterData:true});});
+  const title='A much longer presentation heading that should never move the cards while typing';
+  await p.locator('#fe-preview h1').first().fill(title);await p.waitForTimeout(650);
+  assert.equal((await snapshot(p)).state.slides[0].title,title);
+  assert.equal(await card.locator('strong').textContent(),oldTitle);
+  assert.deepEqual(await card.evaluate(el=>({same:el===window.navProbe.card,thumb:el.querySelector('.we-thumb-canvas')===window.navProbe.thumb,height:el.getBoundingClientRect().height===window.navProbe.height,changes:window.navProbe.changes})),{same:true,thumb:true,height:true,changes:0});
+  await p.locator('#fe-preview p').first().click();
+  await p.waitForFunction(value=>document.querySelector('.fe-slide-button[aria-current=true] strong').textContent===value,title);
+  assert.equal(await card.locator('.we-thumbnail h1').first().textContent(),title);
+  assert.equal(await card.evaluate(el=>el===window.navProbe.card&&el.getBoundingClientRect().height===window.navProbe.height&&document.querySelector('#fe-slide-list').scrollTop===window.navProbe.scroll),true);
+  await p.keyboard.press('Escape');await p.locator('#fe-undo').click();
+  assert.equal(await card.locator('strong').textContent(),oldTitle);
+  await p.locator('#fe-redo').click();assert.equal(await card.locator('strong').textContent(),title);
+  assert.deepEqual(errors,[]);
+ }finally{await context.close();}
+});
+
+test('switching slides commits the old thumbnail without rebuilding the navigator cards',async()=>{
+ const {p,context,errors}=await setup();try{
+  const first=p.locator('.fe-slide-button').first(),second=p.locator('.fe-slide-button').nth(1);
+  await first.locator('.we-thumb-canvas').waitFor();
+  await p.locator('#fe-preview h1').first().click();await p.waitForTimeout(50);
+  const before=await first.locator('.we-thumbnail').textContent();
+  await first.evaluate(el=>window.navOldCard=el);
+  await p.locator('#fe-preview h1').first().fill('Committed when leaving this slide');await p.waitForTimeout(650);
+  assert.equal(await first.locator('.we-thumbnail').textContent(),before);
+  await second.click();
+  assert.equal(await first.locator('.we-thumbnail h1').first().textContent(),'Committed when leaving this slide');
+  assert.equal(await first.evaluate(el=>el===window.navOldCard),true);
+  assert.equal(await second.getAttribute('aria-current'),'true');
+  assert.deepEqual(errors,[]);
+ }finally{await context.close();}
+});
+
+test('canvas and Inspector text share a deferred snapshot until focus leaves the item',async()=>{
+ const {p,context,errors}=await setup();try{
+  const card=p.locator('.fe-slide-button[aria-current=true]');await card.locator('.we-thumb-canvas').waitFor();
+  const before=await card.locator('.we-thumbnail').textContent();
+  await p.locator('#fe-preview h1').first().click();await p.waitForTimeout(50);
+  await p.locator('#fe-preview h1').first().fill('Canvas edit waiting for completion');await p.waitForTimeout(400);
+  await p.locator('#ic-text-editor > summary').click();await p.waitForTimeout(100);
+  assert.equal(await card.locator('.we-thumbnail').textContent(),before);
+  await p.locator('#fe-block-text').fill('Final Inspector text');await p.waitForTimeout(650);
+  assert.equal(await card.locator('.we-thumbnail').textContent(),before);
+  assert.match(await p.locator('#fe-preview').textContent(),/Final Inspector text/);
+  await p.locator('#fe-preview p').first().click();
+  await p.waitForFunction(()=>document.querySelector('.fe-slide-button[aria-current=true] .we-thumbnail').textContent.includes('Final Inspector text'));
+  assert.deepEqual(errors,[]);
+ }finally{await context.close();}
+});
+
+test('completed actions retain navigator keyboard focus and nonzero scroll position',async()=>{
+ const {p,context,errors}=await setup();try{
+  const card=p.locator('.fe-slide-button').last();await card.scrollIntoViewIfNeeded();await card.click();
+  const id=await card.getAttribute('data-slide-id');await card.focus();
+  const scroll=await p.locator('#fe-slide-list').evaluate(el=>el.scrollTop);assert.ok(scroll>0);
+  await card.evaluate(el=>window.navFocusedCard=el);
+  const result=await operations(p,[{type:'slide.update',slideId:id,changes:{title:'A completed action updates the card'}}]);assert.equal(result.ok,true);
+  assert.equal(await card.locator('strong').textContent(),'A completed action updates the card');
+  assert.equal(await card.evaluate(el=>el===window.navFocusedCard&&document.activeElement===el),true);
+  assert.equal(await p.locator('#fe-slide-list').evaluate(el=>el.scrollTop),scroll);
+  assert.deepEqual(errors,[]);
+ }finally{await context.close();}
 });

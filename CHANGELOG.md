@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Keep slide navigator thumbnails and titles stable during text editing; refresh at item/slide boundaries and completed actions while preserving card DOM, scroll/focus and a fixed two-line title area (#143).
+
 ## 0.11.0-beta.1 — 2026-11-11
 
 - Add contextual table row/column insertion and deletion, lossless structural edits, optional headers, theme-aware presets, alternating rows, borders and spacing. Preserve headerless tables and reusable component styling (#135).

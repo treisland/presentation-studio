@@ -330,9 +330,9 @@ function weTextSize() {
   });
   vbFocusPath(path);
 }
-function weThumb(button, model) {
+function weThumb(button, model, refresh = false) {
   const holder = button.querySelector(".we-thumbnail");
-  if (!holder || holder.firstChild || !button.isConnected) return;
+  if (!holder || (!refresh && holder.firstChild) || !button.isConnected) return;
   const live = allSlides.find((s) => s.dataset.mediaId === model.id);
   if (!live) return;
   const root = document.createElement("span");
@@ -371,7 +371,7 @@ function weThumb(button, model) {
     el.replaceWith(text);
   }
   root.querySelectorAll("[id]").forEach((el) => el.removeAttribute("id"));
-  holder.append(root);
+  holder.replaceChildren(root);
   root.style.transform = "scale(" + holder.clientWidth / 1920 + ")";
 }
 function weReorder(sourceID, targetID, after = false) {
