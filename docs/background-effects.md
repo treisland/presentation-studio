@@ -57,6 +57,8 @@ Validation and inert visual review remain required. Unknown fields, unsafe color
 
 ## Acceptance and measured budgets
 
+Constellation uses all three palette slots for its points in both standard and reduced quality. Custom Color 3 remains visible in previews and bundled offline viewers.
+
 The initial structural budgets are one animated stage effect layer, no more than 24 decorative nodes per layer, zero animated navigator thumbnails and no effect-specific per-frame JavaScript/timer loop. Simpler rendering caps particle counts at six. Animation uses CSS transforms/opacity, and disconnected preview controllers are held only through weak references. The existing presentation/media player has its own independent playback loop.
 
 Automated acceptance covers all presets; dark/light themes and explicit custom colors; inheritance, reset, None/static and independent grid behavior; duplication, locks and Undo; v2/v3 guards; clean-profile editable ZIP restore; native/AI invalid inputs; inert editor/thumbnails; reduced motion; a 50-slide bounded-layer/continuity scenario; and offline playback/independent booth colors and viewer controls. Full check/package results and exact environment are recorded in the PR/release evidence, not inferred from this checklist.

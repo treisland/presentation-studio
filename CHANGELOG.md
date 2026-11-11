@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Restore all three Constellation palette colors in standard and reduced quality, including custom Color 3 in previews and offline viewers.
+
 - Bring backgrounds closer to the concept with flowing vector Waves ribbons, a denser gently drifting Constellation network, layered chromatic Aurora veils and clearer orbital/geometric motion. Clarify Static preview behavior and place Background immediately after Presentation settings.
 - Fix paused slide autoplay unintentionally freezing Animated backgrounds; keep the viewer background switch, reduced motion, Disable motion and media-focus pause safeguards independent.
 

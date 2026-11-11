@@ -25,6 +25,19 @@ test('effect contract rejects executable/unknown options and exposes matching bo
   assert.deepEqual(catalog.backgrounds.presets,JSONcopy(engine.names));
 });
 
+test('Constellation renders all three custom palette colors in both quality modes',async()=>{
+  const {page,errors}=await openExample(browser,'portfolio-demo');try{
+    for(const quality of ['standard','reduced']){
+      await set(page,{effect:'constellation',mode:'static',quality,colors:['#123456','#ab34cd','#e56789']});
+      const points=page.locator('#fe-preview > .me-preview-stage > .bg-effect .bg-network-point');
+      const colors=await points.evaluateAll(nodes=>nodes.map(node=>getComputedStyle(node).fill));
+      assert.ok(colors.includes('rgb(18, 52, 86)'));assert.ok(colors.includes('rgb(171, 52, 205)'));assert.ok(colors.includes('rgb(229, 103, 137)'));
+      await set(page,{effect:'constellation',mode:'static',quality,colors:['#123456','#ab34cd','#2468ac']});
+      assert.equal(await points.nth(2).evaluate(node=>getComputedStyle(node).fill),'rgb(36, 104, 172)');
+    }assert.deepEqual(errors,[]);
+  }finally{await page.close();}
+});
+
 test('untouched projects stay v2; configured effects and their history use guarded v3',async()=>{
   const {page,errors}=await openExample(browser,'portfolio-demo');try{
     const initial=await jsonExport(page);assert.equal(initial.schemaVersion,2);
