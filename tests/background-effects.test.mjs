@@ -42,6 +42,20 @@ test('Constellation renders all three custom palette colors in both quality mode
   }finally{await page.close();}
 });
 
+test('Orbit renders and updates every custom palette slot in both quality modes',async()=>{
+  const {page,errors}=await openExample(browser,'portfolio-demo');try{
+    for(const quality of ['standard','reduced']){
+      await set(page,{effect:'orbit',mode:'static',quality,colors:['#123456','#ab34cd','#e56789']});
+      const rings=page.locator('#fe-preview > .me-preview-stage > .bg-effect .bg-orbit-ring');
+      const colors=await rings.evaluateAll(nodes=>nodes.map(node=>({fill:getComputedStyle(node).fill,stroke:getComputedStyle(node).stroke})));
+      for(const color of ['rgb(18, 52, 86)','rgb(171, 52, 205)','rgb(229, 103, 137)'])assert.ok(colors.some(value=>value.fill===color&&value.stroke===color));
+      await set(page,{effect:'orbit',mode:'static',quality,colors:['#123456','#3579bd','#2468ac']});
+      assert.equal(await rings.nth(1).evaluate(node=>getComputedStyle(node).stroke),'rgb(53, 121, 189)');
+      assert.equal(await rings.nth(2).evaluate(node=>getComputedStyle(node).stroke),'rgb(36, 104, 172)');
+    }assert.deepEqual(errors,[]);
+  }finally{await page.close();}
+});
+
 test('untouched projects stay v2; configured effects and their history use guarded v3',async()=>{
   const {page,errors}=await openExample(browser,'portfolio-demo');try{
     const initial=await jsonExport(page);assert.equal(initial.schemaVersion,2);
@@ -183,12 +197,16 @@ test('new-presentation previews do not inherit the active project background',as
 test('offline playback and independent booth retain matching effect colors and viewer motion controls',async()=>{
   const {page,errors}=await openExample(browser,'portfolio-demo');try{
     for(const effect of ['orbit','aurora','waves','constellation','drift']){
-    await set(page,{effect,colors:['#123456','#ab34cd','muted']});
+    await set(page,{effect,colors:['#123456','#ab34cd','#e56789']});
     const playback=await exportZip(page,'#fe-playback');await selectTab(page,'Presentation settings');await page.locator('#booth-open').click();await page.locator('#booth-password').fill('background-test');await page.locator('#booth-confirm').fill('background-test');await page.locator('#booth-loop').selectOption(Object.keys((await snapshot(page)).state.loops)[0]);const booth=await exportZip(page,'#booth-export');
     await page.locator('#booth-close').click();await page.locator('#we-settings-close').click();
     for(const [kind,bytes]of [['playback',playback],['booth',booth]]){
       const folder=await unpack(bytes,kind),context=await browser.newContext();await context.setOffline(true);const restored=await context.newPage();restored.on('pageerror',error=>errors.push(error.message));
       try{await restored.goto('file://'+resolve(folder,'index.html'));const layer=restored.locator('#stage > .bg-effect');await layer.waitFor();assert.equal(await layer.getAttribute('data-effect'),effect);assert.equal(await layer.evaluate(el=>el.style.getPropertyValue('--bg-0')),'#123456');
+        if(effect==='orbit'){
+          const colors=await layer.locator('.bg-orbit-ring').evaluateAll(nodes=>nodes.map(node=>getComputedStyle(node).stroke));
+          for(const color of ['rgb(18, 52, 86)','rgb(171, 52, 205)','rgb(229, 103, 137)'])assert.ok(colors.includes(color),kind+': '+color);
+        }
         const toggle=kind==='booth'?restored.locator('#booth-bg-motion'):restored.locator('#bg-viewer-motion');if(kind==='playback')await restored.locator('#hub-player-more > summary').click();await toggle.click();assert.equal(await layer.getAttribute('data-motion'),'off');assert.equal(await toggle.getAttribute('aria-pressed'),'true');
       }finally{await context.close();}
     }}assert.deepEqual(errors,[]);

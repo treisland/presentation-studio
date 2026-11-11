@@ -21,6 +21,8 @@
 }
 .bg-effect[data-effect=orbit] .bg-particle { width:100%;height:100%;inset:0;overflow:visible;animation-name:bg-orbit;animation-timing-function:linear;transform-origin:center; }
 .bg-orbit-ring { fill:currentColor;fill-opacity:.045;stroke:currentColor;stroke-width:2;stroke-opacity:.65; }
+.bg-orbit-ring:nth-of-type(3n + 2) { color:var(--bg-render-1,var(--bg-1)); }
+.bg-orbit-ring:nth-of-type(3n) { color:var(--bg-render-2,var(--bg-2)); }
 .bg-orbit-dot { fill:currentColor; }
 .bg-effect[data-effect=aurora] .bg-particle { width:130%;height:130%;left:-15%;top:-15%;overflow:visible;mask-image:linear-gradient(130deg,transparent 10%,#000 50%,transparent 100%);animation-name:bg-aurora; }
 .bg-aurora-veil { fill:currentColor;fill-opacity:.7; }
