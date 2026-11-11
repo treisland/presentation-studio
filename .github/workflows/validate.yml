@@ -9,6 +9,7 @@ permissions:
 jobs:
   validate:
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
@@ -19,10 +20,19 @@ jobs:
         with:
           node-version: '22'
           cache: npm
-      - run: npm ci
-      - run: npx playwright install --with-deps chromium
-      - run: npm run check
-      - run: npm run package
+      - name: Check matched CI toolchain
+        run: node scripts/ci-toolchain.mjs --check
+      - name: Linux checks and packaging in pinned Playwright image
+        if: runner.os == 'Linux'
+        run: node scripts/ci-toolchain.mjs
+      - if: runner.os == 'Windows'
+        run: npm ci
+      - if: runner.os == 'Windows'
+        run: npx playwright install chromium
+      - if: runner.os == 'Windows'
+        run: npm run check
+      - if: runner.os == 'Windows'
+        run: npm run package
       - name: Prepare isolated review site
         if: matrix.os == 'ubuntu-latest' && github.event_name == 'pull_request'
         env:

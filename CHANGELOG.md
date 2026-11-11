@@ -4,6 +4,7 @@
 
 - Keep slide navigator thumbnails and titles stable during text editing; refresh at item/slide boundaries and completed actions while preserving card DOM, scroll/focus and a fixed two-line title area (#143).
 - Refresh cached navigator previews after completed layer appearance, secondary-media placement and visibility changes, including Undo/Redo.
+- Run Linux validation and release packaging in a matched, digest-pinned Playwright image to avoid live Ubuntu dependency downloads; retain Node 22, independent native Windows checks and all release gates.
 
 ## 0.11.0-beta.1 — 2026-11-11
 
