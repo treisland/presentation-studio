@@ -11,3 +11,4 @@ customer-projects/
 *.webm
 !tests/fixtures/media/*.mp4
 !tests/fixtures/media/*.webm
+site/

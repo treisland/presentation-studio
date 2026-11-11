@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Make fresh-checkout Docker/Compose startup build its own application assets without host Node/npm; retain an explicit verified-prebuilt target for release publication (#132).
+- Add embedded app version/build identity, offline About and private-data-free diagnostics, with import compatibility guidance.
+- Add hardened static Docker/Compose serving, verified published-release GHCR/Pages promotion and isolated CI-artifact review deployment. Preserve four canonical release downloads and manual release gates.
+
 ## 0.9.0-beta.1 — 2026-11-10
 
 - Omit hidden media-grid configuration roots from playback instead of creating invalid empty grid spacers; verify the exported project reopens offline with its IDs and without hidden media.
