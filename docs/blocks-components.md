@@ -58,3 +58,8 @@ Manual review pending: hide/show blocks, images, tables, code and groups; reveal
 6. Try cancellation, malformed JSON, unsupported library versions, locked slides/projects, storage unavailable/full and oversized libraries. Storage is local to this browser profile; keep exported library and editable project backups. Libraries allow 40 presets; recent deletion recovery retains ten presets. Grouping/saving supports free blocks and floating media, not structured Media Grids or arbitrary layout roots.
 7. Review laptop/desktop sizes, browser zoom, dark/light appearance, keyboard focus, native dialog Escape/Close and screen-reader names/status. Toolbar overflow must not cover the canvas; preview-only/editor controls must stay out of exported content.
 8. Open representative legacy projects and check recovery, actual delivery video/OBS if supported, editable restoration in a clean profile and offline playback. Record OS/browser/screen-reader/OBS versions and the tested beta artifact before authorizing publication. These manual checks are pending.
+
+
+## Tables and direct canvas selection (0.11.0)
+
+See [Tables and Library manipulation](tables-and-grouping.md) for the new cell/structure/style controls, Shift+click and marquee selection, direct Group/Ungroup actions, member editing and compatibility/review checklist. Existing Layers selection remains available.

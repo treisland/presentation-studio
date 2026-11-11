@@ -121,7 +121,7 @@ test('Inspector canvas-edit action preserves list items and table form refreshes
   const list=page.locator('#fe-preview ul').first(),count=await list.locator('li').count();await list.locator('li').first().click();await page.locator('#wp-tab-content').click();await page.locator('#ic-edit-inline').click();
   await page.locator('#fe-preview li[contenteditable=true]').fill('Edited list item');await page.keyboard.press('Escape');assert.equal(await list.locator('li').count(),count);
   const id=listSlide.id,result=await operations(page,[{type:'table.insert',slideId:id,rows:2,columns:2,header:true}]);await selectLayer(page,result.created[0]);
-  const before=await page.locator('#fe-table-grid input').count();await page.locator('#fe-row-add').click();assert.equal(await page.locator('#fe-table-grid input').count(),before+2);
+  const before=await page.locator('#fe-table-grid input').count();await page.locator('#tbl-action-row').selectOption('row-after');assert.equal(await page.locator('#fe-table-grid input').count(),before+2);
   await reveal(page,'#fe-table-grid');await page.locator('#fe-table-grid input').last().fill('Fresh cell');await page.locator('#fe-table-grid input').last().press('Tab');await page.waitForTimeout(400);assert.equal(await page.locator('#fe-preview td').last().textContent(),'Fresh cell');
   await page.locator('#fe-undo').click();assert.notEqual(await page.locator('#fe-table-grid input').last().inputValue(),'Fresh cell');assert.deepEqual(errors,[]);
  }finally{await page.close();}
