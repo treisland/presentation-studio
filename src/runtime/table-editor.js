@@ -208,4 +208,3 @@ projectInit=function(...args){
   $('fe-preview').addEventListener('click',event=>{const cell=event.target.closest('td,th');if(cell){tblSelectCell(cell);tblPaint();}},true);
   tblReady=true;projectTableForm();tblPaint();return result;
 };
-

@@ -32,5 +32,3 @@
 .tbl-preview-header,.tbl-preview-banded{border-top:8px solid #0066ff}.tbl-preview-banded{background:repeating-linear-gradient(to bottom,#fff 0 8px,#e7efff 8px 16px)}.tbl-preview-grid{background:repeating-linear-gradient(90deg,transparent 0 16px,#ccd7e5 16px 17px),repeating-linear-gradient(to bottom,#fff 0 8px,#ccd7e5 8px 9px)}
 #sp-style.tbl-generic-style{display:none!important}
 #tbl-overflow{font-size:12px;color:var(--wb-muted,#596575)}
-
-
