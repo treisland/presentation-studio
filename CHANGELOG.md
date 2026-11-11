@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Add contextual table row/column insertion and deletion, lossless structural edits, optional headers, theme-aware presets, alternating rows, borders and spacing. Preserve headerless tables and reusable component styling (#135).
+- Add Shift+click and drag-box canvas multiselection, visible Group/Ungroup actions and shortcuts, shared move/resize bounds, group member editing and synchronized Layers selection (#135).
+
 ## 0.10.0-beta.1 — 2026-11-10
 
 - Make fresh-checkout Docker/Compose startup build its own application assets without host Node/npm; retain an explicit verified-prebuilt target for release publication (#132).

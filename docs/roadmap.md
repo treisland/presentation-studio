@@ -2,6 +2,10 @@
 
 ## Current delivery plan
 
+**0.11.0 — Tables and Library manipulation — [#135](https://github.com/treisland/presentation-studio/issues/135):** contextual row/column editing, content-preserving headers, table presets and theme/custom colors, banding, borders and spacing; direct canvas multiselection, clearer group/ungroup actions, shared bounds and member editing. Preserve existing appearance, IDs, locks, Undo, saved components and editable/playback/booth exports. The maintainer pre-approved beta sign-off conditional on passing CI; this is recorded separately from manual release evidence. See [scope and review checklist](tables-and-grouping.md). Features do not publish until a separate approved beta preparation and all release gates pass.
+
+**Completed — 0.10.0-beta.1:** canonical release, beta.pres-studio.com and the public versioned/beta Docker image are published and verified at commit `84d9b2dd5517500cd11aca02d05da7a705ed8b54`. [Release evidence #133](https://github.com/treisland/presentation-studio/issues/133) records asset integrity, exact build identity and deployment/restore/offline checks. Stable remains 0.7.0; npm publication is deferred.
+
 **0.10.0 — Distribution and deployment — #130:** version/About UI and import compatibility policy; hardened static Docker/GHCR delivery; Actions-based stable/beta Pages hosting for pres-studio.com (Namecheap DNS), verified release promotion and isolated review deployment. npm publishing remains deferred. Maintainer acceptance and all beta gates are recorded; PR #131 merged. Separate 0.10.0-beta.1 release preparation is #133, with beta Pages/Docker authorization and unchanged release gates. See [deployment and testing](deployment.md).
 
 Included follow-up **#132** in PR #131: Docker-only fresh-checkout Compose startup, a dedicated source build stage with development identity, an explicit verified-prebuilt release target and independent CI smoke/security coverage for both paths.

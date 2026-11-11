@@ -69,10 +69,10 @@ test('selected tables keep cell fallback, structure and Undo scoped to their own
   assert.equal(await page.locator('#ci-table-editor').evaluate(node=>node.open),false);
   await page.locator('#ci-table-editor > summary').click();await page.locator('#fe-table-grid input').last().fill('Only first table');await page.locator('#fe-table-grid input').last().press('Tab');
   await content(page,b);await page.locator('#ci-table-editor > summary').click();assert.notEqual(await page.locator('#fe-table-grid input').last().inputValue(),'Only first table');
-  const before=await snapshot(page);await page.locator('#fe-row-add').click();assert.match(await page.locator('#ci-table-count').textContent(),/3 rows/);
+  const before=await snapshot(page);await page.locator('#tbl-action-row').selectOption('row-after');assert.match(await page.locator('#ci-table-count').textContent(),/3 data rows/);
   await page.locator('#fe-undo').click();assert.deepEqual((await snapshot(page)).state,before.state);
   assert.equal(await page.locator('#fe-preview .'+a+' td').last().textContent(),'Only first table');
-  await operations(page,[{type:'design.meta',slideId:id,keys:[b],changes:{locked:true}}]);assert.equal(await page.locator('#fe-row-add').isDisabled(),true);assert.equal(await page.locator('#fe-table-grid input').last().isDisabled(),true);
+  await operations(page,[{type:'design.meta',slideId:id,keys:[b],changes:{locked:true}}]);assert.equal(await page.locator('#tbl-action-row').isDisabled(),true);assert.equal(await page.locator('#fe-table-grid input').last().isDisabled(),true);
   assert.deepEqual(errors,[]);
  }finally{await page.close();}
 });

@@ -4,6 +4,7 @@ let editingStateReference = null;
 const editingSession = projectID("editing");
 const editingOperations = new Map();
 let editingAfterOperation = () => {};
+let editingGestureBusy = () => false;
 function editingRegisterOperation(type, handler) {
   if (editingOperations.has(type) || typeof handler !== 'function') throw new Error('Invalid or duplicate editing operation: ' + type);
   editingOperations.set(type, handler);
@@ -106,7 +107,7 @@ const studioEditing = Object.freeze({
       if (request?.apiVersion !== 1) editingFail("VERSION", "Unsupported editing contract version.");
       if (request.projectId !== projectMeta.id || request.expectedRevision !== editingRevision())
         editingFail("CONFLICT", "The project changed. Read it again and review a fresh proposal.");
-      if (projectPending || vbSession || ceDrag || ceRelocate || dbDrag || mgDrag || mgUploading || mfState || mediaExporting)
+      if (projectPending || vbSession || ceDrag || ceRelocate || dbDrag || mgDrag || mgUploading || mfState || mediaExporting || editingGestureBusy())
         editingFail("BUSY", "Finish the current edit, gesture or export first.");
       if (!Array.isArray(request.operations) || !request.operations.length || request.operations.length > 100)
         editingFail("INVALID", "Supply 1–100 operations.");
