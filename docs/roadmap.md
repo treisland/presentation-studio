@@ -1,6 +1,6 @@
 # Roadmap
 
-0.11.0 release candidate: the maintainer accepted delivered beta.2 and approved RC progression. [#147](https://github.com/treisland/presentation-studio/issues/147) prepares [0.11.0-rc.1](releases/0.11.0-rc.1-validation.md) without runtime changes. The accepted [beta.2 update](releases/0.11.0-beta.2-validation.md) contains template-table focus/data-preservation fixes (#139/#140) and stable navigator snapshots (#143/#144). Existing-template grouping convenience remains outside this scope; stable promotion requires separate authorization.
+0.11.0 production acceptance: after RC testing passed, the maintainer explicitly approved production sign-off. [#156](https://github.com/treisland/presentation-studio/issues/156) prepares [stable 0.11.0](releases/0.11.0-validation.md) and production Pages/Docker promotion without runtime changes. The accepted [RC](releases/0.11.0-rc.1-validation.md) includes template-table focus/data-preservation fixes (#139/#140) and stable navigator snapshots (#143/#144). Existing-template grouping convenience remains outside this scope. Background-effects planning PR #155 is deferred and is not part of this production release.
 
 ## Current delivery plan
 

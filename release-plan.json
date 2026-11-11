@@ -1,9 +1,10 @@
 {
-  "version": "0.11.0-rc.1",
+  "version": "0.11.0",
   "publish": true,
-  "notes": "docs/releases/0.11.0-rc.1.md",
+  "notes": "docs/releases/0.11.0.md",
   "manualGatesPassed": true,
   "evidence": [
+    "docs/releases/0.11.0-validation.md",
     "docs/releases/0.11.0-rc.1-validation.md",
     "docs/releases/0.11.0-beta.2-validation.md",
     "docs/releases/0.11.0-beta.1-validation.md",
@@ -15,7 +16,7 @@
       "docker"
     ],
     "channels": [
-      "beta"
+      "stable"
     ]
   }
 }
