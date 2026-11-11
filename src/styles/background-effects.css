@@ -31,7 +31,8 @@
 .bg-effect[data-effect=constellation] .bg-network { width:100%;height:100%;inset:0;overflow:visible;animation-name:bg-network-drift; }
 .bg-network-lines { stroke:var(--bg-render-0);stroke-width:2.5;opacity:.85; }
 .bg-network-point { fill:var(--bg-render-0); }
-.bg-network-point:nth-child(3n) { fill:var(--bg-render-1); }
+.bg-network-point:nth-of-type(3n + 2) { fill:var(--bg-render-1); }
+.bg-network-point:nth-of-type(3n) { fill:var(--bg-render-2); }
 .bg-effect[data-effect=drift] .bg-particle { width:calc(9% + var(--bg-i)*1%);aspect-ratio:1;background:linear-gradient(145deg,currentColor,color-mix(in srgb,currentColor 35%,transparent));border-radius:18%;left:var(--bg-x);top:var(--bg-y);animation-name:bg-drift; }
 .bg-effect[data-effect=drift] .bg-particle:nth-child(3n) { background:transparent;border:2px solid currentColor;border-radius:50%; }
 .bg-effect[data-effect=drift] .bg-particle:nth-child(4n) { clip-path:polygon(50% 0,100% 100%,0 100%);border-radius:0; }

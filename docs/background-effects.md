@@ -63,6 +63,8 @@ Validation and inert visual review remain required. Unknown fields, unsafe color
 
 ## Acceptance and measured budgets
 
+Constellation uses all three palette slots for its points in both standard and reduced quality. Custom Color 3 remains visible in previews and bundled offline viewers.
+
 The initial structural budgets are one animated stage effect layer, no more than 24 decorative nodes per layer, zero animated navigator thumbnails and no effect-specific per-frame JavaScript/timer loop. Simpler rendering caps particle counts at six. Animation uses CSS transforms/opacity, and disconnected preview controllers are held only through weak references. The existing presentation/media player has its own independent playback loop.
 
 Orbit, Aurora, Waves and Constellation use self-contained native SVG geometry; Geometric Drift uses a small set of gradient/outlined CSS shapes. Orbit rotates a visible dot around concentric rings; Aurora and Waves animate both layers and inner ribbon geometry; Constellation moves its connected mesh together; floating shapes have independent phase offsets. All internal ribbon motion follows the same pause, reduced-motion, hidden-page and media-focus rules as its parent effect. No external SVG assets, executable uploads, canvas/WebGL dependency or per-frame script is introduced.
