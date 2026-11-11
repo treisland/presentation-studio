@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Document the planned post-1.0 background-effects milestone, theme/compatibility contracts, dependent candidate issues and acceptance gates; no application behavior or release version changes (#149).
+
 ## 0.11.0-beta.2 — 2026-11-11
 
 - Keep existing template table selection active while using row/column actions and table Inspector controls, so focusing a dropdown no longer dismisses the editing tools (#139).
