@@ -1,0 +1,19 @@
+/* Action chrome is confined to the editor; presentation/export content is unaffected. */
+body #full-editor .ac-action {display:inline-flex;align-items:center;justify-content:center;gap:6px;min-width:36px;min-height:36px;vertical-align:middle}
+body #full-editor :is(.wp-selection-actions,.fe-top-actions) .ac-action {min-height:36px;padding:7px}
+body #full-editor .ac-action[hidden] {display:none!important}
+#full-editor .ac-action .wb-icon {width:18px;height:18px;flex:none;pointer-events:none}
+body #full-editor .ac-icon-only {width:36px;flex:0 0 36px;padding:7px}
+#full-editor .ac-icon-only .ac-label {position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
+body #full-editor .ac-danger:enabled:is(:hover,:focus-visible) {color:var(--wb-danger);border-color:currentColor;background:var(--wb-raised)}
+body #full-editor .ac-action:focus-visible {outline:2px solid var(--wb-focus);outline-offset:2px}
+#full-editor .wp-selection-actions {align-items:center;gap:8px}
+body #full-editor .wp-slide-actions .ac-action {width:32px;min-width:32px;min-height:32px;flex:0 0 32px;padding:5px}
+body #full-editor :is(#vb-edit-mode,#vb-preview-mode)[aria-pressed="true"] {background:var(--wb-blue);border-color:var(--wb-blue);color:#fff}
+body #full-editor #ac-tooltip {position:fixed;inset:auto;margin:0;box-sizing:border-box;max-width:min(300px,calc(100vw - 16px));padding:7px 10px;border:1px solid #627084;border-radius:6px;background:#172232;color:#fff;font:12px/1.45 var(--wb-font);text-align:left;overflow-wrap:anywhere;box-shadow:0 4px 14px #0003}
+@media (pointer:coarse) {
+  #full-editor .wp-slide-actions {opacity:1;pointer-events:auto}
+  body #full-editor .ac-action,body #full-editor :is(.wp-selection-actions,.fe-top-actions) .ac-action,body #full-editor #sp-layers .ld-icon-action,body #full-editor .ld-reorder-options button,body #full-editor .wp-slide-actions .ac-action {min-width:44px;min-height:44px;width:auto;flex-basis:44px}
+  body #full-editor #sp-layers .sp-layer-row {grid-template-columns:18px minmax(0,1fr) 44px 44px}
+}
+@media (forced-colors:active) {body #full-editor #ac-tooltip {background:Canvas;color:CanvasText;border-color:CanvasText}body #full-editor .ac-action:focus-visible {outline-color:Highlight}body #full-editor :is(#vb-edit-mode,#vb-preview-mode)[aria-pressed="true"] {border:2px solid Highlight}}

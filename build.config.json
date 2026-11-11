@@ -25,7 +25,8 @@
     "src/styles/table-editor.css",
     "src/styles/canvas-selection.css",
     "src/styles/background-effects.css",
-    "src/styles/numeric-controls.css"
+    "src/styles/numeric-controls.css",
+    "src/styles/action-controls.css"
   ],
   "scripts": [
     "src/runtime/prelude.js",
@@ -85,6 +86,7 @@
     "src/runtime/background-effects.js",
     "src/runtime/background-effects-ui.js",
     "src/runtime/numeric-controls.js",
+    "src/runtime/action-controls.js",
     "src/runtime/boot.js"
   ],
   "vendor": "vendor/jszip-3.10.1.min.js"
