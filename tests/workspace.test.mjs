@@ -535,6 +535,36 @@ test('canvas and Inspector text share a deferred snapshot until focus leaves the
  }finally{await context.close();}
 });
 
+test('completed design and visibility edits refresh cached previews and Undo restores them',async()=>{
+ const {p,context,errors}=await setup();try{
+  const id=(await snapshot(p)).state.slides[0].id,card=p.locator('.fe-slide-button[aria-current=true]');await card.locator('.we-thumb-canvas').waitFor();
+  const before=await card.locator('.we-thumbnail .slide').evaluate(el=>el.style.backgroundColor);
+  assert.equal((await operations(p,[{type:'design.background',slideId:id,color:{hex:'#123456'}}])).ok,true);
+  await p.waitForFunction(()=>document.querySelector('.fe-slide-button[aria-current=true] .we-thumbnail .slide').style.backgroundColor==='rgb(18, 52, 86)');
+  await p.locator('#fe-undo').click();assert.equal(await card.locator('.we-thumbnail .slide').evaluate(el=>el.style.backgroundColor),before);
+  await p.locator('#fe-redo').click();assert.equal(await card.locator('.we-thumbnail .slide').evaluate(el=>el.style.backgroundColor),'rgb(18, 52, 86)');
+  assert.equal((await operations(p,[{type:'visibility.chrome',slideId:id,scope:'presentation',part:'header',visible:false}])).ok,true);
+  await p.waitForFunction(()=>getComputedStyle(document.querySelector('.fe-slide-button[aria-current=true] .we-thumbnail header')).visibility==='hidden');
+  await p.locator('#fe-undo').click();assert.equal(await card.locator('.we-thumbnail header').evaluate(el=>getComputedStyle(el).visibility),'visible');
+  assert.deepEqual(errors,[]);
+ }finally{await context.close();}
+});
+
+test('secondary media placement updates its completed thumbnail without changing primary media',async()=>{
+ const {p,context,errors}=await setup();try{
+  await p.locator('.fe-slide-button[data-slide-id="studio-media"]').click();
+  await reveal(p,'#ce-zone');await p.locator('#ce-zone').selectOption('floating');
+  await p.locator('#ce-file').setInputFiles({name:'thumbnail-extra.svg',mimeType:'image/svg+xml',buffer:Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect width="400" height="300" fill="orange"/></svg>')});
+  const state=(await snapshot(p)).state,extra=state.mediaObjects['studio-media'][0],primary=state.media['studio-media'];
+  const card=p.locator('.fe-slide-button[data-slide-id="studio-media"]'),figure=card.locator('.we-thumbnail [data-object-id="'+extra.id+'"]');await figure.waitFor();
+  const before=await figure.getAttribute('style');
+  assert.equal((await operations(p,[{type:'media.place',slideId:'studio-media',objectId:extra.id,placement:{x:.1,y:.1,w:.25,h:.25}}])).ok,true);
+  await p.locator('.fe-slide-button').first().click();assert.notEqual(await figure.getAttribute('style'),before);
+  assert.deepEqual((await snapshot(p)).state.media['studio-media'],primary);
+  await p.locator('#fe-undo').click();assert.equal(await figure.getAttribute('style'),before);assert.deepEqual(errors,[]);
+ }finally{await context.close();}
+});
+
 test('completed actions retain navigator keyboard focus and nonzero scroll position',async()=>{
  const {p,context,errors}=await setup();try{
   const card=p.locator('.fe-slide-button').last();await card.scrollIntoViewIfNeeded();await card.click();

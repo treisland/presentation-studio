@@ -3,6 +3,7 @@
 ## Unreleased
 
 - Keep slide navigator thumbnails and titles stable during text editing; refresh at item/slide boundaries and completed actions while preserving card DOM, scroll/focus and a fixed two-line title area (#143).
+- Refresh cached navigator previews after completed layer appearance, secondary-media placement and visibility changes, including Undo/Redo.
 
 ## 0.11.0-beta.1 — 2026-11-11
 

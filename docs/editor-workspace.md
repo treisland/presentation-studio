@@ -6,6 +6,8 @@ For multiple images/videos in adjustable cells, see [Media Grid](media-grid.md).
 
 The editor uses three areas: sectioned slide thumbnails on the left, the editing canvas in the center, and a contextual inspector on the right. These changes do not introduce a new presentation format.
 
+Completed layer appearance, additional-media placement and visibility edits refresh cached previews at editing boundaries. Undo/Redo refreshes them too; the temporary cache never changes saved presentation data.
+
 ## Select and edit
 
 Use **Add block** for freely positioned text, shapes and callouts; the inspector's **Content blocks** list provides selection and keyboard arrangement. See [content blocks](content-blocks.md) for placement, snapping, layers and compatibility details.
