@@ -1,5 +1,7 @@
 # Roadmap
 
+0.11.0 beta stabilization: [#139](https://github.com/treisland/presentation-studio/issues/139) fixes template table actions dismissing on focus; [#141](https://github.com/treisland/presentation-studio/issues/141) prepares the conditionally approved [0.11.0-beta.2 update](releases/0.11.0-beta.2-validation.md). Existing-template grouping convenience and thumbnail flicker remain reported follow-ups, outside this focused update.
+
 ## Current delivery plan
 
 **0.11.0 — Tables and Library manipulation — [#135](https://github.com/treisland/presentation-studio/issues/135):** contextual row/column editing, content-preserving headers, table presets and theme/custom colors, banding, borders and spacing; direct canvas multiselection, clearer group/ungroup actions, shared bounds and member editing. Preserve existing appearance, IDs, locks, Undo, saved components and editable/playback/booth exports. The maintainer pre-approved beta sign-off conditional on passing CI and separately confirmed every listed manual gate. Release preparation is [#137](https://github.com/treisland/presentation-studio/issues/137), with [0.11.0-beta.1 evidence](releases/0.11.0-beta.1-validation.md). See [scope and review checklist](tables-and-grouping.md). Features do not publish until a separate approved beta preparation and all release gates pass.
