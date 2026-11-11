@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Improve the beta background renderer with purpose-built SVG Orbit/Aurora/Waves compositions, independent ribbon flow, coordinated theme-derived colors, and fewer deliberately placed floating shapes. Keep custom hues, monochrome themes, motion safeguards and offline playback/booth behavior.
+- Add staged style variations, Subtle/Balanced/Expressive strength choices, explicit motion status and an inert Current slide preview. Map these controls to existing placement/scale/intensity values, preserving custom values and native-v3 compatibility without new saved fields.
+
 - Bring backgrounds closer to the concept with flowing vector Waves ribbons, a denser gently drifting Constellation network, layered chromatic Aurora veils and clearer orbital/geometric motion. Clarify Static preview behavior and place Background immediately after Presentation settings.
 - Fix paused slide autoplay unintentionally freezing Animated backgrounds; keep the viewer background switch, reduced motion, Disable motion and media-focus pause safeguards independent.
 

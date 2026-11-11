@@ -13,28 +13,26 @@
 .bg-particle { position:absolute;display:block;box-sizing:border-box;color:var(--bg-render-0,var(--bg-0));animation-duration:var(--bg-duration,60s);animation-timing-function:ease-in-out;animation-iteration-count:infinite;animation-delay:calc(var(--bg-i)*-3s - 7s);animation-play-state:paused; }
 .bg-particle:nth-child(3n+2) { color:var(--bg-render-1,var(--bg-1)); }
 .bg-particle:nth-child(3n) { color:var(--bg-render-2,var(--bg-2)); }
-.bg-effect[data-motion=on] .bg-particle { animation-play-state:running; }
+.bg-detail { animation:bg-ribbon-breathe var(--bg-duration,60s) ease-in-out infinite;animation-delay:calc(var(--bg-i)*-5s - 11s);animation-play-state:paused;transform-box:fill-box;transform-origin:center; }
+.bg-effect[data-motion=on] :is(.bg-particle,.bg-detail) { animation-play-state:running; }
 /* Slide autoplay pause must not override the independent background switch. */
 @media(prefers-reduced-motion:no-preference) {
-  body.paused:not(.nx-no-motion):not(.mf-active) #stage:not(:has(> .bp-focus)) > .bg-effect[data-motion=on] .bg-particle { animation-play-state:running!important; }
+  body.paused:not(.nx-no-motion):not(.mf-active) #stage:not(:has(> .bp-focus)) > .bg-effect[data-motion=on] :is(.bg-particle,.bg-detail) { animation-play-state:running!important; }
 }
-.bg-effect[data-effect=orbit] .bg-particle { width:72%;aspect-ratio:1;border:3px solid currentColor;border-radius:50%;left:14%;top:12%;background:radial-gradient(circle,transparent 58%,currentColor 160%);animation-name:bg-orbit;animation-timing-function:linear; }
-.bg-effect[data-effect=orbit] .bg-particle:nth-child(2) { inset:3% auto auto 5%;width:90%; }
-.bg-effect[data-effect=orbit] .bg-particle:nth-child(3) { inset:20% auto auto 23%;width:54%; }
-.bg-effect[data-effect=orbit] .bg-particle:nth-child(4) { inset:29% auto auto 32%;width:36%; }
-.bg-effect[data-effect=orbit] .bg-particle:last-child { color:var(--bg-render-0); }
-.bg-effect[data-effect=orbit] .bg-particle:last-child:after { content:'';position:absolute;width:26px;height:26px;background:currentColor;border-radius:50%;left:12%;top:12%;box-shadow:0 0 28px currentColor; }
-.bg-effect[data-effect=aurora] .bg-particle { width:110%;height:150%;left:calc(var(--bg-i)*24% - 34%);top:-25%;border-radius:40% 70% 35% 80%;background:linear-gradient(125deg,transparent 20%,currentColor 40%,transparent 62%);transform:rotate(-28deg);animation-name:bg-aurora; }
-.bg-effect[data-effect=aurora] .bg-particle:nth-child(2),.bg-effect[data-effect=drift] .bg-particle:nth-child(3n+2) { color:var(--bg-veil-1);filter:hue-rotate(var(--bg-hue-1)); }
-.bg-effect[data-effect=aurora] .bg-particle:nth-child(3),.bg-effect[data-effect=drift] .bg-particle:nth-child(3n) { color:var(--bg-veil-2);filter:hue-rotate(var(--bg-hue-2)); }
+.bg-effect[data-effect=orbit] .bg-particle { width:100%;height:100%;inset:0;overflow:visible;animation-name:bg-orbit;animation-timing-function:linear;transform-origin:center; }
+.bg-orbit-ring { fill:currentColor;fill-opacity:.045;stroke:currentColor;stroke-width:2;stroke-opacity:.65; }
+.bg-orbit-dot { fill:currentColor; }
+.bg-effect[data-effect=aurora] .bg-particle { width:130%;height:130%;left:-15%;top:-15%;overflow:visible;mask-image:linear-gradient(130deg,transparent 10%,#000 50%,transparent 100%);animation-name:bg-aurora; }
+.bg-aurora-veil { fill:currentColor;fill-opacity:.7; }
+.bg-aurora-edge { stroke:currentColor;stroke-width:4;opacity:.35; }
 .bg-effect[data-effect=waves] .bg-particle { width:120%;height:110%;left:-10%;top:calc(var(--bg-i)*-3%);overflow:visible;animation-name:bg-wave; }
 .bg-wave-lines { stroke:currentColor;stroke-width:1.8; }
-.bg-wave-ribbon { fill:currentColor;opacity:.09; }
+.bg-wave-ribbon { fill:currentColor;opacity:.13;animation-direction:reverse; }
 .bg-effect[data-effect=constellation] .bg-network { width:100%;height:100%;inset:0;overflow:visible;animation-name:bg-network-drift; }
 .bg-network-lines { stroke:var(--bg-render-0);stroke-width:2.5;opacity:.85; }
 .bg-network-point { fill:var(--bg-render-0); }
 .bg-network-point:nth-child(3n) { fill:var(--bg-render-1); }
-.bg-effect[data-effect=drift] .bg-particle { width:calc(7% + var(--bg-i)*1%);aspect-ratio:1;background:currentColor;border-radius:18%;left:var(--bg-x);top:var(--bg-y);animation-name:bg-drift; }
+.bg-effect[data-effect=drift] .bg-particle { width:calc(9% + var(--bg-i)*1%);aspect-ratio:1;background:linear-gradient(145deg,currentColor,color-mix(in srgb,currentColor 35%,transparent));border-radius:18%;left:var(--bg-x);top:var(--bg-y);animation-name:bg-drift; }
 .bg-effect[data-effect=drift] .bg-particle:nth-child(3n) { background:transparent;border:2px solid currentColor;border-radius:50%; }
 .bg-effect[data-effect=drift] .bg-particle:nth-child(4n) { clip-path:polygon(50% 0,100% 100%,0 100%);border-radius:0; }
 @keyframes bg-orbit { to { transform:rotate(360deg); } }
@@ -42,8 +40,9 @@
 @keyframes bg-wave { 0%,100% { transform:translate(-5%,7%) rotate(-4deg); } 50% { transform:translate(7%,-7%) rotate(4deg); } }
 @keyframes bg-drift { 0%,100% { transform:translate(-18px,15px) rotate(-5deg); } 50% { transform:translate(65px,-50px) rotate(18deg); } }
 @keyframes bg-network-drift { 0%,100% { transform:translate(-4%,3%) rotate(-2deg); } 50% { transform:translate(5%,-4%) rotate(2deg); } }
-@media(prefers-reduced-motion:reduce) { .bg-effect .bg-particle { animation-play-state:paused!important; } }
-body.nx-no-motion .bg-effect .bg-particle { animation-play-state:paused!important; }
+@keyframes bg-ribbon-breathe { 0%,100% { transform:scaleY(.9) skewX(-2deg); } 50% { transform:scaleY(1.12) skewX(3deg); } }
+@media(prefers-reduced-motion:reduce) { .bg-effect :is(.bg-particle,.bg-detail) { animation-play-state:paused!important; } }
+body.nx-no-motion .bg-effect :is(.bg-particle,.bg-detail) { animation-play-state:paused!important; }
 .bg-panel { padding:12px;margin-block:12px;border:1px solid var(--wb-line,#8090a6);border-radius:10px;container-type:inline-size; }
 .bg-panel legend,.bg-panel h3 { font-weight:650; }
 .bg-controls { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px; }
@@ -56,9 +55,11 @@ body.nx-no-motion .bg-effect .bg-particle { animation-play-state:paused!importan
 .bg-actions { display:flex;flex-wrap:wrap;gap:8px;margin-top:12px; }
 .bg-preview { position:relative;aspect-ratio:16/9;width:100%;overflow:hidden;border:1px solid var(--wb-line,#8090a6);border-radius:8px;margin-top:14px; }
 .bg-preview-stage { position:absolute!important;inset:0!important;width:1920px!important;height:1080px!important;transform-origin:top left; }
-.bg-preview-copy { position:absolute;left:6%;top:42%;width:45%;font:700 90px/1.15 Arial; }
+.bg-preview-copy { position:absolute;left:6%;top:34%;width:43%;font:700 110px/1.08 Arial;letter-spacing:-3px; }
+.bg-preview-lead { display:block;margin-top:35px;font:400 32px/1.5 Arial;letter-spacing:0; }
+.bg-preview-label { position:absolute;left:6%;top:9%;font:700 24px Arial;letter-spacing:2px;color:inherit; }
 body.bg-motion-off .orb { animation-play-state:paused!important; }
-body.mf-active #stage > .bg-effect .bg-particle,#stage:has(> .bp-focus) > .bg-effect .bg-particle { animation-play-state:paused!important; }
+body.mf-active #stage > .bg-effect :is(.bg-particle,.bg-detail),#stage:has(> .bp-focus) > .bg-effect :is(.bg-particle,.bg-detail) { animation-play-state:paused!important; }
 .bg-hint { font-size:12px;line-height:1.5;color:var(--wb-muted,#596575); }
 .bg-gallery { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-block:12px; }
 .bg-preset { padding:5px!important;display:flex;flex-direction:column;gap:5px;align-items:stretch;background:var(--wb-raised,#fff)!important;color:var(--wb-ink,#101c2f)!important;border:1px solid var(--wb-line,#8090a6)!important; }

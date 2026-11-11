@@ -2,12 +2,13 @@ const bgPanels=[];
 function bgPanel(scope){
   const id='bg-'+scope,panel=document.createElement('fieldset');panel.className='bg-panel';panel.id=id;
   const legend=document.createElement('legend');legend.textContent=scope==='presentation'?'Presentation background':'Slide background';panel.append(legend);
-  const hint=document.createElement('p');hint.className='bg-hint';hint.textContent='Theme-aware decoration behind your content. Editor and slide cards stay static. Effects use format v3; keep editable ZIP backups.';panel.append(hint);
+  const hint=document.createElement('p');hint.className='bg-hint';hint.textContent='Choose a background, check it with your content, then apply. Changes stay in this preview until you apply them.';panel.append(hint);
   const gallery=document.createElement('div');gallery.className='bg-gallery';gallery.setAttribute('aria-label','Background presets');panel.append(gallery);
   const cards=[];
   for(const [effect,name]of Object.entries(bgEngine.names)){
     const button=document.createElement('button');button.type='button';button.className='bg-preset';button.setAttribute('aria-label','Choose '+name+' background');
     const frame=document.createElement('span');frame.className='bg-card-frame';const sample=document.createElement('span');sample.className='bg-card-stage';frame.append(sample);
+    const grid=document.createElement('span');grid.className='grid';sample.append(grid);
     const title=document.createElement('span');title.textContent=name;button.append(frame,title);gallery.append(button);
     button.onclick=()=>{fields.effect.value=effect;change();};cards.push({effect,button,sample,controller:bgEngine.mount(sample),frame});
   }
@@ -18,12 +19,18 @@ function bgPanel(scope){
     const wrapper=document.createElement('label');wrapper.htmlFor=id+'-'+key;wrapper.textContent=label;
     const field=document.createElement(type==='select'?'select':'input');field.id=id+'-'+key;
     if(type==='select')for(const [value,text]of choices)field.add(new Option(text,value));else field.type=type;
-    wrapper.append(field);(['source','effect','mode','position'].includes(key)?controls:advancedFields).append(wrapper);fields[key]=field;return field;
+    wrapper.append(field);(['source','effect','mode'].includes(key)?controls:advancedFields).append(wrapper);fields[key]=field;return field;
   };
   make('source','Settings source','select',scope==='presentation'?[['inherit','Original orb'],['custom','Custom background']]:[['inherit','Use presentation default'],['custom','Slide override']]);
   make('effect','Effect','select',Object.entries(bgEngine.names));
   make('mode','Motion','select',[['static','Static'],['animated','Animated']]);
   make('position','Placement','select',[['right','Right'],['left','Left'],['full','Full slide'],['corners','Corners']]);
+  const viewChoice=(key,label,options)=>{const wrapper=document.createElement('label');wrapper.textContent=label;const select=document.createElement('select');select.id=id+'-'+key;wrapper.htmlFor=select.id;for(const [value,name]of options)select.add(new Option(name,value));wrapper.append(select);controls.append(wrapper);return select;};
+  const variations={focused:{position:'right',scale:100},wide:{position:'full',scale:100},framed:{position:'corners',scale:90}};
+  const variation=viewChoice('variation','Style variation',[['focused','Right spotlight'],['wide','Full canvas'],['framed','Corner frame'],['custom','Custom placement / scale']]);
+  const strengths={subtle:25,balanced:45,expressive:75};
+  const strength=viewChoice('strength','Strength',[['subtle','Subtle'],['balanced','Balanced'],['expressive','Expressive'],['custom','Custom intensity']]);
+  const content=viewChoice('content','Preview with',[['sample','Sample slide'],['current','Current slide']]);
   for(const [key,label,min,max]of [['intensity','Intensity (%)',0,100],['speed','Cycle duration (seconds)',10,120],['scale','Scale (%)',50,150]]){const field=make(key,label,'number');field.min=min;field.max=max;field.step=1;}
   make('quality','Rendering detail','select',[['standard','Standard'],['reduced','Simpler']]);
   const quiet=make('quiet','Keep a quiet area for content','checkbox');quiet.checked=true;
@@ -39,13 +46,12 @@ function bgPanel(scope){
     label.append(source,value,reset);colors.append(label);colorFields.push({source,value,reset});source.onchange=change;value.oninput=change;
   }
   const preview=document.createElement('div');preview.className='bg-preview';preview.setAttribute('aria-label','Background effect preview');
-  const canvas=document.createElement('div');canvas.className='bg-preview-stage';
-  const originalOrb=document.createElement('div');originalOrb.className='orb';originalOrb.style.animation='none';canvas.append(originalOrb);
-  const copy=document.createElement('div');copy.className='bg-preview-copy';copy.textContent='Your story. Your style.';canvas.append(copy);preview.append(canvas);
+  let canvas=document.createElement('div'),originalOrb=null,copy=null;canvas.className='bg-preview-stage';preview.append(canvas);
   const body=document.createElement('div');body.className='bg-body';body.append(preview,controls);panel.append(body);
-  const previewController=bgEngine.mount(canvas),actions=document.createElement('div');actions.className='bg-actions';panel.append(actions);
+  let previewController=bgEngine.mount(canvas),previewKey='';const actions=document.createElement('div');actions.className='bg-actions';panel.append(actions);
   const button=(text,handler,suffix)=>{const node=document.createElement('button');node.type='button';node.textContent=text;node.id=id+'-'+suffix;node.onclick=handler;actions.append(node);return node;};
   const status=document.createElement('p');status.className='bg-hint';status.setAttribute('role','status');panel.append(status);
+  const motionStatus=document.createElement('p');motionStatus.className='bg-hint bg-motion-status';motionStatus.setAttribute('aria-live','polite');panel.append(motionStatus);
   panel.append(advanced);
   let signature='',draft=null,playing=false,legacyPreview=false;
   function loadDraft(value){
@@ -56,25 +62,53 @@ function bgPanel(scope){
     colorFields.forEach(({source,value},i)=>{const color=draft.colors[i];source.value=color.startsWith('#')?'custom':color;value.value=color.startsWith('#')?color:palette[color];value.disabled=source.value!=='custom';});
   }
   function read(){return bgEngine.clean({effect:fields.effect.value,mode:fields.mode.value,position:fields.position.value,quality:fields.quality.value,quiet:fields.quiet.checked,grid:fields.grid.checked,intensity:Number(fields.intensity.value),speed:Number(fields.speed.value),scale:Number(fields.scale.value),colors:colorFields.map(({source,value})=>source.value==='custom'?value.value:source.value)});}
+  function previewStage(palette){
+    const model=content.value==='current'?projectModel():null,key=content.value+':'+(model?JSON.stringify([model,projectState.brand]):'sample');
+    if(key===previewKey)return;
+    previewKey=key;previewController.dispose();
+    if(model){
+      canvas=studioPreviewModel(projectCopy(model),preview,palette);canvas.classList.add('bg-preview-stage');
+      studioGalleryRoots=studioGalleryRoots.filter(item=>item.root.isConnected);
+      canvas.querySelectorAll('video,audio').forEach(media=>{media.removeAttribute('autoplay');media.pause();media.muted=true;media.controls=false;});
+      visibilityChrome(canvas,projectState,projectSelected);const slide=canvas.querySelector('.slide');if(slide)visibilityPaintSlide(slide);
+      authoringGeometry(canvas);copy=null;
+    }else{
+      canvas=document.createElement('div');canvas.className='bg-preview-stage';preview.replaceChildren(canvas);
+      const grid=document.createElement('div');grid.className='grid';canvas.append(grid);
+      const label=document.createElement('div');label.className='bg-preview-label';label.textContent='PRESENTATION STUDIO';canvas.append(label);
+      copy=document.createElement('div');copy.className='bg-preview-copy';copy.textContent='Make your story move.';
+      const lead=document.createElement('span');lead.className='bg-preview-lead';lead.textContent='Subtle motion. A stronger impression.';copy.append(lead);canvas.append(copy);
+    }
+    canvas.inert=true;originalOrb=document.createElement('div');originalOrb.className='orb';originalOrb.style.animation='none';canvas.prepend(originalOrb);
+    previewController=bgEngine.mount(canvas);
+  }
   function show(){
-    const palette=studioPalette(projectState.brand);canvas.style.background=palette.background;copy.style.color=palette.ink;canvas.style.setProperty('--cyan',palette.secondary||palette.accent);originalOrb.hidden=!legacyPreview;
+    const palette=studioPalette(projectState.brand);previewStage(palette);canvas.style.background=palette.background;canvas.style.color=palette.ink;if(copy)copy.style.color=palette.ink;canvas.style.setProperty('--cyan',palette.accent);originalOrb.hidden=!legacyPreview;
+    variation.value=Object.entries(variations).find(([,value])=>draft.position===value.position&&draft.scale===value.scale)?.[0]||'custom';
+    strength.value=Object.keys(strengths).find(key=>draft.intensity===strengths[key])||'custom';
     for(const {source,value}of colorFields)if(source.value!=='custom')value.value=palette[source.value];
     canvas.style.transform='scale('+Math.max(1,preview.clientWidth)/1920+')';
-    previewController.update(legacyPreview?null:draft,palette,{motion:playing&&!document.hidden&&!nxMotionDisabled()});
+    const concealed=content.value==='current'&&!visibilitySettings(projectState,projectSelected).decoration;
+    originalOrb.hidden=!legacyPreview||concealed;
+    previewController.update(legacyPreview?null:draft,palette,{motion:playing&&!document.hidden&&!nxMotionDisabled(),hidden:concealed});
     for(const card of cards){card.sample.style.background=palette.background;card.sample.style.transform='scale('+Math.max(1,card.frame.clientWidth)/1920+')';card.controller.update({...draft||bgEngine.defaults,effect:card.effect,mode:'static'},palette,{motion:false});card.button.setAttribute('aria-pressed',String(fields.source.value==='custom'&&fields.effect.value===card.effect));}
     animate.textContent=playing?'Stop motion preview':'Preview motion';animate.setAttribute('aria-pressed',String(playing));
     animate.disabled=legacyPreview||draft.effect==='none'||draft.mode==='static';
+    motionStatus.textContent=concealed?'This slide hides decorations. Enable decorations in Slide settings to show its background.':legacyPreview?'Original orb · static editing preview':draft.effect==='none'?'No background effect':draft.mode==='static'?'Static composition':nxMotionDisabled()?'Motion paused by accessibility settings':playing?'Motion preview playing · editor and slide cards stay still':'Animated in playback · choose Preview motion to watch here';
     if(draft.mode==='static')status.textContent='Static background selected. Choose Animated to preview motion.';
     if(playing&&nxMotionDisabled())status.textContent='Reduced motion is active. Showing a static composition.';
   }
   function change(){
-    try{draft=read();legacyPreview=false;fields.source.value='custom';for(const {source,value}of colorFields)value.disabled=source.value!=='custom';status.textContent='Preview only. Apply to save this background.';show();}
+    try{draft=read();if(draft.mode==='static'||draft.effect==='none')playing=false;legacyPreview=false;fields.source.value='custom';for(const {source,value}of colorFields)value.disabled=source.value!=='custom';status.textContent='Preview only. Apply to save this background.';show();}
     catch(error){status.textContent=error.message;}
   }
   for(const [key,field]of Object.entries(fields))field.onchange=key==='source'?()=>{
     if(field.value==='inherit'){playing=false;loadDraft(scope==='slide'?bgEngine.resolve({...projectState,backgroundEffects:projectState.backgroundEffects?{...projectState.backgroundEffects,slides:{}}:undefined},projectSelected):null);show();status.textContent='Apply to use '+(scope==='slide'?'the presentation default.':'the original orb.');}
     else change();
   }:change;
+  variation.onchange=()=>{const value=variations[variation.value];if(value){fields.position.value=value.position;fields.scale.value=value.scale;change();}};
+  strength.onchange=()=>{if(Object.hasOwn(strengths,strength.value)){fields.intensity.value=strengths[strength.value];change();}};
+  content.onchange=()=>{playing=false;show();};
   const animate=button('Preview motion',()=>{if(!playing)for(const item of bgPanels)if(item.panel!==panel)item.stop();playing=!playing;show();},'preview');
   const apply=button('Apply background',()=>{
     try{const result=componentRun({type:'background.set',scope,reset:fields.source.value==='inherit',config:read()});if(result.ok){signature='';refresh();navBoundary(true);status.textContent='Background saved. Changes can be undone.';}else status.textContent=result.message;}
@@ -92,7 +126,7 @@ function bgPanel(scope){
     const locked=ceLocked()||(scope==='presentation'&&projectState.slides.some(item=>item.editLocked));
     for(const control of panel.querySelectorAll('input,select,button'))control.disabled=locked;
     colorFields.forEach(({source,value})=>value.disabled=locked||source.value!=='custom');
-    animate.disabled=false;apply.disabled=locked;reset.disabled=locked;
+    content.disabled=false;animate.disabled=false;apply.disabled=locked;reset.disabled=locked;
     if(!panel.getClientRects().length||!$('full-editor').open)playing=false;
     show();
   }

@@ -40,6 +40,7 @@ test('all presets remain inert/static in editor and thumbnail and retain bounded
       await set(page,{effect,intensity:70,colors:['#8a32bb','secondary','muted']});
       const layer=page.locator('#fe-preview > .me-preview-stage > .bg-effect');assert.equal(await layer.getAttribute('data-effect'),effect);
       assert.ok(await layer.locator('.bg-particle').count()<=24);assert.equal(await layer.getAttribute('data-motion'),'off');
+      assert.ok(await layer.locator('*').count()<=23,'bounded complete decoration tree: '+effect);
       assert.equal(await layer.evaluate(el=>getComputedStyle(el).pointerEvents),'none');assert.equal(await layer.evaluate(el=>el.style.getPropertyValue('--bg-0')),'#8a32bb');
       assert.equal(await layer.isVisible(),effect!=='none');
       const thumb=page.locator('.fe-slide-button[aria-current=true] .bg-effect');await thumb.waitFor({state:'attached'});assert.equal(await thumb.getAttribute('data-motion'),'off');
@@ -98,6 +99,7 @@ test('each animated preset visibly changes geometry in explicit previews and pla
       assert.equal(await page.locator('#we-project-tabs [data-fe-tab="settings"]').evaluate(el=>el.nextElementSibling.id),'we-tab-background');
       await page.locator('#bg-presentation-preview').click();
       assert.deepEqual(await probe('#bg-presentation .bg-preview .bg-particle'),{running:'running',changed:true},effect+' preview');
+      if(['waves','aurora'].includes(effect))assert.deepEqual(await probe('#bg-presentation .bg-preview .bg-detail'),{running:'running',changed:true},effect+' internal flow');
       await page.locator('#we-settings-close').click();await page.locator('#fe-close').click();
       await page.waitForFunction(()=>document.querySelector('#stage > .bg-effect')?.dataset.motion==='on');
       if(!await page.locator('body').evaluate(el=>el.classList.contains('paused')))await page.locator('#play').click();
@@ -109,11 +111,32 @@ test('each animated preset visibly changes geometry in explicit previews and pla
       }
       await page.emulateMedia({reducedMotion:'reduce'});
       assert.equal(await page.locator('#stage > .bg-effect .bg-particle').first().evaluate(el=>getComputedStyle(el).animationPlayState),'paused');
+      if(['waves','aurora'].includes(effect))assert.equal(await page.locator('#stage > .bg-effect .bg-detail').first().evaluate(el=>getComputedStyle(el).animationPlayState),'paused');
       await page.emulateMedia({reducedMotion:'no-preference'});await page.locator('#open-full-editor').click();
     }
     await set(page,{effect:'constellation',mode:'static'});await page.locator('#we-settings-open').click();await page.locator('#we-tab-background').click();
     assert.equal(await page.locator('#bg-presentation-preview').isDisabled(),true);assert.match(await page.locator('#bg-presentation [role=status]').textContent(),/Choose Animated/);
     assert.deepEqual(errors,[]);
+  }finally{await page.close();}
+});
+
+test('composition and strength stage compatible settings while current-slide preview is inert and isolated',async()=>{
+  const {page,errors}=await openExample(browser,'portfolio-demo');try{
+    await set(page,{effect:'waves',intensity:63,position:'left',scale:110});const before=await snapshot(page),id=before.state.slides[0].id;
+    await page.locator('#we-settings-open').click();await page.locator('#we-tab-background').click();
+    assert.equal(await page.locator('#bg-presentation-strength').inputValue(),'custom');assert.equal(await page.locator('#bg-presentation-variation').inputValue(),'custom');
+    await page.locator('#bg-presentation-content').selectOption('current');
+    const current=page.locator('#bg-presentation .bg-preview-stage');assert.equal(await current.evaluate(el=>el.inert),true);
+    assert.equal(await current.locator('.slide').getAttribute('data-media-id'),id);assert.equal(await current.locator('.slide h1,.slide h2').first().textContent(),await page.locator('#fe-preview .slide h1,#fe-preview .slide h2').first().textContent());
+    assert.equal(await current.locator('video[autoplay],audio[autoplay]').count(),0);
+    await page.locator('#bg-presentation-strength').selectOption('expressive');await page.locator('#bg-presentation-variation').selectOption('wide');
+    assert.equal(await current.locator('.bg-effect').getAttribute('data-position'),'full');assert.deepEqual((await snapshot(page)).state,before.state);
+    await page.locator('#bg-presentation-apply').click();const applied=(await snapshot(page)).state.backgroundEffects.defaults;
+    assert.equal(applied.intensity,75);assert.equal(applied.position,'full');assert.equal(applied.scale,100);assert.equal(Object.hasOwn(applied,'variation'),false);assert.equal(Object.hasOwn(applied,'strength'),false);
+    await page.locator('#bg-presentation-content').selectOption('sample');assert.equal(await page.locator('#bg-presentation .bg-preview .slide').count(),0);
+    await page.locator('#bg-presentation-mode').selectOption('static');assert.equal(await page.locator('#bg-presentation-preview').getAttribute('aria-pressed'),'false');
+    assert.match(await page.locator('#bg-presentation .bg-motion-status').textContent(),/Static/);await page.locator('#we-settings-close').click();
+    const pack=await jsonExport(page);assert.equal(pack.schemaVersion,3);assert.deepEqual(pack.state.backgroundEffects.defaults,applied);assert.deepEqual(errors,[]);
   }finally{await page.close();}
 });
 
@@ -139,14 +162,16 @@ test('new-presentation previews do not inherit the active project background',as
 
 test('offline playback and independent booth retain matching effect colors and viewer motion controls',async()=>{
   const {page,errors}=await openExample(browser,'portfolio-demo');try{
-    await set(page,{effect:'drift',colors:['#123456','#ab34cd','muted']});
+    for(const effect of ['orbit','aurora','waves','constellation','drift']){
+    await set(page,{effect,colors:['#123456','#ab34cd','muted']});
     const playback=await exportZip(page,'#fe-playback');await selectTab(page,'Presentation settings');await page.locator('#booth-open').click();await page.locator('#booth-password').fill('background-test');await page.locator('#booth-confirm').fill('background-test');await page.locator('#booth-loop').selectOption(Object.keys((await snapshot(page)).state.loops)[0]);const booth=await exportZip(page,'#booth-export');
+    await page.locator('#booth-close').click();await page.locator('#we-settings-close').click();
     for(const [kind,bytes]of [['playback',playback],['booth',booth]]){
       const folder=await unpack(bytes,kind),context=await browser.newContext();await context.setOffline(true);const restored=await context.newPage();restored.on('pageerror',error=>errors.push(error.message));
-      try{await restored.goto('file://'+resolve(folder,'index.html'));const layer=restored.locator('#stage > .bg-effect');await layer.waitFor();assert.equal(await layer.getAttribute('data-effect'),'drift');assert.equal(await layer.evaluate(el=>el.style.getPropertyValue('--bg-0')),'#123456');
+      try{await restored.goto('file://'+resolve(folder,'index.html'));const layer=restored.locator('#stage > .bg-effect');await layer.waitFor();assert.equal(await layer.getAttribute('data-effect'),effect);assert.equal(await layer.evaluate(el=>el.style.getPropertyValue('--bg-0')),'#123456');
         const toggle=kind==='booth'?restored.locator('#booth-bg-motion'):restored.locator('#bg-viewer-motion');if(kind==='playback')await restored.locator('#hub-player-more > summary').click();await toggle.click();assert.equal(await layer.getAttribute('data-motion'),'off');assert.equal(await toggle.getAttribute('aria-pressed'),'true');
       }finally{await context.close();}
-    }assert.deepEqual(errors,[]);
+    }}assert.deepEqual(errors,[]);
   }finally{await page.close();}
 });
 
@@ -158,7 +183,7 @@ test('theme-linked colors follow dark/light themes while explicit custom slots a
       const values=await page.locator('#fe-preview > .me-preview-stage').evaluate(root=>({accent:getComputedStyle(root).getPropertyValue('--project-accent').trim(),linked:root.querySelector('.bg-effect').style.getPropertyValue('--bg-0'),custom:root.querySelector('.bg-effect').style.getPropertyValue('--bg-1'),grid:getComputedStyle(root.querySelector('.grid')).visibility}));
       assert.equal(values.linked,values.accent);assert.equal(values.custom,'#aa33cc');assert.equal(values.grid,'hidden');
       const rendered=await page.locator('#fe-preview > .me-preview-stage > .bg-effect').evaluate(el=>({linked:el.style.getPropertyValue('--bg-render-0'),custom:el.style.getPropertyValue('--bg-render-1')}));
-      assert.equal(rendered.custom,'#aa33cc');if(appearance==='dark')assert.match(rendered.linked,/color-mix/);else assert.equal(rendered.linked,values.accent);
+      assert.equal(rendered.custom,'#aa33cc');if(appearance==='dark'){assert.match(rendered.linked,/^#[a-f0-9]{6}$/i);assert.notEqual(rendered.linked,values.accent);}else assert.equal(rendered.linked,values.accent);
       for(const effect of Object.keys(engine.names))await set(page,{effect,grid:false,colors:['accent','#aa33cc','muted']});
     }assert.deepEqual(errors,[]);
   }finally{await page.close();}

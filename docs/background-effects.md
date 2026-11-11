@@ -4,6 +4,10 @@ Scope: [milestone 12](https://github.com/treisland/presentation-studio/milestone
 
 ## Choose a background
 
+The beta improvement keeps the existing native-v3 settings unchanged. Start with an effect, choose a **Style variation** (Right spotlight, Full canvas or Corner frame), **Strength** (Subtle, Balanced or Expressive), and Static/Animated motion. These are shortcuts for existing placement/scale/intensity values: 25/45/75 intensity, Right/100%, Full/100%, and Corners/90%. Other saved values display as Custom and are retained until you deliberately choose a shortcut. Advanced appearance retains precise controls. Style variations describe composition, not a new project-format field.
+
+**Preview with → Current slide** shows your selected slide, theme, placement and visible content behind the staged background. The preview is inert, media is muted/paused, and changes do not alter the project or its history until Apply. Hidden slide decorations are respected and explained. Switch back to Sample slide to compare presets on the same neutral content. Motion status distinguishes Static, animation available in playback, an active preview, and accessibility-paused motion.
+
 Open **Project settings → Background**. Choose a visual preset, then **Apply background**. Controls stage an independent preview until Apply; changes are one Undo step. **Restore original orb** removes the presentation override while preserving any slide overrides.
 
 For one slide, open **Slide settings → Content → Background** in the Inspector. **Use presentation default** removes the slide override; **Slide override** replaces the complete inherited effect configuration. Newly added slides inherit the defaults. Duplicating a slide copies its explicit override independently. Slide/presentation locks reject protected changes.
@@ -22,6 +26,8 @@ For one slide, open **Slide settings → Content → Background** in the Inspect
 ## Theme colors and readability
 
 Colors follow the presentation's accent, secondary, muted or background role. The effect uses the actual preview/playback palette and adjusts intensity for dark backgrounds. Choose Custom for a slot to retain a six-digit hex color across theme changes; **Reset to theme** reconnects that slot. Effect selection does not replace theme typography, fill, images, header or footer settings.
+
+The shared renderer resolves coordinated colors once per settings/palette change. If secondary/muted theme roles are neutral and the accent is colorful, their decorative slots borrow analogous hues from that accent, creating coordinated ribbon colors rather than grey veils. Explicit colorful theme roles retain their hue; monochrome accents remain monochrome. Dark-theme decorative roles are lightened independently of content colors. Explicit hex slots stay literal and are never recolored. The same resolved colors are used in cards, sample/current-slide previews, playback and independent booth exports; nothing is written back to the project palette.
 
 **Advanced appearance** includes intensity (0–100), cycle duration (10–120 seconds), scale (50–150%), standard/simpler rendering, a quiet content area, grid visibility and color slots. Grid visibility is independent of the effect. Existing Decorations visibility remains a master concealment setting.
 
@@ -58,6 +64,8 @@ Validation and inert visual review remain required. Unknown fields, unsafe color
 ## Acceptance and measured budgets
 
 The initial structural budgets are one animated stage effect layer, no more than 24 decorative nodes per layer, zero animated navigator thumbnails and no effect-specific per-frame JavaScript/timer loop. Simpler rendering caps particle counts at six. Animation uses CSS transforms/opacity, and disconnected preview controllers are held only through weak references. The existing presentation/media player has its own independent playback loop.
+
+Orbit, Aurora, Waves and Constellation use self-contained native SVG geometry; Geometric Drift uses a small set of gradient/outlined CSS shapes. Orbit rotates a visible dot around concentric rings; Aurora and Waves animate both layers and inner ribbon geometry; Constellation moves its connected mesh together; floating shapes have independent phase offsets. All internal ribbon motion follows the same pause, reduced-motion, hidden-page and media-focus rules as its parent effect. No external SVG assets, executable uploads, canvas/WebGL dependency or per-frame script is introduced.
 
 Automated acceptance covers all presets; dark/light themes and explicit custom colors; inheritance, reset, None/static and independent grid behavior; duplication, locks and Undo; v2/v3 guards; clean-profile editable ZIP restore; native/AI invalid inputs; inert editor/thumbnails; reduced motion; a 50-slide bounded-layer/continuity scenario; and offline playback/independent booth colors and viewer controls. Full check/package results and exact environment are recorded in the PR/release evidence, not inferred from this checklist.
 
