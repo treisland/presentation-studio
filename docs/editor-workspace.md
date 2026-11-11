@@ -1,8 +1,12 @@
 # Editor workspace
 
+Slide navigator thumbnails show the last completed edit rather than updating on every keystroke. The main canvas and browser recovery continue updating normally. Leaving an item, finishing editing, switching slides or completing an action (including Undo/Redo) refreshes the snapshot. Moving between the same item's canvas text and Inspector controls keeps the editing session together. Ordinary edits retain the existing cards and navigator scroll/focus; card titles reserve two lines, with the full title available as a tooltip. Snapshot caches are temporary view state and are not saved in projects or exports.
+
 For multiple images/videos in adjustable cells, see [Media Grid](media-grid.md).
 
 The editor uses three areas: sectioned slide thumbnails on the left, the editing canvas in the center, and a contextual inspector on the right. These changes do not introduce a new presentation format.
+
+Completed layer appearance, additional-media placement and visibility edits refresh cached previews at editing boundaries. Undo/Redo refreshes them too; the temporary cache never changes saved presentation data.
 
 ## Select and edit
 

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Keep slide navigator thumbnails and titles stable during text editing; refresh at item/slide boundaries and completed actions while preserving card DOM, scroll/focus and a fixed two-line title area (#143).
+- Refresh cached navigator previews after completed layer appearance, secondary-media placement and visibility changes, including Undo/Redo.
 - Keep existing template table selection active while using row/column actions and table Inspector controls, so focusing a dropdown no longer dismisses the editing tools (#139).
 - End inline cell editing when panel fields take over, retaining panel focus and table context so returning to the canvas cannot overwrite panel edits.
 - Run Linux validation and release packaging in a matched, digest-pinned Playwright image to avoid live Ubuntu dependency downloads; retain Node 22, independent native Windows checks and all release gates.
