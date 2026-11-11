@@ -10,6 +10,12 @@ Implemented through [#124](https://github.com/treisland/presentation-studio/issu
 - Drag a rail separator to resize a panel, or focus it and use arrow keys (Shift for larger increments), Home or End. Escape cancels an active panel resize. Existing width sliders and Reset panels remain available under More.
 - Inspector shows the current selection and retains Content, Arrange, Style and Layers with readable labels. Library categories have distinct selected states; Clear search is unavailable until there is a query. Dialog styling follows the editor theme.
 
+## Action icons and tooltips (0.12.0 beta review)
+
+Duplicate, Delete, Undo/Redo, slide ordering and More use consistent outline icons. Edit blocks and Preview retain readable labels and their selected-mode state. The same existing buttons and guarded handlers remain in place; icon changes do not alter selection, confirmation, Undo, saved projects or exports.
+
+Hover or keyboard-focus an action to see its contextual tooltip (for example, Duplicate block or Unlock Callout 1). Tooltips follow current layer names and state, can be hovered, and stay open while the action has focus. Escape dismisses an open tooltip without activating the action; subsequent Escape retains the existing editor/dialog behavior. Clicking or leaving the editor dismisses it. Scrolling dismisses a pointer tooltip; a focused tooltip follows its control when focus scrolls it into view. Accessible names remain available without a tooltip, and disabled actions explain unavailability on hover. Destructive icons gain red emphasis on hover/focus. Larger touch targets, visible touch slide actions, forced-color support and light/dark editor colors are included. This is an action-chrome refinement, not the broader illustrative mockup layout.
+
 ## Move, resize and align
 
 Select a free text block, shape, widget, Table or Code container to expose its move grip and resize handles. Drag the move grip to reposition; resize from an edge or corner. Snapping shows alignment/equal-spacing guides; hold Alt to move freely. Existing keyboard nudging, locks, group operations, Escape cancellation and one-step Undo remain authoritative.

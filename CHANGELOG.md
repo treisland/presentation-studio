@@ -2,6 +2,28 @@
 
 ## Unreleased
 
+- Restore Orbit Color 2 and Color 3 on individual SVG rings, preserving all three saved palette slots in previews and offline playback/booth.
+
+## 0.12.0-beta.1 — 2026-11-11
+
+- Replace repetitive editor actions with consistent outline icons and contextual hover/keyboard-focus tooltips. Keep Edit blocks/Preview labels and active modes, existing guarded actions, Undo, accessible names and light/dark/touch/forced-color support.
+
+- Keep every numeric slider visible whenever its setting is shown; remove reveal/hide buttons and stack narrow coordinate/formatting controls beneath their number fields.
+
+- Add shared slider/number/unit/reset controls across background, appearance, text, media, branding, rotation, arrow and workspace settings. Keep coordinates compact with always-visible stacked tracks, provide timer presets/Off, and retain counts as discrete fields.
+- Preview direct adjustments without per-tick project writes; commit a gesture as one Undo step. Preserve staged Apply flows, mixed values, locks, selection/revision guards, inherited font reset, keyboard navigation, wheel scrolling and existing saved formats.
+
+- Improve the beta background renderer with purpose-built SVG Orbit/Aurora/Waves compositions, independent ribbon flow, coordinated theme-derived colors, and fewer deliberately placed floating shapes. Keep custom hues, monochrome themes, motion safeguards and offline playback/booth behavior.
+- Add staged style variations, Subtle/Balanced/Expressive strength choices, explicit motion status and an inert Current slide preview. Map these controls to existing placement/scale/intensity values, preserving custom values and native-v3 compatibility without new saved fields.
+- Restore all three Constellation palette colors in standard and reduced quality, including custom Color 3 in previews and offline viewers.
+
+- Bring backgrounds closer to the concept with flowing vector Waves ribbons, a denser gently drifting Constellation network, layered chromatic Aurora veils and clearer orbital/geometric motion. Clarify Static preview behavior and place Background immediately after Presentation settings.
+- Fix paused slide autoplay unintentionally freezing Animated backgrounds; keep the viewer background switch, reduced motion, Disable motion and media-focus pause safeguards independent.
+
+- Improve background preset visibility with stronger Waves linework/ribbon shading, a connected Constellation network and brighter points, clearer Orbit/Aurora/Drift decoration, and lighter theme-linked colors on dark slides. Preserve quiet content areas, explicit custom colors and existing saved settings.
+
+- Record explicit manual acceptance of the final PR #161 build and activate the protected beta release plan.
+
 - Add theme-aware Orbit, Aurora, Waves, Constellation and Geometric Drift backgrounds, presentation defaults/slide overrides, independent grid visibility, static/motion modes, accessible previews and viewer motion controls (#150–#154, #158).
 - Preserve legacy orb appearance and ordinary v2 exports; use maintainer-approved guarded native v3 for effect settings and their history/recovery. Retain v1/v2 imports, IDs, media, Undo and offline editable/playback/booth support.
 - Extend the generated AI authoring catalog/schema and examples with validated background options. Keep editor/navigation snapshots static, pause inactive motion, and fix theme-gallery refreshes treating buttons inside media previews as theme choices.

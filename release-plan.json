@@ -1,14 +1,13 @@
 {
-  "version": "0.11.0",
+  "version": "0.12.0-beta.1",
   "publish": true,
-  "notes": "docs/releases/0.11.0.md",
+  "notes": "docs/releases/0.12.0-beta.1.md",
   "manualGatesPassed": true,
   "evidence": [
-    "docs/releases/0.11.0-validation.md",
-    "docs/releases/0.11.0-rc.1-validation.md",
-    "docs/releases/0.11.0-beta.2-validation.md",
-    "docs/releases/0.11.0-beta.1-validation.md",
-    "docs/tables-and-grouping.md"
+    "docs/releases/0.12.0-beta.1-validation.md",
+    "docs/0.12.0-manual-test-plan.md",
+    "docs/background-effects.md",
+    "docs/import-compatibility.md"
   ],
   "distribution": {
     "targets": [
@@ -16,7 +15,7 @@
       "docker"
     ],
     "channels": [
-      "stable"
+      "beta"
     ]
   }
 }
