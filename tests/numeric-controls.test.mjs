@@ -37,13 +37,15 @@ test('appearance drag previews without mutations and release is one undo; invali
   }finally{await page.close();}
 });
 
-test('opacity remains staged in its color target and geometry sliders stay collapsed until requested',async()=>{
+test('opacity stays staged and formatting/geometry sliders are visible without reveal buttons',async()=>{
   const {page,errors}=await openExample(browser,'portfolio-demo');try{
     const id=await block(page);await page.locator('#wp-tab-style').click();await openColorEditor(page,'fill','custom');await page.locator('#sp-hex').fill('#123456');const before=await snapshot(page);
     await drag(page,'sp-opacity',[80,60]);assert.deepEqual((await snapshot(page)).state,before.state);assert.equal(await page.locator('#is-color-popover').evaluate(el=>el.matches(':popover-open')),true);
     await page.locator('#sp-custom').click();assert.equal(entry((await snapshot(page)).state,id).style.fill.opacity,.6);
-    await page.locator('#wp-tab-arrange').click();const geometry=page.locator('[data-numeric="db-x"]');assert.equal(await geometry.locator('.nc-track').isVisible(),false);await geometry.getByRole('button',{name:'Adjust Left',exact:true}).click();assert.equal(await geometry.locator('.nc-track').isVisible(),true);
-    const positioned=await snapshot(page);await drag(page,'db-x',[25,30]);await page.locator('#fe-undo').click();assert.deepEqual((await snapshot(page)).state,positioned.state);assert.deepEqual(errors,[]);
+    await page.locator('#wp-tab-arrange').click();const geometry=page.locator('[data-numeric="db-x"]');assert.equal(await geometry.locator('.nc-track').isVisible(),true);assert.equal(await page.locator('.nc-expand').count(),0);
+    const positioned=await snapshot(page);await drag(page,'db-x',[25,30]);await page.locator('#fe-undo').click();assert.deepEqual((await snapshot(page)).state,positioned.state);
+    await reveal(page,'#component-colors-trigger');await page.locator('#component-colors-trigger').click();
+    assert.equal(await page.locator('#component-border-width-range').isVisible(),true);assert.equal(await page.locator('#component-opacity-range').isVisible(),true);assert.deepEqual(errors,[]);
   }finally{await page.close();}
 });
 

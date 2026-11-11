@@ -16,7 +16,7 @@ function numericAttach(input,options={}){
   const oldInput=input.oninput,oldChange=input.onchange;
   const label=input.labels?.[0]||input.closest('label');if(options.label&&label){const text=[...label.childNodes].find(node=>node.nodeType===Node.TEXT_NODE&&node.textContent.trim());if(text)text.textContent=options.label+' ';}
   if(options.output&&$(options.output))$(options.output).hidden=true;
-  const box=document.createElement('div');box.className='nc-control'+(options.compact?' nc-compact':'');box.dataset.numeric=input.id;
+  const box=document.createElement('div');box.className='nc-control'+(options.compact?' nc-stacked':'');box.dataset.numeric=input.id;
   input.before(box);input.type='number';input.classList.add('nc-number');input.min=min;input.max=max;input.step=step;input.setAttribute('aria-label',options.numberLabel||name+(spokenUnit?' in '+spokenUnit:''));
   const track=document.createElement('div');track.className='nc-track';const range=document.createElement('input');range.type='range';range.id=input.id+'-range';range.className='nc-range';range.min=min;range.max=max;range.step=step;range.setAttribute('aria-label',name);track.append(range);
   const value=document.createElement('div');value.className='nc-value';value.append(input);
@@ -24,8 +24,6 @@ function numericAttach(input,options={}){
   const actions=document.createElement('div');actions.className='nc-actions';
   const reset=document.createElement('button');reset.type='button';reset.className='nc-reset';reset.textContent='↺';reset.setAttribute('aria-label','Reset '+name);reset.title='Reset '+name;reset.hidden=options.reset===false;
   actions.append(reset);
-  let expand=null;
-  if(options.compact){expand=document.createElement('button');expand.type='button';expand.className='nc-expand';expand.textContent='↔';expand.setAttribute('aria-label','Adjust '+name);expand.setAttribute('aria-expanded','false');expand.setAttribute('aria-controls',range.id);expand.onclick=()=>{track.hidden=!track.hidden;expand.setAttribute('aria-expanded',String(!track.hidden));};track.hidden=true;actions.append(expand);}
   const status=document.createElement('span');status.id=input.id+'-numeric-status';status.className='nc-status';status.setAttribute('aria-live','polite');
   input.setAttribute('aria-describedby',[input.getAttribute('aria-describedby'),status.id].filter(Boolean).join(' '));range.setAttribute('aria-describedby',status.id);
   box.append(track,value,actions,status);
@@ -88,7 +86,7 @@ function numericAttach(input,options={}){
   reset.onclick=()=>{if(input.disabled)return;cancel();if(typeof options.reset==='function'){options.reset();numericRefreshScope();if(reset.isConnected)reset.focus({preventScroll:true});return;}begin();input.value=String(defaultValue()??min);paint();commit();};
   const control={input,box,range,cancel,sync(){
     if(gesture&&gesture.stamp!==numericStamp())cancel(true);
-    range.disabled=input.disabled;reset.disabled=input.disabled||!!(options.canReset&&!options.canReset());if(expand)expand.disabled=input.disabled;
+    range.disabled=input.disabled;reset.disabled=input.disabled||!!(options.canReset&&!options.canReset());
     if(mark){mark.style.left=((position(defaultValue())-min)/(max-min)*100)+'%';track.title='Default: '+defaultValue()+(options.unit||'');}
     if(gesture)return;last=input.value;display();
   }};numericControls.set(input.id,control);control.sync();new MutationObserver(()=>control.sync()).observe(input,{attributes:true,attributeFilter:['disabled']});

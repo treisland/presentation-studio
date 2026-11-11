@@ -2,7 +2,9 @@
 
 ## Unreleased
 
-- Add shared slider/number/unit/reset controls across background, appearance, text, media, branding, rotation, arrow and workspace settings. Keep coordinates compact with optional tracks, provide timer presets/Off, and retain counts as discrete fields.
+- Keep every numeric slider visible whenever its setting is shown; remove reveal/hide buttons and stack narrow coordinate/formatting controls beneath their number fields.
+
+- Add shared slider/number/unit/reset controls across background, appearance, text, media, branding, rotation, arrow and workspace settings. Keep coordinates compact with always-visible stacked tracks, provide timer presets/Off, and retain counts as discrete fields.
 - Preview direct adjustments without per-tick project writes; commit a gesture as one Undo step. Preserve staged Apply flows, mixed values, locks, selection/revision guards, inherited font reset, keyboard navigation, wheel scrolling and existing saved formats.
 
 - Improve the beta background renderer with purpose-built SVG Orbit/Aurora/Waves compositions, independent ribbon flow, coordinated theme-derived colors, and fewer deliberately placed floating shapes. Keep custom hues, monochrome themes, motion safeguards and offline playback/booth behavior.

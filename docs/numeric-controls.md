@@ -2,7 +2,7 @@
 
 Visual settings share a slider, exact number field, separate unit and individual reset. A small track tick marks the relevant default. Drag to preview; release to commit a direct object adjustment in one Undo step. Exact values remain editable, including supported decimals. Arrow keys adjust one step, Shift+Arrow and Page Up/Down use larger steps, and Home/End reach limits. Escape cancels an active adjustment; otherwise the existing dialog/menu Escape behavior applies.
 
-Background intensity/scale/motion, color opacity/border width, text size, rotation, arrow stroke, logo height, media overlay, grid spacing/crop and workspace panel widths use this component. Block/media coordinates and arrow endpoints retain compact number fields with an expandable adjustment track. Counts, step numbers and layer order remain discrete fields/actions. Slide duration has quick presets alongside exact seconds; booth idle return has Off and duration presets. Existing Fit/zoom buttons remain compact in this pass.
+Background intensity/scale/motion, color opacity/border width, text size, rotation, arrow stroke, logo height, media overlay, grid spacing/crop and workspace panel widths use this component. Every slider is visible whenever its setting is shown; there are no slider reveal/hide buttons. Block/media coordinates, arrow endpoints and narrow formatting controls stack the track below the exact number field. Counts, step numbers and layer order remain discrete fields/actions. Slide duration has quick presets alongside exact seconds; booth idle return has Off and duration presets. Existing Fit/zoom buttons remain compact in this pass.
 
 ## Scope and saving
 
