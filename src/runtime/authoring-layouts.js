@@ -101,7 +101,11 @@ function paBuild(raw, identity) {
     slide.templateBase = projectCopy(slide.tree); slide.templateClasses = slide.classes; slide.templateCommands = projectCopy(slide.commands);
     report.push({ ...layout, notices, elements: input.blocks.map(block => block.type) });
   });
-  const pack = projectValidatePack({ schemaVersion: 2, kind: "presentation-studio-project", meta: {
+  if(raw.background||raw.slides.some(slide=>slide.background)){
+    state.backgroundEffects={version:1,defaults:raw.background?bgEngine.clean(raw.background):null,slides:{}};
+    raw.slides.forEach((slide,i)=>{if(slide.background)state.backgroundEffects.slides[state.slides[i].id]=bgEngine.clean(slide.background);});
+  }
+  const pack = projectValidatePack({ schemaVersion: state.backgroundEffects?3:2, kind: "presentation-studio-project", meta: {
     id: identity || projectID("project"), name: raw.title, updatedAt: new Date().toISOString(),
   }, state, checkpoints: [], history: { past: [], future: [] } });
   return { pack, report };

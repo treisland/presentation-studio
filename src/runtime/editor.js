@@ -2078,7 +2078,7 @@
     let initial = null;
     try {
       const raw = JSON.parse($("project-config").textContent);
-      if (raw?.schemaVersion === 2) initial = projectValidatePack(raw);
+      if ([2,3].includes(raw?.schemaVersion)) initial = projectValidatePack(raw);
     } catch (e) {
       console.warn("Project content could not be loaded:", e.message);
     }

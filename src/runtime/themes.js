@@ -246,10 +246,10 @@ function teRefresh() {
     teScheme(teSelected)?.description ||
     "Choose a built-in scheme to preview a replacement. Current project colors are unchanged.";
   $("te-apply").disabled = !teScheme(teSelected);
-  for (const button of $("te-cards").querySelectorAll("button"))
+  for (const button of $("te-cards").querySelectorAll(":scope > button"))
     button.setAttribute("aria-pressed", button.dataset.scheme === teSelected);
   teThumbs = [];
-  for (const button of $("te-cards").querySelectorAll("button")) {
+  for (const button of $("te-cards").querySelectorAll(":scope > button")) {
     const parent = button.querySelector(".te-thumb"),
       candidate = teCandidate(button.dataset.scheme);
     const root = studioPreviewModel(
@@ -263,7 +263,7 @@ function teRefresh() {
   studioGalleryRoots = studioGalleryRoots.filter(
     (item) => item.root.isConnected,
   );
-  for (const button of $("te-cards").querySelectorAll("button"))
+  for (const button of $("te-cards").querySelectorAll(":scope > button"))
     [...button.querySelectorAll(".te-swatches span")].forEach(
       (span, i) =>
         (span.style.background = teScheme(button.dataset.scheme)[

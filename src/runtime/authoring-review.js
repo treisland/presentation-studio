@@ -1,10 +1,12 @@
-function paPreviewStage(model) {
+function paPreviewStage(model, state=projectState) {
   const stage = document.createElement("div"); stage.className = "me-preview-stage pa-review-stage";
   const slide = document.createElement("section"); slide.className = "slide active " + model.classes;
   slide.setAttribute("aria-hidden", "false");
   model.tree.forEach(node => slide.append(projectDOM(node)));
   stage.append(slide); commandPaint(slide, model.commands);
   stage.inert = true;
+  const background=state&&bgEngine.resolve(state,model.id);
+  if(background)bgEngine.mount(stage).update(background,studioPalette(state.brand||projectState.brand),{motion:false});
   return stage;
 }
 function paMeasureFit(pack) {
@@ -13,7 +15,7 @@ function paMeasureFit(pack) {
   document.body.append(host);
   try {
     return pack.state.slides.map(model => {
-      const stage = paPreviewStage(model); host.replaceChildren(stage);
+      const stage = paPreviewStage(model,pack.state); host.replaceChildren(stage);
       authoringGeometry(stage);
       const overflowing = [];
       for (const block of stage.querySelectorAll(".db-block")) {
@@ -49,7 +51,7 @@ function paRenderReview(candidate, summary) {
   };
   const show = () => {
     const i = Number(select.value), model = candidate.pack.state.slides[i], details = report[i];
-    viewport.replaceChildren(paPreviewStage(model));
+    viewport.replaceChildren(paPreviewStage(model,candidate.pack.state));
     override.value = candidate.authoringDoc.slides[i].layout || "auto";
     description.textContent = "Slide " + (i + 1) + " · " + paLayoutCatalog[details.selected].name + " · " +
       (details.elements.length ? details.elements.join(", ") : "Title only") + ". Preview is inert; sources open only after import and user action.";

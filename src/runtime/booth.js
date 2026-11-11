@@ -364,7 +364,7 @@ async function boothExport() {
       json +
       "<\/script><script>(" +
       boothStandalone.toString() +
-      ")("+authoringGeometry.toString()+","+visibilityMediaLayout.toString()+");<\/script></html>";
+      ")("+authoringGeometry.toString()+","+visibilityMediaLayout.toString()+","+backgroundEffectsEngine.toString()+");<\/script></html>";
     const refs = projectReferenced({
       brand: data.brand,
       media: data.media,

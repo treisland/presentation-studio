@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Add theme-aware Orbit, Aurora, Waves, Constellation and Geometric Drift backgrounds, presentation defaults/slide overrides, independent grid visibility, static/motion modes, accessible previews and viewer motion controls (#150–#154, #158).
+- Preserve legacy orb appearance and ordinary v2 exports; use maintainer-approved guarded native v3 for effect settings and their history/recovery. Retain v1/v2 imports, IDs, media, Undo and offline editable/playback/booth support.
+- Extend the generated AI authoring catalog/schema and examples with validated background options. Keep editor/navigation snapshots static, pause inactive motion, and fix theme-gallery refreshes treating buttons inside media previews as theme choices.
+
 ## 0.11.0 — 2026-11-11
 
 - Promote the tested 0.11.0-rc.1 to stable with explicit production sign-off. Publish the same accepted application scope through production GitHub Pages and versioned/stable Docker channels; no runtime, dependency or format changes from RC.

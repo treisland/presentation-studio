@@ -1,0 +1,11 @@
+{
+  "format": "presentation-studio-authoring",
+  "version": 1,
+  "title": "A story with subtle motion",
+  "background": { "effect": "aurora", "mode": "animated", "intensity": 45, "position": "right", "colors": ["accent", "secondary", "muted"] },
+  "slides": [
+    { "title": "Give your ideas room", "layout": "hero", "blocks": [{ "type": "paragraph", "text": "Use restrained motion to support the message while keeping the content readable." }] },
+    { "title": "Explain the connections", "layout": "comparison", "background": { "effect": "constellation", "mode": "static", "position": "right" }, "blocks": [{ "type": "callout", "heading": "Theme-aware", "text": "Linked colors follow the presentation theme." }, { "type": "callout", "heading": "Viewer choice", "text": "Reduced-motion preferences and motion controls remain available." }] },
+    { "title": "Let the details speak", "layout": "table", "background": { "effect": "none", "grid": false }, "blocks": [{ "type": "table", "headers": ["Choice", "Purpose"], "rows": [["Static", "Keep the design without animation"], ["None", "Remove the effect"]] }] }
+  ]
+}
