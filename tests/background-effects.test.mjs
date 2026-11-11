@@ -23,6 +23,10 @@ test('effect contract rejects executable/unknown options and exposes matching bo
   const schema=JSON.parse(await readFile('dist/ai-authoring/presentation.schema.json','utf8')),catalog=JSON.parse(await readFile('dist/ai-authoring/capabilities.json','utf8'));
   assert.deepEqual(schema.properties.background,JSONcopy(engine.schema()));assert.deepEqual(catalog.backgrounds.options,schema.properties.background);
   assert.deepEqual(catalog.backgrounds.presets,JSONcopy(engine.names));
+  const palette={accent:'#0066ff',secondary:'#666666',muted:'#777777',background:'#f4f6f8'},before=JSONcopy(palette);
+  const coordinated=engine.palette({effect:'aurora'},palette);assert.equal(coordinated[0],palette.accent);assert.notEqual(coordinated[1],palette.secondary);assert.notEqual(coordinated[2],palette.muted);
+  assert.deepEqual(JSONcopy(engine.palette({effect:'aurora',colors:['#123456','#abcdef','#789abc']},palette)),['#123456','#abcdef','#789abc']);
+  const monochrome=engine.palette({effect:'aurora'},{...palette,accent:'#888888'});assert.ok(monochrome.every(color=>color.slice(1,3)===color.slice(3,5)&&color.slice(3,5)===color.slice(5,7)));assert.deepEqual(palette,before);
 });
 
 test('Constellation renders all three custom palette colors in both quality modes',async()=>{
@@ -144,8 +148,11 @@ test('composition and strength stage compatible settings while current-slide pre
     assert.equal(await current.locator('video[autoplay],audio[autoplay]').count(),0);
     await page.locator('#bg-presentation-strength').selectOption('expressive');await page.locator('#bg-presentation-variation').selectOption('wide');
     assert.equal(await current.locator('.bg-effect').getAttribute('data-position'),'full');assert.deepEqual((await snapshot(page)).state,before.state);
+    await page.locator('#bg-presentation .bg-advanced > summary').click();
+    const displayed=await page.locator('#bg-presentation-hex-2').inputValue();assert.equal(displayed,await current.locator('.bg-effect').evaluate(el=>el.style.getPropertyValue('--bg-render-2')));
+    await page.locator('#bg-presentation-color-2').selectOption('custom');assert.equal(await page.locator('#bg-presentation-hex-2').inputValue(),displayed);
     await page.locator('#bg-presentation-apply').click();const applied=(await snapshot(page)).state.backgroundEffects.defaults;
-    assert.equal(applied.intensity,75);assert.equal(applied.position,'full');assert.equal(applied.scale,100);assert.equal(Object.hasOwn(applied,'variation'),false);assert.equal(Object.hasOwn(applied,'strength'),false);
+    assert.equal(applied.intensity,75);assert.equal(applied.position,'full');assert.equal(applied.scale,100);assert.equal(applied.colors[2],displayed);assert.equal(Object.hasOwn(applied,'variation'),false);assert.equal(Object.hasOwn(applied,'strength'),false);
     await page.locator('#bg-presentation-content').selectOption('sample');assert.equal(await page.locator('#bg-presentation .bg-preview .slide').count(),0);
     await page.locator('#bg-presentation-mode').selectOption('static');assert.equal(await page.locator('#bg-presentation-preview').getAttribute('aria-pressed'),'false');
     assert.match(await page.locator('#bg-presentation .bg-motion-status').textContent(),/Static/);await page.locator('#we-settings-close').click();

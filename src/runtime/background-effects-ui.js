@@ -36,6 +36,7 @@ function bgPanel(scope){
   const quiet=make('quiet','Keep a quiet area for content','checkbox');quiet.checked=true;
   const grid=make('grid','Show grid decoration','checkbox');grid.checked=true;
   const colors=document.createElement('div');colors.className='bg-colors';advancedFields.append(colors);
+  const paletteHint=document.createElement('p');paletteHint.className='bg-hint bg-wide';paletteHint.textContent='Theme colors form a coordinated decorative palette. Choose Custom to keep an exact color.';advancedFields.append(paletteHint);
   const colorFields=[];
   for(let i=0;i<3;i++){
     const label=document.createElement('label');label.className='bg-color';label.textContent='Color '+(i+1);
@@ -83,10 +84,12 @@ function bgPanel(scope){
     previewController=bgEngine.mount(canvas);
   }
   function show(){
+    if(!panel.getClientRects().length||!$('full-editor').open){playing=false;previewController.pause();return;}
     const palette=studioPalette(projectState.brand);previewStage(palette);canvas.style.background=palette.background;canvas.style.color=palette.ink;if(copy)copy.style.color=palette.ink;canvas.style.setProperty('--cyan',palette.accent);originalOrb.hidden=!legacyPreview;
     variation.value=Object.entries(variations).find(([,value])=>draft.position===value.position&&draft.scale===value.scale)?.[0]||'custom';
     strength.value=Object.keys(strengths).find(key=>draft.intensity===strengths[key])||'custom';
-    for(const {source,value}of colorFields)if(source.value!=='custom')value.value=palette[source.value];
+    const effectiveColors=bgEngine.palette(draft,palette);
+    colorFields.forEach(({source,value},i)=>{if(source.value!=='custom')value.value=effectiveColors[i];});
     canvas.style.transform='scale('+Math.max(1,preview.clientWidth)/1920+')';
     const concealed=content.value==='current'&&!visibilitySettings(projectState,projectSelected).decoration;
     originalOrb.hidden=!legacyPreview||concealed;

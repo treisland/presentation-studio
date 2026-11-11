@@ -54,7 +54,7 @@ function backgroundEffectsEngine() {
       if(next!==signature){
         signature=next;layer.replaceChildren();layer.dataset.effect=config.effect;layer.dataset.position=config.position;layer.dataset.quiet=String(config.quiet);
         // Thin lines/points need more contrast than broad filled decorations.
-        const strength={none:0,orbit:.42,aurora:.55,waves:.75,constellation:.95,drift:.48}[config.effect];
+        const strength={none:0,orbit:.75,aurora:.55,waves:.75,constellation:.95,drift:.48}[config.effect];
         layer.style.setProperty('--bg-opacity',String(Math.min(1,config.intensity/100*strength*(dark?1.1:1))));layer.style.setProperty('--bg-duration',config.speed+'s');layer.style.setProperty('--bg-scale',String(config.scale/100));
         colors.forEach((color,i)=>{
           layer.style.setProperty('--bg-'+i,color);
@@ -97,8 +97,8 @@ function backgroundEffectsEngine() {
       layer.dataset.motion=options.motion&&config.mode==='animated'&&config.effect!=='none'&&config.intensity>0&&!options.hidden?'on':'off';
       layer.hidden=config.effect==='none'||!!options.hidden;
     }
-    return {update,dispose(){layer?.remove();root.classList.remove('bg-custom','bg-grid-off');layer=null;signature='';}};
+    return {update,pause(){if(layer)layer.dataset.motion='off';},dispose(){layer?.remove();root.classList.remove('bg-custom','bg-grid-off');layer=null;signature='';}};
   }
-  return {names,defaults,roles,clean,settings,resolve,schema,mount};
+  return {names,defaults,roles,clean,settings,resolve,schema,mount,palette(raw,palette){return paintColors(clean(raw),palette).rendered;}};
 }
 const bgEngine=backgroundEffectsEngine();
