@@ -23,7 +23,8 @@
     "src/styles/content-inspector.css",
     "src/styles/app-info.css",
     "src/styles/table-editor.css",
-    "src/styles/canvas-selection.css"
+    "src/styles/canvas-selection.css",
+    "src/styles/background-effects.css"
   ],
   "scripts": [
     "src/runtime/prelude.js",
@@ -58,6 +59,7 @@
     "src/runtime/example-gallery.js",
     "src/runtime/example-walkthroughs.js",
     "src/runtime/text-types.js",
+    "src/runtime/background-effects-core.js",
     "src/runtime/authoring-definitions.js",
     "src/runtime/components.js",
     "src/runtime/code-library.js",
@@ -79,6 +81,8 @@
     "src/runtime/table-editor.js",
     "src/runtime/canvas-selection.js",
     "src/runtime/slide-thumbnails.js",
+    "src/runtime/background-effects.js",
+    "src/runtime/background-effects-ui.js",
     "src/runtime/boot.js"
   ],
   "vendor": "vendor/jszip-3.10.1.min.js"

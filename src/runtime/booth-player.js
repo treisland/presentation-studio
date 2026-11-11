@@ -1,6 +1,6 @@
 // Serialized into booth exports: no dependency on authoring code or project history.
 const boothStandaloneStyles = `#booth-controls{position:fixed;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:500}#booth-controls button,dialog button{padding:9px 14px;border:1px solid #9db5db;border-radius:7px;background:#10213c;color:white;cursor:pointer}#booth-controls [hidden]{display:none}#booth-title{font:18px Arial}dialog{max-width:620px;width:90vw;padding:24px;border-radius:12px;border:1px solid #9db5db;background:white;color:#10213c;font:16px Arial}dialog::backdrop{background:#081426bb}dialog input{display:block;width:100%;font:18px Arial;margin:12px 0;padding:10px}#booth-question-list{max-height:60vh;overflow:auto;display:grid;gap:10px}#booth-slides .slide.active{opacity:1;visibility:visible;transform:none}#booth-slides .slide:not(.active){display:none}#booth-slides .ce-hidden{display:none}#booth-slides video{object-position:var(--media-pos)}.bp-focus{position:absolute;inset:0;background:#080e18;z-index:300;padding:30px 40px;display:flex;flex-direction:column;gap:15px}.bp-focus nav{display:flex;gap:12px;justify-content:flex-end;position:relative;z-index:5;flex:none;height:60px}.bp-focus button{font:22px Arial;padding:12px;background:#10213c;color:#fff;border:1px solid #97b4da;border-radius:8px}.bp-target{flex:1;min-height:0}.bp-focused.media-box{position:absolute!important;inset:auto;background:#071121;border:0;padding:0;z-index:2;display:flex!important}.bp-focused .media-asset{object-fit:contain!important;object-position:center!important;transform-origin:center}.bp-focused figcaption{background:#10213c;color:#fff}.bp-focused .mf-expand,.bp-focused .media-shade,.bp-focused:before{display:none!important}`;
-function boothStandalone(geometry, mediaLayout) {
+function boothStandalone(geometry, mediaLayout, backgroundFactory) {
   "use strict";
   geometry ||= () => {};
   mediaLayout ||= () => {};
@@ -10,6 +10,13 @@ function boothStandalone(geometry, mediaLayout) {
     stage = $("stage"),
     nodes = new Map(),
     configs = new WeakMap();
+  const effects=backgroundFactory?.(),background=effects?.mount(stage);
+  let backgroundMotion=true;
+  function paintBackground(){
+    if(!effects)return;
+    const chrome={decoration:true,...data.visibility?.defaults,...data.visibility?.slides?.[current]};
+    background.update(effects.resolve(data,current),data.backgroundPalette||data.brand,{motion:backgroundMotion&&!reduce()&&!document.hidden,hidden:!chrome.decoration});
+  }
   let current = data.loop[0],
     playing = true,
     elapsed = 0,
@@ -235,6 +242,7 @@ function boothStandalone(geometry, mediaLayout) {
       } catch {}
     }
     current = id;
+    paintBackground();
     const chrome={header:true,footer:true,logo:true,number:true,decoration:true,...data.visibility?.defaults,...data.visibility?.slides?.[id]};
     for(const [part,selector]of Object.entries({header:':scope > header',footer:':scope > footer',logo:'header .brand img',number:'footer #counter,footer .meta > :last-child',decoration:':scope > .grid'}))for(const element of stage.querySelectorAll(selector))element.style.visibility=chrome[part]?'':'hidden';
     elapsed = 0;
@@ -634,6 +642,12 @@ function boothStandalone(geometry, mediaLayout) {
   window.onresize = resize;
   resize();
   permissions();
+  if(effects&&data.backgroundEffects){
+    const motion=document.createElement('button');motion.id='booth-bg-motion';motion.textContent='Pause background motion';motion.setAttribute('aria-pressed','false');
+    motion.onclick=()=>{backgroundMotion=!backgroundMotion;motion.textContent=backgroundMotion?'Pause background motion':'Allow background motion';motion.setAttribute('aria-pressed',String(!backgroundMotion));paintBackground();};$('booth-controls').append(motion);
+    document.addEventListener('visibilitychange',paintBackground);matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change',paintBackground);
+  }
+  paintBackground();
   paint();
   function tick(now) {
     const dt = Math.min(250, now - last);

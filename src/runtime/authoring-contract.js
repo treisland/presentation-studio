@@ -10,11 +10,13 @@ function paSchema() {
     properties: {
       format: { const: "presentation-studio-authoring" }, version: { const: 1 },
       title: { type: "string", minLength: 1, maxLength: 200 },
+      background: bgEngine.schema(),
       slides: { type: "array", minItems: 1, maxItems: paLimits.slides, items: {
         type: "object", additionalProperties: false, required: ["title", "blocks"],
         properties: {
           title: { type: "string", minLength: 1, maxLength: 200 },
           layout: { type: "string", enum: Object.keys(paLayoutCatalog) },
+          background: bgEngine.schema(),
           notes: { type: "string", maxLength: paLimits.notes },
           sources: { type: "array", maxItems: 10, items: { type: "object", additionalProperties: false,
             required: ["label", "url"], properties: { label: text, url: { type: "string", pattern: "^https?://", maxLength: 2000 } } } },
@@ -68,10 +70,11 @@ function paValidate(raw) {
       if (typeof value !== "string") return fail("expected text");
       if (value.length > rule.maxLength || (rule.minLength && !value.trim())) fail("text length outside supported limits");
       if (rule.pattern) {
-        if (!new RegExp(rule.pattern).test(value)) return fail("use an HTTP(S) source URL");
-        try { const url = new URL(value); if (url.username || url.password) fail("source URL must not contain credentials"); } catch { fail("invalid source URL"); }
+        if (!new RegExp(rule.pattern).test(value)) return fail(rule.pattern==='^https?://'?'use an HTTP(S) source URL':'value does not match the supported format');
+        if(rule.pattern==='^https?://')try { const url = new URL(value); if (url.username || url.password) fail("source URL must not contain credentials"); } catch { fail("invalid source URL"); }
       }
-    } else if (rule.type === "integer" && (!Number.isInteger(value) || value < rule.minimum || value > rule.maximum)) fail("invalid integer");
+    } else if (['integer','number'].includes(rule.type) && (!Number.isFinite(value) || rule.type==='integer'&&!Number.isInteger(value) || value < rule.minimum || value > rule.maximum)) fail("invalid number");
+    else if(rule.type==='boolean'&&typeof value!=='boolean')fail('expected a boolean');
   }
   check(raw, paSchema(), "presentation");
   if (errors.length) throw new Error(errors.join("\n") + (errors.length === 20 ? "\nShowing the first 20 errors." : ""));

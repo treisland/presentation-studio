@@ -24,6 +24,7 @@ function paCatalog() {
   return {
     format: "presentation-studio-authoring", version: 1,
     layouts: paLayoutCatalog,
+    backgrounds:{presets:bgEngine.names,options:bgEngine.schema(),defaults:bgEngine.defaults,usage:'Optional background object at presentation and/or slide level. Slide objects override the complete presentation effect. Use effect none to remove it, or mode static for reduced motion. Use Studio 0.12.0+ for effect-enabled native v3 projects; no custom code or external assets.'},
     elements: {
       heading: { purpose: "A secondary heading; the slide already has a title", fields: ["text", "level"] },
       paragraph: { purpose: "A concise explanation", fields: ["text"] }, list: { purpose: "Related points", fields: ["items"] },
@@ -43,5 +44,5 @@ function paCapabilityGuide() {
   return "# Supported layouts and Library elements\n\nGenerated from Studio's shared capability definitions.\n\n" +
     Object.entries(catalog.layouts).map(([id, item]) => `- layout: ${id} — ${item.purpose}; ${item.min}–${item.max} content elements`).join("\n") +
     "\n\n## Element fields\n\n" + Object.entries(catalog.elements).map(([id, item]) => `- type: ${id} — ${item.purpose}. Fields: ${item.fields.join(", ")}.`).join("\n") +
-    "\n\n" + catalog.selection + "\n\n" + catalog.limits + "\n";
+    "\n\n## Background effects\n\n"+catalog.backgrounds.usage+"\nPresets: "+Object.keys(catalog.backgrounds.presets).join(', ')+". Options and bounds are listed in capabilities.json and presentation.schema.json.\n\n" + catalog.selection + "\n\n" + catalog.limits + "\n";
 }
