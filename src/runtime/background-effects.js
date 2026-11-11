@@ -19,7 +19,14 @@ projectValidatePack=function(raw){
   return bgValidatePack(raw);
 };
 const bgPack=projectPack;
-projectPack=function(...args){const pack=bgPack(...args);if(bgHasSettings(pack))pack.schemaVersion=3;return pack;};
+projectPack=function(playback=false){
+  const pack=bgPack(playback);
+  if(playback&&pack.state.backgroundEffects){
+    const settings=bgEngine.settings(pack.state.backgroundEffects,new Set(pack.state.slides.map(slide=>slide.id)));
+    if(settings.defaults||Object.keys(settings.slides).length)pack.state.backgroundEffects=settings;else delete pack.state.backgroundEffects;
+  }
+  if(bgHasSettings(pack))pack.schemaVersion=3;return pack;
+};
 editingRegisterOperation('background.set',(state,operation)=>{
   const slide=editingSlide(state,operation.slideId);
   if(!['presentation','slide'].includes(operation.scope))editingFail('INVALID','Choose presentation or slide background.');
@@ -49,8 +56,12 @@ projectRender=function(...args){const result=bgRenderProject(...args);if(bgReady
 const bgPreview=projectPreview;
 projectPreview=function(...args){const result=bgPreview(...args);if(bgReady)bgSync();return result;};
 const bgStudioPreview=studioPreviewModel;
-studioPreviewModel=function(model,parent,palette,...args){const root=bgStudioPreview(model,parent,palette,...args);if(projectReady)bgPaint(root,projectState,model.id,false,palette||studioPalette(projectState.brand));return root;};
+studioPreviewModel=function(model,parent,palette,...args){
+  const root=bgStudioPreview(model,parent,palette,...args);
+  if(projectReady){const state=model.previewLibrary||(parent.closest('#nx-wizard')?{...projectState,backgroundEffects:undefined}:projectState);bgPaint(root,state,model.id,false,palette||studioPalette(state.brand));}
+  return root;
+};
 const bgThumbnail=weThumb;
 weThumb=function(button,model,...args){const result=bgThumbnail(button,model,...args);const root=button.querySelector('.we-thumb-canvas');if(root)bgPaint(root,projectState,model.id,false);return result;};
 const bgBoothData=boothExportData;
-boothExportData=function(...args){const data=bgBoothData(...args);if(projectState.backgroundEffects){const ids=new Set(data.slides.map(slide=>slide.id));data.backgroundEffects=bgEngine.settings(projectState.backgroundEffects,ids);data.backgroundPalette=studioPalette(projectState.brand);}return data;};
+boothExportData=function(...args){const data=bgBoothData(...args);if(projectState.backgroundEffects){const ids=new Set(data.slides.map(slide=>slide.id)),settings=bgEngine.settings(projectState.backgroundEffects,ids);if(settings.defaults||Object.keys(settings.slides).length){data.backgroundEffects=settings;data.backgroundPalette=studioPalette(projectState.brand);}}return data;};

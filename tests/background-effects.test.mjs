@@ -5,7 +5,7 @@ import {resolve,dirname} from 'node:path';
 import vm from 'node:vm';
 import {chromium} from 'playwright';
 import {openExample,snapshot,operations,exportZip,importZip} from './collection-ui.mjs';
-import {selectTab,click} from './ui.mjs';
+import {selectTab,click,reveal} from './ui.mjs';
 import {archivePath} from './archive-path.mjs';
 const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH,args:['--no-sandbox']});
 test.after(()=>browser.close());
@@ -85,11 +85,21 @@ test('editable v3 ZIP restores effects, IDs and history in a clean profile',asyn
 
 test('AI background settings preview safely and create guarded native projects without mutating active work',async()=>{
   const {page,errors}=await openExample(browser,'portfolio-demo');try{
+    await set(page,{effect:'orbit'});
     const before=await snapshot(page),document={format:'presentation-studio-authoring',version:1,title:'Motion study',background:{effect:'waves',colors:['accent','#3377aa','muted']},slides:[{title:'Theme and motion',background:{effect:'aurora',mode:'static'},blocks:[{type:'paragraph',text:'A clear story.'}]}]};
     await click(page,'#lw-open');await page.locator('#lw-tab-create').click();await page.locator('#lw-json').fill(JSON.stringify(document));await page.locator('#lw-validate').click();
     await page.locator('#pa-preview-select').waitFor();assert.deepEqual((await snapshot(page)).state,before.state);assert.equal(await page.locator('.pa-review-stage > .bg-effect').getAttribute('data-effect'),'aurora');
     await page.locator('#lw-review-open').click();if(await page.locator('#hub-switch').evaluate(el=>el.open))await page.locator('#hub-save-switch').click();await page.locator('#lw-panel').waitFor({state:'hidden'});
     const pack=await jsonExport(page);assert.equal(pack.schemaVersion,3);assert.equal(pack.state.backgroundEffects.defaults.effect,'waves');assert.equal(pack.state.backgroundEffects.slides[pack.state.slides[0].id].effect,'aurora');assert.deepEqual(errors,[]);
+  }finally{await page.close();}
+});
+
+test('new-presentation previews do not inherit the active project background',async()=>{
+  const {page,errors}=await openExample(browser,'portfolio-demo');try{
+    await set(page,{effect:'aurora'});const before=await snapshot(page);
+    await click(page,'#studio-new-open');if(await page.locator('#hub-switch').evaluate(el=>el.open))await page.locator('#hub-save-switch').click();
+    await page.locator('#nx-wizard').waitFor();assert.equal(await page.locator('#nx-wizard .bg-effect').count(),0);assert.deepEqual((await snapshot(page)).state,before.state);
+    assert.deepEqual(errors,[]);
   }finally{await page.close();}
 });
 
@@ -146,5 +156,19 @@ test('a 50-slide presentation keeps one bounded animated layer and preserves con
     assert.equal(await layer.evaluate(el=>el.firstElementChild===window.backgroundContinuity),true);assert.equal(await page.locator('#stage > .bg-effect').count(),1);
     assert.equal(await page.locator('.we-thumbnail .bg-effect[data-motion=on]').count(),0);
     const state=(await snapshot(page)).state;await page.locator('#hub-player-more > summary').click();await page.locator('#bg-viewer-motion').click();assert.equal(await layer.getAttribute('data-motion'),'off');assert.deepEqual((await snapshot(page)).state,state);assert.deepEqual(errors,[]);
+  }finally{await page.close();}
+});
+
+test('playback omits background overrides for hidden slides while editable recovery retains them',async()=>{
+  const {page,errors}=await openExample(browser,'portfolio-demo');try{
+    const before=await snapshot(page),id=before.state.slides[0].id;
+    await set(page,{effect:'aurora'},'slide');
+    // The existing slide hide control preserves the original in editable recovery.
+    await selectTab(page,'Slide');await reveal(page,'#fe-hidden');await page.locator('#fe-hidden').check();
+    const expected=await snapshot(page);assert.equal(expected.state.backgroundEffects.slides[id].effect,'aurora');
+    const bytes=await exportZip(page,'#fe-playback'),zip=await zipContext.JSZip.loadAsync(new Uint8Array(bytes));
+    const exported=JSON.parse(await zip.file('presentation.json').async('string'));
+    assert.equal(exported.state.slides.some(slide=>slide.id===id),false);assert.equal(exported.state.backgroundEffects?.slides?.[id],undefined);
+    const editable=await jsonExport(page);assert.equal(editable.schemaVersion,3);assert.equal(editable.state.backgroundEffects.slides[id].effect,'aurora');assert.deepEqual(errors,[]);
   }finally{await page.close();}
 });

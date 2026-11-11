@@ -40,14 +40,16 @@ function bgPanel(scope){
   }
   const preview=document.createElement('div');preview.className='bg-preview';preview.setAttribute('aria-label','Background effect preview');
   const canvas=document.createElement('div');canvas.className='bg-preview-stage';
+  const originalOrb=document.createElement('div');originalOrb.className='orb';originalOrb.style.animation='none';canvas.append(originalOrb);
   const copy=document.createElement('div');copy.className='bg-preview-copy';copy.textContent='Your story. Your style.';canvas.append(copy);preview.append(canvas);
   const body=document.createElement('div');body.className='bg-body';body.append(preview,controls);panel.append(body);
   const previewController=bgEngine.mount(canvas),actions=document.createElement('div');actions.className='bg-actions';panel.append(actions);
   const button=(text,handler,suffix)=>{const node=document.createElement('button');node.type='button';node.textContent=text;node.id=id+'-'+suffix;node.onclick=handler;actions.append(node);return node;};
   const status=document.createElement('p');status.className='bg-hint';status.setAttribute('role','status');panel.append(status);
   panel.append(advanced);
-  let signature='',draft=null,playing=false;
+  let signature='',draft=null,playing=false,legacyPreview=false;
   function loadDraft(value){
+    legacyPreview=!value;
     draft=value||bgEngine.defaults;
     for(const key of ['effect','mode','position','quality','intensity','speed','scale'])fields[key].value=draft[key];fields.quiet.checked=draft.quiet;fields.grid.checked=draft.grid;
     const palette=studioPalette(projectState.brand);
@@ -55,14 +57,17 @@ function bgPanel(scope){
   }
   function read(){return bgEngine.clean({effect:fields.effect.value,mode:fields.mode.value,position:fields.position.value,quality:fields.quality.value,quiet:fields.quiet.checked,grid:fields.grid.checked,intensity:Number(fields.intensity.value),speed:Number(fields.speed.value),scale:Number(fields.scale.value),colors:colorFields.map(({source,value})=>source.value==='custom'?value.value:source.value)});}
   function show(){
-    const palette=studioPalette(projectState.brand);canvas.style.background=palette.background;copy.style.color=palette.ink;
+    const palette=studioPalette(projectState.brand);canvas.style.background=palette.background;copy.style.color=palette.ink;canvas.style.setProperty('--cyan',palette.secondary||palette.accent);originalOrb.hidden=!legacyPreview;
+    for(const {source,value}of colorFields)if(source.value!=='custom')value.value=palette[source.value];
     canvas.style.transform='scale('+Math.max(1,preview.clientWidth)/1920+')';
-    previewController.update(draft||bgEngine.defaults,palette,{motion:playing&&!document.hidden&&!nxMotionDisabled()});
+    previewController.update(legacyPreview?null:draft,palette,{motion:playing&&!document.hidden&&!nxMotionDisabled()});
     for(const card of cards){card.sample.style.background=palette.background;card.sample.style.transform='scale('+Math.max(1,card.frame.clientWidth)/1920+')';card.controller.update({...draft||bgEngine.defaults,effect:card.effect,mode:'static'},palette,{motion:false});card.button.setAttribute('aria-pressed',String(fields.source.value==='custom'&&fields.effect.value===card.effect));}
     animate.textContent=playing?'Stop motion preview':'Preview motion';animate.setAttribute('aria-pressed',String(playing));
+    animate.disabled=legacyPreview||draft.effect==='none';
+    if(playing&&nxMotionDisabled())status.textContent='Reduced motion is active. Showing a static composition.';
   }
   function change(){
-    try{draft=read();fields.source.value='custom';for(const {source,value}of colorFields)value.disabled=source.value!=='custom';status.textContent='Preview only. Apply to save this background.';show();}
+    try{draft=read();legacyPreview=false;fields.source.value='custom';for(const {source,value}of colorFields)value.disabled=source.value!=='custom';status.textContent='Preview only. Apply to save this background.';show();}
     catch(error){status.textContent=error.message;}
   }
   for(const [key,field]of Object.entries(fields))field.onchange=key==='source'?()=>{
