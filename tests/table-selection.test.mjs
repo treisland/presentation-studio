@@ -53,6 +53,7 @@ test('table presets and custom colors survive independent library copies and edi
     const table=await insertTable(page,id);
     await page.locator('#fe-preview td').first().click();await page.locator('#wp-tab-style').click();
     await page.locator('#tbl-presets button[data-preset=banded]').click();
+    const outline=await page.locator('#fe-preview .tbl-selected-cell').evaluate(el=>getComputedStyle(el).outlineColor);assert.notEqual(outline,'rgba(0, 0, 0, 0)');
     await page.locator('#tbl-border').selectOption('grid');await page.locator('#tbl-spacing').selectOption('compact');
     await page.locator('#tbl-alternate').fill('#e0efff');await page.locator('#tbl-alternate').dispatchEvent('change');
     const style=await page.locator('#fe-preview tbody tr').nth(1).locator('td').first().evaluate(el=>({fill:getComputedStyle(el).backgroundColor,padding:getComputedStyle(el).padding}));
