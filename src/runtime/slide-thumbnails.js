@@ -3,7 +3,10 @@
 let navReady=false, navTopology='', navProject='', navForce=false, navBoundaryTimer=0, navBoundaryForce=false;
 const navSnapshots=new Map();
 function navSignature(model) {
-  return JSON.stringify([model,projectState.media[model.id],projectState.brand,projectState.settings,projectState.sections]);
+  return JSON.stringify([model,projectState.media[model.id],projectState.mediaObjects?.[model.id],
+    projectState.design?.slides?.[model.id],projectState.design?.palette,
+    projectState.visibility?.defaults,projectState.visibility?.slides?.[model.id],projectState.visibility?.groups?.[model.id],
+    projectState.brand,projectState.settings,projectState.sections]);
 }
 function navBusy() {
   return !!(vbSession || ceDrag || ceRelocate || dbDrag || mgDrag || editingGestureBusy() ||
