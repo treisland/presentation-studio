@@ -80,7 +80,7 @@ For a localhost preview, run `npm run serve`, then open `http://127.0.0.1:4173`.
 
 [Quick start](docs/quick-start.md) · [Architecture](docs/architecture.md) · [Contributing](CONTRIBUTING.md) · [Content and branding](docs/content-and-branding.md) · [Open-source release](docs/open-source-release.md) · [Roadmap](docs/roadmap.md) · [Troubleshooting](docs/troubleshooting.md)
 
-Version 0.9.0-beta.1. Maintainer-approved beta of the polished workbench, Layers, alignment and selection-driven Inspector with persistent slide notes. Includes the existing portable AI and authoring workflow. Released under the [Apache License 2.0](LICENSE). Third-party notices apply. See the [beta notes](docs/releases/0.9.0-beta.1.md), [validation record](docs/releases/0.9.0-beta.1-validation.md) and [Content inspector guide](docs/content-inspector.md).
+Version 0.10.0-beta.1. Maintainer-approved beta for version/About identity, compatible imports and Docker/Pages delivery. Released under the [Apache License 2.0](LICENSE). See the [beta notes](docs/releases/0.10.0-beta.1.md), [validation record](docs/releases/0.10.0-beta.1-validation.md) and [deployment guide](docs/deployment.md).
 
 ## Development process
 
@@ -110,4 +110,4 @@ Navigate sectioned slide thumbnails, select content to reveal its inspector, and
 
 [Editor workspace guide](docs/editor-workspace.md).
 
-Deployment milestone: see [Docker, GitHub Pages and Namecheap setup](docs/deployment.md) and [supported import formats](docs/import-compatibility.md). Review deployment acceptance is pending; npm publishing is deferred.
+Deployment milestone: see [Docker, GitHub Pages and Namecheap setup](docs/deployment.md) and [supported import formats](docs/import-compatibility.md). Maintainer acceptance is recorded; canonical release and downstream promotion remain separate verified steps. npm publishing is deferred.
