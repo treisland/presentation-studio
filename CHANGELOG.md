@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Run Linux validation and release packaging in a matched, digest-pinned Playwright image to avoid live Ubuntu dependency downloads; retain Node 22, independent native Windows checks and all release gates.
+
 ## 0.11.0-beta.1 — 2026-11-11
 
 - Add contextual table row/column insertion and deletion, lossless structural edits, optional headers, theme-aware presets, alternating rows, borders and spacing. Preserve headerless tables and reusable component styling (#135).
