@@ -2,7 +2,11 @@
 
 ## Unreleased
 
-- Document the planned post-1.0 background-effects milestone, theme/compatibility contracts, dependent candidate issues and acceptance gates; no application behavior or release version changes (#149).
+- Document the planned v0.12.0 background-effects milestone, theme/compatibility contracts, dependent candidate issues and acceptance gates; no application behavior or release metadata changes (#149).
+
+## 0.11.0-rc.1 — 2026-11-11
+
+- Promote accepted 0.11.0-beta.2 to release candidate with maintainer sign-off. Retain table/group workflows, panel-edit data preservation, stable navigator previews and the matched Playwright CI toolchain; no runtime, dependency or format changes.
 
 ## 0.11.0-beta.2 — 2026-11-11
 

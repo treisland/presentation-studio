@@ -1,6 +1,6 @@
-# Background effects milestone plan
+# v0.12.0 — Background effects milestone plan
 
-Status: planning only, authorized by the maintainer's request to update milestones following the concept review. [Milestone 12](https://github.com/treisland/presentation-studio/milestone/12) is scheduled conceptually after 1.0 stabilization, without a version or delivery date. [Issue #149](https://github.com/treisland/presentation-studio/issues/149) tracks this plan. Implementation candidates are not agent-ready; the roadmap and concept sheet do not authorize runtime work or publication.
+Status: planning only, authorized by the maintainer's request to assign [milestone 12](https://github.com/treisland/presentation-studio/milestone/12) to v0.12.0. No delivery date is assigned. [Issue #149](https://github.com/treisland/presentation-studio/issues/149) tracks this plan. Implementation candidates are not agent-ready; assigning the milestone does not authorize runtime work, an application version bump or publication.
 
 ## User outcome
 
@@ -55,13 +55,13 @@ Portable AI authoring should expose approved effect IDs and supported options th
 
 | Candidate | Deliverable | Depends on |
 | --- | --- | --- |
-| [#150](https://github.com/treisland/presentation-studio/issues/150) | Settings, theme inheritance, option bounds and compatibility/security contract | Completion of 1.0 stabilization and separate design approval |
+| [#150](https://github.com/treisland/presentation-studio/issues/150) | Settings, theme inheritance, option bounds and compatibility/security contract | Separate v0.12.0 design/readiness approval |
 | [#151](https://github.com/treisland/presentation-studio/issues/151) | Five native presets, static frames and lifecycle/performance design | #150 |
 | [#152](https://github.com/treisland/presentation-studio/issues/152) | Project/slide controls, inheritance, accessible motion preview and viewer override | #150, #151 |
 | [#153](https://github.com/treisland/presentation-studio/issues/153) | Editable/playback/booth portability and validated AI capability exposure | #150, #151; coordinate with #152 |
 | [#154](https://github.com/treisland/presentation-studio/issues/154) | Readability, accessibility, performance and compatibility acceptance | #150–#153 |
 
-Design validation should inform every stage; final acceptance is not a substitute for early tests. Keep implementation PRs scoped and separately assigned. This milestone does not add features to the 1.0 stabilization cycle. A release version, release-preparation PR and publication authority are separate later decisions.
+Design validation should inform every stage; final acceptance is not a substitute for early tests. Keep implementation PRs scoped and separately assigned. The target feature milestone is v0.12.0. Exact prerelease/stable progression, application version changes, release preparation and publication authority remain separate later decisions.
 
 ## Acceptance matrix
 
