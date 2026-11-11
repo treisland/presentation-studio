@@ -2,7 +2,7 @@
 
 ## Current delivery plan
 
-**0.10.0 — Distribution and deployment — #130:** version/About UI and import compatibility policy; hardened static Docker/GHCR delivery; Actions-based stable/beta Pages hosting for pres-studio.com (Namecheap DNS), verified release promotion and isolated review deployment. npm publishing remains deferred. Manual acceptance follows deployment; existing release gates remain unchanged. See [deployment and testing](deployment.md).
+**0.10.0 — Distribution and deployment — #130:** version/About UI and import compatibility policy; hardened static Docker/GHCR delivery; Actions-based stable/beta Pages hosting for pres-studio.com (Namecheap DNS), verified release promotion and isolated review deployment. npm publishing remains deferred. Maintainer acceptance and all beta gates are recorded; PR #131 merged. Separate 0.10.0-beta.1 release preparation is #133, with beta Pages/Docker authorization and unchanged release gates. See [deployment and testing](deployment.md).
 
 Included follow-up **#132** in PR #131: Docker-only fresh-checkout Compose startup, a dedicated source build stage with development identity, an explicit verified-prebuilt release target and independent CI smoke/security coverage for both paths.
 

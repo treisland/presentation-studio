@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.10.0-beta.1 — 2026-11-10
+
 - Make fresh-checkout Docker/Compose startup build its own application assets without host Node/npm; retain an explicit verified-prebuilt target for release publication (#132).
 - Add embedded app version/build identity, offline About and private-data-free diagnostics, with import compatibility guidance.
 - Add hardened static Docker/Compose serving, verified published-release GHCR/Pages promotion and isolated CI-artifact review deployment. Preserve four canonical release downloads and manual release gates.
