@@ -32,6 +32,8 @@ Local heartbeat runs need the Codex app's scheduling environment, GitHub CLI aut
 
 ## Recovery and operations
 
+Linux validation and release builds share the version/digest-pinned Playwright image in `.github/playwright-image.json` and Node 22. Treat the package, lockfile and image as a matched toolchain; upgrade them together through a protected PR. The automated guard rejects drift. See CONTRIBUTING.md for local Linux reproduction. Keep the required Windows/Linux check names unchanged, run native Windows validation independently, and retain full check/package and artifact gates. Container success is not publication or downstream deployment evidence. Registry/npm connectivity is still required; do not bypass gates if it fails.
+
 Use hold on a PR to stop future queuing and disable any already-enabled auto-merge with gh pr merge --disable-auto. Pause the heartbeat to stop release processing. To cancel an unpublished release, merge a plan with publish=false before tagging; if already tagged, leave the tag immutable and keep the release draft. Never overwrite published artifacts: fix forward with a patch version. If checks fail, investigate and submit a focused PR; do not repeatedly rerun deterministic failures.
 
 If delivery reports HTTP 404 while reading repository settings, distinguish an invalid API path from missing authentication or repository access. The repository-root endpoint has no trailing slash. Verify a read-only request before retrying delivery; keep all protection and publication gates enabled.
