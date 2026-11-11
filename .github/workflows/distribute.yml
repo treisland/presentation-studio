@@ -1,0 +1,151 @@
+name: Distribute approved release
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Published immutable release tag (vVERSION)
+        required: true
+        type: string
+      channel:
+        description: Distribution channel (beta includes RC)
+        required: true
+        type: choice
+        options: [beta, stable]
+      target:
+        description: Beta Pages uses the separate beta deployment repository
+        required: true
+        type: choice
+        options: [docker, pages, both]
+      promote_alias:
+        description: Also advance Docker channel aliases after version verification
+        type: boolean
+        default: false
+permissions:
+  contents: read
+concurrency:
+  group: distribution-${{ inputs.channel }}
+  cancel-in-progress: false
+jobs:
+  prepare:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.identity.outputs.version }}
+      commit: ${{ steps.identity.outputs.commit }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
+      - name: Verify release, plan, exact-commit checks, tag workflow and four assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ inputs.tag }}
+          CHANNEL: ${{ inputs.channel }}
+          TARGET: ${{ inputs.target }}
+        run: |
+          if test "$CHANNEL" = beta && test "$TARGET" != docker; then echo 'Use the separate beta Pages repository for beta/RC website deployment.' >&2; exit 1; fi
+          node scripts/site.mjs release "$RELEASE_TAG" "$CHANNEL" "$TARGET"
+      - id: identity
+        run: node -e 'const i=require("./site/version.json");require("fs").appendFileSync(process.env.GITHUB_OUTPUT,"version="+i.version+"\ncommit="+i.commit+"\n")'
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: distribution-site
+          path: site/
+          if-no-files-found: error
+  docker:
+    needs: prepare
+    if: inputs.target == 'docker' || inputs.target == 'both'
+    runs-on: ubuntu-latest
+    environment: distribution
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+          ref: ${{ needs.prepare.outputs.commit }}
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: distribution-site
+          path: site/
+      - uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
+      - uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+      - name: Publish version once; verify existing version before resuming
+        env:
+          VERSION: ${{ needs.prepare.outputs.version }}
+          COMMIT: ${{ needs.prepare.outputs.commit }}
+        run: |
+          IMAGE=ghcr.io/treisland/presentation-studio
+          if docker buildx imagetools inspect "$IMAGE:$VERSION" > existing-manifest.txt 2> manifest-error.txt; then
+            docker pull "$IMAGE:$VERSION"
+            test "$(docker inspect --format '{{index .Config.Labels "org.opencontainers.image.revision"}}' "$IMAGE:$VERSION")" = "$COMMIT"
+            id=$(docker create "$IMAGE:$VERSION")
+            docker cp "$id:/app/site/index.html" existing.html
+            docker rm "$id"
+            cmp existing.html site/index.html
+          else
+            grep -Eiq 'manifest unknown|not found' manifest-error.txt || { cat manifest-error.txt >&2; exit 1; }
+            docker buildx build --platform linux/amd64 --provenance=mode=max --sbom=true --build-arg VERSION="$VERSION" --build-arg REVISION="$COMMIT" --tag "$IMAGE:$VERSION" --push .
+          fi
+          docker buildx imagetools inspect "$IMAGE:$VERSION" | tee distribution-image.txt
+      - name: Explicitly advance channel aliases without downgrading
+        if: inputs.promote_alias
+        env:
+          VERSION: ${{ needs.prepare.outputs.version }}
+          CHANNEL: ${{ inputs.channel }}
+        run: |
+          IMAGE=ghcr.io/treisland/presentation-studio
+          ALIASES=stable
+          if test "$CHANNEL" = beta; then ALIASES=beta; case "$VERSION" in *-rc.*) ALIASES=rc;; esac; else ALIASES='stable latest'; fi
+          for alias in $ALIASES; do
+            if docker buildx imagetools inspect "$IMAGE:$alias" >/dev/null 2> alias-error.txt; then
+              docker pull "$IMAGE:$alias"
+              PRIOR=$(docker inspect --format '{{index .Config.Labels "org.opencontainers.image.version"}}' "$IMAGE:$alias")
+              export PRIOR
+              node --input-type=module -e 'import {noDowngrade} from "./scripts/site.mjs"; noDowngrade(process.env.PRIOR,process.env.VERSION)'
+            else grep -Eiq 'manifest unknown|not found' alias-error.txt || { cat alias-error.txt >&2; exit 1; }; fi
+          done
+          digest=$(docker buildx imagetools inspect "$IMAGE:$VERSION" --format '{{json .Manifest.Digest}}' | tr -d '"')
+          for alias in $ALIASES; do docker buildx imagetools create --tag "$IMAGE:$alias" "$IMAGE@$digest"; done
+      - name: Preserve versioned image receipt (aliases require separate promotion)
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: docker-distribution-receipt
+          path: distribution-image.txt
+  pages:
+    needs: prepare
+    if: (inputs.target == 'pages' || inputs.target == 'both') && inputs.channel == 'stable'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: distribution-site
+          path: site/
+      - name: Refuse website downgrade or conflicting same-version promotion
+        env:
+          VERSION: ${{ needs.prepare.outputs.version }}
+          COMMIT: ${{ needs.prepare.outputs.commit }}
+        run: |
+          curl --fail --silent --show-error https://pres-studio.com/distribution.json -o previous.json || test "$(curl -s -o /dev/null -w '%{http_code}' https://pres-studio.com/distribution.json)" = 404
+          if test -f previous.json; then node --input-type=module -e 'import fs from "node:fs"; const old=JSON.parse(fs.readFileSync("previous.json")); const next=process.env.VERSION.split(".").map(Number), prior=old.version.split(".").map(Number); if(old.version.includes("-")||!prior.every(Number.isInteger))throw Error("Unexpected prior channel");for(let i=0;i<3;i++){if(next[i]<prior[i])throw Error("Downgrade refused");if(next[i]>prior[i])break;}if(old.version===process.env.VERSION&&old.commit!==process.env.COMMIT)throw Error("Conflicting version");'; fi
+      - uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
+      - uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4
+        with:
+          path: site/
+      - id: deploy
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4

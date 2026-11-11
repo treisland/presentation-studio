@@ -23,6 +23,19 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - run: npm run check
       - run: npm run package
+      - name: Prepare isolated review site
+        if: matrix.os == 'ubuntu-latest' && github.event_name == 'pull_request'
+        env:
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: node scripts/site.mjs local
+      - name: Upload review site
+        if: matrix.os == 'ubuntu-latest' && github.event_name == 'pull_request'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: review-site
+          path: site/
+          retention-days: 14
+          if-no-files-found: error
       - uses: actions/upload-artifact@v4
         with:
           name: presentation-studio-${{ matrix.os }}
@@ -30,3 +43,36 @@ jobs:
             dist/presentation-studio*.html
             release/*.zip
           if-no-files-found: error
+  container:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
+      - run: npm ci
+      - run: npm run build
+      - run: node scripts/site.mjs local
+      - run: python -m unittest discover -s tests -p test_preview.py
+      - run: docker build -t studio-review .
+      - name: Smoke test non-root read-only container and exact payload
+        run: |
+          docker run -d --name studio-review --read-only --cap-drop ALL --security-opt no-new-privileges -p 127.0.0.1:4173:8080 studio-review
+          for i in $(seq 1 20); do curl --fail http://127.0.0.1:4173/healthz && break; sleep 1; done
+          curl --fail http://127.0.0.1:4173/ -o served.html
+          cmp site/index.html served.html
+          test "$(docker inspect --format '{{.Config.User}}' studio-review)" != root
+          test "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:4173/package.json)" = 404
+          docker stop studio-review
+      - name: Scan shipped container dependencies
+        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # 0.35.0
+        with:
+          image-ref: studio-review
+          format: table
+          severity: HIGH,CRITICAL
+          exit-code: '1'

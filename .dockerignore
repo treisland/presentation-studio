@@ -1,0 +1,12 @@
+**
+!Dockerfile
+!docker/
+!docker/server.mjs
+!docker/healthcheck.mjs
+!site/
+!site/index.html
+!site/blank.html
+!site/version.json
+!site/distribution.json
+!site/docs/
+!site/docs/**

@@ -2,9 +2,19 @@ import { readFile, writeFile, mkdir, readdir, unlink } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { resolve, dirname } from "node:path";
 import vm from "node:vm";
+import { execFileSync } from "node:child_process";
 const root = fileURLToPath(new URL("../", import.meta.url));
 const read = (path) => readFile(resolve(root, path), "utf8");
 const config = JSON.parse(await read("build.config.json"));
+const { version } = JSON.parse(await read("package.json"));
+let commit = 'unknown', tagged = false, dirty = true;
+try {
+  commit = execFileSync('git', ['rev-parse', 'HEAD'], {cwd: root, encoding:'utf8', stdio:['ignore','pipe','ignore']}).trim();
+  dirty = !!execFileSync('git', ['status','--porcelain','--untracked-files=no'], {cwd:root,encoding:'utf8'}).trim();
+  tagged = execFileSync('git', ['tag','--points-at','HEAD'], {cwd:root,encoding:'utf8'}).split(/\r?\n/).includes('v'+version);
+} catch { /* Source archives remain identifiable as development builds. */ }
+const buildInfo = {version, commit, channel: tagged && !dirty ? (version.match(/-(alpha|beta|rc)\./)?.[1] || 'stable') : 'development', dirty,
+  imports:{native:[2],legacy:[1],authoring:[1],library:[1]}};
 const authoringFiles = {
   "AUTHORING.md": await read("docs/ai/AUTHORING.md"),
   "example.json": await read("docs/ai/example.json"),
@@ -85,6 +95,7 @@ for (const [name, kind, project] of [
       await read("templates/studio/initial.html"),
     ],
     ["@PROJECT_CONFIG", json(project)],
+    ["@APP_BUILD_INFO", json(buildInfo)],
     [
       "@MEDIA_CONFIG",
       json({ schemaVersion: 1, slides: project?.state.media || {} }),
@@ -106,3 +117,4 @@ for (const [name, kind, project] of [
     "Built dist/" + name + " (" + Buffer.byteLength(output) + " bytes)",
   );
 }
+await writeFile(resolve(root,'dist/version.json'), JSON.stringify(buildInfo,null,2)+'\n');
