@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 0.11.0 — 2026-11-11
+
+- Promote the tested 0.11.0-rc.1 to stable with explicit production sign-off. Publish the same accepted application scope through production GitHub Pages and versioned/stable Docker channels; no runtime, dependency or format changes from RC.
+
 ## 0.11.0-rc.1 — 2026-11-11
 
 - Promote accepted 0.11.0-beta.2 to release candidate with maintainer sign-off. Retain table/group workflows, panel-edit data preservation, stable navigator previews and the matched Playwright CI toolchain; no runtime, dependency or format changes.
