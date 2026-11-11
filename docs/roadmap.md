@@ -1,6 +1,6 @@
 # Roadmap
 
-0.11.0 beta stabilization: [#139](https://github.com/treisland/presentation-studio/issues/139) fixes template table actions dismissing on focus; [#141](https://github.com/treisland/presentation-studio/issues/141) prepares the conditionally approved [0.11.0-beta.2 update](releases/0.11.0-beta.2-validation.md). [#143](https://github.com/treisland/presentation-studio/issues/143) adds deferred navigator snapshots and stable card geometry to this beta update. Existing-template grouping convenience remains outside this focused update.
+0.11.0 release candidate: the maintainer accepted delivered beta.2 and approved RC progression. [#147](https://github.com/treisland/presentation-studio/issues/147) prepares [0.11.0-rc.1](releases/0.11.0-rc.1-validation.md) without runtime changes. The accepted [beta.2 update](releases/0.11.0-beta.2-validation.md) contains template-table focus/data-preservation fixes (#139/#140) and stable navigator snapshots (#143/#144). Existing-template grouping convenience remains outside this scope; stable promotion requires separate authorization.
 
 ## Current delivery plan
 
