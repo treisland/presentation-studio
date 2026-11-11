@@ -661,11 +661,13 @@ function vbAttach(root) {
     root.addEventListener("dragover", (e) => e.preventDefault());
     root.addEventListener("focusout", () =>
       setTimeout(() => {
+        // Table actions and Inspector fields are part of the selected cell's
+        // editing interaction, including tables without a free-block selection.
         if (
           vbSession &&
           !vbSession.el.contains(document.activeElement) &&
           !$("vb-toolbar").contains(document.activeElement) &&
-          !document.activeElement?.closest("#we-font-controls,#wp-selection-header,#tt-control,#component-toolbar")
+          !document.activeElement?.closest("#we-font-controls,#wp-selection-header,#tt-control,#component-toolbar,#tbl-toolbar,#tbl-style,#ci-table-editor")
         ) {
           vbEnd(true);
         }

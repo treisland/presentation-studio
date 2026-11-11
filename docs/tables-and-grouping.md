@@ -8,6 +8,8 @@ Insert from **Add / Library → Data & Code**. Click a cell to select its row an
 
 Inspector **Content** retains the optional **Edit cells in panel** disclosure. Panel fields replace that cell's text; structural edits preserve other cells' rich text, links, classes, attributes and row containers. Locked tables, slides and presentations reject changes. Undo restores a whole structural or style operation.
 
+Existing template tables support the same cell actions without converting them to free blocks. Focus can move from a canvas cell to the table action bar or table Inspector controls without dismissing the selected table; choosing another object or slide changes the editing context normally.
+
 Inspector **Style** offers Plain, Header, Banded and Grid presets; a semantic header toggle; separate header/body fill, text color and alignment; header weight; alternating row colors; borders; and compact, comfortable or spacious padding. Theme colors stay connected to the presentation theme. Choosing a custom color overrides only that slot. Reset table style removes the new overrides and restores the table's existing styling. Turning the header on promotes the first data row; turning it off returns that row to the body, preserving its content.
 
 An overflow notice recommends enlarging the frame or reducing spacing instead of silently shrinking content. Table blocks retain ordinary Arrange movement, resizing, duplication, visibility and removal.

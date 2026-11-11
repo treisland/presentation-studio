@@ -19,6 +19,74 @@ async function empty(){const value=await openExample(browser,'portfolio-demo');c
 async function insertTable(page,id,header=true){assert.equal((await operations(page,[{type:'table.insert',slideId:id,rows:3,columns:3,header}])).ok,true);return findTable((await snapshot(page)).state);}
 async function action(page,table,action,row=1,column=1,extra={}){const result=await operations(page,[{type:'table.structure',slideId:table.slideId,path:table.path,action,row,column,...extra}]);assert.equal(result.ok,true,result.message);return findTable((await snapshot(page)).state);}
 
+test('existing template table retains cell context through focused row/column actions and Undo',async()=>{
+  const {page,errors}=await openExample(browser,'template');try{
+    const initial=await snapshot(page),slide=initial.state.slides.find(item=>item.template==='table');
+    await page.locator('.fe-slide-button[data-slide-id="'+slide.id+'"]').click();
+    await page.locator('#fe-preview tbody td').nth(1).click();
+    const rowCount=await page.locator('#fe-preview table tr').count(),columnCount=await page.locator('#fe-preview table tr').first().locator('th,td').count();
+    await page.locator('#tbl-action-row').focus();
+    // Give the deferred inline-editor focusout handler a chance to run before changing the select.
+    await page.waitForTimeout(100);
+    assert.equal(await page.locator('#tbl-toolbar').isVisible(),true);
+    assert.match(await page.locator('#tbl-context').textContent(),/Column 2/);
+    await page.locator('#tbl-action-row').selectOption('row-after');
+    assert.equal(await page.locator('#fe-preview table tr').count(),rowCount+1);
+    await page.locator('#tbl-action-column').focus();await page.waitForTimeout(100);
+    await page.keyboard.press('ArrowDown');await page.keyboard.press('Enter');
+    assert.equal(await page.locator('#fe-preview table tr').first().locator('th,td').count(),columnCount+1);
+    await page.locator('#fe-undo').click();
+    assert.equal(await page.locator('#fe-preview table tr').first().locator('th,td').count(),columnCount);
+    await page.locator('#fe-redo').click();
+    assert.equal(await page.locator('#fe-preview table tr').first().locator('th,td').count(),columnCount+1);
+    await page.locator('#tbl-action-column').selectOption('column-delete');
+    assert.equal(await page.locator('#fe-preview table tr').first().locator('th,td').count(),columnCount);
+    await page.locator('#tbl-action-row').selectOption('row-delete');
+    assert.equal(await page.locator('#fe-preview table tr').count(),rowCount);
+    assert.equal((await snapshot(page)).state.slides.find(item=>item.id===slide.id).id,slide.id);
+    await page.locator('.fe-slide-button[data-slide-id="'+initial.state.slides[0].id+'"]').click();
+    assert.equal(await page.locator('#tbl-toolbar').isVisible(),false);
+    assert.deepEqual(errors,[]);
+  }finally{await page.close();}
+});
+
+test('table actions retarget when selecting a second table instead of retaining the old cell',async()=>{
+  const {page,errors,id}=await empty();try{
+    await insertTable(page,id,false);await insertTable(page,id,false);
+    const tables=page.locator('#fe-preview table');
+    // Inserted tables overlap initially; DOM focus/click chooses each cell without dragging a frame.
+    await tables.first().locator('td').first().evaluate(el=>el.click());
+    await page.locator('#tbl-action-row').focus();await page.waitForTimeout(100);
+    await page.locator('#tbl-action-row').selectOption('row-after');
+    assert.equal(await tables.first().locator('tr').count(),4);
+    await tables.last().locator('td').first().evaluate(el=>el.click());
+    await page.locator('#tbl-action-column').focus();await page.waitForTimeout(100);
+    await page.locator('#tbl-action-column').selectOption('column-after');
+    assert.equal(await tables.first().locator('tr').first().locator('td').count(),3);
+    assert.equal(await tables.last().locator('tr').first().locator('td').count(),4);
+    assert.equal(await tables.last().locator('tr').count(),3);assert.deepEqual(errors,[]);
+  }finally{await page.close();}
+});
+
+test('template table Inspector keeps pending cell edits and clears context for another object',async()=>{
+  const {page,errors}=await openExample(browser,'template');try{
+    const initial=await snapshot(page),slide=initial.state.slides.find(item=>item.template==='table');
+    await page.locator('.fe-slide-button[data-slide-id="'+slide.id+'"]').click();
+    const cell=page.locator('#fe-preview tbody td').first();await cell.click();await cell.fill('Pending template cell');
+    await page.locator('#ci-table-editor > summary').click();
+    await page.locator('#ci-table-editor input').last().focus();await page.waitForTimeout(100);
+    assert.equal(await page.locator('#tbl-toolbar').isVisible(),true);
+    assert.equal(await page.locator('#fe-preview tbody td').first().textContent(),'Pending template cell');
+    await page.locator('#wp-tab-style').click();await page.locator('#tbl-spacing').focus();await page.waitForTimeout(100);
+    assert.equal(await page.locator('#tbl-style').isVisible(),true);
+    await page.locator('#tbl-spacing').selectOption('compact');
+    assert.equal(await page.locator('#fe-preview table.ts-spacing-compact').count(),1);
+    await page.locator('#fe-preview h1,#fe-preview h2').first().click();
+    assert.equal(await page.locator('#tbl-toolbar').isVisible(),false);
+    assert.deepEqual(errors,[]);
+  }finally{await page.close();}
+});
+
 test('headerless tables retain all cells through contextual insertion, deletion and header toggles',async()=>{
   const {page,errors,id}=await empty();try{
     let table=await insertTable(page,id,false);const original=table.node.children[0].children;

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Keep existing template table selection active while using row/column actions and table Inspector controls, so focusing a dropdown no longer dismisses the editing tools (#139).
+
 ## 0.11.0-beta.1 — 2026-11-11
 
 - Add contextual table row/column insertion and deletion, lossless structural edits, optional headers, theme-aware presets, alternating rows, borders and spacing. Preserve headerless tables and reusable component styling (#135).
