@@ -187,7 +187,7 @@ projectInit=function(...args){
   for(const [name,choices]of [['row',[['row-before','Insert row above'],['row-after','Insert row below'],['row-delete','Delete selected row']]],['column',[['column-before','Insert column left'],['column-after','Insert column right'],['column-delete','Delete selected column']]]]){
     const label=document.createElement('label');label.textContent=name==='row'?'Rows':'Columns';const select=document.createElement('select');select.id='tbl-action-'+name;select.setAttribute('aria-label',label.textContent+' actions');select.append(new Option('Choose action',''),...choices.map(([value,text])=>new Option(text,value)));select.onchange=()=>{const action=select.value;select.value='';if(action)tblRun('table.structure',{action});};label.append(select);tools.append(label);
   }
-  $('we-viewport').append(tools);
+  const dock=document.createElement('div');dock.id='selection-action-dock';$('we-viewport').append(dock);dock.append(tools);
   const panel=document.createElement('section');panel.id='tbl-style';panel.dataset.wpPart='style';panel.hidden=true;
   panel.innerHTML='<h3>Table presets</h3><div id="tbl-presets"></div><label class="tbl-toggle"><input id="tbl-header" type="checkbox"> Header row</label>';
   for(const [preset,label]of [['plain','Plain'],['header','Header'],['banded','Banded'],['grid','Grid']]){const button=spButton(label,()=>tblRun('table.style',{preset}));button.dataset.preset=preset;const sample=document.createElement('span');sample.className='tbl-preset-preview tbl-preview-'+preset;sample.setAttribute('aria-hidden','true');button.prepend(sample);panel.querySelector('#tbl-presets').append(button);}

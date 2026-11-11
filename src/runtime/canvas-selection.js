@@ -134,7 +134,7 @@ projectInit=function(...args){
   const actions=document.createElement('section');actions.id='gs-actions';actions.hidden=true;actions.setAttribute('aria-label','Selection actions');
   const status=document.createElement('strong');status.id='gs-status';status.setAttribute('role','status');actions.append(status);
   for(const [id,label,action]of [['group','Group',()=>gsAction('group')],['ungroup','Ungroup',()=>gsAction('ungroup')],['edit','Edit group',()=>gsEnter()],['exit','Finish group editing',gsExit]]){const button=spButton(label,action);button.id='gs-'+id;actions.append(button);}
-  const reason=document.createElement('small');reason.id='gs-reason';actions.append(reason);$('we-viewport').append(actions);
+  const reason=document.createElement('small');reason.id='gs-reason';actions.append(reason);$('selection-action-dock').append(actions);
   // Existing toolbar affordances delegate to the same guarded actions.
   $('component-group').onclick=()=>gsAction('group');$('component-ungroup').onclick=()=>gsAction('ungroup');
   const preview=$('fe-preview');

@@ -151,3 +151,15 @@ test('active marquee rejects concurrent batches and Escape cancels without chang
     await page.keyboard.press('Escape');await page.mouse.up();assert.equal(await page.locator('.gs-marquee').count(),0);assert.deepEqual((await snapshot(page)).state,before.state);assert.deepEqual(errors,[]);
   }finally{await page.close();}
 });
+
+test('editing a grouped table keeps table structure and group actions reachable without overlap',async()=>{
+  const {page,errors,id}=await empty();try{
+    await insertTable(page,id);const tableKey=blockID((await snapshot(page)).state.slides[0].tree[0]);
+    const created=await operations(page,[{type:'block.create',slideId:id,kind:'circle',placement:{x:.82,y:.1,w:.15,h:.15}}]);
+    assert.equal((await operations(page,[{type:'component.group',slideId:id,keys:[tableKey,created.created[0]]}])).ok,true);
+    await page.locator('#fe-preview td').first().click();await page.locator('#gs-edit').click();
+    assert.equal(await page.locator('#tbl-toolbar').isVisible(),true);assert.equal(await page.locator('#gs-actions').isVisible(),true);
+    const tableActions=await page.locator('#tbl-toolbar').boundingBox(),groupActions=await page.locator('#gs-actions').boundingBox();assert(tableActions.y+tableActions.height<=groupActions.y);
+    const count=await page.locator('#fe-preview tbody tr').count();await page.locator('#tbl-action-row').selectOption('row-after');assert.equal(await page.locator('#fe-preview tbody tr').count(),count+1);await page.locator('#gs-ungroup').click();assert.equal(await page.locator('#fe-preview .gs-selected').count(),2);assert.deepEqual(errors,[]);
+  }finally{await page.close();}
+});

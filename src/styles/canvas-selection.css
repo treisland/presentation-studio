@@ -1,4 +1,4 @@
-#full-editor #gs-actions{position:absolute;bottom:12px;left:12px;right:12px;z-index:80;display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:10px 12px;border:1px solid var(--wb-line,#ccd7e5);border-radius:8px;background:var(--wb-surface,#fff);box-shadow:0 4px 16px #0002}
+#full-editor #gs-actions{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:10px 12px;border:1px solid var(--wb-line,#ccd7e5);border-radius:8px;background:var(--wb-surface,#fff);box-shadow:0 4px 16px #0002}
 #gs-status{margin-right:auto}#gs-reason{flex-basis:100%;color:var(--wb-muted,#596575)}#gs-reason:empty{display:none}
 .me-preview-stage[data-block-mode=edit] .gs-selected{outline:2px solid #0066ff;outline-offset:2px}
 .me-preview-stage[data-block-mode=edit] .gs-candidate{outline:2px solid #0066ff;outline-offset:2px}
