@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Add shared slider/number/unit/reset controls across background, appearance, text, media, branding, rotation, arrow and workspace settings. Keep coordinates compact with optional tracks, provide timer presets/Off, and retain counts as discrete fields.
+- Preview direct adjustments without per-tick project writes; commit a gesture as one Undo step. Preserve staged Apply flows, mixed values, locks, selection/revision guards, inherited font reset, keyboard navigation, wheel scrolling and existing saved formats.
+
 - Improve the beta background renderer with purpose-built SVG Orbit/Aurora/Waves compositions, independent ribbon flow, coordinated theme-derived colors, and fewer deliberately placed floating shapes. Keep custom hues, monochrome themes, motion safeguards and offline playback/booth behavior.
 - Add staged style variations, Subtle/Balanced/Expressive strength choices, explicit motion status and an inert Current slide preview. Map these controls to existing placement/scale/intensity values, preserving custom values and native-v3 compatibility without new saved fields.
 - Restore all three Constellation palette colors in standard and reduced quality, including custom Color 3 in previews and offline viewers.

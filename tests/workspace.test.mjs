@@ -63,14 +63,14 @@ test("Panel collapse and keyboard sizing refit the canvas without changing proje
       await p.locator('#we-toggle-slides').press('Enter');
       await p.locator('#we-toggle-inspector').press('Enter');
       await reveal(p,'#we-panel-sizes');await p.locator('#we-panel-sizes > summary').press('Enter');
-      const slider = await p.locator('#we-size-slides').boundingBox();
+      const slider = await p.locator('#we-size-slides-range').boundingBox();
       await p.mouse.click(slider.x + slider.width * 0.75, slider.y + slider.height / 2);
       assert.notEqual(await p.locator('#we-size-slides').inputValue(), '210');
-      await p.locator('#we-size-slides').press('End');
-      await p.locator('#we-size-inspector').press('End');
+      await p.locator('#we-size-slides-range').press('End');
+      await p.locator('#we-size-inspector-range').press('End');
       await fits();
       await p.locator('#we-zoom').selectOption('0.75');
-      await p.locator('#we-size-slides').press('Home');
+      await p.locator('#we-size-slides-range').press('Home');
       await p.setViewportSize({ width: size.width - 60, height: size.height });
       assert.equal(await p.locator('#we-zoom').inputValue(), '0.75');
       await p.locator('#we-size-inspector').press('Escape');

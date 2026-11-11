@@ -100,6 +100,7 @@ function bgPanel(scope){
     motionStatus.textContent=concealed?'This slide hides decorations. Enable decorations in Slide settings to show its background.':legacyPreview?'Original orb · static editing preview':draft.effect==='none'?'No background effect':draft.mode==='static'?'Static composition':nxMotionDisabled()?'Motion paused by accessibility settings':playing?'Motion preview playing · editor and slide cards stay still':'Animated in playback · choose Preview motion to watch here';
     if(draft.mode==='static')status.textContent='Static background selected. Choose Animated to preview motion.';
     if(playing&&nxMotionDisabled())status.textContent='Reduced motion is active. Showing a static composition.';
+    if(typeof numericRefreshScope==='function')numericRefreshScope(panel);
   }
   function change(){
     try{draft=read();if(draft.mode==='static'||draft.effect==='none')playing=false;legacyPreview=false;fields.source.value='custom';for(const {source,value}of colorFields)value.disabled=source.value!=='custom';status.textContent='Preview only. Apply to save this background.';show();}
