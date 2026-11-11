@@ -88,9 +88,10 @@ jobs:
             docker pull "$IMAGE:$VERSION"
             test "$(docker inspect --format '{{index .Config.Labels "org.opencontainers.image.revision"}}' "$IMAGE:$VERSION")" = "$COMMIT"
             id=$(docker create "$IMAGE:$VERSION")
-            docker cp "$id:/app/site/index.html" existing.html
+            mkdir existing-site
+            docker cp "$id:/app/site/." existing-site/
             docker rm "$id"
-            cmp existing.html site/index.html
+            diff -r existing-site site
           else
             grep -Eiq 'manifest unknown|not found' manifest-error.txt || { cat manifest-error.txt >&2; exit 1; }
             docker buildx build --platform linux/amd64 --provenance=mode=max --sbom=true --build-arg VERSION="$VERSION" --build-arg REVISION="$COMMIT" --tag "$IMAGE:$VERSION" --push .
