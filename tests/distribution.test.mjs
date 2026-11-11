@@ -4,7 +4,7 @@ import {hash,releaseVersion,buildIdentity,verifyPayload,verifyRelease,noDowngrad
 import {mkdtemp,readFile,rm} from 'node:fs/promises';
 import {join} from 'node:path';
 import {tmpdir} from 'node:os';
-import {publishedPayload} from '../scripts/site.mjs';
+import {publishedPayload,previousDeployment} from '../scripts/site.mjs';
 test('promotion rejects prereleases on stable, ambiguous tags, downgrade and conflicting assets',()=>{
  assert.equal(releaseVersion('v0.10.0','stable'),'0.10.0');assert.equal(releaseVersion('v0.10.0-rc.1','beta'),'0.10.0-rc.1');
  for(const [tag,ch]of [['v0.10.0-beta.1','stable'],['v0.10.0','beta'],['main','stable'],['v0.10.0-alpha.1','beta'],['v0.10.0;echo bad','stable']])assert.throws(()=>releaseVersion(tag,ch));
@@ -14,6 +14,9 @@ test('promotion rejects prereleases on stable, ambiguous tags, downgrade and con
  assert.throws(()=>verifyRelease({draft:true},'0.10.0'));assert.throws(()=>buildIdentity('<html>old release</html>'));
  assert.throws(()=>authorizedDistribution({},'stable','both'));assert.throws(()=>authorizedDistribution({distribution:{channels:['beta'],targets:['pages']}},'beta','docker'));
  authorizedDistribution({distribution:{channels:['stable'],targets:['pages','docker']}},'stable','both');
+ previousDeployment({review:true,channel:'review',version:'0.10.0-beta.1',commit:'preview'},{version:'0.10.0-beta.1',commit:'release'},'beta');
+ assert.throws(()=>previousDeployment({review:false,version:'0.10.0-beta.1',commit:'other'},{version:'0.10.0-beta.1',commit:'release'},'beta'));
+ assert.throws(()=>previousDeployment({review:true,channel:'review',version:'0.11.0',commit:'other'},{version:'0.10.0',commit:'release'},'stable'));
 });
 test('full promotion verifies tagged authorization, platform checks, workflow and loaded identity before use',async()=>{
  const original=globalThis.fetch,commit='a'.repeat(40),version='0.10.0-beta.1',tag='v'+version;
