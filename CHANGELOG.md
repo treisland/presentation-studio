@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.11.0-beta.1 — 2026-11-11
+
 - Add contextual table row/column insertion and deletion, lossless structural edits, optional headers, theme-aware presets, alternating rows, borders and spacing. Preserve headerless tables and reusable component styling (#135).
 - Add Shift+click and drag-box canvas multiselection, visible Group/Ungroup actions and shortcuts, shared move/resize bounds, group member editing and synchronized Layers selection (#135).
 
