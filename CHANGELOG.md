@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+No additional changes.
+
+## 0.12.0-beta.1 — 2026-11-11
+
 - Replace repetitive editor actions with consistent outline icons and contextual hover/keyboard-focus tooltips. Keep Edit blocks/Preview labels and active modes, existing guarded actions, Undo, accessible names and light/dark/touch/forced-color support.
 
 - Keep every numeric slider visible whenever its setting is shown; remove reveal/hide buttons and stack narrow coordinate/formatting controls beneath their number fields.
@@ -18,7 +22,7 @@
 
 - Improve background preset visibility with stronger Waves linework/ribbon shading, a connected Constellation network and brighter points, clearer Orbit/Aurora/Drift decoration, and lighter theme-linked colors on dark slides. Preserve quiet content areas, explicit custom colors and existing saved settings.
 
-## 0.12.0-beta.1 — 2026-11-11
+- Record explicit manual acceptance of the final PR #161 build and activate the protected beta release plan.
 
 - Add theme-aware Orbit, Aurora, Waves, Constellation and Geometric Drift backgrounds, presentation defaults/slide overrides, independent grid visibility, static/motion modes, accessible previews and viewer motion controls (#150–#154, #158).
 - Preserve legacy orb appearance and ordinary v2 exports; use maintainer-approved guarded native v3 for effect settings and their history/recovery. Retain v1/v2 imports, IDs, media, Undo and offline editable/playback/booth support.
