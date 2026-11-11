@@ -30,7 +30,7 @@ function ciChooseField(value) {
 function ciPaint() {
   if (!ciReady || !projectReady) return;
   const context=icSelection(), changed=ciIdentity!==context.identity;
-  if(changed){ciIdentity=context.identity;$('ci-table-editor').open=false;$('ci-code-advanced').open=false;}
+  if(changed){ciIdentity=context.identity;if(!(context.kind==='table'&&document.activeElement?.closest('#ci-table-editor')))$('ci-table-editor').open=false;$('ci-code-advanced').open=false;}
   const legacy=$('ci-legacy-tabs');legacy.hidden=true;
   for(const tab of legacy.querySelectorAll('button'))tab.tabIndex=-1;
   for(const id of ['fe-content-panel','fe-table-panel','code-panel']){
