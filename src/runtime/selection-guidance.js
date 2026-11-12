@@ -38,6 +38,6 @@ const sgInit=projectInit;projectInit=function(...args){
   guide.innerHTML='<p id="sg-context"></p><p id="sg-reason"></p><div><button id="sg-exit">Back to group/shared selection</button><button id="sg-layers">Find in Layers</button></div><details><summary>Keyboard and positioning help</summary><p id="sg-keyboard"></p></details><p id="sg-announcement" class="we-sr-only" role="status" aria-live="polite" aria-atomic="true"></p>';
   $('wp-selection-header').after(guide);
   $('sg-exit').onclick=()=>{vbEnd(false);if(gsEditing)gsExit();else{icMember='';icPaint();componentPaint();}};
-  $('sg-layers').onclick=()=>{const key=sgDescription().entries[0]?.key;$('ld-reveal-layers').click();[...$('sp-layers').querySelectorAll('.sp-layer-row')].find(row=>row.dataset.key===key)?.querySelector('button')?.focus({preventScroll:false});};
+  $('sg-layers').onclick=()=>{const key=sgDescription().entries[0]?.key;$('ld-reveal-layers').click();$('en-search').value='';spPaint();[...$('sp-layers').querySelectorAll('.sp-layer-row')].find(row=>row.dataset.key===key)?.querySelector('button')?.focus({preventScroll:false});};
   sgReady=true;sgPaint();return value;
 };
