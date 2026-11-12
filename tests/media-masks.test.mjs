@@ -12,6 +12,40 @@ test.after(()=>browser.close());
 const zipContext={setImmediate,clearImmediate,setTimeout,clearTimeout,Uint8Array,ArrayBuffer,TextEncoder,TextDecoder};
 vm.runInNewContext(await readFile('vendor/jszip-3.10.1.min.js','utf8'),zipContext);
 
+test('masked Library media stays visible and retains its frame in structured placements',async()=>{
+  const {page,errors}=await openExample(browser,'portfolio-demo');
+  try{
+    const slideId=(await snapshot(page)).state.slides[0].id;await operations(page,[{type:'design.clear',slideId}]);
+    await operations(page,[{type:'block.create',slideId,kind:'text'}]);
+    await page.locator('#component-open').click();await page.getByRole('button',{name:'Insert Circle frame',exact:true}).click();
+    const placed=await snapshot(page),sourceKey=Object.keys(placed.state.design.slides[slideId].objects).find(key=>placed.state.design.slides[slideId].objects[key].frame);
+    await operations(page,[{type:'component.reorder',slideId,keys:[sourceKey],direction:'forward'}]);
+    for(const zone of ['left','right','background','floating']){
+      await page.locator('#fe-preview .ce-placement-handle').press('Enter');await page.locator('.ce-existing-grid [data-drop-zone="'+zone+'"]').click();
+      const figure=page.locator('#fe-preview .media-box').first(),bounds=await figure.boundingBox();
+      assert(bounds.height>50,'visible height after '+zone+': '+JSON.stringify(bounds));assert.equal(await figure.locator('.mask-content').count(),1,'mask retained after '+zone);
+      assert((await figure.locator('.media-asset').boundingBox()).height>50,'image height after '+zone);
+    }
+    assert.deepEqual(errors,[]);
+  }finally{await page.close();}
+});
+
+test('structured placement swaps preserve both media frames and Undo restores their slots',async()=>{
+  const {page,errors}=await openExample(browser,'portfolio-demo');
+  try{
+    const slideId=(await snapshot(page)).state.slides[0].id;await operations(page,[{type:'design.clear',slideId}]);
+    await page.locator('#component-open').click();await page.getByRole('button',{name:'Insert Circle frame',exact:true}).click();
+    await page.locator('#fe-preview .ce-placement-handle').press('Enter');await page.locator('.ce-existing-grid [data-drop-zone="left"]').click();
+    await page.locator('#component-open').click();await page.getByRole('button',{name:'Insert Rounded frame',exact:true}).click();
+    const before=await snapshot(page),sourceKey=Object.keys(before.state.design.slides[slideId].objects).find(key=>before.state.design.slides[slideId].objects[key].frame?.shape==='rounded');
+    await page.locator('#fe-preview .ce-selected .ce-placement-handle').press('Enter');await page.locator('.ce-existing-grid [data-drop-zone="right"]').click();
+    const after=(await snapshot(page)).state,objects=after.design.slides[slideId].objects;
+    assert.equal(objects['media-primary'].frame.shape,'rounded');assert.equal(objects[sourceKey],undefined);
+    const demoted=after.mediaObjects[slideId][0];assert.equal(objects['media-'+demoted.id].frame.shape,'circle');
+    await page.locator('#fe-undo').click();assert.deepEqual((await snapshot(page)).state,before.state);assert.deepEqual(errors,[]);
+  }finally{await page.close();}
+});
+
 test('border padding stages an inner gap, preserves the outer contour and reopens offline',async()=>{
   const {page,errors}=await openExample(browser,'portfolio-demo');
   try{

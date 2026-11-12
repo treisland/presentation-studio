@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Preserve media geometry and per-object mask/style settings when switching Library media to left, right or background placement, including primary-media swaps and Undo.
+
 - Add staged border-padding sliders and precise percentage entry for media masks, retaining the outer contour and showing the frame fill between media and border.
 
 - Make masked media backgrounds, borders and shadows follow the mask contour, including offline booth exports, while keeping captions and editor resize handles separate.

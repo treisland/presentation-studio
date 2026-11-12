@@ -22,6 +22,8 @@ Adjustments are previews until **Apply frame**, which creates one Undo step. Res
 
 ## Persistence and authoring contract
 
+Changing a media object's placement between floating, left, right and background retains its frame and appearance. When structured placement exchanges primary and floating media, both objects keep their own settings; Undo restores the original slots. Layer ordering does not change the absolute layout positioning used by structured media.
+
 Border padding (0–25%, default 0) insets the media inside its mask while leaving the outer border and frame size unchanged. The gap shows the frame fill, or the slide behind a transparent fill. Padding uses a percentage of each frame dimension, scales with resizing, previews with the other numeric controls and saves with Apply frame. Reset returns to zero; Media Focus shows the original media without padding.
 
 The media's own fill, outline and shadow follow its mask contour. The slide background and other objects behind the media remain visible outside that contour. Captions and playback/link controls remain separate; rectangular editor selection and resize handles still describe the object's layout bounds.
