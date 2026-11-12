@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Reset masked image zoom on entry to standalone booth Media Focus, including when image zoom controls are disabled, and restore the mask transform on return.
+
 - Keep every drop-placement target visible with long filenames, put all media Inspector controls in one scroll area, and save frame choices/gestures directly without Apply frame.
 
 - Preserve media geometry and per-object mask/style settings when switching Library media to left, right or background placement, including primary-media swaps and Undo.

@@ -7,10 +7,32 @@ import vm from 'node:vm';
 import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import {resolve,dirname} from 'node:path';
 import {archivePath} from './archive-path.mjs';
+import {exportInteractiveBooth} from './interactive-ui.mjs';
 const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH,args:['--no-sandbox']});
 test.after(()=>browser.close());
 const zipContext={setImmediate,clearImmediate,setTimeout,clearTimeout,Uint8Array,ArrayBuffer,TextEncoder,TextDecoder};
 vm.runInNewContext(await readFile('vendor/jszip-3.10.1.min.js','utf8'),zipContext);
+
+test('booth image focus resets frame zoom with focus zoom enabled or disabled and restores it on return',async()=>{
+  const {page,errors}=await openExample(browser,'portfolio-demo');
+  try{
+    await operations(page,[{type:'design.clear',slideId:(await snapshot(page)).state.slides[0].id}]);
+    await page.locator('#component-open').click();await page.getByRole('button',{name:'Insert Circle frame',exact:true}).click();
+    const initial=await snapshot(page),slideId=initial.state.slides[0].id,key=Object.keys(initial.state.design.slides[slideId].objects).find(key=>initial.state.design.slides[slideId].objects[key].frame);
+    await operations(page,[{type:'media.mask',slideId,keys:[key],frame:{shape:'circle',fit:'cover',zoom:250,padding:10}}]);
+    const folder=resolve('test-results/booth-image-focus'),index=await exportInteractiveBooth(page,folder),html=await readFile(index,'utf8'),match=html.match(/<script id="booth-data" type="application\/json">([\s\S]*?)<\/script>/),restored=await browser.newPage();
+    restored.on('pageerror',error=>errors.push(error.message));await restored.context().setOffline(true);
+    try{for(const zoom of [true,false]){
+      const data=JSON.parse(match[1]);data.presentation.mediaFocus={...data.presentation.mediaFocus,zoom};const target=resolve(folder,'focus-'+zoom+'.html');await writeFile(target,html.replace(match[1],JSON.stringify(data).replace(/</g,'\\u003c')));
+      await restored.goto('file://'+target);await restored.waitForFunction(()=>document.querySelector('.mask-frame img')?.naturalWidth>0);
+      assert.equal(await restored.locator('.mask-frame img').evaluate(element=>element.style.transform),'scale(2.5)');
+      await restored.locator('.mask-frame .mf-expand').press('Enter');assert.equal(await restored.locator('.bp-focus img').evaluate(element=>element.style.transform),'none');
+      if(zoom){await restored.locator('.bp-focus button').filter({hasText:'+'}).click();assert.match(await restored.locator('.bp-focus img').evaluate(element=>element.style.transform),/scale\(1.25\)/);}
+      await restored.keyboard.press('Escape');await restored.locator('.bp-focus').waitFor({state:'detached'});assert.equal(await restored.locator('.mask-frame img').evaluate(element=>element.style.transform),'scale(2.5)');
+    }}finally{await restored.close();}
+    assert.deepEqual(errors,[]);
+  }finally{await page.close();}
+});
 
 test('long filenames cannot overflow drop options and media controls share the Inspector scroll area',async()=>{
   const {page,errors}=await openExample(browser,'portfolio-demo');
