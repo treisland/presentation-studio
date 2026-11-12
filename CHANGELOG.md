@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Unify viewer controls into a slim viewport footer with deck-position progress, separate timed countdown and a bounded searchable slide navigator; retain shared playback actions and offline rendering (#202).
+
 ## 0.15.0-beta.1 — 2026-11-12
 
 - Add shared right-click, Shift+F10/Menu-key and visible ⋯ actions for Library cards and placed objects, with selection-preserving shortcuts, type-specific Inspector navigation, explicit saved-component deletion, keyboard submenus, touch targets and stale-selection guards (#190).

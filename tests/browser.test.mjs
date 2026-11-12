@@ -26,7 +26,7 @@ test('legacy template retains all 9 slides and both customer question banks', as
     await page.locator('#fe-close').click();
     for (const [section, count] of [['qa', 1], ['remqa', 1]]) {
       await page.locator('#menu').click(); await page.locator(`[data-deck="${section}"]`).click();
-      await page.locator('#browse-questions').click();
+      await click(page,'#browse-questions');
       assert.equal(await page.locator('.question-option').count(), count);
       await page.locator('#questions-close').click();
     }
