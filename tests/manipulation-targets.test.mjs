@@ -61,7 +61,7 @@ test('rotated edge selections keep Move distinct from every resize target',async
   for(const rotation of [90,-90,45])for(const [x,y]of [[.95,.4],[0,.4],[.4,.95],[.4,0]]){
    assert.equal((await operations(page,[{type:'block.place',slideId:id,blockId:key,placement:{x,y,w:.05,h:.05}},{type:'design.meta',slideId:id,keys:[key],changes:{rotation}}])).ok,true);
    await selectElement(page,key);await reachable(page,'#fe-preview .'+key+' > .db-handle');
-  }assert.deepEqual(errors,[]);
+  }await page.setViewportSize({width:1366,height:480});for(const zoom of ['0.5','1','2']){await page.locator('#we-zoom').selectOption(zoom);await operations(page,[{type:'block.place',slideId:id,blockId:key,placement:{x:.1,y:.45,w:.8,h:.05}},{type:'design.meta',slideId:id,keys:[key],changes:{rotation:20}}]);await selectElement(page,key);await reachable(page,'#fe-preview .'+key+' > .db-handle');}assert.deepEqual(errors,[]);
  }finally{await page.close();}
 });
 
