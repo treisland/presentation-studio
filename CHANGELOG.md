@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add a reproducible neutral canvas-interaction profiling harness and measured baseline, separating drag/snapping costs from post-gesture refresh costs (#177).
+
 ## 0.13.1-beta.1 — 2026-11-11
 
 - Keep Library text entry responsive on the canvas and in the Inspector by avoiding export-pack creation and edit flushing during status updates; retain grouped Undo, local recovery and editable ZIP backups.
