@@ -804,5 +804,10 @@ function hubMount() {
 const hubInit = projectInit;
 projectInit = function () {
   hubInit();
+  // A completed text field is an edit boundary. Keep input events cheap, but
+  // commit on blur before a following action checks whether an edit is busy.
+  $('full-editor').addEventListener('change', event => {
+    if (projectPending && event.target.matches('textarea,input[type="text"],input:not([type]),input[type="url"],input[type="search"]')) projectFlush();
+  });
   hubMount();
 };
