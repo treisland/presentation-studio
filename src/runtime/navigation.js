@@ -74,7 +74,20 @@ spApply=function(slide,...args){
 // Preview assembly copies markup from an inert miniature; bind the final DOM.
 const navigationPreview=projectPreview;
 projectPreview=function(...args){const result=navigationPreview(...args);const slide=projectPreviewNode?.querySelector('.slide');if(slide)spApply(slide);return result;};
-let navigationReady=false,navIdentity='';
+let navigationReady=false,navIdentity='',navTarget=null;
+function navigationStatus(message,pending=false){$('nav-warning').textContent=message;$('nav-panel').dataset.pending=String(pending);}
+function navigationCommit(){
+  const context=icSelection(),entry=context.selected[0];
+  if(!navTarget||context.locked||context.selected.length!==1||navTarget.project!==projectMeta.id||navTarget.slide!==projectSelected||navTarget.key!==entry.key){navIdentity='';navPaint();return;}
+  const type=$('nav-type').value;
+  if(type==='slide'&&!$('nav-slide').value){navigationStatus('Not active yet — choose a destination slide.',true);return;}
+  let action=null;
+  try{if(type)action=navAction({type,slideId:$('nav-slide').value,url:$('nav-url').value});}
+  catch(error){$('nav-url').setAttribute('aria-invalid','true');navigationStatus('Not active yet — '+error.message,true);return;}
+  $('nav-url').removeAttribute('aria-invalid');
+  const result=spRun({type:'navigation.set',keys:[navTarget.key],action});
+  if(result.ok){navIdentity='';navPaint();}else navigationStatus('Change not active — '+result.message,true);
+}
 function navPaint(){
   if(!navigationReady||!projectReady)return;
   if(boothActive||projectPlayback||projectDraftPending){$('nav-panel').hidden=true;return;}
@@ -82,31 +95,35 @@ function navPaint(){
   panel.hidden=entries.length!==1;panel.dataset.icVisible=String(!panel.hidden);
   if(panel.hidden)return;
   const entry=entries[0],action=entry.meta.action;
-  const signature=JSON.stringify([context.identity,action,projectState.slides.map(item=>[item.id,item.title])]);
+  const signature=JSON.stringify([context.identity,action,editingRevision(),projectState.slides.map(item=>[item.id,item.title])]);
   if(signature!==navIdentity){navIdentity=signature;
-    panel.open=!!action||!!entry.node?.attrs?.class?.includes('nav-button');
+    navTarget={project:projectMeta.id,slide:projectSelected,key:entry.key};
+    $('nav-heading').textContent=entry.node?.attrs?.class?.includes('nav-button')?'Button action':'On click';
     $('nav-type').value=action?.type||'';$('nav-url').value=action?.url||'';
     $('nav-slide').replaceChildren(new Option('Choose slide…',''),...projectState.slides.map((item,index)=>new Option((index+1)+'. '+item.title,item.id)));
     if(action?.type==='slide'&&!projectState.slides.some(item=>item.id===action.slideId))$('nav-slide').add(new Option('Missing destination',action.slideId));
     $('nav-slide').value=action?.slideId||'';
+    $('nav-url').removeAttribute('aria-invalid');
+    navigationStatus(action?'Action active. Changes can be undone.':'No action assigned.');
   }
   for(const input of panel.querySelectorAll('input,select,button'))input.disabled=context.locked;
   $('nav-url-field').hidden=$('nav-type').value!=='url';$('nav-slide-field').hidden=$('nav-type').value!=='slide';
   const destination=projectModel($('nav-slide').value),preview=$('nav-destination-preview');preview.hidden=$('nav-type').value!=='slide'||!destination;
   if(!preview.hidden&&preview.dataset.signature!==destination.id+editingRevision()){preview.dataset.signature=destination.id+editingRevision();studioPreviewModel(destination,preview);}
-  $('nav-warning').textContent=action?.type==='slide'&&!projectState.slides.some(item=>item.id===action.slideId)?'Destination deleted. Choose another slide.':'';
+  if(action?.type==='slide'&&!projectState.slides.some(item=>item.id===action.slideId))navigationStatus('Destination deleted. Choose another slide.');
 }
 const navPaintInspector=icPaint;
 icPaint=function(...args){const result=navPaintInspector(...args);navPaint();return result;};
 const navigationInit=projectInit;
 projectInit=function(...args){
   const result=navigationInit(...args);if(navigationReady)return result;
-  const panel=document.createElement('details');panel.id='nav-panel';panel.dataset.wpPart='content';
-  panel.innerHTML='<summary>On click</summary><label>Action<select id="nav-type"><option value="">None</option><option value="slide">Go to slide</option><option value="next">Next slide</option><option value="previous">Previous slide</option><option value="url">Open URL in new tab</option></select></label><label id="nav-slide-field">Destination<select id="nav-slide"></select></label><label id="nav-url-field">External URL<input id="nav-url" type="url" placeholder="https://example.com"></label><p id="nav-warning" role="status"></p><button id="nav-apply" type="button">Apply action</button>';
+  const panel=document.createElement('section');panel.id='nav-panel';panel.dataset.wpPart='content';
+  panel.innerHTML='<h3 id="nav-heading">Button action</h3><label>Action<select id="nav-type"><option value="">None</option><option value="slide">Go to slide</option><option value="next">Next slide</option><option value="previous">Previous slide</option><option value="url">Open URL in new tab</option></select></label><label id="nav-slide-field">Destination<select id="nav-slide"></select></label><label id="nav-url-field">External URL<input id="nav-url" type="url" placeholder="https://example.com"></label><p id="nav-warning" role="status" aria-live="polite"></p>';
   const preview=document.createElement('div');preview.id='nav-destination-preview';preview.className='nav-destination-preview';preview.setAttribute('aria-label','Destination slide preview');panel.append(preview);
-  $('ci-notes').before(panel);
-  $('nav-type').onchange=navPaint;$('nav-slide').onchange=navPaint;
-  $('nav-apply').onclick=()=>{const type=$('nav-type').value;spRun({type:'navigation.set',keys:spActiveKeys(),action:type?{type,slideId:$('nav-slide').value,url:$('nav-url').value}:null});navIdentity='';navPaint();};
+  $('wp-fields').prepend(panel);
+  $('nav-type').onchange=()=>{navPaint();navigationCommit();};$('nav-slide').onchange=()=>{navPaint();navigationCommit();};
+  $('nav-url').oninput=()=>{navigationStatus('URL edited — not active yet. Press Enter or leave the field to save.',true);$('nav-url').removeAttribute('aria-invalid');};
+  $('nav-url').onchange=navigationCommit;
+  $('nav-url').onkeydown=event=>{if(event.key==='Enter'){event.preventDefault();event.stopPropagation();navigationCommit();}if(event.key==='Escape'){event.preventDefault();event.stopPropagation();navIdentity='';navPaint();}};
   navigationReady=true;navPaint();return result;
 };
-

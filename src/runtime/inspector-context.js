@@ -138,7 +138,8 @@ function icPaint() {
     if (kind === 'multiple') {
       for (const id of ['wp-delete','wp-duplicate','db-remove','db-duplicate','vb-delete','vb-duplicate']) icVisible(id,false);
     } else for (const id of ['wp-delete','wp-duplicate','db-remove','db-duplicate','vb-delete','vb-duplicate']) icVisible(id,true);
-    const primary={text:'fe-content-panel',widget:'component-widget-fields',code:'code-panel',table:'fe-table-panel',media:'ce-panel',grid:'mg-panel',multiple:'ic-member-field',notes:'fe-notes-panel'}[kind];
+    const button=context.selected.length===1&&mgHas(context.selected[0].node,'nav-button');
+    const primary=button&&$('nav-panel')?'nav-panel':{text:'fe-content-panel',widget:'component-widget-fields',code:'code-panel',table:'fe-table-panel',media:'ce-panel',grid:'mg-panel',multiple:'ic-member-field',notes:'fe-notes-panel'}[kind];
     const fields=$('wp-fields');if(primary && $(primary)?.parentElement===fields && fields.firstElementChild!==$(primary))fields.prepend($(primary));
   } finally { icPainting = false; }
 }
