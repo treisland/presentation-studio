@@ -37,7 +37,15 @@ function hubStatus() {
         unavailable: "Local storage unavailable · export a backup",
       }[hubSaveState];
   $("fe-status").textContent = (status || "Project ready") +
-    (hubBackupContent === hubContent(projectPack())
+    // Status is called inside projectEdit. Packing here flushes that edit,
+    // rebuilding the editor and copying the entire Undo history on every key.
+    // Pending text already needs a backup; compare committed content by
+    // without constructing an export pack when a portable backup exists.
+    (hubBackupContent !== null && !projectPending && hubBackupContent === hubContent({
+      state: projectState,
+      checkpoints: projectCheckpoints,
+      history: { past: projectPast, future: projectFuture },
+    })
       ? " · Editable ZIP created this session; keep the downloaded file"
       : " · Changes need an editable ZIP backup");
   $("fe-status").dataset.saveState = hubSaveState;
@@ -796,5 +804,10 @@ function hubMount() {
 const hubInit = projectInit;
 projectInit = function () {
   hubInit();
+  // A completed text field is an edit boundary. Keep input events cheap, but
+  // commit on blur before a following action checks whether an edit is busy.
+  $('full-editor').addEventListener('change', event => {
+    if (projectPending && event.target.matches('textarea,input[type="text"],input:not([type]),input[type="url"],input[type="search"]')) projectFlush();
+  });
   hubMount();
 };

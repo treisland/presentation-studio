@@ -4,6 +4,8 @@ Milestone [0.13.0](https://github.com/treisland/presentation-studio/milestone/13
 
 ## Navigation
 
+Text changes appear immediately while typing. A typing burst is grouped for Undo after a short idle pause; finishing editing, saving or exporting commits the latest text. Status updates do not pack the project or finish an active edit. The portable-backup indicator marks pending text as needing a new editable ZIP.
+
 Add / Library offers a filled Button, outlined button, underlined Text link and unfilled Navigation arrow. Edit labels on the canvas or with the text Inspector. The expanded Button action section stays at the top of Content; complete action and slide choices save immediately with Undo. URL typing shows a pending indicator; Enter or leaving the field validates and saves the URL. Incomplete or invalid values retain the previous active action and show that the edit is not active yet. Escape discards a pending URL edit. See [navigation behavior](navigation.md).
 
 Edit blocks continues to select and edit; Preview and presentation activate actions. Linked elements have an editor badge, keyboard activation and visible focus. Linked media uses a separate Open link button so video playback and Media Focus remain available. Template buttons and links can use an action on their containing element; the assigned action takes precedence over the contained link in Preview/playback.
