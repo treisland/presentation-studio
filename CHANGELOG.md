@@ -3,6 +3,7 @@
 ## Unreleased
 
 - Keep block, media and group movement/resize targets consistent in screen space, with reachable grips at visible canvas edges and clearer locked-handle guidance (#172).
+- Add a reproducible neutral canvas-interaction profiling harness and measured baseline, separating drag/snapping costs from post-gesture refresh costs (#177).
 
 ## 0.13.1-beta.1 — 2026-11-11
 
