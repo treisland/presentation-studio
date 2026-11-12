@@ -8,3 +8,20 @@
 #full-editor #we-inspector .ids-section[open] > summary > .ids-value {display:none;}
 #full-editor #we-inspector .ids-section > summary .ids-heading + .ids-value {max-width:100%;}
 @media (forced-colors:active) {#full-editor #we-inspector .ids-section > summary:focus-visible {outline-color:Highlight;}}
+
+/* One content scroller; primary editing is never nested behind a second disclosure. */
+#full-editor #we-inspector #ci-notes {max-height:none;overflow:visible;margin:12px 0;background:transparent;}
+#full-editor #we-inspector #sg-guide {max-height:none;overflow:visible;padding:0 0 10px;border:0;}
+#full-editor #we-inspector #sg-context {display:none;}
+#full-editor #we-inspector #sg-guide:has(#sg-reason:not([hidden])) #sg-context {display:block;}
+#full-editor #we-inspector .ids-section {border:0;border-top:1px solid var(--wb-line);border-radius:0;padding:0;box-shadow:none;}
+#full-editor #we-inspector .ids-section > summary {padding:12px 2px;min-height:20px;}
+#full-editor #we-inspector .ids-value {display:inline;float:right;max-width:55%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin:0 0 0 8px;}
+#full-editor #we-inspector #ic-text-editor {padding:0;}
+#full-editor #we-inspector #ic-text-editor > .fe-hint {display:none;}
+#full-editor #we-inspector #ic-text-editor > p {font-size:12px;color:var(--wb-muted);line-height:1.5;}
+#full-editor #we-inspector .ci-text-actions {margin:0 0 10px;}
+#full-editor #we-inspector #fe-block-text {min-height:160px;box-sizing:border-box;}
+#full-editor #we-inspector #wp-selection-detail {overflow:hidden;}
+#full-editor #we-inspector .ids-section > summary {border:0;border-radius:0;background:transparent;}
+#full-editor #we-inspector .fe-panel:has(> .ids-section) {border:0;padding:0;background:transparent;}

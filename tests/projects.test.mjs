@@ -29,7 +29,7 @@ for (const surface of ['canvas','Inspector']) test(`rapid Library typing in ${su
     await page.waitForFunction(()=>document.getElementById('fe-status').dataset.saveState==='saved');
     assert.match(await page.locator('#fe-status').textContent(),/Editable ZIP created/);
     if(surface==='canvas')await page.locator('#fe-preview .'+key+' p').dblclick();
-    else {await page.locator('#fe-preview .'+key).click();await page.locator('#ic-text-editor summary').click();await page.locator('#fe-block-text').focus();}
+    else {await page.locator('#fe-preview .'+key).click();await page.locator('#fe-block-text').focus();await page.locator('#fe-block-text').focus();}
     await page.keyboard.press('Control+a');
     await page.evaluate(()=>{
       window.typingCosts={packs:0,stateCopies:0};

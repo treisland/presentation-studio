@@ -25,7 +25,7 @@ function ciChooseField(value) {
   if (kind==='text') projectBlockPath=path;
   if (kind==='table') {projectTablePath=path;icTableSignature='';}
   icPaint();
-  if (kind==='text') {$('ic-text-editor').open=true;idsReveal('fe-block-text');$('fe-block-text').focus();}
+  if (kind==='text') {idsReveal('fe-block-text');$('fe-block-text').focus();}
 }
 function ciPaint() {
   if (!ciReady || !projectReady) return;
@@ -47,7 +47,7 @@ function ciPaint() {
   const current=context.kind==='text'?'text:'+context.path:context.kind==='table'?'table:'+context.path:'code:';
   select.value=current;
   $('ci-legacy-content').hidden=context.kind!=='slide';
-  $('ci-content-title').textContent=context.kind==='slide'?'Slide settings':'Text content';
+  $('ci-content-title').textContent=context.kind==='slide'?'Slide settings':'Text';
   if(context.kind==='table'&&context.path){
     const table=projectAt(projectModel(),context.path),data=projectTableData(table);
     $('ci-table-count').textContent=data.rows.length+' rows · '+data.heads.length+' columns';
@@ -78,9 +78,10 @@ projectInit=function(...args){
   for(const id of ['fe-block-select','ic-block-label','fe-table-select'])$(id).classList.add('ci-internal');
   document.querySelector('label[for="fe-table-select"]').classList.add('ci-internal');
   $('fe-remove-block').classList.add('ci-internal');
-  $('ic-text-editor').querySelector('summary').textContent='Edit in panel';
-  $('ic-text-hint').querySelector('p').textContent='Edit this element on the canvas, or use the panel editor below. Plain-text replacement removes inline formatting.';
+  $('ic-text-hint').querySelector('p').textContent='Replacing text removes inline formatting.';
   $('ic-edit-inline').textContent='Edit on canvas';
+  $('ic-text-editor').append($('ic-text-hint').querySelector('p'));
+  $('ic-text-hint').classList.add('ci-text-actions');
   const title=document.createElement('h3');title.id='ci-content-title';$('fe-content-panel').prepend(title);
   const playback=ciDetails('ci-playback','Playback');
   for(const id of ['we-slide-transition','fe-duration','fe-topic']){

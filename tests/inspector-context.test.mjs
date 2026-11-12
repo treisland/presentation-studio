@@ -18,15 +18,15 @@ test('selecting text and code exposes only relevant content and keeps pending te
   const text=await operations(page,[{type:'block.create',slideId:id,kind:'text'}]);
   await selectLayer(page,code.created[0]);assert.equal(await page.locator('#code-panel').isVisible(),true);assert.equal(await page.locator('#fe-content-panel').isVisible(),false);
   await selectLayer(page,text.created[0]);assert.equal(await page.locator('#code-panel').isVisible(),false);assert.equal(await page.locator('#ic-text-hint').isVisible(),true);
-  assert.equal(await page.locator('#fe-block-text').isVisible(),false);
-  await page.locator('#ic-text-editor summary').click();await page.locator('#fe-block-text').fill('Independent free text');
+  assert.equal(await page.locator('#fe-block-text').isVisible(),true);
+  await page.locator('#fe-block-text').focus();await page.locator('#fe-block-text').fill('Independent free text');
   await selectLayer(page,code.created[0]);
   assert.equal(await page.locator('#code-text').inputValue(),'python app.py');
-  await selectLayer(page,text.created[0]);assert.equal(await page.locator('#ic-text-editor').evaluate(node=>node.open),true);
+  await selectLayer(page,text.created[0]);assert.equal(await page.locator('#fe-block-text').isVisible(),true);
   assert.equal(await page.locator('#fe-block-text').inputValue(),'Independent free text');
   const activeBefore=await page.locator('#fe-block-text').evaluate(el=>{el.focus();return document.activeElement.id;});
   await page.locator('#fe-block-text').fill('Another edit');await page.waitForTimeout(400);
-  assert.equal(await page.evaluate(()=>document.activeElement.id),activeBefore);assert.equal(await page.locator('#ic-text-editor').evaluate(el=>el.open),true);
+  assert.equal(await page.evaluate(()=>document.activeElement.id),activeBefore);assert.equal(await page.locator('#fe-block-text').isVisible(),true);
   assert.deepEqual(errors,[]);
  }finally{await page.close();}
 });
@@ -58,7 +58,7 @@ test('table selection, nested cell identity, locks and deletion clear stale cont
 test('collapsed Inspector preserves text alternative, tab and selection when reopened',async()=>{
  const {page,errors}=await openExample(browser,'portfolio-demo');try{
   const id=(await snapshot(page)).state.slides[0].id,result=await operations(page,[{type:'block.create',slideId:id,kind:'text'}]);await selectLayer(page,result.created[0]);
-  await page.locator('#ic-text-editor summary').click();await page.locator('#fe-block-text').fill('Keep this selection');
+  await page.locator('#fe-block-text').focus();await page.locator('#fe-block-text').fill('Keep this selection');
   await page.locator('#we-toggle-inspector').click();await page.locator('#we-toggle-inspector').click();
   assert.equal(await page.locator('#fe-block-text').isVisible(),true);assert.equal(await page.locator('#fe-block-text').inputValue(),'Keep this selection');
   await reveal(page,'#ce-slide-lock');await page.locator('#ce-slide-lock').click();await page.locator('#wp-tab-content').click();assert.equal(await page.locator('#fe-block-text').isDisabled(),true);assert.deepEqual(errors,[]);
@@ -73,7 +73,7 @@ test('group member inspection edits the chosen widget without ungrouping or stal
   await page.locator('#ic-member').selectOption(keys[0]);assert.equal(await page.locator('#component-widget-fields').isVisible(),true);
   await page.locator('#component-widget-fields textarea').first().fill('A grouped quotation');await page.locator('#component-widget-fields textarea').first().press('Tab');
   const before=await snapshot(page);assert.equal(before.state.design.slides[id].objects[keys[0]].group,before.state.design.slides[id].objects[keys[1]].group);
-  await page.locator('#ic-member').selectOption(keys[1]);await page.locator('#ic-text-editor summary').click();await page.locator('#fe-block-text').fill('Independent grouped text');await page.locator('#fe-block-text').press('Tab');
+  await page.locator('#ic-member').selectOption(keys[1]);await page.locator('#fe-block-text').focus();await page.locator('#fe-block-text').fill('Independent grouped text');await page.locator('#fe-block-text').press('Tab');
   const state=(await snapshot(page)).state,quote=state.slides[0].tree.find(node=>node.attrs?.class?.includes(keys[0]));assert.equal(quote.children[0].children[0].text,'A grouped quotation');assert.deepEqual(errors,[]);
  }finally{await page.close();}
 });
@@ -101,7 +101,7 @@ test('demo heading duplicates independently, deletes without renaming the slide,
 test('Inspector edits the selected primary heading instead of its eyebrow, with correct title synchronization',async()=>{
  const {page,errors}=await openExample(browser,'template');try{
   await page.locator('.fe-slide-button[data-slide-id="studio-closing"]').click();const before=await snapshot(page),eyebrow=await page.locator('#fe-preview .eyebrow').textContent();
-  await page.locator('#fe-preview h1').click();await page.locator('#ic-text-editor summary').click();assert.equal(await page.locator('#fe-block-text').inputValue(),'Make it yours.');
+  await page.locator('#fe-preview h1').click();await page.locator('#fe-block-text').focus();assert.equal(await page.locator('#fe-block-text').inputValue(),'Make it yours.');
   await page.locator('#fe-block-text').fill('The heading I selected');await page.waitForTimeout(400);await page.locator('#fe-block-text').fill('Still the selected heading');await page.locator('#fe-block-text').press('Tab');await page.waitForTimeout(400);
   assert.equal(await page.locator('#fe-preview h1').textContent(),'Still the selected heading');assert.equal(await page.locator('#fe-preview .eyebrow').textContent(),eyebrow);assert.equal((await snapshot(page)).state.slides.find(slide=>slide.id==='studio-closing').title,'Still the selected heading');
   await page.locator('#fe-undo').click();await page.locator('#fe-undo').click();assert.deepEqual((await snapshot(page)).state,before.state);assert.deepEqual(errors,[]);
