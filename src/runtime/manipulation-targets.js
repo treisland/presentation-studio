@@ -57,6 +57,6 @@ const mhView=weView;weView=function(...args){const value=mhView(...args);mhQueue
 const mhBlocks=dbPanel;dbPanel=function(...args){const value=mhBlocks(...args);mhQueue();return value;};
 const mhMedia=ceDecorate;ceDecorate=function(...args){const value=mhMedia(...args);mhQueue();return value;};
 const mhGroups=gsPaint;gsPaint=function(...args){const value=mhGroups(...args);mhQueue();return value;};
-window.addEventListener('pointermove',()=>{if(dbDrag?.mode==='resize'||ceDrag?.corner||gsGesture?.mode==='resize')mhQueue();});
+window.addEventListener('pointermove',()=>{if(dbDrag||ceDrag||gsGesture)mhQueue();});
 window.addEventListener('resize',mhQueue);
 document.addEventListener('close',event=>{if(event.target.id==='full-editor')mhHide();},true);
