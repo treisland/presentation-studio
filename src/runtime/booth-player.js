@@ -368,7 +368,7 @@ function boothStandalone(geometry, mediaLayout, backgroundFactory, wireNavigatio
       closing: false,
     };
     focus = state;
-    if(box.classList.contains('mask-frame')){asset.style.transformOrigin='center center';if(asset.tagName==='VIDEO')asset.style.transform='none';}
+    if(box.classList.contains('mask-frame')){asset.style.transformOrigin='center center';asset.style.transform='none';}
     for (const child of stage.children)
       if (child !== layer) {
         state.inert.push([child, child.inert]);
