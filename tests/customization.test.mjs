@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';import {chromium} from 'playwright';
-import {openExample,snapshot,operations,exportZip,importZip} from './collection-ui.mjs';import {reveal} from './ui.mjs';
+import {openExample,snapshot,operations,exportZip,importZip} from './collection-ui.mjs';import {reveal,selectElement,addSlide} from './ui.mjs';
 import {selectTab} from './ui.mjs';import {mkdir,writeFile} from 'node:fs/promises';import {resolve} from 'node:path';
 const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH,args:['--no-sandbox']});test.after(()=>browser.close());
 const meta=(state,id,key)=>state.design.slides[id].objects[key];
@@ -29,6 +29,16 @@ test('template text detaches without a jump, moves, edits and resets without rev
   assert.equal((await snapshot(page)).state.slides[0].id,before.state.slides[0].id);assert.deepEqual(errors,[]);
  }finally{await page.close();}
 });
+test('positioning labels explain deliberate opt-in, locks and unsupported structured controls',async()=>{
+ const {page,errors}=await openExample(browser,'template');try{
+  const before=await snapshot(page),id=before.state.slides[0].id;let key=await page.locator('#fe-preview h1').evaluate(el=>el.closest('[data-sp-key]').dataset.spKey);await selectElement(page,key);await reveal(page,'#tp-customize');
+  assert.deepEqual((await snapshot(page)).state,before.state);assert.equal(await page.locator('#tp-customize').textContent(),'Enable free positioning');assert.equal(await page.locator('#wb-customize').textContent(),'Enable free positioning');assert.match(await page.locator('#tp-status').textContent(),/independently of its layout/);assert.equal(await page.locator('#tp-customize').getAttribute('aria-describedby'),'tp-status');
+  const lock=await operations(page,[{type:'design.meta',slideId:id,keys:[key],changes:{locked:true}}]);assert.equal(lock.ok,true,JSON.stringify(lock));key=await page.locator('#fe-preview h1').evaluate(el=>el.closest('[data-sp-key]').dataset.spKey);await selectElement(page,key);await reveal(page,'#tp-status');assert.equal(await page.locator('#tp-customize').isDisabled(),true);assert.match(await page.locator('#tp-status').textContent(),/Unlock/);
+  await operations(page,[{type:'design.meta',slideId:id,keys:[key],changes:{locked:false}}]);await reveal(page,'#tp-customize');await page.locator('#tp-customize').press('Enter');assert.equal(await page.locator('#tp-reset').textContent(),'Reset to template position');
+  await addSlide(page,'table');const tableKey=await page.locator('#fe-preview table').evaluate(el=>el.closest('[data-sp-key]').dataset.spKey);await selectElement(page,tableKey);await page.locator('#wp-tab-arrange').click();assert.match(await page.locator('#tp-status').textContent(),/structured item follows its layout/);assert.equal(await page.locator('#tp-customize').isVisible(),false);assert.deepEqual(errors,[]);
+ }finally{await page.close();}
+});
+
 test('step sequences increment independently, preserve manual overrides and duplicate automatically',async()=>{
  const {page,errors}=await openExample(browser,'portfolio-demo');try{
   const id=(await snapshot(page)).state.slides[0].id,steps=await operations(page,[{type:'block.create',slideId:id,kind:'step'},{type:'block.create',slideId:id,kind:'step'}]);assert.equal(steps.ok,true,JSON.stringify(steps));const [first,second]=steps.created;

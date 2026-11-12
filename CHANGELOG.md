@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Explain template-managed positioning with explicit Enable free positioning and Reset to template position actions, plus structured-layout and lock guidance (#174).
+
 - Keep block, media and group movement/resize targets consistent in screen space, with reachable grips at visible canvas edges and clearer locked-handle guidance (#172).
 
 ## 0.13.1-beta.1 — 2026-11-11

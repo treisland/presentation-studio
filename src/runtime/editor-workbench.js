@@ -106,8 +106,8 @@ projectInit = function(...args) {
   snap.title = 'Snap to alignment and equal spacing; hold Alt while dragging to bypass';
   snap.onclick = () => { $('sp-snap').click(); wbPaint(); };
   $('sp-snap').addEventListener('change', wbPaint);
-  const customize = document.createElement('button'); customize.id = 'wb-customize'; customize.textContent = 'Move / resize';
-  customize.title = 'Customize this template element’s position; Reset position restores its layout';
+  const customize = document.createElement('button'); customize.id = 'wb-customize'; customize.textContent = 'Enable free positioning';
+  customize.title = 'Move this item independently of its layout. Reset to template position restores its layout.';customize.setAttribute('aria-describedby','tp-status');
   customize.onclick = () => { $('component-more-popover').hidePopover(); $('tp-customize').click(); wbPaint(); };
   $('component-more-trigger').after(snap, customize);
   $('we-viewport').append($('component-overflow'));
