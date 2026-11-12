@@ -424,7 +424,7 @@ function ceGesture(e) {
   if (ceLocked(projectSelected, ceSelected)) return;
   const cfg = ceConfig(),
     corner = e.target.dataset.corner,
-    crop = $("ce-crop").checked && cfg.kind === "image";
+    crop = !e.target.closest('.ce-move') && $("ce-crop").checked && cfg.kind === "image";
   if (!cfg.canvas?.placement && !corner && !crop) return;
   projectFlush();
   const slide = figure.closest(".slide"),

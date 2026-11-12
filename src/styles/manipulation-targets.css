@@ -5,7 +5,7 @@
 #full-editor [data-block-mode=edit] :is(.db-move,.ce-move,.gs-move) {
   width:30px!important;height:26px!important;font:20px/1 Arial!important;overflow:hidden;background:#0066ff!important;color:#fff!important;border:1px solid #fff!important;border-radius:4px;cursor:grab;
 }
-#full-editor [data-block-mode=edit] :is(.db-handle,.ce-handle,.gs-handle):focus-visible { outline:3px solid var(--wb-text,#102a56);outline-offset:3px; }
+#full-editor [data-block-mode=edit] :is(.db-handle,.ce-handle,.gs-handle):focus-visible { outline:3px solid var(--wb-ink,#102a56);outline-offset:3px; }
 #full-editor [data-block-mode=edit] :is(.db-selected,.gs-selected,.ce-selected,.gs-bounds) { outline-width:calc(2px / var(--db-scale,.4))!important;outline-offset:0; }
 #full-editor .gs-bounds {border-width:calc(2px / var(--db-scale,.4));}
 #full-editor [data-block-mode=edit] :is(.db-handle,.ce-handle,.gs-handle):disabled {cursor:not-allowed;opacity:.65;}
