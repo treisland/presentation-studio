@@ -31,17 +31,20 @@ function mhPaint(){
       let sx=clamp(centerX+c*x-s*y,clip.left,clip.right),sy=clamp(centerY+s*x+c*y,clip.top,clip.bottom);
       return {handle,move,sx,sy};
     });
-    const resize=positions.filter(position=>!position.move);
-    for(const position of positions){
+    const occupied=[];
+    const overlaps=(x,y,move)=>occupied.some(p=>Math.abs(x-p.sx)<(move?15:12)+(p.move?15:12)+2&&Math.abs(y-p.sy)<(move?13:12)+(p.move?13:12)+2);
+    // Reserve resize targets first, then place Move; every grip keeps its own hit area.
+    for(const position of positions.sort((a,b)=>Number(a.move)-Number(b.move))){
       const {handle,move}=position;let {sx,sy}=position;
       // Resolve collisions after rotation and clipping, on every canvas edge.
-      if(move&&resize.some(p=>Math.abs(sx-p.sx)<29&&Math.abs(sy-p.sy)<27)){
+      if(overlaps(sx,sy,move)){
         const candidates=[];
-        for(let x=clip.left;x<=clip.right;x+=28)for(let y=clip.top;y<=clip.bottom;y+=28)
-          if(resize.every(p=>Math.abs(x-p.sx)>=29||Math.abs(y-p.sy)>=27))candidates.push({x,y,d:(x-sx)**2+(y-sy)**2});
+        for(let x=clip.left;x<=clip.right;x+=26)for(let y=clip.top;y<=clip.bottom;y+=26)
+          if(!overlaps(x,y,move))candidates.push({x,y,d:(x-sx)**2+(y-sy)**2});
         candidates.sort((a,b)=>a.d-b.d);
         if(candidates.length){sx=candidates[0].x;sy=candidates[0].y;}
       }
+      occupied.push({sx,sy,move});
       // Native manual popovers keep only the grips above sibling stacking contexts.
       // Their DOM ownership/event path stays on the original object; content z-order is unchanged.
       handle.classList.add('mh-target');handle.popover='manual';
