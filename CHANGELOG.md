@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add staged border-padding sliders and precise percentage entry for media masks, retaining the outer contour and showing the frame fill between media and border.
+
 - Make masked media backgrounds, borders and shadows follow the mask contour, including offline booth exports, while keeping captions and editor resize handles separate.
 
 - Add Library buttons and reusable slide/external link actions with keyboard Preview/playback navigation, stable destinations and new-tab external resources.

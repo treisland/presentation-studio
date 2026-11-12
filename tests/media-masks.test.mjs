@@ -12,6 +12,24 @@ test.after(()=>browser.close());
 const zipContext={setImmediate,clearImmediate,setTimeout,clearTimeout,Uint8Array,ArrayBuffer,TextEncoder,TextDecoder};
 vm.runInNewContext(await readFile('vendor/jszip-3.10.1.min.js','utf8'),zipContext);
 
+test('border padding stages an inner gap, preserves the outer contour and reopens offline',async()=>{
+  const {page,errors}=await openExample(browser,'portfolio-demo');
+  try{
+    await page.locator('#component-open').click();await page.getByRole('button',{name:'Insert Circle frame',exact:true}).click();
+    const initial=await snapshot(page),slideId=initial.state.slides[0].id,key=Object.keys(initial.state.design.slides[slideId].objects).find(key=>initial.state.design.slides[slideId].objects[key].frame);
+    await page.locator('#mask-padding').fill('10');await page.locator('#mask-padding').press('Enter');
+    assert.equal((await snapshot(page)).revision,initial.revision);assert.equal(await page.locator('#fe-preview .mask-content').evaluate(element=>element.style.inset),'10%');assert.equal(await page.locator('#fe-preview .mask-outline circle').getAttribute('r'),'50');
+    await page.getByRole('button',{name:'Apply frame',exact:true}).click();assert.equal((await snapshot(page)).state.design.slides[slideId].objects[key].frame.padding,10);
+    await page.locator('#fe-undo').click();assert.equal((await snapshot(page)).state.design.slides[slideId].objects[key].frame.padding,0);await page.locator('#fe-redo').click();
+    await page.locator('#component-open').click();await page.locator('#component-save-panel > summary').click();await page.locator('#component-name').fill('Padded circle');await page.locator('#component-save').click();await page.getByRole('tab',{name:'My components',exact:true}).click();await page.getByRole('button',{name:'Insert Padded circle',exact:true}).click();
+    assert.equal(Object.values((await snapshot(page)).state.design.slides[slideId].objects).filter(meta=>meta.frame?.padding===10).length,2);
+    assert.equal((await operations(page,[{type:'media.mask',slideId,keys:[key],frame:{shape:'circle',fit:'cover',padding:26}}])).ok,false);
+    const bytes=await exportZip(page),restored=await importZip(browser,bytes,initial.projectId);
+    try{assert.equal((await snapshot(restored)).state.design.slides[slideId].objects[key].frame.padding,10);}finally{await restored.close();}
+    assert.deepEqual(errors,[]);
+  }finally{await page.close();}
+});
+
 test('masked fill, outline and shadow follow the contour without decorating the layout box',async()=>{
   const {page,errors}=await openExample(browser,'portfolio-demo');
   try{
@@ -72,7 +90,7 @@ test('video replacement preserves mask, original assets and focus playback geome
   const {page,errors}=await openExample(browser,'portfolio-demo');
   try{
     await page.locator('#component-open').click();await page.getByRole('button',{name:'Insert Oval frame',exact:true}).click();
-    const initial=await snapshot(page),slideId=initial.state.slides[0].id,key=Object.keys(initial.state.design.slides[slideId].objects).find(key=>initial.state.design.slides[slideId].objects[key].frame),frame={shape:'oval',fit:'cover',zoom:160,x:35,y:65,radius:12,shadow:'soft'};
+    const initial=await snapshot(page),slideId=initial.state.slides[0].id,key=Object.keys(initial.state.design.slides[slideId].objects).find(key=>initial.state.design.slides[slideId].objects[key].frame),frame={shape:'oval',fit:'cover',zoom:160,x:35,y:65,radius:12,padding:10,shadow:'soft'};
     await operations(page,[{type:'media.mask',slideId,keys:[key],frame}]);
     await page.locator('#ce-replace-file').setInputFiles(resolve('tests/fixtures/media/pattern.webm'));await page.locator('#fe-confirm-accept').click();
     assert.deepEqual((await snapshot(page)).state.design.slides[slideId].objects[key].frame,frame);
@@ -81,6 +99,7 @@ test('video replacement preserves mask, original assets and focus playback geome
     assert.equal(await video.evaluate(element=>element.style.transform),'scale(1.6)');
     await page.locator('#fe-preview .mask-frame .mf-expand').press('Enter');await page.locator('#media-focus video').waitFor();
     assert.equal(await page.locator('#media-focus video').evaluate(element=>element.style.transform),'none');
+    assert.equal(await page.locator('#media-focus .mask-content').evaluate(element=>getComputedStyle(element).top),'0px');
     await page.keyboard.press('Escape');await page.locator('#media-focus').waitFor({state:'detached'});
     assert.equal(await video.evaluate(element=>element.style.transform),'scale(1.6)');
     assert.deepEqual(errors,[]);
@@ -96,6 +115,7 @@ test('standalone booth keeps masks and keyboard slide links offline and honors n
     await page.locator('#component-open').click();await page.getByRole('button',{name:'Insert Circle frame',exact:true}).click();
     const framed=await snapshot(page),frameKey=Object.keys(framed.state.design.slides[slideId].objects).find(key=>framed.state.design.slides[slideId].objects[key].frame);
     await operations(page,[{type:'design.appearance',slideId,keys:[frameKey],style:{border:{hex:'#ff0000'},borderWidth:12,fill:{hex:'#00ff00'}}}]);
+    await operations(page,[{type:'media.mask',slideId,keys:[frameKey],frame:{shape:'circle',fit:'cover',padding:10}}]);
     await selectTab(page,'Presentation settings');await click(page,'#booth-open');await page.locator('#booth-password').fill('navigation-test-passphrase');await page.locator('#booth-confirm').fill('navigation-test-passphrase');await page.locator('#booth-navigation').check();
     const bytes=await exportZip(page,'#booth-export'),zip=await zipContext.JSZip.loadAsync(new Uint8Array(bytes)),folder=resolve('test-results/navigation-masks-booth');
     for(const [name,item]of Object.entries(zip.files)){if(item.dir)continue;const path=archivePath(folder,name);await mkdir(dirname(path),{recursive:true});await writeFile(path,Buffer.from(await item.async('uint8array')));}
@@ -104,6 +124,7 @@ test('standalone booth keeps masks and keyboard slide links offline and honors n
       await restored.goto('file://'+resolve(folder,'index.html'));
       assert.match(await restored.locator('.mask-frame .media-viewport').first().evaluate(element=>element.style.clipPath),/^circle\(/);
       assert.equal(await restored.locator('.mask-outline circle').first().getAttribute('stroke-width'),'12');assert.equal(await restored.locator('.mask-outline circle').first().getAttribute('stroke'),'rgba(255,0,0,1)');
+      assert.equal(await restored.locator('.mask-content').first().evaluate(element=>element.style.inset),'10%');
       const button=restored.locator('.slide.active .nav-button');await button.focus();await button.press('Enter');assert.equal(await restored.locator('.slide.active').getAttribute('id'),target);
       const html=(await readFile(resolve(folder,'index.html'),'utf8')).replace('"navigation":true','"navigation":false');await writeFile(resolve(folder,'restricted.html'),html);
       await restored.goto('file://'+resolve(folder,'restricted.html'));await restored.locator('.slide.active .nav-button').press('Enter');assert.equal(await restored.locator('.slide.active').getAttribute('id'),slideId);

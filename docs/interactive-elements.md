@@ -22,6 +22,8 @@ Adjustments are previews until **Apply frame**, which creates one Undo step. Res
 
 ## Persistence and authoring contract
 
+Border padding (0–25%, default 0) insets the media inside its mask while leaving the outer border and frame size unchanged. The gap shows the frame fill, or the slide behind a transparent fill. Padding uses a percentage of each frame dimension, scales with resizing, previews with the other numeric controls and saves with Apply frame. Reset returns to zero; Media Focus shows the original media without padding.
+
 The media's own fill, outline and shadow follow its mask contour. The slide background and other objects behind the media remain visible outside that contour. Captions and playback/link controls remain separate; rectangular editor selection and resize handles still describe the object's layout bounds.
 
 Validated optional `action` and `frame` fields live in existing per-object design metadata. Existing native-v1/v2 imports and the guarded native-v3 background-effects contract remain unchanged; opening an old project adds no overrides. Editable ZIPs, browser recovery/history and component libraries retain these fields. Older Studio builds do not understand these new optional fields; use the current build to edit projects containing them. Standalone playback and booth exports include the same navigation/mask renderers without external runtime services or dependencies. Booth output includes only action/frame metadata for exported slides, without private authoring names/history.
