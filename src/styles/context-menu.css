@@ -1,0 +1,13 @@
+#cm-menu {position:fixed;inset:auto;margin:0;box-sizing:border-box;width:min(290px,calc(100vw - 16px));max-height:calc(100vh - 16px);overflow:auto;padding:6px;border:1px solid var(--wb-line);border-radius:9px;background:var(--wb-surface);color:var(--wb-ink);box-shadow:var(--wb-shadow);font:13px/1.4 var(--wb-font);}
+body :is(#full-editor,#component-add) #cm-menu > button {display:block;width:100%;text-align:left;white-space:normal;overflow-wrap:anywhere;border:0;border-radius:4px;background:transparent;color:var(--wb-ink);padding:8px 10px;min-height:34px;font:13px/1.4 var(--wb-font);}
+body :is(#full-editor,#component-add) #cm-menu > button:is(:hover,:focus-visible):not(:disabled) {background:var(--wb-selected);color:var(--wb-selected-ink);outline:2px solid var(--wb-focus);outline-offset:-2px;}
+body :is(#full-editor,#component-add) #cm-menu > button.cm-danger {color:var(--wb-danger);}
+#cm-menu .cm-heading {margin:0;padding:6px 10px;font-weight:600;border-bottom:1px solid var(--wb-line);overflow-wrap:anywhere;}
+#cm-menu .cm-note {margin:0;padding:8px 10px;color:var(--wb-muted);font-size:12px;}
+#component-items article {position:relative;}
+body #component-add .cm-trigger {position:absolute;right:8px;top:8px;width:34px;min-height:34px;padding:3px;font-size:22px;z-index:1;}
+#component-items article.cm-target {outline:2px solid var(--wb-blue);outline-offset:-2px;}
+#component-items article:focus-visible {outline:2px solid var(--wb-focus);outline-offset:-2px;}
+#full-editor #cm-selection {margin-left:auto;min-width:34px;font-size:20px;padding:2px 8px;}
+@media(pointer:coarse){body :is(#full-editor,#component-add) :is(#cm-menu > button,.cm-trigger,#cm-selection){min-width:44px;min-height:44px;}}
+@media(forced-colors:active){#cm-menu{border-color:CanvasText;background:Canvas;color:CanvasText;}#component-items article.cm-target{outline-color:Highlight;}}

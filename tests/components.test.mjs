@@ -112,7 +112,7 @@ test('library exports independent copies, imports in a clean profile, and recove
     await page.locator('#component-open').click();await page.locator('#component-save-panel > summary').click();await page.locator('#component-name').fill('Reusable quote');await page.locator('#component-save').click();
     await page.getByRole('tab',{name:'My components',exact:true}).click();assert.equal(await page.getByRole('button',{name:'Insert Reusable quote',exact:true}).count(),1);await page.locator('#component-manage > summary').click();
     const downloadEvent=page.waitForEvent('download');await page.locator('#component-export').click();const bytes=await readFile(await(await downloadEvent).path());
-    await page.locator('#component-items summary').click();await page.getByRole('button',{name:'Delete preset',exact:true}).click();assert.equal(await page.getByRole('button',{name:'Insert Reusable quote',exact:true}).count(),0);
+    await page.getByRole('button',{name:'Actions for Reusable quote',exact:true}).click();await page.getByRole('menuitem',{name:'Delete saved component',exact:true}).click();assert.equal(await page.getByRole('button',{name:'Insert Reusable quote',exact:true}).count(),0);
     await page.locator('#component-restore').click();await page.getByRole('button',{name:'Insert Reusable quote',exact:true}).click();
     const copies=(await snapshot(page)).state.slides[0].tree.filter(node=>node.attrs?.class?.includes('component-quote'));assert.equal(copies.length,2);assert.notEqual(blockID(copies[0]),blockID(copies[1]));
     const {page:clean,errors:cleanErrors}=await openExample(browser,'portfolio-demo');

@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Add shared right-click, Shift+F10/Menu-key and visible ⋯ actions for Library cards and placed objects, with selection-preserving shortcuts, type-specific Inspector navigation, explicit saved-component deletion, keyboard submenus, touch targets and stale-selection guards (#190).
 - Keep unmasked image/video crop shortcuts out of masked drag mode, and stop muted clip previews when the selected object or grid cell changes (#189).
 
 - Consolidate selected image/video, grid sizing, placement, caption, playback and poster editing in the Inspector; retire the Media Manager entry point and duplicate media list, add compact Placement shortcuts and scoped media restoration, and retain legacy settings import/export through Project (#189).

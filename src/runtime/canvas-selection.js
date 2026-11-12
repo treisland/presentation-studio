@@ -199,6 +199,7 @@ projectInit=function(...args){
     const text=event.target.closest('[data-vb-path]');if(text?.dataset.vbKind==='text')vbStart({el:text,path:text.dataset.vbPath,kind:'text',slideID:projectSelected});
   },true);
   window.addEventListener('keydown',event=>{
+    if(event.target.closest('#cm-menu'))return;
     if(event.key==='Escape'&&gsGesture){event.preventDefault();event.stopImmediatePropagation();gsFinish(true);return;}
     if(!weEditing()||vbMode!=='edit'||event.isComposing||event.target.closest('input,textarea,select,[contenteditable=true]'))return;
     if(event.key==='Escape'&&gsEditing&&!dbDrag&&!ceDrag){event.preventDefault();event.stopImmediatePropagation();gsExit();return;}
