@@ -80,7 +80,7 @@ For a localhost preview, run `npm run serve`, then open `http://127.0.0.1:4173`.
 
 [Quick start](docs/quick-start.md) · [Architecture](docs/architecture.md) · [Contributing](CONTRIBUTING.md) · [Content and branding](docs/content-and-branding.md) · [Open-source release](docs/open-source-release.md) · [Roadmap](docs/roadmap.md) · [Troubleshooting](docs/troubleshooting.md)
 
-Version 0.13.0-beta.1. Candidate beta for interactive buttons/hyperlinks and reusable image/video masks, preserving portable authoring/playback. Maintainer UI acceptance and beta sign-off are recorded; release evidence and protected checks govern publication. Released under the [Apache License 2.0](LICENSE). See the [beta notes](docs/releases/0.13.0-beta.1.md), [validation record](docs/releases/0.13.0-beta.1-validation.md) and [feature guide](docs/interactive-elements.md).
+Version 0.13.1-beta.1. Beta hotfix for Library typing responsiveness on the canvas and in the Inspector, preserving grouped Undo, local recovery and portable authoring/playback. Released under the [Apache License 2.0](LICENSE). See the [hotfix notes](docs/releases/0.13.1-beta.1.md), [validation record](docs/releases/0.13.1-beta.1-validation.md) and [feature guide](docs/interactive-elements.md).
 
 ## Development process
 
