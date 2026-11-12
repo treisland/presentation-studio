@@ -376,12 +376,14 @@ function ceDecorate(root) {
       !ceLocked(projectSelected, ceSelected) &&
       ceConfig()?.canvas?.placement
     ) {
-      for (const corner of ["nw", "ne", "sw", "se"]) {
+      for (const corner of ["move", "nw", "ne", "sw", "se"]) {
         const h = document.createElement("button");
         h.type = "button";
         h.className = "ce-handle ce-" + corner;
-        h.dataset.corner = corner;
-        h.setAttribute("aria-label", "Resize media " + corner);
+        if(corner!=="move")h.dataset.corner = corner;
+        h.setAttribute("aria-label", corner==="move"?"Move media":"Resize media " + corner);
+        h.title=corner==="move"?"Move media. Arrow keys move; Shift moves faster.":"Resize media "+corner;
+        if(corner==="move")h.textContent="⠿";
         figure.append(h);
       }
     }
@@ -422,7 +424,7 @@ function ceGesture(e) {
   if (ceLocked(projectSelected, ceSelected)) return;
   const cfg = ceConfig(),
     corner = e.target.dataset.corner,
-    crop = $("ce-crop").checked && cfg.kind === "image";
+    crop = !e.target.closest('.ce-move') && $("ce-crop").checked && cfg.kind === "image";
   if (!cfg.canvas?.placement && !corner && !crop) return;
   const slide = figure.closest(".slide"),
     bounds = slide.getBoundingClientRect(),

@@ -88,7 +88,7 @@ function gsPaint(){
     if(slide&&editable&&selected.length>1&&selected.every(gsFree)&&!selected.some(entry=>visibilityEntryHidden(projectState,projectSelected,entry))){
       const rect=gsBounds(selected),box=document.createElement('div');box.className='gs-bounds';box.setAttribute('role','group');box.setAttribute('aria-label',group?'Selected group':'Selected objects');
       Object.assign(box.style,{left:rect.x*100+'%',top:rect.y*100+'%',width:rect.w*100+'%',height:rect.h*100+'%'});
-      const move=spButton(group?enGroupLabel(projectState,projectSelected,group):selected.length+' items',()=>{});move.className='gs-handle gs-move';move.dataset.gsGesture='move';move.setAttribute('aria-label','Move selected objects');move.disabled=locked;box.append(move);
+      const move=spButton('⠿',()=>{});move.className='gs-handle gs-move';move.dataset.gsGesture='move';move.setAttribute('aria-label','Move selected objects');move.title=(group?enGroupLabel(projectState,projectSelected,group):selected.length+' items')+' · Move selected objects';move.disabled=locked;box.append(move);
       const resize=spButton('',()=>{},'Resize selected objects');resize.className='gs-handle gs-resize';resize.dataset.gsGesture='resize';resize.disabled=locked;box.append(resize);slide.append(box);
     }
     // The selected group has one obvious row and its actual members stay visible.
