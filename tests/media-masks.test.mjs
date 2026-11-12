@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {chromium} from 'playwright';
 import {openExample,snapshot,operations,exportZip,importZip} from './collection-ui.mjs';
-import {click,selectTab} from './ui.mjs';
+import {click,selectTab,selectElement} from './ui.mjs';
 import vm from 'node:vm';
 import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import {resolve,dirname} from 'node:path';
@@ -150,7 +150,7 @@ test('Library frame controls save directly, keep one Undo per gesture and retain
     await page.locator('#fe-undo').click();assert.equal((await snapshot(page)).state.design.slides[slideId].objects[key].frame.x,50);await page.locator('#fe-undo').click();assert.equal((await snapshot(page)).state.design.slides[slideId].objects[key].frame.zoom,100);
     const previous=page.locator('#fe-preview .mask-frame');
     await page.locator('#mask-shape').selectOption('circle');await page.locator('#fe-preview .media-box[data-object-id="primary"]').click();
-    assert.match(await previous.locator('.media-viewport').evaluate(element=>element.style.clipPath),/circle/);await previous.click();await page.locator('#fe-undo').click();
+    assert.match(await previous.locator('.media-viewport').evaluate(element=>element.style.clipPath),/circle/);await previous.click();await page.locator('#fe-undo').click();assert.equal((await snapshot(page)).state.design.slides[slideId].objects[key].frame.shape,'rounded');await selectElement(page,key);
     await page.locator('#component-open').click();await page.locator('#component-save-panel > summary').click();await page.locator('#component-name').fill('Reusable mask');await page.locator('#component-save').click();
     await page.getByRole('tab',{name:'My components',exact:true}).click();await page.getByRole('button',{name:'Insert Reusable mask',exact:true}).click();
     const copies=Object.entries((await snapshot(page)).state.design.slides[slideId].objects).filter(([,meta])=>meta.frame);assert.equal(copies.length,2);assert.notEqual(copies[0][0],copies[1][0]);assert.equal(copies[1][1].frame.shape,'rounded');

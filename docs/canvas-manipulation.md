@@ -1,5 +1,15 @@
 # Canvas movement and manipulation
 
+## Precision movement
+
+Single blocks, floating media and temporary/group selections use the same alignment/equal-spacing guides. A batch snaps its overall bounds as one unit, excludes its own members and retains relative spacing. Alt bypasses snapping. The existing Snap switch still applies.
+
+Hold Shift while moving to lock the dominant screen-space axis. Entering Shift mid-drag anchors at the current position; releasing it continues from there without replaying movement discarded on the locked axis. Snapping only affects the moving axis. Shift retains its existing resize and faster-keyboard-nudge meanings.
+
+Movement begins after more than four CSS pixels of pointer travel. Smaller motion creates no move or Undo entry. Escape, pointer cancellation, capture loss and slide changes cancel the preview; mouse-up uses the final pointer position and commits one Undo transaction. Mixed locked selections cannot partially move. A compact, non-live hint replaces the existing editing hint during a move and restores it afterwards; no per-frame assistive announcement is added.
+
+Automated workflows cover all four movement contexts, Shift entry/release, Alt, two-zoom batch snapping, relative spacing, threshold/no-history behavior, Escape from Layers-checkbox focus, capture loss, slide switching, atomic locks and Undo. The existing single-object/media/resize, marquee and pan coverage remains required.
+
 In Edit blocks, selected free blocks, floating media and temporary/group selections have an explicit Move grip and resize handles. Drag the grip to move; keep clicking text, table cells and existing controls for their normal editing behavior. Selecting an item does not detach template content or change saved positioning.
 
 Resize targets remain 24 CSS pixels and Move grips 30 × 26 CSS pixels as canvas zoom changes. Thin selections spread their handles into a usable grid; edge targets stay inside the visible canvas and viewport. A selected object entirely outside the viewport still needs pan/Fit or keyboard positioning. Handle view coordinates are session-only and never change the project's placement, IDs, recovery or exports. Rotated selections retain their content rotation while grips remain upright.
