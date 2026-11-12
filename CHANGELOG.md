@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add shared right-click, Shift+F10/Menu-key and visible ⋯ actions for Library cards and placed objects, with selection-preserving shortcuts, type-specific Inspector navigation, explicit saved-component deletion, keyboard submenus, touch targets and stale-selection guards (#190).
+
 - Consolidate selected image/video, grid sizing, placement, caption, playback and poster editing in the Inspector; retire the Media Manager entry point and duplicate media list, add compact Placement shortcuts and scoped media restoration, and retain legacy settings import/export through Project (#189).
 
 - Add independently collapsible Inspector sections with session preferences by selection type, shared notes visibility, collapsed context summaries and shortcuts that reveal the existing editor; retain controls and saved-project formats (#188).

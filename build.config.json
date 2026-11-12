@@ -32,7 +32,8 @@
     "src/styles/manipulation-targets.css",
     "src/styles/selection-guidance.css",
     "src/styles/inspector-sections.css",
-    "src/styles/media-inspector.css"
+    "src/styles/media-inspector.css",
+    "src/styles/context-menu.css"
   ],
   "scripts": [
     "src/runtime/prelude.js",
@@ -99,6 +100,7 @@
     "src/runtime/selection-guidance.js",
     "src/runtime/inspector-sections.js",
     "src/runtime/media-inspector.js",
+    "src/runtime/context-menu.js",
     "src/runtime/boot.js"
   ],
   "vendor": "vendor/jszip-3.10.1.min.js"

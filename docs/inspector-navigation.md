@@ -16,7 +16,7 @@ Each setting has one primary home. Shortcuts invoke the same action or reveal th
 | Media-object selector and Layers | Layers is the single object-selection home, including grid-cell children. The redundant media list is retired. |
 | Project import/export in media editing | Project owns import/export. Advanced primary-only settings JSON explains its exclusions; editable ZIP remains the complete backup. |
 | Hide, lock, duplicate, delete and reorder | Retain useful Layers/toolbar/menu shortcuts with identical handlers and guards. |
-| Library cards and placed-instance menus | #190 supplies contextual shortcuts. Saved originals and placed copies remain independent. Label Delete saved component and Delete from slide distinctly. |
+| Library cards and placed-instance menus | [Shared contextual shortcuts](context-menus.md) invoke existing actions and Inspector sections. Saved originals and placed copies remain independent; Delete saved component and Delete from slide are distinct. |
 
 ## Collapsible sections
 
@@ -26,7 +26,7 @@ Click a header, or focus it and press Enter/Space, to toggle it. Collapsed prima
 
 Changing objects of the same type retains disclosure choices and does not deliberately reset Inspector scroll. Switching types restores that type's choices. Explicit edit/slide navigation and media crop shortcuts reveal their target section. Collapsing retains controls and pending values without a project transaction. Existing blur/commit rules still apply to an edit completed by clicking a header.
 
-Content/Arrange/Style remains the single Inspector navigation strip in this increment. Media parity and context menus are tracked separately; no control is retired solely because it has been wrapped in a disclosure.
+Content/Arrange/Style remains the single Inspector navigation strip. [Media parity](media-inspector.md) and [context menus](context-menus.md) have separate implementation issues and linked PRs. Control retirement follows the ownership/parity map above rather than disclosure wrapping alone.
 
 ## Validation
 
