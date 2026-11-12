@@ -1,0 +1,10 @@
+/* Native disclosures retain keyboard and screen-reader expanded-state behavior. */
+#full-editor #we-inspector .ids-section {min-width:0;margin:8px 0;border-top:1px solid var(--wb-line);}
+#full-editor #we-inspector .ids-section > summary {cursor:pointer;padding:10px 2px;font-weight:600;color:var(--wb-ink);overflow-wrap:anywhere;}
+#full-editor #we-inspector #ce-panel > summary {display:list-item;}
+#full-editor #we-inspector .ids-section > summary:focus-visible {outline:2px solid var(--wb-blue);outline-offset:2px;border-radius:3px;}
+#full-editor #we-inspector .ids-heading {display:inline;margin:0;font:inherit;}
+#full-editor #we-inspector .ids-value {display:block;margin:4px 0 0 16px;font-size:11px;font-weight:normal;color:var(--wb-muted);}
+#full-editor #we-inspector .ids-section[open] > summary > .ids-value {display:none;}
+#full-editor #we-inspector .ids-section > summary .ids-heading + .ids-value {max-width:100%;}
+@media (forced-colors:active) {#full-editor #we-inspector .ids-section > summary:focus-visible {outline-color:Highlight;}}

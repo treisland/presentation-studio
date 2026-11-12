@@ -18,7 +18,7 @@ function pfNavigate(finding) {
     projectList();
     projectForm();
     projectPreview();
-    $("fe-slide-title").focus();
+    idsReveal('fe-slide-title',true);
   } else {
     weOpenSettings(finding.tab || "recovery");
   }

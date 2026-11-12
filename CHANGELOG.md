@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add independently collapsible Inspector sections with session preferences by selection type, shared notes visibility, collapsed context summaries and shortcuts that reveal the existing editor; retain controls and saved-project formats (#188).
+
 ## 0.14.0-beta.1 — 2026-11-12
 
 - Honor Left, Right and Background on the first media drop/upload using the same atomic placement operation as later changes; retain existing media geometry (including rotated structured frames), metadata, locks and one-step Undo (#184).

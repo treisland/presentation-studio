@@ -30,7 +30,8 @@
     "src/styles/navigation.css",
     "src/styles/media-masks.css",
     "src/styles/manipulation-targets.css",
-    "src/styles/selection-guidance.css"
+    "src/styles/selection-guidance.css",
+    "src/styles/inspector-sections.css"
   ],
   "scripts": [
     "src/runtime/prelude.js",
@@ -95,6 +96,7 @@
     "src/runtime/media-masks.js",
     "src/runtime/manipulation-targets.js",
     "src/runtime/selection-guidance.js",
+    "src/runtime/inspector-sections.js",
     "src/runtime/boot.js"
   ],
   "vendor": "vendor/jszip-3.10.1.min.js"

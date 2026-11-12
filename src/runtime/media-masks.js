@@ -117,7 +117,13 @@ projectInit=function(...args){
     const cancel=()=>{end();if(maskStamp()!==stamp)return;$('mask-x').value=start.x;$('mask-y').value=start.y;numericRefreshScope(panel);maskPreview();};
     document.addEventListener('pointermove',move,true);document.addEventListener('pointerup',end,true);document.addEventListener('pointercancel',cancel,true);document.addEventListener('keydown',key,true);window.addEventListener('blur',cancel);
   },true);
-  document.addEventListener('dblclick',event=>{const figure=event.target.closest('.media-box');if(!figure||!projectPreviewNode?.contains(figure)||vbMode!=='edit'||icSelection().locked)return;event.preventDefault();event.stopImmediatePropagation();ceSelect(figure.dataset.objectId||'primary');maskPaint();$('mask-crop-mode').checked=true;$('mask-zoom').focus();},true);
+  document.addEventListener('dblclick',event=>{
+    // Selection can repaint media between pointerdown/up, retargeting dblclick
+    // to the stage. Resolve the current media under the actual pointer too.
+    const figure=event.target.closest('.media-box') || (projectPreviewNode?.contains(event.target) && document.elementFromPoint(event.clientX,event.clientY)?.closest('.media-box'));
+    if(!figure||!projectPreviewNode?.contains(figure)||vbMode!=='edit'||icSelection().locked)return;
+    event.preventDefault();event.stopImmediatePropagation();ceSelect(figure.dataset.objectId||'primary');weInspect('media');wePanels.inspector.open=true;wePanelView();maskPaint();$('mask-crop-mode').checked=true;wpChooseTab('content');idsReveal('mask-zoom',true);
+  },true);
   maskReady=true;maskPaint();return result;
 };
 const maskLibraryList=componentList;
