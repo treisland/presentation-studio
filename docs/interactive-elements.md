@@ -34,6 +34,8 @@ The portable AI-authoring v1 schema remains unchanged: these are editor-authored
 
 ## Validation and remaining manual review
 
+The maintainer confirmed all UI tests and the explicitly listed manual release gates passed on latest runtime `1361138`, with beta release sign-off on 2026-11-11. See [0.13.0-beta.1 evidence](releases/0.13.0-beta.1-validation.md) for the exact statements, automated results and unspecified environment details. Earlier feature/manual holds are superseded; publication still follows the separate protected release plan.
+
 Automated workflows cover safe actions, Preview navigation, Undo, numeric staging, locks, editable ZIP/offline reopening and standalone booth masks/keyboard navigation/permissions. Run `npm run check`, `npm run package` and `git diff --check`; record actual results on the linked PRs.
 
 Before release, manually review light/dark and small-screen layouts, keyboard authoring and screen-reader announcements, real image/video crop and replacement at differing aspect ratios, Media Focus return, internal/external links, clean-profile recovery and downloaded offline editable/playback/booth packages. Supported OS/browser versions, real delivery video and OBS evidence remain separate from automated Chromium checks. No new manual release gates are claimed complete.

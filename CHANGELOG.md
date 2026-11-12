@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.13.0-beta.1 — 2026-11-11
+
 - Reset masked image zoom on entry to standalone booth Media Focus, including when image zoom controls are disabled, and restore the mask transform on return.
 
 - Keep every drop-placement target visible with long filenames, put all media Inspector controls in one scroll area, and save frame choices/gestures directly without Apply frame.
