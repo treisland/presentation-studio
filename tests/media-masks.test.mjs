@@ -43,6 +43,9 @@ test('Library frame controls stage one Undo step, respect locks and retain compo
     await page.getByRole('button',{name:'Apply frame',exact:true}).click();
     assert.equal((await snapshot(page)).state.design.slides[slideId].objects[key].frame.zoom,175);
     await page.locator('#fe-undo').click();assert.equal((await snapshot(page)).state.design.slides[slideId].objects[key].frame.zoom,100);
+    const previous=page.locator('#fe-preview .mask-frame'),clip=await previous.locator('.media-viewport').evaluate(element=>element.style.clipPath);
+    await page.locator('#mask-shape').selectOption('circle');await page.locator('#fe-preview .media-box[data-object-id="primary"]').click();
+    assert.equal(await previous.locator('.media-viewport').evaluate(element=>element.style.clipPath),clip);await previous.click();
     await page.locator('#component-open').click();await page.locator('#component-save-panel > summary').click();await page.locator('#component-name').fill('Reusable mask');await page.locator('#component-save').click();
     await page.getByRole('tab',{name:'My components',exact:true}).click();await page.getByRole('button',{name:'Insert Reusable mask',exact:true}).click();
     const copies=Object.entries((await snapshot(page)).state.design.slides[slideId].objects).filter(([,meta])=>meta.frame);assert.equal(copies.length,2);assert.notEqual(copies[0][0],copies[1][0]);assert.equal(copies[1][1].frame.shape,'rounded');

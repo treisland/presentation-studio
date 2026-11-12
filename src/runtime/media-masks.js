@@ -35,19 +35,29 @@ function maskEntries(state,slide){
 }
 const maskApply=spApply;
 spApply=function(slide,...args){const result=maskApply(slide,...args),model=projectReady&&projectModel(slide.dataset.mediaId);if(model)for(const entry of maskEntries(projectState,model))if(entry.meta.frame)mediaMaskPaint(spElement(slide,entry),entry.meta.frame);return result;};
-let maskReady=false,maskIdentity='',maskTarget='',maskSnapshot=null;
+let maskReady=false,maskIdentity='',maskTarget='',maskSnapshot=null,maskDraft=null;
 const maskDefault=()=>({shape:'rectangle',fit:'cover',zoom:100,x:50,y:50,radius:12,shadow:'none'});
 function maskRead(){return maskSettings({shape:$('mask-shape').value,fit:$('mask-fit').value,shadow:$('mask-shadow').value,...Object.fromEntries(['zoom','x','y','radius'].map(key=>[key,Number($('mask-'+key).value)]))});}
 function maskStamp(){return JSON.stringify([projectMeta.id,projectSelected,editingRevision(),maskTarget,boothActive]);}
-function maskPreview(){try{mediaMaskPaint(ceFigure(),maskRead());}catch{}}
+function maskRestorePreview(){
+  if(!maskDraft)return;const draft=maskDraft;maskDraft=null;
+  if(!draft.figure.isConnected)return;
+  for(const [element,values]of draft.styles)for(const [key,value]of Object.entries(values))element.style[key]=value;
+  draft.figure.classList.toggle('mask-frame',draft.masked);
+}
+function maskPreview(){try{
+  const frame=maskRead(),figure=ceFigure();if(!figure)return;
+  if(maskDraft?.figure!==figure){maskRestorePreview();maskDraft={figure,masked:figure.classList.contains('mask-frame'),styles:[[figure,['boxShadow']],[figure.querySelector('.media-viewport'),['overflow','clipPath','borderRadius']],[figure.querySelector('.media-asset'),['objectFit','objectPosition','transform','transformOrigin']]].filter(([element])=>element).map(([element,keys])=>[element,Object.fromEntries(keys.map(key=>[key,element.style[key]]))])};}
+  mediaMaskPaint(figure,frame);
+}catch{}}
 function maskPaint(){
   if(!maskReady||!projectReady)return;
-  if(boothActive||projectPlayback||projectDraftPending){$('mask-panel').hidden=true;maskTarget='';return;}
+  if(boothActive||projectPlayback||projectDraftPending){maskRestorePreview();$('mask-panel').hidden=true;maskTarget='';return;}
   const context=icSelection(),entry=context.selected.length===1&&context.selected[0]?.kind==='media'?context.selected[0]:['media','grid'].includes(context.kind)?maskEntries(projectState,projectModel()).find(entry=>entry.object===ceSelected):null,panel=$('mask-panel');
   for(const id of ['ce-fit','ce-crop'])$(id).closest('label').hidden=!!entry?.meta.frame;
-  panel.hidden=!entry||entry.kind!=='media';panel.dataset.icVisible=String(!panel.hidden);if(panel.hidden){maskTarget='';return;}
+  panel.hidden=!entry||entry.kind!=='media';panel.dataset.icVisible=String(!panel.hidden);if(panel.hidden){maskRestorePreview();maskTarget='';return;}
   const identity=JSON.stringify([context.identity,entry.key,entry.meta.frame,studioEditing.read().revision]);
-  if(identity!==maskIdentity){maskIdentity=identity;maskTarget=entry.key;const frame={...maskDefault(),...entry.meta.frame};for(const key of ['shape','fit','zoom','x','y','radius','shadow'])$('mask-'+key).value=String(frame[key]);maskSnapshot=studioEditing.read();$('mask-crop-mode').checked=false;}
+  if(identity!==maskIdentity){maskRestorePreview();maskIdentity=identity;maskTarget=entry.key;const frame={...maskDefault(),...entry.meta.frame};for(const key of ['shape','fit','zoom','x','y','radius','shadow'])$('mask-'+key).value=String(frame[key]);maskSnapshot=studioEditing.read();$('mask-crop-mode').checked=false;}
   for(const control of panel.querySelectorAll('input,select,button'))control.disabled=context.locked;
   $('mask-radius').disabled=context.locked||$('mask-shape').value!=='rounded';
   numericRefreshScope(panel);
