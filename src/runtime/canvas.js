@@ -99,6 +99,9 @@ function ceLocked(id = projectSelected, object = null) {
     (object && ceConfig(object, id)?.canvas?.locked)
   );
 }
+function cePrimaryProtected(id = projectSelected) {
+  return !!ceConfig('primary',id) && (ceLocked(id,'primary') || !!spMeta('media-primary',projectState,id).locked);
+}
 function ceViolates(before, after) {
   if (ceLockAction) return false;
   if (before.editLocked)
@@ -586,6 +589,10 @@ async function ceDrop(files, zone) {
     projectMessage("Unlock the selected object before replacing it.");
     return;
   }
+  if (zone !== 'replace' && zone !== 'floating' && cePrimaryProtected()) {
+    projectMessage('Unlock the primary media before changing which object uses the structured layout.');
+    return;
+  }
   if (zone !== "replace" && projectState.media[projectSelected] && ceObjects().length >= 30) {
     projectMessage("A slide supports up to 30 additional media objects.");
     return;
@@ -623,10 +630,13 @@ async function ceDrop(files, zone) {
   }
   const commit = () => {
     if (!$("full-editor").open || vbMode !== "edit" || boothActive || projectDraftPending || ceLocked(id) ||
-        (zone === "replace" && ceLocked(id, objectID)) || studioEditing.read().revision !== revision) {
+        (zone === "replace" && ceLocked(id, objectID)) ||
+        (zone !== 'replace' && zone !== 'floating' && cePrimaryProtected(id)) || studioEditing.read().revision !== revision) {
       projectMessage("The project changed or became locked. Choose the media action again.");
       return;
     }
+    const oldFrame = projectPreviewNode.querySelector('[data-object-id="primary"]');
+    const oldRect = oldFrame ? ceDefaultRect(oldFrame) : {x:.6,y:.5,w:.35,h:.4};
     mediaRemember(path, file);
     projectChange(() => {
       if (zone === "replace" && existing) {
@@ -655,6 +665,8 @@ async function ceDrop(files, zone) {
         projectState.media[id] = cfg;
         ceSelected = "primary";
       }
+      if (zone !== 'replace' && zone !== 'floating')
+        ceApplyPlacement({slideID:id,objectID:ceSelected,rect:cfg.canvas.placement},zone,cfg,oldRect);
     });
     const retained = projectState.media[id]?.src === path || ceObjects(id).some(o => o.media.src === path);
     if (!retained) {
@@ -788,11 +800,10 @@ function ceFinishPlacement(zone) {
     return;
   const cfg = ceConfig(state.objectID, state.slideID);
   if (!cfg) return;
-  const primary = projectState.media[state.slideID];
   if (
     zone !== "floating" &&
     state.objectID !== "primary" &&
-    primary?.canvas?.locked
+    cePrimaryProtected(state.slideID)
   ) {
     projectMessage(
       "Unlock the primary media before changing which object uses the structured layout.",
@@ -803,38 +814,41 @@ function ceFinishPlacement(zone) {
   const oldRect = oldFrame
     ? ceDefaultRect(oldFrame)
     : { x: 0.6, y: 0.5, w: 0.35, h: 0.4 };
-  projectChange(() => {
-    const next = {
-      ...projectCopy(cfg),
-      layout: zone === "floating" ? "inset" : zone,
-      canvas: {
-        ...ceObject(cfg.canvas),
-        placement: zone === "floating" ? state.rect : null,
-      },
-    };
-    if (zone === "background") next.canvas.z = 0;
-    if (zone !== "floating" && state.objectID !== "primary") {
-      const metadata=spData(projectState,state.slideID,true).objects,sourceKey='media-'+state.objectID,sourceMeta=metadata[sourceKey],primaryMeta=metadata['media-primary'];
-      projectState.mediaObjects[state.slideID] = ceObjects(
-        state.slideID,
-      ).filter((o) => o.id !== state.objectID);
-      if (primary) {
-        const demotedID=projectID('object');
-        projectState.mediaObjects[state.slideID].push({
-          id: demotedID,
-          media: {
-            ...projectCopy(primary),
-            canvas: { ...ceObject(primary.canvas), placement: oldRect },
-          },
-        });
-        if(primaryMeta)metadata['media-'+demotedID]=primaryMeta;
-      }
-      delete metadata[sourceKey];delete metadata['media-primary'];
-      if(sourceMeta)metadata['media-primary']=sourceMeta;
-      projectState.media[state.slideID] = next;
-      ceSelected = "primary";
-    } else ceSetConfig(next, state.objectID, state.slideID);
-  });
+  projectChange(() => ceApplyPlacement(state,zone,cfg,oldRect));
+}
+// Both initial file insertion and later placement changes share one atomic model update.
+function ceApplyPlacement(state,zone,cfg,oldRect) {
+  const primary = projectState.media[state.slideID];
+  const next = {
+    ...projectCopy(cfg),
+    layout: zone === "floating" ? "inset" : zone,
+    canvas: {
+      ...ceObject(cfg.canvas),
+      placement: zone === "floating" ? state.rect : null,
+    },
+  };
+  if (zone === "background") next.canvas.z = 0;
+  if (zone !== "floating" && state.objectID !== "primary") {
+    const metadata=spData(projectState,state.slideID,true).objects,sourceKey='media-'+state.objectID,sourceMeta=metadata[sourceKey],primaryMeta=metadata['media-primary'];
+    projectState.mediaObjects[state.slideID] = ceObjects(
+      state.slideID,
+    ).filter((o) => o.id !== state.objectID);
+    if (primary) {
+      const demotedID=projectID('object');
+      projectState.mediaObjects[state.slideID].push({
+        id: demotedID,
+        media: {
+          ...projectCopy(primary),
+          canvas: { ...ceObject(primary.canvas), placement: oldRect },
+        },
+      });
+      if(primaryMeta)metadata['media-'+demotedID]=primaryMeta;
+    }
+    delete metadata[sourceKey];delete metadata['media-primary'];
+    if(sourceMeta)metadata['media-primary']=sourceMeta;
+    projectState.media[state.slideID] = next;
+    ceSelected = "primary";
+  } else ceSetConfig(next, state.objectID, state.slideID);
 }
 function ceBind() {
   const panel = document.createElement("details");

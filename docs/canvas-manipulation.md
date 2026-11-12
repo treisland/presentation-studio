@@ -1,5 +1,9 @@
 # Canvas movement and manipulation
 
+## New media placement
+
+Dropping an image/video on Left, Right or Background—or choosing that placement in Add media—immediately uses the slide's structured media slot. Floating keeps free positioning. If primary media already exists, it is retained as a floating object with its settings and design metadata; the new file takes the chosen structured slot. Unlock the primary media before changing which object owns that slot. The entire addition/placement is one Undo action. Replace selected media keeps that object's existing placement and confirmation flow.
+
 ## Selection context and keyboard guidance
 
 The Inspector identifies the current item by type/name, shared selection count, group/member editing state, active text editing, or slide background/settings. **Back to group/shared selection** exits member editing without ungrouping or changing content. **Find in Layers** reveals the existing selection for inspection and unlock actions.

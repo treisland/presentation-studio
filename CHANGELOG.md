@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Honor Left, Right and Background on the first media drop/upload using the same atomic placement operation as later changes; retain existing media, metadata, locks and one-step Undo (#184).
+
 - Preserve staged color/opacity values and the text caret when resizing the editor or Inspector; audit existing same-target field, scroll, panel-choice and overlay focus behavior (#176).
 
 - Clarify selected item/type, shared/group/member and active text context; show actionable movement blockers, accurate keyboard units and completed keyboard-move announcements (#175).

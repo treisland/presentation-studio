@@ -108,7 +108,7 @@ test("Default addition preserves table/text, existing media and IDs with one-ste
     assert.deepEqual(first.state.slides.find(s => s.id === id), model);
     assert.equal(first.history.past.length, before.history.past.length + 1);
     assert.equal(await p.locator('#fe-preview table').isVisible(), true);
-    await upload(p, 'table-second.svg', 'left');
+    await upload(p, 'table-second.svg', 'floating');
     const second = await json(p);
     assert.deepEqual(second.state.media[id], first.state.media[id]);
     assert.deepEqual(second.state.slides.find(s => s.id === id), model);
@@ -153,7 +153,7 @@ test("Background additions keep text foreground stacking in edit, Preview and of
   const { p, context, errors } = await setup();
   const foreground = root => root.evaluate(slide => {
     const content = slide.querySelector(':scope > .media-original');
-    const frame = [...slide.querySelectorAll(':scope > .ce-floating')].find(el => getComputedStyle(el).zIndex === '0');
+    const frame = [...slide.querySelectorAll(':scope > .media-box')].find(el => getComputedStyle(el).zIndex === '0');
     return !!content && !!frame && Number(getComputedStyle(content).zIndex) > Number(getComputedStyle(frame).zIndex);
   });
   try {
