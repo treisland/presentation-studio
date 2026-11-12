@@ -636,7 +636,7 @@ async function ceDrop(files, zone) {
       return;
     }
     const oldFrame = projectPreviewNode.querySelector('[data-object-id="primary"]');
-    const oldRect = oldFrame ? ceDefaultRect(oldFrame) : {x:.6,y:.5,w:.35,h:.4};
+    const oldRect = ceConfig('primary',id)?.canvas?.placement || (oldFrame ? ceDefaultRect(oldFrame) : {x:.6,y:.5,w:.35,h:.4});
     mediaRemember(path, file);
     projectChange(() => {
       if (zone === "replace" && existing) {
@@ -811,9 +811,9 @@ function ceFinishPlacement(zone) {
     return;
   }
   const oldFrame = state.root.querySelector('[data-object-id="primary"]');
-  const oldRect = oldFrame
+  const oldRect = ceConfig('primary',state.slideID)?.canvas?.placement || (oldFrame
     ? ceDefaultRect(oldFrame)
-    : { x: 0.6, y: 0.5, w: 0.35, h: 0.4 };
+    : { x: 0.6, y: 0.5, w: 0.35, h: 0.4 });
   projectChange(() => ceApplyPlacement(state,zone,cfg,oldRect));
 }
 // Both initial file insertion and later placement changes share one atomic model update.
