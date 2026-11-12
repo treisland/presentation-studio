@@ -96,6 +96,8 @@ test('removing the active text target cannot retarget its panel to the next obje
  const {page,errors}=await openExample(browser,'template');try{
   const id=(await snapshot(page)).state.slides[0].id,result=await operations(page,[{type:'block.create',slideId:id,kind:'text'},{type:'block.create',slideId:id,kind:'text'}]);
   const [a,b]=result.created;await content(page,a);await page.locator('#ic-text-editor > summary').click();await page.locator('#fe-block-text').fill('First target only');
+  // Finish the field before invoking the editing API, which rejects pending edits.
+  await page.locator('#fe-block-text').press('Tab');
   const before=(await snapshot(page)).state.slides[0].tree.find(node=>node.attrs?.class?.includes(b));
   assert.equal((await operations(page,[{type:'block.remove',slideId:id,blockId:a}])).ok,true);
   assert.equal(await page.locator('#ic-text-editor').isVisible(),false);
