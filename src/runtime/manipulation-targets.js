@@ -10,7 +10,7 @@ function mhPaint(){
   for(const handle of document.querySelectorAll('.mh-target:popover-open'))if(!active.has(handle))handle.hidePopover();
   const view=viewport.getBoundingClientRect(),canvas=slide.getBoundingClientRect(),scale=weScale();
   const clip={left:Math.max(view.left,canvas.left)+20,right:Math.min(view.right,canvas.right)-20,top:Math.max(view.top,canvas.top)+20,bottom:Math.min(view.bottom,canvas.bottom)-20};
-  if(clip.right<=clip.left||clip.bottom<=clip.top)return;
+  if(clip.right<=clip.left||clip.bottom<=clip.top){mhHide();return;}
   const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
   for(const root of roots){
     const handles=[...root.children].filter(node=>node.matches('.db-handle,.ce-handle,.gs-handle'));
@@ -23,14 +23,25 @@ function mhPaint(){
     const extentX=Math.abs(c)*halfX+Math.abs(s)*halfY,extentY=Math.abs(s)*halfX+Math.abs(c)*halfY;
     const centerX=clamp(cx,clip.left+Math.min(extentX,(clip.right-clip.left)/2),clip.right-Math.min(extentX,(clip.right-clip.left)/2));
     const centerY=clamp(cy,clip.top+Math.min(extentY,(clip.bottom-clip.top)/2),clip.bottom-Math.min(extentY,(clip.bottom-clip.top)/2));
-    for(const handle of handles){
+    const positions=handles.map(handle=>{
       const move=handle.matches('.db-move,.ce-move,.gs-move');
       const direction=handle.dataset.dbDirection||handle.dataset.corner||(handle.matches('.gs-resize')?'se':'');
       let x=move?-halfX+30:direction.includes('w')?-halfX:direction.includes('e')?halfX:0;
       let y=move?-halfY-26:direction.includes('n')?-halfY:direction.includes('s')?halfY:0;
       let sx=clamp(centerX+c*x-s*y,clip.left,clip.right),sy=clamp(centerY+s*x+c*y,clip.top,clip.bottom);
-      // At the top edge, put Move inside and apart from the corner/edge resize targets.
-      if(move&&sy<=clip.top+1){sx=clamp(centerX,clip.left+24,clip.right-24);sy=clamp(centerY,clip.top+26,clip.bottom);}
+      return {handle,move,sx,sy};
+    });
+    const resize=positions.filter(position=>!position.move);
+    for(const position of positions){
+      const {handle,move}=position;let {sx,sy}=position;
+      // Resolve collisions after rotation and clipping, on every canvas edge.
+      if(move&&resize.some(p=>Math.abs(sx-p.sx)<29&&Math.abs(sy-p.sy)<27)){
+        const candidates=[];
+        for(let x=clip.left;x<=clip.right;x+=28)for(let y=clip.top;y<=clip.bottom;y+=28)
+          if(resize.every(p=>Math.abs(x-p.sx)>=29||Math.abs(y-p.sy)>=27))candidates.push({x,y,d:(x-sx)**2+(y-sy)**2});
+        candidates.sort((a,b)=>a.d-b.d);
+        if(candidates.length){sx=candidates[0].x;sy=candidates[0].y;}
+      }
       // Native manual popovers keep only the grips above sibling stacking contexts.
       // Their DOM ownership/event path stays on the original object; content z-order is unchanged.
       handle.classList.add('mh-target');handle.popover='manual';
