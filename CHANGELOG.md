@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Preserve staged color/opacity values and the text caret when resizing the editor or Inspector; audit existing same-target field, scroll, panel-choice and overlay focus behavior (#176).
+
 - Clarify selected item/type, shared/group/member and active text context; show actionable movement blockers, accurate keyboard units and completed keyboard-move announcements (#175).
 
 - Explain template-managed positioning with explicit Enable free positioning and Reset to template position actions, plus structured-layout and lock guidance (#174).

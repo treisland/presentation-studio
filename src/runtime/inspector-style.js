@@ -9,7 +9,10 @@ function isClose(restore = false) {
   if (popup?.matches(':popover-open')) popup.hidePopover();
   isTarget = '';
   for (const button of document.querySelectorAll('[data-is-slot]')) button.setAttribute('aria-expanded','false');
-  if (restore && isOpener?.isConnected && !isOpener.hidden) isOpener.focus({preventScroll:true});
+  if (restore) {
+    const origin = isOpener?.isConnected && isOpener.checkVisibility() ? isOpener : $('we-toggle-inspector');
+    origin?.focus({preventScroll:true});
+  }
 }
 function isTab(name, focus = false) {
   for (const tab of document.querySelectorAll('[data-is-tab]')) {
@@ -30,13 +33,22 @@ function isOpen(slot = $('sp-slot').value) {
   $('is-color-title').textContent = label+' color';
   isTab('theme');
   $('is-color-popover').showPopover();
-  const popup = $('is-color-popover'), anchor = isOpener.getBoundingClientRect(), bounds = popup.getBoundingClientRect();
-  popup.style.left = Math.max(12,Math.min(anchor.left-bounds.width-12,innerWidth-bounds.width-12))+'px';
-  popup.style.top = Math.max(12,Math.min(anchor.top,innerHeight-bounds.height-12))+'px';
-  popup.style.right = 'auto';
+  isPosition();
   isOpener.setAttribute('aria-expanded','true');
   $('is-tab-theme').focus();
 }
+// Layout changes reposition the active draft without resetting values or focus.
+function isPosition() {
+  const popup = $('is-color-popover');
+  if (!popup?.matches(':popover-open')) return;
+  if (isTarget !== isStamp()) { isClose(popup.contains(document.activeElement)); return; }
+  const anchor = isOpener.getBoundingClientRect(), bounds = popup.getBoundingClientRect();
+  popup.style.left = Math.max(12,Math.min(anchor.left-bounds.width-12,innerWidth-bounds.width-12))+'px';
+  popup.style.top = Math.max(12,Math.min(anchor.top,innerHeight-bounds.height-12))+'px';
+  popup.style.right = 'auto';
+}
+const isPreviousPanelView = wePanelView;
+wePanelView = function(...args) { const result = isPreviousPanelView(...args); if (isReady) isPosition(); return result; };
 function isSummary(value) {
   if (value === 'mixed') return 'Mixed';
   if (value === 'transparent') return 'Transparent';
@@ -79,9 +91,11 @@ spPaint = function(...args) {
   const hadFocus = open && popup.contains(document.activeElement);
   const same = open && isTarget === isStamp();
   const draft = same ? ['sp-hex','sp-color-picker','sp-opacity','sp-swatch-name'].map(id=>[id,$(id).value,$(id).getAttribute('aria-invalid')]) : null;
+  const caret = same && hadFocus && typeof document.activeElement.selectionStart === 'number' ? [document.activeElement,document.activeElement.selectionStart,document.activeElement.selectionEnd,document.activeElement.selectionDirection] : null;
   const result = isPreviousPaint(...args);
   if (open && (!same || isTarget !== isStamp())) isClose(hadFocus);
-  else if (draft) for (const [id,value,invalid] of draft) {$(id).value=value;if(invalid===null)$(id).removeAttribute('aria-invalid');else $(id).setAttribute('aria-invalid',invalid);}
+  else if (draft) for (const [id,value,invalid] of draft) {if($(id).value!==value)$(id).value=value;if(invalid===null)$(id).removeAttribute('aria-invalid');else $(id).setAttribute('aria-invalid',invalid);}
+  if (caret && isTarget === isStamp()) caret[0].setSelectionRange(caret[1],caret[2],caret[3]);
   isPaint();
   return result;
 };
@@ -130,7 +144,7 @@ projectInit = function(...args) {
     if(isTarget && isTarget!==isStamp()){event.preventDefault();event.stopImmediatePropagation();isClose(true);spPaint();}
   },true);
   popup.addEventListener('toggle',()=>{if(!popup.matches(':popover-open')){isTarget='';for(const row of rows.children)row.setAttribute('aria-expanded','false');}});
-  window.addEventListener('resize',()=>isClose(popup.contains(document.activeElement)));
+  window.addEventListener('resize',isPosition);
   isReady=true;isTab('theme');isPaint();
   return result;
 };
