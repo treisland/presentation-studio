@@ -237,6 +237,7 @@ function lwMount() {
   $("lw-pack").onclick = () => lwRun(async () => {
     const zip = new JSZip(); for (const [name, content] of Object.entries(lwPackFiles)) zip.file(name, content);
     zip.file("presentation.schema.json", JSON.stringify(paSchema(), null, 2));
+    zip.file("presentation-v2.schema.json", JSON.stringify(paSchema(2), null, 2));
     zip.file("capabilities.json", JSON.stringify(paCatalog(), null, 2));
     mediaDownload(await zip.generateAsync({ type: "blob" }), "studio-ai-authoring-v1.zip");
   });

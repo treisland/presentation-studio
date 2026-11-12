@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add staged presentation/slide Theme, Solid, Gradient and Image backgrounds with complete overrides, local images, focal Fill/Fit, guarded native v4/portable-authoring v2, recovery-aware asset retention and shared offline/booth rendering (#213).
+
 - Document the proposed custom-background inheritance, layering, asset recovery and guarded native/portable format contract for maintainer review (#212).
 
 ## 0.15.0-beta.1 — 2026-11-12

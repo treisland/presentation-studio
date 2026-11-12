@@ -25,6 +25,7 @@ function paCatalog() {
     format: "presentation-studio-authoring", version: 1,
     layouts: paLayoutCatalog,
     backgrounds:{presets:bgEngine.names,options:bgEngine.schema(),defaults:bgEngine.defaults,usage:'Optional background object at presentation and/or slide level. Slide objects override the complete presentation effect. Use effect none to remove it, or mode static for reduced motion. Use Studio 0.12.0+ for effect-enabled native v3 projects; no custom code or external assets.'},
+    backdrops:{version:2,options:cbEngine.schema(),usage:'Use authoring version 2 and backdrop at presentation/slide level for Theme, Solid, Gradient or Image. Existing background remains decorative effects. Image assets must be included in the editable ZIP; no remote URLs. New background-aware projects use guarded native v4.'},
     elements: {
       heading: { purpose: "A secondary heading; the slide already has a title", fields: ["text", "level"] },
       paragraph: { purpose: "A concise explanation", fields: ["text"] }, list: { purpose: "Related points", fields: ["items"] },
@@ -44,5 +45,5 @@ function paCapabilityGuide() {
   return "# Supported layouts and Library elements\n\nGenerated from Studio's shared capability definitions.\n\n" +
     Object.entries(catalog.layouts).map(([id, item]) => `- layout: ${id} — ${item.purpose}; ${item.min}–${item.max} content elements`).join("\n") +
     "\n\n## Element fields\n\n" + Object.entries(catalog.elements).map(([id, item]) => `- type: ${id} — ${item.purpose}. Fields: ${item.fields.join(", ")}.`).join("\n") +
-    "\n\n## Background effects\n\n"+catalog.backgrounds.usage+"\nPresets: "+Object.keys(catalog.backgrounds.presets).join(', ')+". Options and bounds are listed in capabilities.json and presentation.schema.json.\n\n" + catalog.selection + "\n\n" + catalog.limits + "\n";
+    "\n\n## Background effects\n\n"+catalog.backgrounds.usage+"\nPresets: "+Object.keys(catalog.backgrounds.presets).join(', ')+". Options and bounds are listed in capabilities.json and presentation.schema.json.\n\n" + "\n\n## Custom backdrops (authoring v2)\n\n"+catalog.backdrops.usage+"\nUse presentation-v2.schema.json and custom-backgrounds-v2.json.\n\n" + catalog.selection + "\n\n" + catalog.limits + "\n";
 }

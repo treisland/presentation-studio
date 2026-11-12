@@ -1,9 +1,10 @@
 // Portable authoring v1: declarative data only. Shared limits drive validation and schema.
 const paLimits = { slides: 100, blocks: 30, text: 10000, notes: 20000, bytes: 2000000 };
 const paBlockTypes = ["heading", "paragraph", "list", "table", "code", "image-placeholder", ...Object.keys(paWidgetCatalog)];
-function paSchema() {
+function paSchema(version=1) {
+  if(![1,2].includes(version))throw Error('Unsupported portable authoring version.');
   const text = { type: "string", maxLength: paLimits.text };
-  return {
+  const schema = {
     $schema: "https://json-schema.org/draft/2020-12/schema",
     title: "Presentation Studio portable authoring v1", type: "object", additionalProperties: false,
     required: ["format", "version", "title", "slides"],
@@ -41,6 +42,8 @@ function paSchema() {
       } },
     },
   };
+  if(version===2){schema.title='Presentation Studio portable authoring v2';schema.properties.version.const=2;schema.properties.backdrop=cbEngine.schema();schema.properties.slides.items.properties.backdrop=cbEngine.schema();}
+  return schema;
 }
 function paValidate(raw) {
   // Validate with the same schema shipped in the instruction pack; no remote refs/dependencies.
@@ -49,7 +52,7 @@ function paValidate(raw) {
     if (errors.length >= 20) return;
     const fail = message => { errors.push(path + ": " + message); };
     if (rule.oneOf) {
-      const match = rule.oneOf.find(r => r.properties.type.const === value?.type);
+      const match = rule.oneOf.find(r => Object.entries(r.properties).some(([key,field])=>Object.hasOwn(field,'const')&&value?.[key]===field.const));
       if (!match) return fail("unsupported block type; use " + paBlockTypes.join(", "));
       return check(value, match, path);
     }
@@ -76,13 +79,14 @@ function paValidate(raw) {
     } else if (['integer','number'].includes(rule.type) && (!Number.isFinite(value) || rule.type==='integer'&&!Number.isInteger(value) || value < rule.minimum || value > rule.maximum)) fail("invalid number");
     else if(rule.type==='boolean'&&typeof value!=='boolean')fail('expected a boolean');
   }
-  check(raw, paSchema(), "presentation");
+  check(raw, paSchema(raw?.version), "presentation");
   if (errors.length) throw new Error(errors.join("\n") + (errors.length === 20 ? "\nShowing the first 20 errors." : ""));
   raw.slides.forEach((slide, i) => slide.blocks.forEach((block, j) => {
     if (block.type === "table" && block.rows.some(row => row.length !== block.headers.length))
       errors.push(`presentation.slides[${i}].blocks[${j}]: table rows must match header width`);
   }));
   if (errors.length) throw new Error(errors.slice(0, 20).join("\n"));
+  if(raw.version===2){if(!raw.backdrop&&!raw.slides.some(s=>s.backdrop))throw Error('Portable authoring version 2 is reserved for background-aware documents.');if(raw.backdrop)cbEngine.clean(raw.backdrop);for(const slide of raw.slides)if(slide.backdrop)cbEngine.clean(slide.backdrop);}
   return raw;
 }
 function paConvert(raw, identity) {

@@ -74,7 +74,7 @@ test('schema and runtime share limits; malformed documents and dangerous paths f
   const {page,errors}=await open();try{
     const checks=await page.evaluate(async example=>{
       const cases=[];const run=async(raw,name='bad.json')=>{try{await __lwTest.load(new File([JSON.stringify(raw)],name));cases.push('accepted');}catch(e){cases.push(e.message);}};
-      await run({...example,version:2});await run({...example,slides:Array(101).fill(example.slides[0])});
+      await run({...example,version:99});await run({...example,slides:Array(101).fill(example.slides[0])});
       const bad=structuredClone(example);bad.slides[0].blocks=[{type:'table',headers:['One'],rows:[['A','B']]}];await run(bad);
       const native=__lwTest.pack();native.state.brand.logo='assets/../secret.png';await run(native);
       const xss=structuredClone(example);xss.slides[0].sources=[{label:'bad',url:'javascript:alert(1)'}];await run(xss);
