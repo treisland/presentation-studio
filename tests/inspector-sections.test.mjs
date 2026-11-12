@@ -88,3 +88,20 @@ test('text has one disclosure and shares the content scroller with notes and hel
   assert.deepEqual(errors,[]);
  }finally{await page.close();}
 });
+
+
+test('selection repaint keeps lock guidance before the active editor',async()=>{
+ const {page,errors}=await openExample(browser,'template');try{
+  await page.setViewportSize({width:1024,height:600});
+  const slideId=(await snapshot(page)).state.slides[0].id;
+  const made=await operations(page,[{type:'block.create',slideId,kind:'text'},{type:'block.create',slideId,kind:'quote'}]);
+  await operations(page,[{type:'design.meta',slideId,keys:[made.created[0]],changes:{locked:true}}]);
+  for(const key of [made.created[0],made.created[1],made.created[0]]){
+   await selectElement(page,key);await page.locator('#wp-tab-content').click();
+   const target=key===made.created[0]?'fe-content-panel':'component-widget-fields';
+   assert.equal(await page.locator('#sg-guide').evaluate((guide,id)=>!!(guide.compareDocumentPosition(document.getElementById(id))&Node.DOCUMENT_POSITION_FOLLOWING),target),true);
+  }
+  assert.equal(await page.locator('#sg-reason').isVisible(),true);assert.match(await page.locator('#sg-reason').textContent(),/Locked/);
+  assert.deepEqual(errors,[]);
+ }finally{await page.close();}
+});
