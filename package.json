@@ -15,7 +15,8 @@
     "test:manipulation": "node --test tests/manipulation-targets.test.mjs tests/selection-guidance.test.mjs",
     "check": "npm run build && npm test && npm run test:browser && npm run test:components && npm run test:manipulation",
     "package": "node scripts/package.mjs",
-    "serve": "node scripts/serve.mjs"
+    "serve": "node scripts/serve.mjs",
+    "profile:canvas": "npm run build && node tests/profile-canvas.mjs"
   },
   "devDependencies": {
     "playwright": "1.62.1"
