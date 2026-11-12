@@ -1,0 +1,12 @@
+#full-editor [data-block-mode=edit] :is(.db-handle,.ce-handle,.gs-handle) {
+  box-sizing:border-box;transform:translate(-50%,-50%) scale(calc(1 / var(--mh-scale,var(--db-scale,.4))));transform-origin:center;
+  min-width:0!important;min-height:0!important;width:24px!important;height:24px!important;padding:0!important;touch-action:none;
+}
+#full-editor [data-block-mode=edit] :is(.db-move,.ce-move,.gs-move) {
+  width:30px!important;height:26px!important;font:20px/1 Arial!important;overflow:hidden;background:#0066ff!important;color:#fff!important;border:1px solid #fff!important;border-radius:4px;cursor:grab;
+}
+#full-editor [data-block-mode=edit] :is(.db-handle,.ce-handle,.gs-handle):focus-visible { outline:3px solid var(--wb-text,#102a56);outline-offset:3px; }
+#full-editor [data-block-mode=edit] :is(.db-selected,.gs-selected,.ce-selected,.gs-bounds) { outline-width:calc(2px / var(--db-scale,.4))!important;outline-offset:0; }
+#full-editor .gs-bounds {border-width:calc(2px / var(--db-scale,.4));}
+#full-editor [data-block-mode=edit] :is(.db-handle,.ce-handle,.gs-handle):disabled {cursor:not-allowed;opacity:.65;}
+@media(forced-colors:active){#full-editor [data-block-mode=edit] :is(.db-handle,.ce-handle,.gs-handle){forced-color-adjust:auto;border:2px solid ButtonText!important;}}

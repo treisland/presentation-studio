@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Keep block, media and group movement/resize targets consistent in screen space, with reachable grips at visible canvas edges and clearer locked-handle guidance (#172).
+
 ## 0.13.1-beta.1 — 2026-11-11
 
 - Keep Library text entry responsive on the canvas and in the Inspector by avoiding export-pack creation and edit flushing during status updates; retain grouped Undo, local recovery and editable ZIP backups.
