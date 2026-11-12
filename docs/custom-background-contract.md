@@ -1,8 +1,8 @@
-# Custom background contract — proposed for v0.16.0
+# Custom background contract — approved for v0.16.0
 
-Issue #212. Implementation is assigned, but the format guard below needs explicit
-maintainer review before the new persistent fields are implemented. This document
-is a concrete proposal, not a claim that custom backgrounds are already available.
+Issue #212. The maintainer explicitly approved guarded native v4 and portable-authoring
+v2 on 2026-11-12, retaining existing imports and unchanged formats for untouched files.
+This approved contract does not claim that custom backgrounds are already available.
 The supplied mock-ups guide scope indicators, readable previews and staged actions;
 their incidental photographs, labels and layout are not bundled application assets.
 
@@ -71,7 +71,7 @@ coordinates and opacity are finite 0–1, fit is fill/fit, protectText is off/le
 Unknown keys, kinds, versions, invalid values and unsafe paths reject the import
 without modifying the active project. Non-image kinds cannot retain image fields.
 
-**Proposed decision: native format v4 only when backgrounds metadata exists anywhere
+**Approved decision: native format v4 only when backgrounds metadata exists anywhere
 in the project or recoverable history.** v1/v2/v3 imports remain supported. Untouched
 projects keep their existing generation. v4 is needed because v0.15 understands v3
 but would discard unknown background fields; a v4 guard makes older editors refuse
@@ -86,10 +86,10 @@ Playback/booth exports include only visible presentation content and required as
 with no private notes, authoring history or discarded recovery state.
 
 Portable authoring v1 must not gain fields that an old importer silently ignores.
-Propose a separately guarded portable-authoring v2 only for new background-aware
+Use separately guarded portable-authoring v2 only for new background-aware
 documents, retaining v1 import and unchanged v1 examples. Publish schema/catalog and
 original examples with the implementation; validate before preview/import. This
-second format change is part of the same requested compatibility review.
+second format change is included in the maintainer-approved compatibility review.
 
 ## Acceptance examples and dependencies
 
