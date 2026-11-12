@@ -6,7 +6,7 @@ The maintainer also approved the action-control concept within 0.12.0 / PR #161:
 
 ## Current delivery plan
 
-The maintainer confirmed all UI tests passed and granted beta sign-off for final 0.13.0 runtime `1361138`. Release preparation is [#166](https://github.com/treisland/presentation-studio/issues/166), targeting 0.13.0-beta.1. See [release notes](releases/0.13.0-beta.1.md), [evidence and remaining gate confirmation](releases/0.13.0-beta.1-validation.md) and [manual checklist](0.13.0-manual-test-plan.md). Beta approval is recorded; protected source/release/exact-main/tag/artifact gates remain mandatory.
+The maintainer confirmed all UI tests and explicitly listed manual release gates passed on latest 0.13.0 runtime `1361138`, with beta sign-off. Release preparation is [#166](https://github.com/treisland/presentation-studio/issues/166), targeting 0.13.0-beta.1. See [release notes](releases/0.13.0-beta.1.md), [validation and authorization](releases/0.13.0-beta.1-validation.md) and [manual checklist](0.13.0-manual-test-plan.md). Protected source/release/exact-main/tag/artifact gates remain mandatory.
 
 **0.13.0 — Interactive navigation and media frames — [milestone 13](https://github.com/treisland/presentation-studio/milestone/13):** maintainer-authorized implementation of Library buttons and reusable hyperlink actions (#162), plus image/video masking with shared numeric sliders and reusable frame placeholders (#163). Preserve stable identities, legacy appearance, locks, Undo, recovery and offline exports. See [behavior, compatibility and manual review](interactive-elements.md). Separate feature acceptance and protected release preparation remain required.
 

@@ -34,7 +34,7 @@ The portable AI-authoring v1 schema remains unchanged: these are editor-authored
 
 ## Validation and remaining manual review
 
-The maintainer confirmed all UI tests passed and granted beta release sign-off for final runtime `1361138` on 2026-11-11. See [0.13.0-beta.1 evidence](releases/0.13.0-beta.1-validation.md) for the exact statement, automated results and remaining per-gate/environment confirmation. Earlier feature-review holds are superseded by that UI acceptance; publication still follows the separate release plan.
+The maintainer confirmed all UI tests and the explicitly listed manual release gates passed on latest runtime `1361138`, with beta release sign-off on 2026-11-11. See [0.13.0-beta.1 evidence](releases/0.13.0-beta.1-validation.md) for the exact statements, automated results and unspecified environment details. Earlier feature/manual holds are superseded; publication still follows the separate protected release plan.
 
 Automated workflows cover safe actions, Preview navigation, Undo, numeric staging, locks, editable ZIP/offline reopening and standalone booth masks/keyboard navigation/permissions. Run `npm run check`, `npm run package` and `git diff --check`; record actual results on the linked PRs.
 
