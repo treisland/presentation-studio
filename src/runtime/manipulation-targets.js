@@ -1,14 +1,18 @@
 // Editor-only handle geometry. Never write these view coordinates to project data.
 let mhFrame=0;
 function mhQueue(){if(!mhFrame)mhFrame=requestAnimationFrame(()=>{mhFrame=0;mhPaint();});}
+function mhHide(){for(const handle of document.querySelectorAll('.mh-target:popover-open'))handle.hidePopover();}
 function mhPaint(){
   const slide=projectPreviewNode?.querySelector('.slide'),viewport=$('we-viewport');
-  if(!slide||!viewport||!weEditing()||vbMode!=='edit')return;
+  if(!slide||!viewport||!weEditing()||vbMode!=='edit'){mhHide();return;}
+  const roots=[...slide.querySelectorAll('.db-selected,.ce-selected,.gs-bounds')].filter(root=>!slide.classList.contains('gs-multiple')||root.matches('.gs-bounds'));
+  const active=new Set(roots.flatMap(root=>[...root.children].filter(node=>node.matches('.db-handle,.ce-handle,.gs-handle'))));
+  for(const handle of document.querySelectorAll('.mh-target:popover-open'))if(!active.has(handle))handle.hidePopover();
   const view=viewport.getBoundingClientRect(),canvas=slide.getBoundingClientRect(),scale=weScale();
   const clip={left:Math.max(view.left,canvas.left)+20,right:Math.min(view.right,canvas.right)-20,top:Math.max(view.top,canvas.top)+20,bottom:Math.min(view.bottom,canvas.bottom)-20};
   if(clip.right<=clip.left||clip.bottom<=clip.top)return;
   const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
-  for(const root of slide.querySelectorAll('.db-selected,.ce-selected,.gs-bounds')){
+  for(const root of roots){
     const handles=[...root.children].filter(node=>node.matches('.db-handle,.ce-handle,.gs-handle'));
     if(!handles.length)continue;
     const rect=root.getBoundingClientRect(),visible=rect.right>=view.left&&rect.left<=view.right&&rect.bottom>=view.top&&rect.top<=view.bottom;
@@ -27,9 +31,12 @@ function mhPaint(){
       let sx=clamp(centerX+c*x-s*y,clip.left,clip.right),sy=clamp(centerY+s*x+c*y,clip.top,clip.bottom);
       // At the top edge, put Move inside and apart from the corner/edge resize targets.
       if(move&&sy<=clip.top+1){sx=clamp(centerX,clip.left+24,clip.right-24);sy=clamp(centerY,clip.top+26,clip.bottom);}
-      const dx=sx-cx,dy=sy-cy;
-      Object.assign(handle.style,{left:(width/2+(c*dx+s*dy)/scale)+'px',top:(height/2+(-s*dx+c*dy)/scale)+'px',right:'auto',bottom:'auto',margin:'0',rotate:(-angle)+'deg',visibility:visible?'':'hidden'});
-      handle.style.setProperty('--mh-scale',scale);
+      // Native manual popovers keep only the grips above sibling stacking contexts.
+      // Their DOM ownership/event path stays on the original object; content z-order is unchanged.
+      handle.classList.add('mh-target');handle.popover='manual';
+      Object.assign(handle.style,{left:sx+'px',top:sy+'px',right:'auto',bottom:'auto',margin:'0',rotate:'0deg'});
+      if(visible&&!handle.matches(':popover-open'))handle.showPopover();
+      if(!visible&&handle.matches(':popover-open'))handle.hidePopover();
       if(handle.disabled){handle.title='Unlock this item or presentation to move or resize it.';handle.setAttribute('aria-description',handle.title);}
     }
   }
@@ -41,3 +48,4 @@ const mhMedia=ceDecorate;ceDecorate=function(...args){const value=mhMedia(...arg
 const mhGroups=gsPaint;gsPaint=function(...args){const value=mhGroups(...args);mhQueue();return value;};
 window.addEventListener('pointermove',()=>{if(dbDrag?.mode==='resize'||ceDrag?.corner||gsGesture?.mode==='resize')mhQueue();});
 window.addEventListener('resize',mhQueue);
+document.addEventListener('close',event=>{if(event.target.id==='full-editor')mhHide();},true);
