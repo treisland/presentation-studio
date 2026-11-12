@@ -1,16 +1,17 @@
 // Styling and Layers share selection, validation and atomic editing operations.
 let spPainting=false,spPicking=false,spSnapEnabled=true;
 function spClearGuides(){document.querySelectorAll('.sp-snap-guide,.sp-snap-label').forEach(n=>n.remove());}
-function spSnap(input,slide,exclude,resize=false,bypass=false){
+function spSnap(input,slide,exclude,resize=false,bypass=false,axes=['x','y']){
   spClearGuides();if(!slide||!spSnapEnabled||bypass)return input;
-  const p={...input},bounds=slide.getBoundingClientRect(),model=projectModel(slide.dataset.mediaId),rects=[];
+  const p={...input},bounds=slide.getBoundingClientRect(),model=projectModel(slide.dataset.mediaId),rects=[],excluded=new Set(Array.isArray(exclude)?exclude:[exclude]);
   for(const e of spEntries(model)){
-    if(e.key===exclude||e.meta.hidden||e.media?.canvas?.hidden||spProtected(e))continue;
+    if(excluded.has(e.key)||e.meta.hidden||e.media?.canvas?.hidden||spProtected(e))continue;
     const el=spElement(slide,e);if(!el||el.classList.contains('sp-hidden'))continue;
     const b=el.getBoundingClientRect();if(!b.width||!b.height)continue;
     rects.push({x:(b.left-bounds.left)/bounds.width,y:(b.top-bounds.top)/bounds.height,w:b.width/bounds.width,h:b.height/bounds.height});
   }
   for(const [axis,size,pixels] of [['x','w',bounds.width],['y','h',bounds.height]]){
+    if(!axes.includes(axis))continue;
     const guides=[0,.025,.05,.5,.95,.975,1,...rects.flatMap(r=>[r[axis],r[axis]+r[size]/2,r[axis]+r[size]])],anchors=resize?[p[axis]+p[size]]:[p[axis],p[axis]+p[size]/2,p[axis]+p[size]];
     let best=null;for(const guide of guides)for(const anchor of anchors){const delta=guide-anchor;if(Math.abs(delta)<=6/pixels&&(!best||Math.abs(delta)<Math.abs(best.delta)))best={delta,guide,label:'Alignment'};}
     if(!resize)for(let a=0;a<rects.length;a++)for(let b=a+1;b<rects.length;b++){
@@ -24,7 +25,32 @@ function spSnap(input,slide,exclude,resize=false,bypass=false){
       if(best.label==='Equal spacing'){const label=document.createElement('span');label.className='sp-snap-label';label.textContent=best.label;label.style.cssText=`left:${p.x*100}%;top:${p.y*100}%`;slide.append(label);}
     }
   }
-  return cePlacement(p);
+  return resize?cePlacement(p):{...p,x:Math.max(0,Math.min(1-p.w,p.x)),y:Math.max(0,Math.min(1-p.h,p.y))};
+}
+let spGestureHint=null;
+function spMoveHint(axis,bypass){
+  const node=$('vb-mode-hint');if(!node)return;
+  if(!spGestureHint)spGestureHint={node,previous:node.textContent,last:''};
+  const text=(axis?(axis==='x'?'Horizontal':'Vertical')+' axis locked':'Move · Shift locks axis')+' · '+(bypass?'Snapping bypassed':'Alt bypasses snap')+' · Esc cancels';
+  if(node.textContent!==text)node.textContent=text;node.dataset.spGesture='move';spGestureHint.last=text;
+}
+function spMoveEnd(){
+  if(!spGestureHint)return;const {node,previous,last}=spGestureHint;spGestureHint=null;
+  if(node.textContent===last)node.textContent=previous;delete node.dataset.spGesture;
+}
+function spMove(gesture,origin,dx,dy,event,slide,exclude){
+  const raw={x:dx,y:dy},m=gesture.movement??={active:false,raw:{x:0,y:0},anchorRaw:{x:0,y:0},anchor:{x:origin.x,y:origin.y},position:{x:origin.x,y:origin.y},shift:false,axis:null};
+  if(!m.active){
+    if(Math.hypot(dx*gesture.bounds.width,dy*gesture.bounds.height)<=4){spClearGuides();return null;}
+    m.active=true;m.raw={x:0,y:0};
+  }
+  if(m.shift!==event.shiftKey){m.shift=event.shiftKey;m.axis=null;m.anchorRaw={...m.raw};m.anchor={...m.position};}
+  const delta={x:raw.x-m.anchorRaw.x,y:raw.y-m.anchorRaw.y};
+  if(m.shift&&!m.axis&&(delta.x||delta.y))m.axis=Math.abs(delta.x*gesture.bounds.width)>=Math.abs(delta.y*gesture.bounds.height)?'x':'y';
+  const p={...origin,x:m.anchor.x+(m.axis==='y'?0:delta.x),y:m.anchor.y+(m.axis==='x'?0:delta.y)};
+  p.x=Math.max(0,Math.min(1-p.w,p.x));p.y=Math.max(0,Math.min(1-p.h,p.y));
+  const result=spSnap(p,slide,exclude,false,event.altKey,m.axis?[m.axis]:['x','y']);
+  m.position={x:result.x,y:result.y};m.raw=raw;spMoveHint(m.axis,event.altKey);return result;
 }
 function spActiveKeys(){
   const entries=spEntries(),existing=spSelected.filter(k=>entries.some(e=>e.key===k));if(existing.length)return existing;
