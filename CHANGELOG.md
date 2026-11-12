@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.13.0-beta.1 — 2026-11-11
+
 - Keep every drop-placement target visible with long filenames, put all media Inspector controls in one scroll area, and save frame choices/gestures directly without Apply frame.
 
 - Preserve media geometry and per-object mask/style settings when switching Library media to left, right or background placement, including primary-media swaps and Undo.
