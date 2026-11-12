@@ -26,3 +26,17 @@ This change introduces no saved metadata or playback engine. Viewer presets,
 independent auto-hide and private Presenter View are separate coordinated issues.
 Manual touch, screen-reader, browser/OS and offline-delivery review remain distinct
 from automated regression results. No beta publication is authorized by this feature.
+
+## Presets and visibility
+
+More groups Presenter tools, Appearance and controls, Presentation and Help. Choose Presentation
+for direct Notes/manual-navigation emphasis or Playback for Play/Pause and countdown. Changing
+a preset never pauses or starts slides. Auto-hide and Always visible are independent of Kiosk
+after an explicit choice; hover, keyboard focus and open menus pin controls. OBS still hides
+controls, and reduced motion removes visibility fades.
+
+Viewer changes last only for the loaded project. Reset session controls restores deck defaults.
+In Project settings → Presentation settings, explicitly save the current viewer controls as
+portable deck defaults, or restore legacy defaults. These changes respect locks and Undo,
+survive recovery/editable/playback/booth export, and do not change presentation content.
+Older editors use legacy controls and may omit these optional UI preferences when saving.

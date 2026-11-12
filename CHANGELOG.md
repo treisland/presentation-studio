@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add Presentation/Playback control presets, independent focus-safe auto-hide, grouped More controls and explicit portable deck defaults without changing automatic playback (#203).
+
 - Unify viewer controls into a slim viewport footer with deck-position progress, separate timed countdown and a bounded searchable slide navigator; retain shared playback actions and offline rendering (#202).
 
 - Define the locally reviewed companion-site architecture, canonical guide ownership, screenshot provenance and deferred publication boundary (#192).

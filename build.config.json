@@ -34,7 +34,8 @@
     "src/styles/inspector-sections.css",
     "src/styles/media-inspector.css",
     "src/styles/context-menu.css",
-    "src/styles/viewer-footer.css"
+    "src/styles/viewer-footer.css",
+    "src/styles/viewer-presets.css"
   ],
   "scripts": [
     "src/runtime/prelude.js",
@@ -103,6 +104,7 @@
     "src/runtime/media-inspector.js",
     "src/runtime/context-menu.js",
     "src/runtime/viewer-footer.js",
+    "src/runtime/viewer-presets.js",
     "src/runtime/boot.js"
   ],
   "vendor": "vendor/jszip-3.10.1.min.js"
