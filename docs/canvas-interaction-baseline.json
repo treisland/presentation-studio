@@ -1,0 +1,293 @@
+{
+  "commit": "3b31379b36a9ef48aa170a71709cfdaeb8774161",
+  "environment": {
+    "os": "win32 10.0.26300",
+    "cpu": "AMD Ryzen 7 7700X 8-Core Processor             ",
+    "logicalProcessors": 16,
+    "memoryGiB": 31,
+    "node": "v26.13.0",
+    "chromium": "151.0.7922.34",
+    "headless": true,
+    "viewport": {
+      "width": 1366,
+      "height": 768
+    }
+  },
+  "fixture": {
+    "blocks": 40,
+    "table": "3 × 3",
+    "media": "original inline SVG",
+    "deckSlides": 46
+  },
+  "procedure": "3 repetitions per single/batch and snapping off/on; 24 pointer moves of (2,1) CSS pixels, 8ms requested interval. Input-to-rAF approximates frame readiness, not physical display latency. Commit includes driver round-trip and two rAFs. Geometry reads include all editor code during the gesture.",
+  "results": [
+    {
+      "batch": false,
+      "snapping": false,
+      "repeat": 0,
+      "geometryReads": 1,
+      "guideAdds": 0,
+      "longTasks": [
+        302
+      ],
+      "pointerSamples": 24,
+      "inputToFrameP95Ms": 0.30000000447034836,
+      "frameIntervalP95Ms": 16.700000000000728,
+      "commitToTwoFramesMs": 1417.3999999985099,
+      "commit": {
+        "geometryReads": 22,
+        "domAdds": 3064,
+        "selectionAdds": 0,
+        "thumbnailAdds": 0,
+        "longTasks": [
+          1393
+        ]
+      }
+    },
+    {
+      "batch": false,
+      "snapping": false,
+      "repeat": 1,
+      "geometryReads": 1,
+      "guideAdds": 0,
+      "longTasks": [
+        315
+      ],
+      "pointerSamples": 24,
+      "inputToFrameP95Ms": 0.30000000447034836,
+      "frameIntervalP95Ms": 16.799999999999272,
+      "commitToTwoFramesMs": 1400.6000000014901,
+      "commit": {
+        "geometryReads": 22,
+        "domAdds": 3064,
+        "selectionAdds": 0,
+        "thumbnailAdds": 0,
+        "longTasks": [
+          1380
+        ]
+      }
+    },
+    {
+      "batch": false,
+      "snapping": false,
+      "repeat": 2,
+      "geometryReads": 1,
+      "guideAdds": 0,
+      "longTasks": [
+        294
+      ],
+      "pointerSamples": 24,
+      "inputToFrameP95Ms": 0.30000000447034836,
+      "frameIntervalP95Ms": 16.700000000000728,
+      "commitToTwoFramesMs": 1407.5,
+      "commit": {
+        "geometryReads": 22,
+        "domAdds": 3064,
+        "selectionAdds": 0,
+        "thumbnailAdds": 0,
+        "longTasks": [
+          1390
+        ]
+      }
+    },
+    {
+      "batch": false,
+      "snapping": true,
+      "repeat": 0,
+      "geometryReads": 1009,
+      "guideAdds": 47,
+      "longTasks": [
+        268
+      ],
+      "pointerSamples": 24,
+      "inputToFrameP95Ms": 0.7999999970197678,
+      "frameIntervalP95Ms": 16.799999999999272,
+      "commitToTwoFramesMs": 1392.3999999985099,
+      "commit": {
+        "geometryReads": 22,
+        "domAdds": 3064,
+        "selectionAdds": 0,
+        "thumbnailAdds": 0,
+        "longTasks": [
+          1367
+        ]
+      }
+    },
+    {
+      "batch": false,
+      "snapping": true,
+      "repeat": 1,
+      "geometryReads": 1009,
+      "guideAdds": 47,
+      "longTasks": [
+        290
+      ],
+      "pointerSamples": 24,
+      "inputToFrameP95Ms": 1,
+      "frameIntervalP95Ms": 16.700000000000728,
+      "commitToTwoFramesMs": 1424,
+      "commit": {
+        "geometryReads": 22,
+        "domAdds": 3064,
+        "selectionAdds": 0,
+        "thumbnailAdds": 0,
+        "longTasks": [
+          1406
+        ]
+      }
+    },
+    {
+      "batch": false,
+      "snapping": true,
+      "repeat": 2,
+      "geometryReads": 1009,
+      "guideAdds": 47,
+      "longTasks": [
+        306
+      ],
+      "pointerSamples": 24,
+      "inputToFrameP95Ms": 0.7999999970197678,
+      "frameIntervalP95Ms": 16.700000000000728,
+      "commitToTwoFramesMs": 1488.6999999955297,
+      "commit": {
+        "geometryReads": 22,
+        "domAdds": 3064,
+        "selectionAdds": 0,
+        "thumbnailAdds": 0,
+        "longTasks": [
+          1462
+        ]
+      }
+    },
+    {
+      "batch": true,
+      "snapping": false,
+      "repeat": 0,
+      "geometryReads": 1,
+      "guideAdds": 0,
+      "longTasks": [],
+      "pointerSamples": 24,
+      "inputToFrameP95Ms": 0.10000000149011612,
+      "frameIntervalP95Ms": 16.799999999995634,
+      "commitToTwoFramesMs": 2086.89999999851,
+      "commit": {
+        "geometryReads": 22,
+        "domAdds": 3765,
+        "selectionAdds": 16,
+        "thumbnailAdds": 0,
+        "longTasks": [
+          2059
+        ]
+      }
+    },
+    {
+      "batch": true,
+      "snapping": false,
+      "repeat": 1,
+      "geometryReads": 1,
+      "guideAdds": 0,
+      "longTasks": [
+        56
+      ],
+      "pointerSamples": 24,
+      "inputToFrameP95Ms": 0.10000000149011612,
+      "frameIntervalP95Ms": 16.700000000004366,
+      "commitToTwoFramesMs": 2041.3999999985099,
+      "commit": {
+        "geometryReads": 22,
+        "domAdds": 3765,
+        "selectionAdds": 16,
+        "thumbnailAdds": 0,
+        "longTasks": [
+          2007
+        ]
+      }
+    },
+    {
+      "batch": true,
+      "snapping": false,
+      "repeat": 2,
+      "geometryReads": 1,
+      "guideAdds": 0,
+      "longTasks": [],
+      "pointerSamples": 24,
+      "inputToFrameP95Ms": 0.10000000149011612,
+      "frameIntervalP95Ms": 16.700000000004366,
+      "commitToTwoFramesMs": 2000.3999999985099,
+      "commit": {
+        "geometryReads": 22,
+        "domAdds": 3765,
+        "selectionAdds": 16,
+        "thumbnailAdds": 0,
+        "longTasks": [
+          1968
+        ]
+      }
+    },
+    {
+      "batch": true,
+      "snapping": true,
+      "repeat": 0,
+      "geometryReads": 1,
+      "guideAdds": 0,
+      "longTasks": [],
+      "pointerSamples": 24,
+      "inputToFrameP95Ms": 0.20000000298023224,
+      "frameIntervalP95Ms": 16.700000000004366,
+      "commitToTwoFramesMs": 2020.8000000044703,
+      "commit": {
+        "geometryReads": 22,
+        "domAdds": 3765,
+        "selectionAdds": 16,
+        "thumbnailAdds": 0,
+        "longTasks": [
+          1983
+        ]
+      }
+    },
+    {
+      "batch": true,
+      "snapping": true,
+      "repeat": 1,
+      "geometryReads": 1,
+      "guideAdds": 0,
+      "longTasks": [],
+      "pointerSamples": 24,
+      "inputToFrameP95Ms": 0.20000000298023224,
+      "frameIntervalP95Ms": 16.799999999995634,
+      "commitToTwoFramesMs": 1930.1999999955297,
+      "commit": {
+        "geometryReads": 22,
+        "domAdds": 3765,
+        "selectionAdds": 16,
+        "thumbnailAdds": 0,
+        "longTasks": [
+          1897
+        ]
+      }
+    },
+    {
+      "batch": true,
+      "snapping": true,
+      "repeat": 2,
+      "geometryReads": 1,
+      "guideAdds": 0,
+      "longTasks": [
+        51
+      ],
+      "pointerSamples": 24,
+      "inputToFrameP95Ms": 0.10000000149011612,
+      "frameIntervalP95Ms": 16.80000000000291,
+      "commitToTwoFramesMs": 2044.2000000029802,
+      "commit": {
+        "geometryReads": 22,
+        "domAdds": 3765,
+        "selectionAdds": 16,
+        "thumbnailAdds": 0,
+        "longTasks": [
+          2010
+        ]
+      }
+    }
+  ]
+}
