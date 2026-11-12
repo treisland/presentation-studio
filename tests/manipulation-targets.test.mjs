@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {chromium} from 'playwright';
 import {mkdir} from 'node:fs/promises';
 import {openExample,snapshot,operations} from './collection-ui.mjs';
+import {selectElement} from './ui.mjs';
 const browser=await chromium.launch({headless:true,args:['--no-sandbox'],executablePath:process.env.CHROMIUM_EXECUTABLE_PATH});
 test.after(()=>browser.close());
 async function reachable(page,selector){
@@ -41,5 +42,14 @@ test('media and group targets match block sizes at two zooms and preserve locks'
     await operations(page,[{type:'design.meta',slideId:id,keys:[keys[0]],changes:{locked:true}}]);
     assert.equal(await page.locator('#fe-preview .gs-move').isDisabled(),true);assert.match(await page.locator('#fe-preview .gs-move').getAttribute('aria-description'),/Unlock/);
     await page.emulateMedia({forcedColors:'active'});await mkdir('test-results',{recursive:true});await page.screenshot({path:'test-results/manipulation-targets.png'});assert.deepEqual(errors,[]);
+  }finally{await page.close();}
+});
+test('selected grips remain reachable above overlapping content without changing saved layer order',async()=>{
+  const {page,errors}=await openExample(browser,'portfolio-demo');try{
+    const id=(await snapshot(page)).state.slides[0].id;await operations(page,[{type:'design.clear',slideId:id}]);
+    const result=await operations(page,[{type:'block.create',slideId:id,kind:'text',placement:{x:.2,y:.2,w:.08,h:.08},layer:4},{type:'block.create',slideId:id,kind:'rectangle',placement:{x:.1,y:.1,w:.5,h:.5},layer:20}]);const [key,cover]=result.created,before=await snapshot(page);
+    await selectElement(page,key);await reachable(page,'#fe-preview .'+key+' > .db-handle');assert.deepEqual((await snapshot(page)).state,before.state);
+    assert.equal(await page.locator('#fe-preview .'+cover).evaluate(el=>el.style.zIndex),'20');assert.equal(await page.locator('#fe-preview .'+key).evaluate(el=>el.style.zIndex),'4');
+    await page.locator('#vb-preview-mode').click();assert.equal(await page.locator('.mh-target:popover-open').count(),0);assert.deepEqual(errors,[]);
   }finally{await page.close();}
 });
