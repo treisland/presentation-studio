@@ -208,7 +208,7 @@ projectInit=function(...args){
     const handle=event.target.closest('[data-gs-gesture]');
     if(handle&&['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(event.key)){
       event.preventDefault();event.stopImmediatePropagation();const delta=event.shiftKey?.01:.002;
-      componentRun({type:'component.arrange',keys:spActiveKeys(),action:handle.dataset.gsGesture==='resize'?'resize':'move',dx:handle.dataset.gsGesture==='move'?(event.key==='ArrowLeft'?-delta:event.key==='ArrowRight'?delta:0):0,dy:handle.dataset.gsGesture==='move'?(event.key==='ArrowUp'?-delta:event.key==='ArrowDown'?delta:0):0,...(handle.dataset.gsGesture==='resize'?{scale:['ArrowLeft','ArrowUp'].includes(event.key)?.98:1.02}:{})});gsPaint();preview.querySelector('[data-gs-gesture="'+handle.dataset.gsGesture+'"]')?.focus();
+      const result=componentRun({type:'component.arrange',keys:spActiveKeys(),action:handle.dataset.gsGesture==='resize'?'resize':'move',dx:handle.dataset.gsGesture==='move'?(event.key==='ArrowLeft'?-delta:event.key==='ArrowRight'?delta:0):0,dy:handle.dataset.gsGesture==='move'?(event.key==='ArrowUp'?-delta:event.key==='ArrowDown'?delta:0):0,...(handle.dataset.gsGesture==='resize'?{scale:['ArrowLeft','ArrowUp'].includes(event.key)?.98:1.02}:{})});gsPaint();if(result?.ok&&result.changed!==false)sgAnnounceMove(handle.dataset.gsGesture==='resize'?'Resized':'Moved');preview.querySelector('[data-gs-gesture="'+handle.dataset.gsGesture+'"]')?.focus();
     }
   },true);
   $('full-editor').addEventListener('close',()=>gsFinish(true));

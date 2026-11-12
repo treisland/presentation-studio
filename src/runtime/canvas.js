@@ -1026,6 +1026,7 @@ function ceBind() {
       if (e.key.startsWith("Arrow")) {
         e.preventDefault();
         e.stopImmediatePropagation();
+        const before=ceConfig()?.canvas?.placement;
         update((cfg) => {
           const p = cfg.canvas?.placement;
           if (!p) return;
@@ -1051,6 +1052,7 @@ function ceBind() {
             }),
           };
         });
+        const after=ceConfig()?.canvas?.placement;if(before&&after&&(before.x!==after.x||before.y!==after.y))sgAnnounceMove();
       }
     },
     true,
