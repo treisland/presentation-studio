@@ -426,6 +426,7 @@ function ceGesture(e) {
     corner = e.target.dataset.corner,
     crop = $("ce-crop").checked && cfg.kind === "image";
   if (!cfg.canvas?.placement && !corner && !crop) return;
+  projectFlush();
   const slide = figure.closest(".slide"),
     bounds = slide.getBoundingClientRect(),
     p = cfg.canvas?.placement || ceDefaultRect(figure);
@@ -443,6 +444,7 @@ function ceGesture(e) {
     oldCrop: ceObject(cfg.canvas).crop,
     next: projectCopy(p),
     nextCrop: ceObject(cfg.canvas).crop,
+    snapshot:{projectId:projectMeta.id,revision:editingRevision()},
     pointer: e.pointerId,
   };
   try {
@@ -463,6 +465,7 @@ function ceMove(e) {
   }
   const d = ceDrag;
   if (!d || d.pointer !== e.pointerId) return;
+  if(projectSelected!==d.id||projectMeta.id!==d.snapshot.projectId){ceEnd(true);return;}
   e.preventDefault();
   const dx = (e.clientX - d.startX) / d.bounds.width,
     dy = (e.clientY - d.startY) / d.bounds.height;
@@ -496,10 +499,10 @@ function ceMove(e) {
     p.w = w;
     p.h = h;
   } else {
-    p.x += dx;
-    p.y += dy;
+    const next=spMove(d,p,dx,dy,e,d.figure.closest('.slide'),'media-'+d.object);if(!next)return;
+    Object.assign(p,next);
   }
-  d.next = cePlacement(spSnap(p,d.figure.closest('.slide'),'media-'+d.object,!!d.corner,e.altKey));
+  d.next = d.corner?cePlacement(spSnap(p,d.figure.closest('.slide'),'media-'+d.object,true,e.altKey)):p;
   ceStyle(
     d.figure,
     {
@@ -513,6 +516,7 @@ function ceMove(e) {
   );
 }
 function ceEnd(cancel = false) {
+  spMoveEnd();
   spClearGuides();
   if (ceRelocate) {
     if (cancel) ceCancelPlacement();
@@ -546,9 +550,10 @@ function ceEnd(cancel = false) {
   if (
     !d.figure.isConnected ||
     projectSelected !== d.id ||
-    ceLocked(d.id, d.object)
+    ceLocked(d.id, d.object)||projectMeta.id!==d.snapshot.projectId||editingRevision()!==d.snapshot.revision
   )
-    return;
+    {projectPreview();return;}
+  if(d.crop?!['x','y'].some(k=>Math.abs(d.nextCrop[k]-d.oldCrop[k])>1e-8):!['x','y','w','h'].some(k=>Math.abs(d.next[k]-d.p[k])>1e-8))return;
   const cfg = ceConfig(d.object, d.id),
     next = {
       ...cfg,
@@ -982,6 +987,7 @@ function ceBind() {
   window.addEventListener("pointerup", (event) => {
     if (ceRelocate?.pointer === event.pointerId)
       ceHighlightPlacement(event.clientX, event.clientY);
+    if(ceDrag?.pointer===event.pointerId)ceMove(event);
     ceEnd();
   });
   window.addEventListener("pointercancel", () => ceEnd(true));
