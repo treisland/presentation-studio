@@ -138,7 +138,7 @@ test("Context inspector follows text, table and media selection and preserves me
       "68px",
     );
     await media(p);
-    assert.equal(await p.locator("#ce-panel").isVisible(), true);
+    assert.equal(await p.locator("#mi-content").isVisible(), true);
     await reveal(p,"#ce-float");
     await p.locator("#ce-float").click();
     assert.equal(await p.locator("#ce-panel").isVisible(), true);

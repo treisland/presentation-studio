@@ -1,0 +1,11 @@
+#full-editor :is(#mi-content,#mi-placement,#mi-video) {border-bottom:1px solid var(--wb-line);padding-bottom:10px;}
+#full-editor #mi-thumb {width:70px;height:48px;object-fit:contain;display:block;margin:8px 0;}
+#full-editor #mi-target {overflow-wrap:anywhere;color:var(--wb-ink);font-weight:600;}
+#full-editor #mi-content > button {margin:3px;}
+#full-editor :is(#mi-content,#mi-placement,#mi-video) :is(button,input,select) {max-width:100%;box-sizing:border-box;}
+#full-editor #mi-content > button {white-space:normal;overflow-wrap:anywhere;}
+#full-editor #ce-objects {display:none!important;}
+#full-editor .ce-placement-handle {transform:scale(calc(1 / var(--mh-scale,var(--db-scale,.4))));transform-origin:top left;font:12px/1.2 var(--wb-font);padding:6px 9px;min-height:30px;cursor:pointer;display:flex;align-items:center;gap:5px;}
+#full-editor #ce-grid {display:inline-flex;align-items:center;gap:5px;padding:6px 9px;font-size:12px;}
+#full-editor #mi-advanced {padding:8px;max-width:300px;}
+#media-editor[hidden] {display:none!important;}

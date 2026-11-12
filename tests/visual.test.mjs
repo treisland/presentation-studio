@@ -364,7 +364,7 @@ test("media selection, preview interaction, and muted video remain separate from
     assert.equal(await p.locator("#vb-selection-label").innerText(), "Media");
     assert.equal(await p.locator("#vb-bold").isDisabled(), true);
     await reveal(p,"#vb-panel");await p.locator("#vb-panel").click();
-    assert.equal(await p.locator("#media-editor").isVisible(), true);
+    assert.equal(await p.locator("#mi-content").isVisible(), true);
     const bytes = await p.evaluate(async () => {
       const c = document.createElement("canvas");
       c.width = 320;
@@ -395,15 +395,14 @@ test("media selection, preview interaction, and muted video remain separate from
       ];
     });
     await p
-      .locator("#me-file")
+      .locator("#ce-replace-file")
       .setInputFiles({
         name: "preview.webm",
         mimeType: "video/webm",
         buffer: Buffer.from(bytes),
       });
+    await p.locator('#fe-confirm-accept').click();
     await p.waitForTimeout(300);
-    await p.locator("#me-close").click();
-    await p.locator("#open-full-editor").click();
     await p
       .locator(".fe-slide-button")
       .filter({ hasText: "Bring your content to life" })

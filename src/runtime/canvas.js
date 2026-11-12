@@ -374,7 +374,7 @@ function ceDecorate(root) {
       const handle = document.createElement("button");
       handle.type = "button";
       handle.className = "ce-placement-handle";
-      handle.textContent = "Change placement";
+      handle.append(workbenchIcon('card'),document.createTextNode('Placement'),workbenchIcon('chevron'));
       handle.title = "Drag to a placement zone, or click to choose";
       handle.setAttribute("aria-label", "Change media placement");
       handle.onclick = (event) => {

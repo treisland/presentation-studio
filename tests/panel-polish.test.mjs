@@ -11,13 +11,13 @@ async function setup(width=1280){const p=await browser.newPage({viewport:{width,
 async function pack(p){const d=p.waitForEvent('download');await click(p,'#fe-export-json');return JSON.parse(await readFile(await(await d).path(),'utf8'));}
 const read=p=>p.evaluate(()=>window.presentationStudioEditing.read().state);
 
-test('Inspector media-list selection targets the matching Grid cell for removal and Undo',async()=>{const{p,errors}=await setup();try{
+test('Layers selection targets the matching Grid cell for removal and Undo',async()=>{const{p,errors}=await setup();try{
  await addSlide(p,'media-grid');
  for(let i=0;i<2;i++)await p.locator('#fe-preview .mg-cell-action').nth(i).evaluate((el,i)=>{const d=new DataTransfer();d.items.add(new File(['<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50"><rect width="50" height="50" fill="blue"/></svg>'],'cell-'+i+'.svg',{type:'image/svg+xml'}));el.dispatchEvent(new DragEvent('drop',{bubbles:true,dataTransfer:d}));},i);
  await p.locator('#fe-preview .mg-cell-action').first().click();
  await click(p,'#we-context-media');
  const before=await read(p),slide=before.slides.find(s=>s.template==='media-grid'),objects=before.mediaObjects[slide.id];
- await p.locator('#ce-objects button').filter({hasText:'cell-1.svg'}).click();
+ await p.locator('#ld-reveal-layers').click();await p.getByRole('button',{name:'Select Grid cell 2',exact:true}).click();
  assert.equal(await p.locator('#wp-selection-title').textContent(),'Grid cell 2');assert.equal(await p.locator('#wp-selection-detail').textContent(),'cell-1.svg');
  assert.match(await p.locator('#mg-cell option:checked').textContent(),/^Cell 2:/);
  await p.locator('#wp-delete').click();assert.match(await p.locator('#fe-confirm').innerText(),/Remove cell-1\.svg from this cell/);await p.locator('#fe-confirm-accept').click();

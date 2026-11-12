@@ -19,7 +19,7 @@ const objectID=c=>c.attrs.class.match(/\bmg-media-(object-[\w-]+)/)?.[1];
 async function setup(legacy=false){const p=await browser.newPage({viewport:{width:1366,height:768},acceptDownloads:true});const errors=[];p.on('pageerror',e=>errors.push(e.message));await p.emulateMedia({reducedMotion:'reduce'});await p.goto('file://'+(legacy?await legacyHTML(resolve('.')):resolve('dist/presentation-studio.html')));await p.locator('#open-full-editor').click();const original=await read(p);await addSlide(p,'media-grid');return{p,errors,original};}
 async function drop(p,index,name='cell.svg'){await p.locator('#fe-preview .mg-cell-action').nth(index).evaluate((el,{svg,name})=>{const dataTransfer=new DataTransfer();dataTransfer.items.add(new File([svg],name,{type:'image/svg+xml'}));el.dispatchEvent(new DragEvent('drop',{bubbles:true,dataTransfer}));},{svg,name});}
 async function choose(p,index){await reveal(p,'#mg-cell');await p.locator('#mg-cell').selectOption({index});}
-async function upload(p,name='new.svg',buffer=Buffer.from(svg),mimeType='image/svg+xml'){const event=p.waitForEvent('filechooser');await p.locator('#mg-upload').click();await(await event).setFiles({name,mimeType,buffer});}
+async function upload(p,name='new.svg',buffer=Buffer.from(svg),mimeType='image/svg+xml'){const event=p.waitForEvent('filechooser');await reveal(p,'#mi-add-cell');await p.locator('#mi-add-cell').click();await(await event).setFiles({name,mimeType,buffer});}
 async function pack(p){const d=p.waitForEvent('download');await click(p,'#fe-export-json');return JSON.parse(await readFile(await(await d).path(),'utf8'));}
 async function apply(p,op){return p.evaluate(op=>{const s=window.presentationStudioEditing.read();return window.presentationStudioEditing.apply({apiVersion:1,projectId:s.projectId,expectedRevision:s.revision,operations:[{slideId:s.state.slides.find(s=>s.tree.some(n=>n.attrs?.class?.startsWith('mg-grid '))).id,...op}]});},op);}
 
@@ -43,10 +43,9 @@ test('grid uploads, replacement, presets, overflow, swaps and locks preserve med
     await reveal(p,"#mg-destination");
     await reveal(p,"#mg-swap");
  await p.locator('#fe-undo').click();await choose(p,0);await p.locator('#mg-destination').selectOption({index:1});await p.locator('#mg-swap').click();assert.deepEqual(root((await read(p)).state).children.slice(0,2).map(objectID),[ids[1],ids[0]]);
-    await reveal(p,"#mg-fit");
-    await reveal(p,"#mg-crop-x");
-    await reveal(p,"#mg-crop-x");
- await p.locator('#fe-undo').click();await choose(p,0);await p.locator('#mg-fit').selectOption('cover');await p.locator('#mg-crop-x').fill('20');await p.locator('#mg-crop-x').press('Tab');s=await read(p);assert.equal(s.state.mediaObjects[slideID][0].media.canvas.crop.x,20);
+    await reveal(p,"#mi-fit");
+    await reveal(p,"#mi-x");
+ await p.locator('#fe-undo').click();await choose(p,0);await p.locator('#mi-fit').selectOption('cover');await p.locator('#mi-x').fill('20');await p.locator('#mi-x').press('Tab');s=await read(p);assert.equal(s.state.mediaObjects[slideID][0].media.canvas.crop.x,20);
  await click(p,'#ce-slide-lock');const locked=await pack(p);const response=await apply(p,{type:'grid.configure',rows:[10000],cols:[10000],gap:2,overflow:'detach'});assert.equal(response.code,'LOCKED');assert.deepEqual(await pack(p),locked);
  assert.deepEqual(errors,[]);
  }finally{await p.close();}});

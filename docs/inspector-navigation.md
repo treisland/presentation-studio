@@ -10,11 +10,11 @@ Each setting has one primary home. Shortcuts invoke the same action or reveal th
 | --- | --- |
 | Slide content, text panel, widget fields, table and code editors | Selection-driven Inspector Content, retaining existing handlers in collapsible sections. |
 | Appearance/color and position/size | Existing Style and Arrange navigation with collapsible sections. Color popovers remain focused sub-editors. |
-| Media Manager and selected-media fields | Inspector is the destination. Keep Media Manager until #189 delivers parity for primary/additional/grid media, layouts, captions, playback and posters. |
-| Fit/crop, mask and grid sizing | Consolidate into selection-aware Crop & shape in #189. Initial disclosures retain their existing behavior. |
-| Change placement and free/structured placement | Compact Placement vocabulary and shared actions in #189. |
-| Media-object selector and Layers | Layers is the destination. Retire redundant selection only after all targets remain reachable. |
-| Project import/export in media editing | Project is the destination in #189. Explain settings-only JSON separately from complete backups. |
+| Media Manager and selected-media fields | Selected-media Inspector replaces the modal entry point. See [the #189 parity map](media-inspector.md) for primary/additional/grid media, layouts, captions, playback and posters. |
+| Fit/crop, mask and grid sizing | One selection-aware Sizing choice in Crop & shape; only applicable legacy or framed crop controls are shown. |
+| Change placement and free/structured placement | Compact Placement shortcuts and the selected object's Placement section share existing placement operations. |
+| Media-object selector and Layers | Layers is the single object-selection home, including grid-cell children. The redundant media list is retired. |
+| Project import/export in media editing | Project owns import/export. Advanced primary-only settings JSON explains its exclusions; editable ZIP remains the complete backup. |
 | Hide, lock, duplicate, delete and reorder | Retain useful Layers/toolbar/menu shortcuts with identical handlers and guards. |
 | Library cards and placed-instance menus | #190 supplies contextual shortcuts. Saved originals and placed copies remain independent. Label Delete saved component and Delete from slide distinctly. |
 

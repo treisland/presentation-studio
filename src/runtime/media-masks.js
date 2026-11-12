@@ -122,7 +122,9 @@ projectInit=function(...args){
     // to the stage. Resolve the current media under the actual pointer too.
     const figure=event.target.closest('.media-box') || (projectPreviewNode?.contains(event.target) && document.elementFromPoint(event.clientX,event.clientY)?.closest('.media-box'));
     if(!figure||!projectPreviewNode?.contains(figure)||vbMode!=='edit'||icSelection().locked)return;
-    event.preventDefault();event.stopImmediatePropagation();ceSelect(figure.dataset.objectId||'primary');weInspect('media');wePanels.inspector.open=true;wePanelView();maskPaint();$('mask-crop-mode').checked=true;wpChooseTab('content');idsReveal('mask-zoom',true);
+    event.preventDefault();event.stopImmediatePropagation();ceSelect(figure.dataset.objectId||'primary');weInspect('media');wePanels.inspector.open=true;wePanelView();maskPaint();wpChooseTab('content');
+    if(miReady&&!spMeta('media-'+(figure.dataset.objectId||'primary')).frame){$('mask-crop-mode').checked=false;idsReveal('mi-x',true);return;}
+    $('mask-crop-mode').checked=true;idsReveal('mask-zoom',true);
   },true);
   maskReady=true;maskPaint();return result;
 };

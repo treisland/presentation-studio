@@ -32,9 +32,8 @@ for (const name of ['pattern.mp4', 'pattern.webm']) {
       await page.locator('.fe-slide-button[data-slide-id="studio-media"]').click();
       await page.locator('#fe-preview .media-box').click();
       await reveal(page,'#vb-panel');await page.locator('#vb-panel').click();
-      await page.locator('#me-file').setInputFiles(resolve('tests/fixtures/media', name));
-      await page.locator('#me-close').click();
-      await page.locator('#open-full-editor').click();
+      await page.locator('#ce-replace-file').setInputFiles(resolve('tests/fixtures/media', name));
+      await page.locator('#fe-confirm-accept').click();
       await page.locator('.fe-slide-button[data-slide-id="studio-media"]').click();
       await page.locator('#vb-preview-mode').click();
       await playing(page, '#fe-preview video');

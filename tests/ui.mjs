@@ -15,7 +15,7 @@ export async function reveal(page, selector) {
     if (['content','arrange','style'].includes(part)) {if(!await page.locator('#we-inspector').isVisible())await page.locator('#we-toggle-inspector').click();await page.locator('#wp-tab-' + part).click();}
   }
   // Contextual Inspector fields require the explicit destination when no matching object is selected.
-  const mediaContext = await page.locator(selector).evaluate(el => !!el.closest('#ce-panel'));
+  const mediaContext = await page.locator(selector).evaluate(el => !!el.closest('#ce-panel,#mi-content,#mi-placement'));
   if (mediaContext && await page.locator('#ce-panel').getAttribute('data-ic-visible') === 'false') {
     await inspectContent(page,'Media');
     const part=await page.locator(selector).evaluate(el=>el.closest('[data-wp-part]')?.dataset.wpPart);
