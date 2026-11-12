@@ -50,7 +50,7 @@ test('selected grips remain reachable above overlapping content without changing
     const result=await operations(page,[{type:'block.create',slideId:id,kind:'text',placement:{x:.2,y:.2,w:.08,h:.08},layer:4},{type:'block.create',slideId:id,kind:'rectangle',placement:{x:.1,y:.1,w:.5,h:.5},layer:20}]);const [key,cover]=result.created,before=await snapshot(page);
     await selectElement(page,key);await reachable(page,'#fe-preview .'+key+' > .db-handle');assert.deepEqual((await snapshot(page)).state,before.state);
     assert.equal(await page.locator('#fe-preview .'+cover).evaluate(el=>el.style.zIndex),'20');assert.equal(await page.locator('#fe-preview .'+key).evaluate(el=>el.style.zIndex),'4');
-    await page.locator('#vb-preview-mode').click();assert.equal(await page.locator('.mh-target:popover-open').count(),0);assert.deepEqual(errors,[]);
+    const grip=page.locator('#fe-preview .'+key+' .db-move');await grip.hover();const start=await grip.boundingBox(),corner=await page.locator('#fe-preview .'+key+' .db-resize-se').boundingBox();await page.keyboard.down('Alt');await page.mouse.down();await page.mouse.move(start.x+start.width/2+35,start.y+start.height/2+10,{steps:5});await page.waitForFunction(({key,x})=>document.querySelector('#fe-preview .'+key+' .db-resize-se').getBoundingClientRect().x>x+20,{key,x:corner.x});await page.mouse.up();await page.keyboard.up('Alt');await page.locator('#fe-undo').click();assert.deepEqual((await snapshot(page)).state,before.state);await page.locator('#vb-preview-mode').click();assert.equal(await page.locator('.mh-target:popover-open').count(),0);assert.deepEqual(errors,[]);
   }finally{await page.close();}
 });
 
