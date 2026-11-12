@@ -33,3 +33,7 @@ Content/Arrange/Style remains the single Inspector navigation strip in this incr
 Automated coverage exercises keyboard disclosure, independent expansion, per-type restoration including rebuilt widget forms, unchanged project/revision after view-only interactions, pending text, table/notes selection, explicit navigation and existing recovery/export workflows. Run `npm run check`, `npm run package` and `git diff --check`.
 
 Manual review remains required for theme contrast, laptop/narrow-panel layouts, screen-reader announcements, real media and offline downloaded-package workflows. Automated Chromium checks do not establish those manual results.
+
+## Text Inspector simplification (#200)
+
+Text fields appear directly inside a single Text disclosure; there is no nested Edit in panel step. Edit on canvas retains the existing inline workflow. Replacing text in the panel removes inline formatting, as the short adjacent note states. Selection blockers remain before the controls, while keyboard/positioning help follows notes. Controls, notes and help share the main Inspector content scroller; the selection header and tabs remain above it. Disclosure preferences are session-only and preserve existing pending edit and Undo behavior.

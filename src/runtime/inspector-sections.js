@@ -40,7 +40,7 @@ function idsPaint() {
   const context = icSelection(), kind = idsType(context);
   for (const {section,initial} of idsSections.values()) {
     if (!section.isConnected) continue;
-    const scope = section.id === 'ci-notes' ? 'notes' : kind;
+    const scope = ['ci-notes','ids-keyboard-help'].includes(section.id) ? section.id : kind;
     if (section.dataset.idsKind !== scope) {
       section.dataset.idsKind = scope;
       section.open = idsPreferences.get(scope + ':' + section.id) ?? initial;
@@ -48,7 +48,7 @@ function idsPaint() {
     const value = section.querySelector(':scope > summary > .ids-value');
     if (value) {
       const text = section.id === 'ids-mask-panel' ? [$('mask-fit').selectedOptions[0]?.textContent,$('mask-shape').selectedOptions[0]?.textContent].filter(Boolean).join(' · ')
-        : section.id === 'ids-nav-panel' ? $('nav-type')?.selectedOptions[0]?.textContent || 'Link settings'
+        : section.id === 'ids-nav-panel' ? $('nav-type')?.selectedOptions[0]?.textContent || 'None'
         : section.id === 'ids-wb-arrange-fields' ? 'Position and size'
         : section.id === 'ids-sp-style' ? $('sp-selection').textContent
         : context.kind === 'slide' ? projectModel().title : context.title;
@@ -88,7 +88,7 @@ projectInit = function(...args) {
   // Workspace previously kept the slide title outside its content panel.
   // Move the original fields so collapsing Content actually collapses its editor.
   $('ids-fe-content-panel').querySelector(':scope > summary').after($('ic-title-label'),$('fe-slide-title'));
-  for (const id of ['ic-text-editor','ci-table-editor','ci-code-advanced','ci-playback','ci-legacy-content','ci-notes','ce-panel']) idsRegister($(id));
+  for (const id of ['ci-table-editor','ci-code-advanced','ci-playback','ci-legacy-content','ci-notes','ce-panel']) idsRegister($(id));
   delete $('ce-panel').querySelector(':scope > summary').dataset.wpPart;
   const background = document.querySelector('.bg-slide-settings');
   if (background) {background.id='ids-slide-background';idsRegister(background);}
@@ -96,5 +96,11 @@ projectInit = function(...args) {
   $('we-inspector').addEventListener('focusin', event => {
     if (!event.target.closest('summary')) idsReveal(event.target);
   });
+  $('wp-fields').prepend($('sg-guide'));
+  $('sg-guide').removeAttribute('tabindex');
+  $('sg-guide').querySelector('details').id='ids-keyboard-help';
+  $('sg-guide').querySelector('summary').textContent='Keyboard shortcuts and positioning';
+  $('wp-fields').append($('ci-notes'),$('sg-guide').querySelector('details'));
+  idsRegister($('ids-keyboard-help'));
   idsReady = true;idsPaint();return result;
 };

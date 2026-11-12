@@ -44,7 +44,7 @@ test('scoped legacy field navigation preserves pending edits and never targets a
 test('slide notes preserve selection, pending text, object locks and independent slide scope through editable restore',async()=>{
  const {page,errors}=await openExample(browser,'template');try{
   const id=(await snapshot(page)).state.slides[0].id,result=await operations(page,[{type:'block.create',slideId:id,kind:'text'}]),key=result.created[0];
-  await content(page,key);await page.locator('#ic-text-editor > summary').click();await page.locator('#fe-block-text').fill('Pending object edit');
+  await content(page,key);await page.locator('#fe-block-text').focus();await page.locator('#fe-block-text').fill('Pending object edit');
   const title=await page.locator('#wp-selection-title').textContent();await page.locator('#ci-notes > summary').click();
   await page.locator('#fe-notes-text').fill('Notes for the first slide');await page.locator('#fe-notes-text').press('Tab');
   assert.equal(await page.locator('#wp-selection-title').textContent(),title);
@@ -95,7 +95,7 @@ test('Library media uploads and Code variants remain available without category 
 test('removing the active text target cannot retarget its panel to the next object',async()=>{
  const {page,errors}=await openExample(browser,'template');try{
   const id=(await snapshot(page)).state.slides[0].id,result=await operations(page,[{type:'block.create',slideId:id,kind:'text'},{type:'block.create',slideId:id,kind:'text'}]);
-  const [a,b]=result.created;await content(page,a);await page.locator('#ic-text-editor > summary').click();await page.locator('#fe-block-text').fill('First target only');
+  const [a,b]=result.created;await content(page,a);await page.locator('#fe-block-text').focus();await page.locator('#fe-block-text').fill('First target only');
   // Finish the field before invoking the editing API, which rejects pending edits.
   await page.locator('#fe-block-text').press('Tab');
   const before=(await snapshot(page)).state.slides[0].tree.find(node=>node.attrs?.class?.includes(b));

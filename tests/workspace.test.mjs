@@ -524,7 +524,7 @@ test('canvas and Inspector text share a deferred snapshot until focus leaves the
   const before=await card.locator('.we-thumbnail').textContent();
   await p.locator('#fe-preview h1').first().click();await p.waitForTimeout(50);
   await p.locator('#fe-preview h1').first().fill('Canvas edit waiting for completion');await p.waitForTimeout(400);
-  await p.locator('#ic-text-editor > summary').click();await p.waitForTimeout(100);
+  await p.locator('#fe-block-text').focus();await p.waitForTimeout(100);
   assert.equal(await card.locator('.we-thumbnail').textContent(),before);
   await p.locator('#fe-block-text').fill('Final Inspector text');await p.waitForTimeout(650);
   assert.equal(await card.locator('.we-thumbnail').textContent(),before);

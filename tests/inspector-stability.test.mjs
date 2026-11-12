@@ -4,7 +4,7 @@ const browser=await chromium.launch({headless:true,args:['--no-sandbox'],executa
 async function setup(){const {page,errors}=await openExample(browser,'portfolio-demo'),id=(await snapshot(page)).state.slides[0].id;const result=await operations(page,[{type:'design.clear',slideId:id},{type:'block.create',slideId:id,kind:'text',placement:{x:.2,y:.3,w:.3,h:.2}}]);assert.equal(result.ok,true);const key=result.created[0];await selectElement(page,key);return{page,errors,id,key};}
 test('same-target refresh preserves Inspector text caret/scroll and explicit panel choices',async()=>{
  const {page,errors,id}=await setup();try{
-  await page.setViewportSize({width:1000,height:650});await page.locator('#wp-tab-content').click();await page.locator('#ic-text-editor > summary').click();
+  await page.setViewportSize({width:1000,height:650});await page.locator('#wp-tab-content').click();await page.locator('#fe-block-text').focus();
   const field=page.locator('#fe-block-text');await field.fill('Neutral editing text retained through view refresh.');await field.press('Tab');await field.focus();await field.evaluate(el=>el.setSelectionRange(4,11));
   const scroll=await page.locator('#wp-fields').evaluate(el=>{el.scrollTop=Math.min(50,el.scrollHeight-el.clientHeight);return el.scrollTop;});assert.ok(scroll>0);
   const result=await operations(page,[{type:'design.background',slideId:id,color:{hex:'#f3f7fa'}}]);assert.equal(result.ok,true,JSON.stringify(result));

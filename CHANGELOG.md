@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Flatten text Inspector editing into one Text section, shorten formatting guidance, and share one content scroller for selection help, controls and notes (#200).
+
 - Add independently collapsible Inspector sections with session preferences by selection type, shared notes visibility, collapsed context summaries and shortcuts that reveal the existing editor; retain controls and saved-project formats (#188).
 
 ## 0.14.0-beta.1 — 2026-11-12
