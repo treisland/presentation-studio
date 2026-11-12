@@ -9,6 +9,28 @@ import {resolve} from 'node:path';
 const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH,args:['--no-sandbox']});
 test.after(()=>browser.close());
 
+test('button presets keep distinct canvas styles and actions stay visible with immediate changes',async()=>{
+  const {page,errors}=await openExample(browser,'portfolio-demo');
+  try{
+    const initial=await snapshot(page),slideId=initial.state.slides[0].id,target=initial.state.slides[1].id;
+    for(const kind of ['button','outline-button','text-link','navigation-arrow'])await operations(page,[{type:'block.create',slideId,kind}]);
+    const appearance=await page.locator('#fe-preview .nav-button').evaluateAll(elements=>elements.map(element=>{const style=getComputedStyle(element);return{background:style.backgroundColor,border:style.borderTopWidth,decoration:style.textDecorationLine};}));
+    assert.notEqual(appearance[0].background,'rgba(0, 0, 0, 0)');assert.equal(appearance[1].background,'rgba(0, 0, 0, 0)');assert.equal(appearance[1].border,'3px');assert.match(appearance[2].decoration,/underline/);assert.equal(appearance[3].decoration,'none');
+    await page.locator('#fe-preview .nav-button').last().click();
+    assert.equal(await page.locator('#nav-panel').evaluate(element=>element.parentElement.id),'wp-fields');assert.equal(await page.locator('#nav-panel').evaluate(element=>element.parentElement.firstElementChild===element),true);assert.equal(await page.locator('#nav-panel details').count(),0);assert.equal(await page.locator('#nav-apply').count(),0);assert.equal(await page.locator('#nav-type').isVisible(),true);
+    const current=await snapshot(page),key=current.state.slides[0].tree.at(-1).attrs.class.match(/block-[\w-]+/)[0];
+    await page.locator('#nav-type').selectOption('next');assert.equal((await snapshot(page)).state.design.slides[slideId].objects[key].action.type,'next');
+    await page.locator('#nav-type').selectOption('slide');assert.match(await page.locator('#nav-warning').textContent(),/Not active yet/);
+    await page.locator('#nav-slide').selectOption(target);assert.equal((await snapshot(page)).state.design.slides[slideId].objects[key].action.slideId,target);
+    await page.locator('#nav-type').selectOption('url');await page.locator('#nav-url').fill('javascript:alert(1)');await page.locator('#nav-url').press('Enter');
+    assert.equal((await snapshot(page)).state.design.slides[slideId].objects[key].action.type,'slide');assert.match(await page.locator('#nav-warning').textContent(),/Not active yet/);
+    await page.locator('#nav-url').fill('https://example.com/help');assert.match(await page.locator('#nav-warning').textContent(),/not active yet/);await page.locator('#nav-url').press('Enter');
+    assert.equal((await snapshot(page)).state.design.slides[slideId].objects[key].action.url,'https://example.com/help');
+    await page.locator('#fe-undo').click();assert.equal((await snapshot(page)).state.design.slides[slideId].objects[key].action.type,'slide');
+    assert.deepEqual(errors,[]);
+  }finally{await page.close();}
+});
+
 test('standalone booth activates keyboard slide links offline and honors navigation permission',async()=>{
   const {page,errors}=await openExample(browser,'portfolio-demo');
   try{

@@ -4,7 +4,7 @@ Assigned issue [#162](https://github.com/treisland/presentation-studio/issues/16
 
 ## Navigation
 
-Add / Library offers Button, Outline button, Text link and Navigation arrow. Edit the label on the canvas or with the existing text Inspector. Existing appearance controls customize text, fill and border. Select a text, shape, button or floating media element and choose **On click** in Content: None, Go to slide, Next slide, Previous slide, or Open URL in new tab. Select a slide by title/number and inspect its thumbnail, then Apply action.
+Add / Library offers a filled Button, outlined button, underlined Text link and unfilled Navigation arrow. Edit the label on the canvas or with the existing text Inspector. Existing appearance controls customize text, fill and border. Select a text, shape, button or floating media element: its action controls stay expanded near the top of Content. Choose None, Go to slide, Next slide, Previous slide, or Open URL in new tab. Complete action/slide choices save immediately with Undo. URL typing shows a pending indicator; Enter or leaving the field validates and saves one change. Incomplete/invalid values retain the previous active action and show that the edit is not active yet. Escape discards a pending URL edit.
 
 Edit blocks continues to select and edit; Preview and presentation activate actions. Linked elements have an editor badge, keyboard activation and visible focus. Linked media uses a separate Open link button so video playback and Media Focus remain available. Template buttons and links can use an action on their containing element; the assigned action takes precedence over the contained link in Preview/playback.
 
