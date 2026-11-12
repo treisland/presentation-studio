@@ -1,0 +1,15 @@
+#mask-panel{padding:12px}#mask-panel>label{display:grid;gap:5px;margin-bottom:10px}#mask-panel input,#mask-panel select{min-width:0;max-width:100%}#mask-panel>button{margin:4px}#mask-panel[hidden]{display:none}
+#full-editor #wp-fields{min-width:0;overflow-x:hidden}#wp-fields>#nav-panel,#wp-fields>#mask-panel{min-width:0;max-width:100%;box-sizing:border-box}
+#full-editor #ce-panel{min-width:0;overflow-wrap:anywhere}#full-editor #ce-panel :is(button,b){min-width:0;max-width:100%;white-space:normal;overflow-wrap:anywhere}
+.mask-frame .media-viewport{isolation:isolate}.mask-frame .media-asset{will-change:auto}
+.slide .media-box.mask-frame{background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important;overflow:visible}
+.media-box.mask-frame:before{display:none!important}
+.mask-surface{position:relative;display:flex;flex:1;min-height:0;min-width:0;isolation:isolate}
+.mask-surface>.media-viewport{width:100%;min-height:0;flex:1}
+.mask-content{position:absolute;overflow:hidden}
+.mf-focused .mask-content,.bp-focused .mask-content{inset:0!important;clip-path:none!important}
+.mask-outline{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.mf-focused .mask-surface,.bp-focused .mask-surface{display:contents;filter:none!important}
+.mf-focused .mask-outline,.bp-focused .mask-outline{display:none}
+.mf-focused .media-viewport,.bp-focused .media-viewport{clip-path:none!important;border-radius:0!important}
+.mask-library-preview{background:#e4ebf0;color:#18304b;margin:auto;max-width:90%}.mask-library-rounded{border-radius:22px}.mask-library-circle{clip-path:circle(closest-side)}.mask-library-oval{clip-path:ellipse(48% 48%)}

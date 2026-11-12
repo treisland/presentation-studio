@@ -7,7 +7,7 @@ const root = fileURLToPath(new URL('../', import.meta.url));
 const sandbox = { setImmediate, clearImmediate, setTimeout, clearTimeout, Uint8Array, ArrayBuffer, TextEncoder, TextDecoder };
 vm.runInNewContext(await readFile(resolve(root, 'vendor/jszip-3.10.1.min.js'), 'utf8'), sandbox);
 const zip = new sandbox.JSZip();
-for (const file of ['docs/deployment.md','docs/import-compatibility.md','docs/navigation.md']) zip.file(file,new Uint8Array(await readFile(resolve(root,file))),{date:new Date('2026-01-01T00:00:00Z')});
+for (const file of ['docs/deployment.md','docs/import-compatibility.md','docs/navigation.md','docs/interactive-elements.md']) zip.file(file,new Uint8Array(await readFile(resolve(root,file))),{date:new Date('2026-01-01T00:00:00Z')});
 zip.file('docs/content-inspector.md', new Uint8Array(await readFile(resolve(root, 'docs/content-inspector.md'))), {date:new Date('2026-01-01T00:00:00Z')});
 zip.file('docs/layers-style-workflow.md', new Uint8Array(await readFile(resolve(root, 'docs/layers-style-workflow.md'))), {date:new Date('2026-01-01T00:00:00Z')});
 zip.file('docs/editor-workbench.md', new Uint8Array(await readFile(resolve(root, 'docs/editor-workbench.md'))), {date:new Date('2026-01-01T00:00:00Z')});

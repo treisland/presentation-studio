@@ -335,7 +335,7 @@ function boothExportData(options) {
     loop: ordered,
     presentation: state.presentation,
     visibility: state.visibility,
-    elementDesign: Object.fromEntries(state.slides.map(slide=>[slide.id,{objects:Object.fromEntries(Object.entries(spData(state,slide.id).objects).filter(([,meta])=>meta.action).map(([key,meta])=>[key,{...(meta.action?{action:meta.action}:{})}]))}])),
+    elementDesign: Object.fromEntries(state.slides.map(slide=>[slide.id,{objects:Object.fromEntries(Object.entries(spData(state,slide.id).objects).filter(([,meta])=>meta.action||meta.frame).map(([key,meta])=>[key,{...(meta.action?{action:meta.action}:{}),...(meta.frame?{frame:meta.frame,frameAppearance:maskAppearance(meta.style,studioPalette(state.brand))}:{})}]))}])),
   };
 }
 async function boothExport() {
@@ -365,7 +365,7 @@ async function boothExport() {
       json +
       "<\/script><script>(" +
       boothStandalone.toString() +
-      ")("+authoringGeometry.toString()+","+visibilityMediaLayout.toString()+","+backgroundEffectsEngine.toString()+","+navigationWire.toString()+");<\/script></html>";
+      ")("+authoringGeometry.toString()+","+visibilityMediaLayout.toString()+","+backgroundEffectsEngine.toString()+","+navigationWire.toString()+","+mediaMaskPaint.toString()+");<\/script></html>";
     const refs = projectReferenced({
       brand: data.brand,
       media: data.media,

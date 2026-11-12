@@ -103,7 +103,9 @@
   background: #0d1d39bb;
   z-index: 100;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  box-sizing: border-box;
   gap: 10px;
   padding: 20px;
 }
@@ -251,7 +253,10 @@
 }
 .ce-existing-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(3, minmax(0, 1fr));
 }
+#full-editor #fe-preview .ce-drop-zones>button{min-width:0;min-height:0;max-width:100%;white-space:normal;overflow-wrap:anywhere;overflow:hidden;align-content:center;gap:12px;padding:16px;font:700 32px/1.25 Arial,sans-serif;text-align:center}
+#full-editor #fe-preview .ce-drop-name{min-width:0;max-width:100%;font-size:.55em;font-weight:400;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
 .ce-existing-grid .ce-placement-cancel {
   grid-column: 1 / -1;
 }

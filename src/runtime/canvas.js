@@ -696,10 +696,8 @@ function ceDropZones(existing = false) {
     const button = document.createElement("button");
     button.type = "button";
     button.dataset.dropZone = zone;
-    button.textContent =
-      zone === "replace"
-        ? "Replace " + (ceConfig()?.name || "selected media") + "…"
-        : (existing ? "" : "Add · ") + zone[0].toUpperCase() + zone.slice(1);
+    button.textContent = zone === 'replace'?'Replace selected media':(existing ? '' : 'Add · ') + zone[0].toUpperCase() + zone.slice(1);
+    if(zone==='replace'){const name=document.createElement('span');name.className='ce-drop-name';name.textContent=ceConfig()?.name||'Selected media';button.title=name.textContent;button.append(name);}
     if (existing) button.onclick = () => ceFinishPlacement(zone);
     layer.append(button);
   }
@@ -810,17 +808,23 @@ function ceFinishPlacement(zone) {
     };
     if (zone === "background") next.canvas.z = 0;
     if (zone !== "floating" && state.objectID !== "primary") {
+      const metadata=spData(projectState,state.slideID,true).objects,sourceKey='media-'+state.objectID,sourceMeta=metadata[sourceKey],primaryMeta=metadata['media-primary'];
       projectState.mediaObjects[state.slideID] = ceObjects(
         state.slideID,
       ).filter((o) => o.id !== state.objectID);
-      if (primary)
+      if (primary) {
+        const demotedID=projectID('object');
         projectState.mediaObjects[state.slideID].push({
-          id: projectID("object"),
+          id: demotedID,
           media: {
             ...projectCopy(primary),
             canvas: { ...ceObject(primary.canvas), placement: oldRect },
           },
         });
+        if(primaryMeta)metadata['media-'+demotedID]=primaryMeta;
+      }
+      delete metadata[sourceKey];delete metadata['media-primary'];
+      if(sourceMeta)metadata['media-primary']=sourceMeta;
       projectState.media[state.slideID] = next;
       ceSelected = "primary";
     } else ceSetConfig(next, state.objectID, state.slideID);

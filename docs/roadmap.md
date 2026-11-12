@@ -6,7 +6,7 @@ The maintainer also approved the action-control concept within 0.12.0 / PR #161:
 
 ## Current delivery plan
 
-**0.13.0 — Interactive navigation and media frames — [milestone 13](https://github.com/treisland/presentation-studio/milestone/13):** maintainer-authorized Library buttons and reusable hyperlink actions (#162); image/video masking (#163) follows in a separate feature PR. Preserve stable IDs, locks, Undo, recovery and offline exports. See [navigation behavior and review](navigation.md). Separate acceptance and protected release preparation remain required.
+**0.13.0 — Interactive navigation and media frames — [milestone 13](https://github.com/treisland/presentation-studio/milestone/13):** maintainer-authorized implementation of Library buttons and reusable hyperlink actions (#162), plus image/video masking with shared numeric sliders and reusable frame placeholders (#163). Preserve stable identities, legacy appearance, locks, Undo, recovery and offline exports. See [behavior, compatibility and manual review](interactive-elements.md). Separate feature acceptance and protected release preparation remain required.
 
 The 0.12.0 beta also includes the maintainer-requested shared numeric-control enhancement in PR #161: paired sliders/precise fields/units/resets for visual settings, always-visible stacked coordinate tracks, timer presets and consistent keyboard/Undo/draft/lock behavior. Counts and layer order remain discrete; saved formats do not change. See [scope and behavior](numeric-controls.md). The maintainer confirmed manual acceptance of these UI changes with the background-studio refinement on build `2354557`; the release plan is now activated subject to protected delivery gates.
 

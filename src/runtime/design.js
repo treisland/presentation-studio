@@ -48,7 +48,7 @@ projectValidateState=function(raw,...args){
       if(m.rotation!=null&&(!Number.isFinite(m.rotation)||m.rotation< -180||m.rotation>180))editingFail('INVALID','Rotation must be -180–180 degrees.');
       if(m.z!=null&&(!Number.isInteger(m.z)||m.z<0||m.z>1000))editingFail('INVALID','Invalid layer order.');
       if(m.group!=null&&!/^group-[\w-]+$/.test(m.group))editingFail('INVALID','Invalid group identity.');
-      clean.objects[key]={...(m.name!=null?{name:m.name}:{}),...(m.group?{group:m.group}:{}),locked:!!m.locked,hidden:!!m.hidden,...(m.rotation!=null?{rotation:m.rotation}:{}),...(m.z!=null?{z:m.z}:{}),style:spStyle(m.style||{}),...(m.action?{action:navAction(m.action)}:{})};
+      clean.objects[key]={...(m.name!=null?{name:m.name}:{}),...(m.group?{group:m.group}:{}),locked:!!m.locked,hidden:!!m.hidden,...(m.rotation!=null?{rotation:m.rotation}:{}),...(m.z!=null?{z:m.z}:{}),style:spStyle(m.style||{}),...(m.action?{action:navAction(m.action)}:{}),...(m.frame?{frame:maskSettings(m.frame)}:{})};
     }
     result.design.slides[id]=clean;
   }
@@ -151,7 +151,7 @@ function spApply(slide,palette=projectState&&studioPalette(projectState.brand)){
     if(s.text!=null){el.dataset.spText='true';el.style.setProperty('--sp-text',spCSS(s.text,palette));}
     if(s.borderWidth!=null||s.border!=null){el.style.borderStyle='solid';el.style.borderWidth=(s.borderWidth??1)+'px';}
     if(m.rotation!=null)el.style.rotate=m.rotation+'deg';
-    if(m.z!=null){el.style.position=el.style.position||'relative';el.style.zIndex=String(e.z);}
+    if(m.z!=null){el.style.position=e.kind==='media'?'absolute':el.style.position||'relative';el.style.zIndex=String(e.z);}
     if(e.kind==='grid')for(const figure of slide.querySelectorAll('.media-box[data-mg-cell]')){figure.classList.toggle('sp-hidden',!!m.hidden);if(m.z!=null)figure.style.zIndex=String(m.z);}
   }
   if(boxes.size){pane.classList.add('sp-stack-pane');for(const [el,box] of boxes)Object.assign(el.style,box,{position:'absolute',boxSizing:'border-box',margin:'0'});}

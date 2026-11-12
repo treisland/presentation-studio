@@ -6,6 +6,8 @@ Background intensity/scale/motion, color opacity/border width, text size, rotati
 
 ## Scope and saving
 
+- Media-frame zoom, X/Y crop, rounded radius and border padding use shared sliders/precise fields with percentage units and resets. Padding is 0–25% (default 0), insetting media inside the unchanged border. Numeric and direct-crop gestures preview while moving and save on completion as one Undo step; Escape cancels. Shape, Fill/Fit and shadow choices save immediately. No Apply frame step is required. See [media frames](interactive-elements.md).
+
 - Background controls preview immediately but remain staged until Apply background. Motion speed runs Slow to Fast; its number field is explicitly cycle duration in seconds, so longer durations mean slower motion. Slide reset values follow the saved presentation default; presentation reset values use the effect defaults.
 - Color opacity stays staged in its existing color target until a swatch or Apply custom is chosen. Its checkerboard sample previews transparency without changing the slide. Color dialog cancellation and focus restoration remain unchanged.
 - Direct border, rotation, text-size, arrow and placement adjustments preview existing canvas elements without changing project data on every tick. The existing validated operation commits at release. One Undo restores the prior state. Font reset removes the explicit size override so the theme/layout supplies the size.
