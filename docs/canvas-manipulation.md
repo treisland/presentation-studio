@@ -1,5 +1,10 @@
 # Canvas movement and manipulation
 
+## Template positioning
+
+Selecting template content leaves its layout intact. For one eligible template text/section, choose **Enable free positioning** in the toolbar or Inspector → Arrange. The measured starting geometry is retained so the item does not jump; its text stays editable. **Reset to template position** is nearby in Arrange and restores layout positioning without reverting edited content or the original element identity. Undo/Redo and portable editable restore retain the existing conversion/reset behavior.
+
+Structured tables, code and grids keep their specialized controls. The positioning panel explains that free positioning is unavailable and directs users to Content settings or media's Arrange → Change placement action. Multiple template selections must be narrowed to one before enabling. Locked items explain that the item or presentation must first be unlocked. No selection automatically detaches content, and no new saved fields or layout defaults are introduced.
 ## Precision movement
 
 Single blocks, floating media and temporary/group selections use the same alignment/equal-spacing guides. A batch snaps its overall bounds as one unit, excludes its own members and retains relative spacing. Alt bypasses snapping. The existing Snap switch still applies.
