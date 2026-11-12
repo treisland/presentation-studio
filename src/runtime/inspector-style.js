@@ -9,7 +9,10 @@ function isClose(restore = false) {
   if (popup?.matches(':popover-open')) popup.hidePopover();
   isTarget = '';
   for (const button of document.querySelectorAll('[data-is-slot]')) button.setAttribute('aria-expanded','false');
-  if (restore && isOpener?.isConnected && !isOpener.hidden) isOpener.focus({preventScroll:true});
+  if (restore) {
+    const origin = isOpener?.isConnected && isOpener.checkVisibility() ? isOpener : $('we-toggle-inspector');
+    origin?.focus({preventScroll:true});
+  }
 }
 function isTab(name, focus = false) {
   for (const tab of document.querySelectorAll('[data-is-tab]')) {
