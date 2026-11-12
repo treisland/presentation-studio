@@ -48,7 +48,7 @@ projectValidateState=function(raw,...args){
       if(m.rotation!=null&&(!Number.isFinite(m.rotation)||m.rotation< -180||m.rotation>180))editingFail('INVALID','Rotation must be -180–180 degrees.');
       if(m.z!=null&&(!Number.isInteger(m.z)||m.z<0||m.z>1000))editingFail('INVALID','Invalid layer order.');
       if(m.group!=null&&!/^group-[\w-]+$/.test(m.group))editingFail('INVALID','Invalid group identity.');
-      clean.objects[key]={...(m.name!=null?{name:m.name}:{}),...(m.group?{group:m.group}:{}),locked:!!m.locked,hidden:!!m.hidden,...(m.rotation!=null?{rotation:m.rotation}:{}),...(m.z!=null?{z:m.z}:{}),style:spStyle(m.style||{})};
+      clean.objects[key]={...(m.name!=null?{name:m.name}:{}),...(m.group?{group:m.group}:{}),locked:!!m.locked,hidden:!!m.hidden,...(m.rotation!=null?{rotation:m.rotation}:{}),...(m.z!=null?{z:m.z}:{}),style:spStyle(m.style||{}),...(m.action?{action:navAction(m.action)}:{})};
     }
     result.design.slides[id]=clean;
   }

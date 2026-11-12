@@ -335,6 +335,7 @@ function boothExportData(options) {
     loop: ordered,
     presentation: state.presentation,
     visibility: state.visibility,
+    elementDesign: Object.fromEntries(state.slides.map(slide=>[slide.id,{objects:Object.fromEntries(Object.entries(spData(state,slide.id).objects).filter(([,meta])=>meta.action).map(([key,meta])=>[key,{...(meta.action?{action:meta.action}:{})}]))}])),
   };
 }
 async function boothExport() {
@@ -364,7 +365,7 @@ async function boothExport() {
       json +
       "<\/script><script>(" +
       boothStandalone.toString() +
-      ")("+authoringGeometry.toString()+","+visibilityMediaLayout.toString()+","+backgroundEffectsEngine.toString()+");<\/script></html>";
+      ")("+authoringGeometry.toString()+","+visibilityMediaLayout.toString()+","+backgroundEffectsEngine.toString()+","+navigationWire.toString()+");<\/script></html>";
     const refs = projectReferenced({
       brand: data.brand,
       media: data.media,
@@ -480,7 +481,8 @@ function boothBind() {
             target.closest("video.media-asset") &&
             e.clientY < target.getBoundingClientRect().bottom - 50) ||
           (options.video && target.closest("video")) ||
-          (options.links && target.closest("a"));
+          (options.links && target.closest('a,[data-nav-action="url"]')) ||
+          (options.navigation && target.closest('[data-nav-action]:not([data-nav-action="url"])'));
       if (!allowed) {
         e.preventDefault();
         e.stopImmediatePropagation();
@@ -529,7 +531,8 @@ function boothBind() {
             "#booth-unlock,#booth-audience-questions,#booth-return,#question-browser,#prev,#next,#play,#full,video",
           ) ||
             (boothOptions().focus && e.target.closest(".mf-expand")) ||
-            (boothOptions().links && e.target.closest("a"))));
+            (boothOptions().links && e.target.closest('a,[data-nav-action="url"]')) ||
+            (boothOptions().navigation && e.target.closest('[data-nav-action]:not([data-nav-action="url"])'))));
       if (!allowed) {
         e.preventDefault();
         e.stopImmediatePropagation();
