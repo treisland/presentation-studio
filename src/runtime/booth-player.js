@@ -176,7 +176,7 @@ function boothStandalone(geometry, mediaLayout, backgroundFactory, wireNavigatio
     }
     for(const [key,meta]of Object.entries(data.elementDesign?.[model.id]?.objects||{})){
       const element=key.startsWith('media-')?slide.querySelector('[data-object-id="'+key.slice(6)+'"]'):slide.querySelector('.'+key);
-      if(meta.frame&&element)paintMask?.(element,meta.frame);
+      if(meta.frame&&element)paintMask?.(element,meta.frame,meta.frameAppearance);
       if(meta.action&&element)wireNavigation?.(element,meta.action,action=>{
         if(action.type==='url'){if(p.links&&/^https?:\/\//i.test(action.url))window.open(action.url,'_blank','noopener,noreferrer');return;}
         if(!p.navigation&&!unlocked)return;

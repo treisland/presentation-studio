@@ -12,6 +12,18 @@ test.after(()=>browser.close());
 const zipContext={setImmediate,clearImmediate,setTimeout,clearTimeout,Uint8Array,ArrayBuffer,TextEncoder,TextDecoder};
 vm.runInNewContext(await readFile('vendor/jszip-3.10.1.min.js','utf8'),zipContext);
 
+test('masked fill, outline and shadow follow the contour without decorating the layout box',async()=>{
+  const {page,errors}=await openExample(browser,'portfolio-demo');
+  try{
+    await page.locator('#component-open').click();await page.getByRole('button',{name:'Insert Circle frame',exact:true}).click();
+    const initial=await snapshot(page),slideId=initial.state.slides[0].id,key=Object.keys(initial.state.design.slides[slideId].objects).find(key=>initial.state.design.slides[slideId].objects[key].frame);
+    assert.equal((await operations(page,[{type:'design.appearance',slideId,keys:[key],style:{fill:{hex:'#00ff00'},border:{hex:'#ff0000'},borderWidth:12}},{type:'media.mask',slideId,keys:[key],frame:{shape:'circle',fit:'contain',shadow:'strong'}}])).ok,true);
+    const appearance=await page.locator('#fe-preview .mask-frame').evaluate(figure=>{const style=getComputedStyle(figure),surface=figure.querySelector('.mask-surface'),view=figure.querySelector('.media-viewport'),outline=figure.querySelector('.mask-outline circle');return{fill:style.backgroundColor,border:style.borderTopWidth,shadow:style.boxShadow,filter:surface.style.filter,inside:view.style.backgroundColor,clip:view.style.clipPath,stroke:outline.getAttribute('stroke'),width:outline.getAttribute('stroke-width'),ratio:figure.querySelector('.mask-outline').getAttribute('preserveAspectRatio')};});
+    assert.equal(appearance.fill,'rgba(0, 0, 0, 0)');assert.equal(appearance.border,'0px');assert.equal(appearance.shadow,'none');assert.match(appearance.filter,/drop-shadow/);assert.equal(appearance.inside,'rgb(0, 255, 0)');assert.match(appearance.clip,/circle/);assert.equal(appearance.stroke,'rgba(255,0,0,1)');assert.equal(appearance.width,'12');assert.equal(appearance.ratio,'xMidYMid meet');
+    assert.deepEqual(errors,[]);
+  }finally{await page.close();}
+});
+
 test('Grid media masks preserve cell identity and reject locked parent edits',async()=>{
   const {page,errors}=await openExample(browser,'portfolio-demo');
   try{
@@ -82,6 +94,8 @@ test('standalone booth keeps masks and keyboard slide links offline and honors n
     const result=await operations(page,[{type:'block.create',slideId,kind:'outline-button'}]),key=result.created[0];
     await operations(page,[{type:'navigation.set',slideId,keys:[key],action:{type:'slide',slideId:target}}]);
     await page.locator('#component-open').click();await page.getByRole('button',{name:'Insert Circle frame',exact:true}).click();
+    const framed=await snapshot(page),frameKey=Object.keys(framed.state.design.slides[slideId].objects).find(key=>framed.state.design.slides[slideId].objects[key].frame);
+    await operations(page,[{type:'design.appearance',slideId,keys:[frameKey],style:{border:{hex:'#ff0000'},borderWidth:12,fill:{hex:'#00ff00'}}}]);
     await selectTab(page,'Presentation settings');await click(page,'#booth-open');await page.locator('#booth-password').fill('navigation-test-passphrase');await page.locator('#booth-confirm').fill('navigation-test-passphrase');await page.locator('#booth-navigation').check();
     const bytes=await exportZip(page,'#booth-export'),zip=await zipContext.JSZip.loadAsync(new Uint8Array(bytes)),folder=resolve('test-results/navigation-masks-booth');
     for(const [name,item]of Object.entries(zip.files)){if(item.dir)continue;const path=archivePath(folder,name);await mkdir(dirname(path),{recursive:true});await writeFile(path,Buffer.from(await item.async('uint8array')));}
@@ -89,6 +103,7 @@ test('standalone booth keeps masks and keyboard slide links offline and honors n
     try{
       await restored.goto('file://'+resolve(folder,'index.html'));
       assert.match(await restored.locator('.mask-frame .media-viewport').first().evaluate(element=>element.style.clipPath),/^circle\(/);
+      assert.equal(await restored.locator('.mask-outline circle').first().getAttribute('stroke-width'),'12');assert.equal(await restored.locator('.mask-outline circle').first().getAttribute('stroke'),'rgba(255,0,0,1)');
       const button=restored.locator('.slide.active .nav-button');await button.focus();await button.press('Enter');assert.equal(await restored.locator('.slide.active').getAttribute('id'),target);
       const html=(await readFile(resolve(folder,'index.html'),'utf8')).replace('"navigation":true','"navigation":false');await writeFile(resolve(folder,'restricted.html'),html);
       await restored.goto('file://'+resolve(folder,'restricted.html'));await restored.locator('.slide.active .nav-button').press('Enter');assert.equal(await restored.locator('.slide.active').getAttribute('id'),slideId);

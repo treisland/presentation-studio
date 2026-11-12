@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Make masked media backgrounds, borders and shadows follow the mask contour, including offline booth exports, while keeping captions and editor resize handles separate.
+
 - Add Library buttons and reusable slide/external link actions with keyboard Preview/playback navigation, stable destinations and new-tab external resources.
 - Add reusable image/video frame placeholders and rectangle/rounded/circle/oval masks with staged shared numeric zoom/crop/radius sliders, direct crop dragging and offline round trips.
 - Keep button presets visually distinct, show expanded action controls at the top of Content, save complete choices immediately and indicate pending URL edits without an Apply action step.

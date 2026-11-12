@@ -335,7 +335,7 @@ function boothExportData(options) {
     loop: ordered,
     presentation: state.presentation,
     visibility: state.visibility,
-    elementDesign: Object.fromEntries(state.slides.map(slide=>[slide.id,{objects:Object.fromEntries(Object.entries(spData(state,slide.id).objects).filter(([,meta])=>meta.action||meta.frame).map(([key,meta])=>[key,{...(meta.action?{action:meta.action}:{}),...(meta.frame?{frame:meta.frame}:{})}]))}])),
+    elementDesign: Object.fromEntries(state.slides.map(slide=>[slide.id,{objects:Object.fromEntries(Object.entries(spData(state,slide.id).objects).filter(([,meta])=>meta.action||meta.frame).map(([key,meta])=>[key,{...(meta.action?{action:meta.action}:{}),...(meta.frame?{frame:meta.frame,frameAppearance:maskAppearance(meta.style,studioPalette(state.brand))}:{})}]))}])),
   };
 }
 async function boothExport() {

@@ -9,15 +9,29 @@ function maskSettings(raw) {
   return clean;
 }
 // Self-contained to share the exact renderer with the offline booth player.
-function mediaMaskPaint(figure,frame) {
+function mediaMaskPaint(figure,frame,appearance={}) {
   const view=figure?.querySelector('.media-viewport'),asset=view?.querySelector('.media-asset');if(!asset)return;
+  if(!figure.maskBaseAppearance){const style=getComputedStyle(figure);figure.maskBaseAppearance=figure.dataset.maskBase?JSON.parse(figure.dataset.maskBase):{fill:style.backgroundColor,border:style.borderColor,width:parseFloat(style.borderTopWidth)||0};figure.dataset.maskBase=JSON.stringify(figure.maskBaseAppearance);}
+  const base=figure.maskBaseAppearance;
+  figure.maskAppearance={...appearance};figure.maskFrame={...frame};
+  let surface=view.parentElement;
+  if(!surface.classList.contains('mask-surface')){surface=document.createElement('div');surface.className='mask-surface';view.before(surface);surface.append(view);}
+  const palette=getComputedStyle(figure),fill=appearance.fill??figure.style.backgroundColor??base.fill;
+  view.style.backgroundColor=fill||palette.getPropertyValue('--project-surface-alt').trim()||base.fill;
   view.style.overflow='hidden';
   view.style.clipPath=frame.shape==='circle'?'circle(closest-side at 50% 50%)':frame.shape==='oval'?'ellipse(50% 50% at 50% 50%)':frame.shape==='rounded'?'inset(0 round '+frame.radius+'%)':'inset(0)';
   view.style.borderRadius=frame.shape==='rounded'?frame.radius+'%':frame.shape==='oval'?'50%':'0';
   asset.style.objectFit=frame.fit;asset.style.objectPosition=frame.x+'% '+frame.y+'%';
   asset.style.transform='scale('+(frame.zoom/100)+')';asset.style.transformOrigin=frame.x+'% '+frame.y+'%';
   figure.classList.add('mask-frame');
-  figure.style.boxShadow=({none:'none',soft:'0 8px 24px #0003',strong:'0 16px 48px #0006'})[frame.shadow]||'';
+  surface.style.filter=({none:'none',soft:'drop-shadow(0 8px 12px #0003)',strong:'drop-shadow(0 16px 24px #0006)'})[frame.shadow]||'none';
+  let outline=surface.querySelector(':scope > .mask-outline');
+  if(!outline){outline=document.createElementNS('http://www.w3.org/2000/svg','svg');outline.classList.add('mask-outline');outline.setAttribute('viewBox','0 0 100 100');outline.setAttribute('aria-hidden','true');surface.append(outline);}
+  outline.setAttribute('preserveAspectRatio',frame.shape==='circle'?'xMidYMid meet':'none');
+  const shape=document.createElementNS('http://www.w3.org/2000/svg',frame.shape==='circle'?'circle':frame.shape==='oval'?'ellipse':'rect');
+  const geometry=frame.shape==='circle'?{cx:50,cy:50,r:50}:frame.shape==='oval'?{cx:50,cy:50,rx:50,ry:50}:{x:0,y:0,width:100,height:100,rx:frame.shape==='rounded'?frame.radius:0,ry:frame.shape==='rounded'?frame.radius:0};
+  for(const [name,value]of Object.entries({...geometry,fill:'none',stroke:appearance.border||figure.style.borderColor||palette.getPropertyValue('--project-border').trim()||base.border,'stroke-width':appearance.width??(parseFloat(figure.style.borderWidth)||base.width),'vector-effect':'non-scaling-stroke'}))shape.setAttribute(name,String(value));
+  outline.replaceChildren(shape);
 }
 const maskFocusOpen=mfOpen;
 mfOpen=function(...args){const result=maskFocusOpen(...args);if(mfState?.figure?.classList.contains('mask-frame')){mfState.asset.style.transformOrigin='center center';if(mfState.asset.tagName==='VIDEO')mfState.asset.style.transform='none';}return result;};
@@ -33,8 +47,9 @@ editingRegisterOperation('media.mask',(state,operation)=>{
 function maskEntries(state,slide){
   return [{id:'primary',media:state.media[slide.id]},...(state.mediaObjects?.[slide.id]||[])].filter(item=>item.media).map(item=>({key:'media-'+item.id,kind:'media',object:item.id,media:item.media,meta:spData(state,slide.id).objects['media-'+item.id]||{}}));
 }
+function maskAppearance(style={},palette){return {...(style.fill!=null?{fill:spCSS(style.fill,palette)}:{}),...(style.border!=null?{border:spCSS(style.border,palette)}:{}),...(style.borderWidth!=null?{width:style.borderWidth}:{})};}
 const maskApply=spApply;
-spApply=function(slide,...args){const result=maskApply(slide,...args),model=projectReady&&projectModel(slide.dataset.mediaId);if(model)for(const entry of maskEntries(projectState,model))if(entry.meta.frame)mediaMaskPaint(spElement(slide,entry),entry.meta.frame);return result;};
+spApply=function(slide,...args){const result=maskApply(slide,...args),model=projectReady&&projectModel(slide.dataset.mediaId);if(model)for(const entry of maskEntries(projectState,model))if(entry.meta.frame)mediaMaskPaint(spElement(slide,entry),entry.meta.frame,maskAppearance(entry.meta.style,args[0]));return result;};
 let maskReady=false,maskIdentity='',maskTarget='',maskSnapshot=null,maskDraft=null;
 const maskDefault=()=>({shape:'rectangle',fit:'cover',zoom:100,x:50,y:50,radius:12,shadow:'none'});
 function maskRead(){return maskSettings({shape:$('mask-shape').value,fit:$('mask-fit').value,shadow:$('mask-shadow').value,...Object.fromEntries(['zoom','x','y','radius'].map(key=>[key,Number($('mask-'+key).value)]))});}
@@ -44,11 +59,13 @@ function maskRestorePreview(){
   if(!draft.figure.isConnected)return;
   for(const [element,values]of draft.styles)for(const [key,value]of Object.entries(values))element.style[key]=value;
   draft.figure.classList.toggle('mask-frame',draft.masked);
+  if(draft.frame)mediaMaskPaint(draft.figure,draft.frame,draft.appearance);
+  else {const surface=draft.figure.querySelector('.mask-surface'),view=surface?.querySelector('.media-viewport');if(view){surface.before(view);surface.remove();}delete draft.figure.maskFrame;delete draft.figure.maskAppearance;}
 }
 function maskPreview(){try{
   const frame=maskRead(),figure=ceFigure();if(!figure)return;
-  if(maskDraft?.figure!==figure){maskRestorePreview();maskDraft={figure,masked:figure.classList.contains('mask-frame'),styles:[[figure,['boxShadow']],[figure.querySelector('.media-viewport'),['overflow','clipPath','borderRadius']],[figure.querySelector('.media-asset'),['objectFit','objectPosition','transform','transformOrigin']]].filter(([element])=>element).map(([element,keys])=>[element,Object.fromEntries(keys.map(key=>[key,element.style[key]]))])};}
-  mediaMaskPaint(figure,frame);
+  if(maskDraft?.figure!==figure){maskRestorePreview();maskDraft={figure,masked:figure.classList.contains('mask-frame'),frame:figure.maskFrame&&{...figure.maskFrame},appearance:figure.maskAppearance&&{...figure.maskAppearance},styles:[[figure,['boxShadow']],[figure.querySelector('.media-viewport'),['overflow','clipPath','borderRadius','backgroundColor']],[figure.querySelector('.media-asset'),['objectFit','objectPosition','transform','transformOrigin']]].filter(([element])=>element).map(([element,keys])=>[element,Object.fromEntries(keys.map(key=>[key,element.style[key]]))])};}
+  mediaMaskPaint(figure,frame,figure.maskAppearance);
 }catch{}}
 function maskPaint(){
   if(!maskReady||!projectReady)return;
@@ -80,7 +97,7 @@ projectInit=function(...args){
   const crop=document.createElement('label');crop.innerHTML='<input type="checkbox" id="mask-crop-mode"> Drag media inside frame';
   panel.append(crop,componentButton('Apply frame',()=>maskCommit(maskRead())),componentButton('Reset crop',()=>{for(const [key,value]of [['zoom',100],['x',50],['y',50]])$('mask-'+key).value=value;numericRefreshScope(panel);maskPreview();}),componentButton('Remove frame',()=>maskCommit(null)));
   $('ci-notes').before(panel);
-  for(const [key,label,value]of [['zoom','Media zoom',100],['x','Crop X',50],['y','Crop Y',50],['radius','Corner radius',12]])numericAttach($('mask-'+key),{label,unit:'%',default:value,staged:true,commit:maskPreview,preview:()=>numericPaint([ceFigure()?.querySelector('.media-viewport'),ceFigure()?.querySelector('.media-asset')],maskPreview)});
+  for(const [key,label,value]of [['zoom','Media zoom',100],['x','Crop X',50],['y','Crop Y',50],['radius','Corner radius',12]])numericAttach($('mask-'+key),{label,unit:'%',default:value,staged:true,commit:maskPreview,preview:()=>{const figure=ceFigure(),before=figure?.maskFrame&&{...figure.maskFrame},appearance=figure?.maskAppearance,styles=numericPaint([figure?.querySelector('.media-viewport'),figure?.querySelector('.media-asset')],maskPreview);return{paint:maskPreview,restore(){styles.restore();if(before)mediaMaskPaint(figure,before,appearance);else maskRestorePreview();}};}});
   for(const key of ['shape','fit','shadow'])$('mask-'+key).onchange=()=>{maskPreview();$('mask-radius').disabled=$('mask-shape').value!=='rounded';numericRefreshScope(panel);};
   // Capture before canvas placement handlers. Crop gestures are draft-only until Apply.
   document.addEventListener('pointerdown',event=>{
