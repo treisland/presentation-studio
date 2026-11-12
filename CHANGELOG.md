@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.15.0-beta.1 — 2026-11-12
+
 - Add shared right-click, Shift+F10/Menu-key and visible ⋯ actions for Library cards and placed objects, with selection-preserving shortcuts, type-specific Inspector navigation, explicit saved-component deletion, keyboard submenus, touch targets and stale-selection guards (#190).
 - Keep unmasked image/video crop shortcuts out of masked drag mode, and stop muted clip previews when the selected object or grid cell changes (#189).
 

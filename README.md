@@ -80,7 +80,7 @@ For a localhost preview, run `npm run serve`, then open `http://127.0.0.1:4173`.
 
 [Quick start](docs/quick-start.md) · [Architecture](docs/architecture.md) · [Contributing](CONTRIBUTING.md) · [Content and branding](docs/content-and-branding.md) · [Open-source release](docs/open-source-release.md) · [Roadmap](docs/roadmap.md) · [Troubleshooting](docs/troubleshooting.md)
 
-Version 0.14.0-beta.1. Beta for canvas movement and editor usability, including reliable initial media placement. Released under the [Apache License 2.0](LICENSE). See the [release notes](docs/releases/0.14.0-beta.1.md), [validation record](docs/releases/0.14.0-beta.1-validation.md) and [canvas guide](docs/canvas-manipulation.md).
+Version 0.15.0-beta.1. Beta for unified Inspector navigation, selected-object media editing and contextual Library/object actions. See the [release notes](docs/releases/0.15.0-beta.1.md), [validation record](docs/releases/0.15.0-beta.1-validation.md) and [Inspector guide](docs/inspector-navigation.md). Released under the [Apache License 2.0](LICENSE).
 
 ## Development process
 
