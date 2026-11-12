@@ -78,6 +78,9 @@ test('verification preserves active project, undo, local drafts and backup statu
     await page.keyboard.press('Control+z');
     await page.keyboard.press('Escape');
     await page.waitForFunction(() => document.activeElement.id === 'bv-open');
+    // A no-op field blur can still be settling when the dialog returns focus.
+    // Assert the final committed status rather than sampling its pending-edit state.
+    await page.waitForFunction(expected => document.querySelector('#fe-status').textContent === expected, status);
     assert.equal(await page.locator('#fe-status').innerText(), status);
     assert.deepEqual(JSON.parse(await download(page, '#fe-export-json')), before);
     const restored = await browser.newPage({ acceptDownloads: true });
