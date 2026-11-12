@@ -22,7 +22,7 @@ test('selecting text and code exposes only relevant content and keeps pending te
   await page.locator('#ic-text-editor summary').click();await page.locator('#fe-block-text').fill('Independent free text');
   await selectLayer(page,code.created[0]);
   assert.equal(await page.locator('#code-text').inputValue(),'python app.py');
-  await selectLayer(page,text.created[0]);await page.locator('#ic-text-editor summary').click();
+  await selectLayer(page,text.created[0]);assert.equal(await page.locator('#ic-text-editor').evaluate(node=>node.open),true);
   assert.equal(await page.locator('#fe-block-text').inputValue(),'Independent free text');
   const activeBefore=await page.locator('#fe-block-text').evaluate(el=>{el.focus();return document.activeElement.id;});
   await page.locator('#fe-block-text').fill('Another edit');await page.waitForTimeout(400);

@@ -111,7 +111,10 @@ function acInstall() {
   window.addEventListener('blur',acHide);
   $('full-editor').addEventListener('close',()=>{acHover=null;acFocus=null;acHide();});
   // Selection grips are manual popovers too; repainting them must not dismiss a focused tooltip.
-  $('full-editor').addEventListener('toggle',event=>{if(event.target.getAttribute('popover')!=='manual')acHide();},true);
+  $('full-editor').addEventListener('toggle',event=>{
+    if(event.target.hasAttribute('popover') && event.target.getAttribute('popover')!=='manual')acHide();
+    else if(event.target.tagName==='DETAILS' && acOwner && !acOwner.checkVisibility())acHide();
+  },true);
   acReady=true;acPaint();
 }
 const acInit=projectInit;

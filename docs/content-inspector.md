@@ -4,6 +4,8 @@ The maintainer accepted this workflow on 2026-11-10 as part of the integrated 0.
 
 The Library adds objects; the Inspector edits the selected object. Content, Arrange and Style remain the main Inspector tabs. The former Slide / Text / Tables / Commands / Notes / Media category row is retired from the interface.
 
+Inspector sections now collapse independently using their headers (Enter/Space from the keyboard). Main editors start open; optional panel editors start collapsed. Expansion choices persist by selection type during the page session, while Slide notes keeps a shared preference. Changing objects of the same type retains the choices; explicit editing shortcuts reveal the destination. Collapsing preserves fields and pending values without adding an Undo step; existing blur rules can still finish an active edit. See the [control ownership and consolidation plan](inspector-navigation.md). Media Manager retirement and new context menus are separate v0.15.0 increments.
+
 Select an element on the canvas or in the left Layers dock. Content shows that element's editing tools. **Find an element in Layers** provides a keyboard-reachable route when nothing is selected or objects overlap. Hidden and locked elements remain inspectable through Layers; editing still respects locks.
 
 - **Slide settings:** use the header back-link to leave object inspection. Title, section and layout stay visible; Playback contains duration, transition and slide visibility. Presentation chrome visibility remains in its existing section.

@@ -68,7 +68,7 @@ test('selected tables keep cell fallback, structure and Undo scoped to their own
   const [a,b]=result.created;await content(page,a);
   assert.equal(await page.locator('#ci-table-editor').evaluate(node=>node.open),false);
   await page.locator('#ci-table-editor > summary').click();await page.locator('#fe-table-grid input').last().fill('Only first table');await page.locator('#fe-table-grid input').last().press('Tab');
-  await content(page,b);await page.locator('#ci-table-editor > summary').click();assert.notEqual(await page.locator('#fe-table-grid input').last().inputValue(),'Only first table');
+  await content(page,b);assert.equal(await page.locator('#ci-table-editor').evaluate(node=>node.open),true);assert.notEqual(await page.locator('#fe-table-grid input').last().inputValue(),'Only first table');
   const before=await snapshot(page);await page.locator('#tbl-action-row').selectOption('row-after');assert.match(await page.locator('#ci-table-count').textContent(),/3 data rows/);
   await page.locator('#fe-undo').click();assert.deepEqual((await snapshot(page)).state,before.state);
   assert.equal(await page.locator('#fe-preview .'+a+' td').last().textContent(),'Only first table');

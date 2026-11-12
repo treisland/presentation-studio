@@ -40,7 +40,7 @@ export async function openColorEditor(page, slot, tab='theme') {
   if(await popup.evaluate(element=>element.matches(':popover-open')))await page.getByRole('button',{name:'Close color picker',exact:true}).click();
   if(!await page.locator('#we-inspector').isVisible())await page.locator('#we-toggle-inspector').click();
   await page.locator('#wp-tab-style').click();
-  await page.locator('#is-color-'+slot).click();
+  await reveal(page,'#is-color-'+slot);await page.locator('#is-color-'+slot).click();
   await page.locator('#is-tab-'+tab).click();
 }
 export async function click(page, selector) {

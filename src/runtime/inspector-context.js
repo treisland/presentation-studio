@@ -77,7 +77,11 @@ function icPaint() {
     const slide = projectMeta.id+':'+projectSelected;
     if (slide !== icSlide) {icSlide = slide; icDestination = '';icInspectorTarget=null;}
     const context = icSelection(), {kind,locked} = context, changed = context.identity !== icIdentity;
-    if (changed) { icIdentity = context.identity; $('wp-fields').scrollTop = 0;if(!(icInspectorTarget?.slide===projectSelected&&context.kind==='text'&&context.path===icInspectorTarget.path))$('ic-text-editor').open = false; }
+    if (changed) {
+      icIdentity = context.identity;
+      if ($('we-inspector').dataset.icKind !== kind) $('wp-fields').scrollTop = 0;
+      if (!idsReady && !(icInspectorTarget?.slide===projectSelected&&context.kind==='text'&&context.path===icInspectorTarget.path)) $('ic-text-editor').open = false;
+    }
     $('we-inspector').dataset.icKind = kind;
     $('wp-selection-title').textContent = context.title;
     $('wp-selection-detail').textContent = context.detail;
@@ -190,7 +194,7 @@ function icExpandTextEditor() {
   const context=icSelection();if(context.kind==='text'&&context.path)icInspectorTarget={slide:projectSelected,path:context.path,key:context.selected[0]?.key};
   vbEnd(false); projectFlush(); icPaint();
   wePanels.inspector.open = true; wePanelView(); wpChooseTab('content');
-  $('ic-text-editor').open = true; $('fe-block-text').focus();
+  $('ic-text-editor').open = true; idsReveal('fe-block-text'); $('fe-block-text').focus();
 }
 const icInit = projectInit;
 projectInit = function() {

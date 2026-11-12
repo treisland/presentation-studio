@@ -1,5 +1,5 @@
 // Selection-driven content chrome. Existing editors and transactions own data.
-let ciReady = false, ciIdentity = '';
+let ciReady = false;
 function ciDetails(id, title) {
   const details = document.createElement('details'), summary = document.createElement('summary');
   details.id = id; summary.textContent = title; details.append(summary); return details;
@@ -25,12 +25,11 @@ function ciChooseField(value) {
   if (kind==='text') projectBlockPath=path;
   if (kind==='table') {projectTablePath=path;icTableSignature='';}
   icPaint();
-  if (kind==='text') {$('ic-text-editor').open=true;$('fe-block-text').focus();}
+  if (kind==='text') {$('ic-text-editor').open=true;idsReveal('fe-block-text');$('fe-block-text').focus();}
 }
 function ciPaint() {
   if (!ciReady || !projectReady) return;
-  const context=icSelection(), changed=ciIdentity!==context.identity;
-  if(changed){ciIdentity=context.identity;if(!(context.kind==='table'&&document.activeElement?.closest('#ci-table-editor')))$('ci-table-editor').open=false;$('ci-code-advanced').open=false;}
+  const context=icSelection();
   const legacy=$('ci-legacy-tabs');legacy.hidden=true;
   for(const tab of legacy.querySelectorAll('button'))tab.tabIndex=-1;
   for(const id of ['fe-content-panel','fe-table-panel','code-panel']){
