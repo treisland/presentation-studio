@@ -56,7 +56,7 @@ function maskEntries(state,slide){
 function maskAppearance(style={},palette){return {...(style.fill!=null?{fill:spCSS(style.fill,palette)}:{}),...(style.border!=null?{border:spCSS(style.border,palette)}:{}),...(style.borderWidth!=null?{width:style.borderWidth}:{})};}
 const maskApply=spApply;
 spApply=function(slide,...args){const result=maskApply(slide,...args),model=projectReady&&projectModel(slide.dataset.mediaId);if(model)for(const entry of maskEntries(projectState,model))if(entry.meta.frame)mediaMaskPaint(spElement(slide,entry),entry.meta.frame,maskAppearance(entry.meta.style,args[0]));return result;};
-let maskReady=false,maskIdentity='',maskTarget='',maskSnapshot=null,maskDraft=null;
+let maskReady=false,maskIdentity='',maskTarget='',maskSnapshot=null,maskDraft=null,maskContext='';
 const maskDefault=()=>({shape:'rectangle',fit:'cover',zoom:100,x:50,y:50,radius:12,padding:0,shadow:'none'});
 function maskRead(){return maskSettings({shape:$('mask-shape').value,fit:$('mask-fit').value,shadow:$('mask-shadow').value,...Object.fromEntries(['zoom','x','y','radius','padding'].map(key=>[key,Number($('mask-'+key).value)]))});}
 function maskStamp(){return JSON.stringify([projectMeta.id,projectSelected,editingRevision(),maskTarget,boothActive]);}
@@ -80,7 +80,7 @@ function maskPaint(){
   for(const id of ['ce-fit','ce-crop'])$(id).closest('label').hidden=!!entry?.meta.frame;
   panel.hidden=!entry||entry.kind!=='media';panel.dataset.icVisible=String(!panel.hidden);if(panel.hidden){maskRestorePreview();maskTarget='';return;}
   const identity=JSON.stringify([context.identity,entry.key,entry.meta.frame,studioEditing.read().revision]);
-  if(identity!==maskIdentity){maskRestorePreview();maskIdentity=identity;maskTarget=entry.key;const frame={...maskDefault(),...entry.meta.frame};for(const key of ['shape','fit','zoom','x','y','radius','padding','shadow'])$('mask-'+key).value=String(frame[key]);maskSnapshot=studioEditing.read();$('mask-crop-mode').checked=false;}
+  if(identity!==maskIdentity){const nextContext=projectMeta.id+':'+projectSelected+':'+entry.key,keepCrop=maskTarget===entry.key&&maskContext===nextContext&&$('mask-crop-mode').checked;maskRestorePreview();maskContext=nextContext;maskIdentity=identity;maskTarget=entry.key;const frame={...maskDefault(),...entry.meta.frame};for(const key of ['shape','fit','zoom','x','y','radius','padding','shadow'])$('mask-'+key).value=String(frame[key]);maskSnapshot=studioEditing.read();$('mask-crop-mode').checked=keepCrop;}
   for(const control of panel.querySelectorAll('input,select,button'))control.disabled=context.locked;
   $('mask-radius').disabled=context.locked||$('mask-shape').value!=='rounded';
   numericRefreshScope(panel);
@@ -96,16 +96,16 @@ const maskInit=projectInit;
 projectInit=function(...args){
   const result=maskInit(...args);if(maskReady)return result;
   const panel=document.createElement('section');panel.id='mask-panel';panel.dataset.wpPart='content';
-  panel.innerHTML='<h3>Media frame</h3><label>Mask shape<select id="mask-shape"><option value="rectangle">Rectangle</option><option value="rounded">Rounded rectangle</option><option value="circle">Circle</option><option value="oval">Oval</option></select></label><label>Sizing<select id="mask-fit"><option value="cover">Fill</option><option value="contain">Fit</option></select></label><label>Shadow<select id="mask-shadow"><option value="none">None</option><option value="soft">Soft</option><option value="strong">Strong</option></select></label><p>Adjustments preview here. Apply frame saves one Undo step.</p>';
+  panel.innerHTML='<h3>Media frame</h3><label>Mask shape<select id="mask-shape"><option value="rectangle">Rectangle</option><option value="rounded">Rounded rectangle</option><option value="circle">Circle</option><option value="oval">Oval</option></select></label><label>Sizing<select id="mask-fit"><option value="cover">Fill</option><option value="contain">Fit</option></select></label><label>Shadow<select id="mask-shadow"><option value="none">None</option><option value="soft">Soft</option><option value="strong">Strong</option></select></label><p>Changes save immediately. Each adjustment can be undone.</p>';
   for(const [key,label,min,max,value]of [['zoom','Zoom',100,400,100],['x','Crop X',0,100,50],['y','Crop Y',0,100,50],['radius','Corner radius',0,50,12],['padding','Border padding',0,25,0]]){
     const field=document.createElement('label');field.textContent=label;const input=document.createElement('input');input.id='mask-'+key;input.type='number';input.min=min;input.max=max;input.step=1;input.value=value;field.append(input);panel.append(field);
   }
   const crop=document.createElement('label');crop.innerHTML='<input type="checkbox" id="mask-crop-mode"> Drag media inside frame';
-  panel.append(crop,componentButton('Apply frame',()=>maskCommit(maskRead())),componentButton('Reset crop',()=>{for(const [key,value]of [['zoom',100],['x',50],['y',50]])$('mask-'+key).value=value;numericRefreshScope(panel);maskPreview();}),componentButton('Remove frame',()=>maskCommit(null)));
-  $('ci-notes').before(panel);
-  for(const [key,label,value]of [['zoom','Media zoom',100],['x','Crop X',50],['y','Crop Y',50],['radius','Corner radius',12],['padding','Border padding',0]])numericAttach($('mask-'+key),{label,unit:'%',default:value,staged:true,commit:maskPreview,preview:()=>{const figure=ceFigure(),before=figure?.maskFrame&&{...figure.maskFrame},appearance=figure?.maskAppearance,styles=numericPaint([figure?.querySelector('.media-viewport'),figure?.querySelector('.media-asset')],maskPreview);return{paint:maskPreview,restore(){styles.restore();if(before)mediaMaskPaint(figure,before,appearance);else maskRestorePreview();}};}});
-  for(const key of ['shape','fit','shadow'])$('mask-'+key).onchange=()=>{maskPreview();$('mask-radius').disabled=$('mask-shape').value!=='rounded';numericRefreshScope(panel);};
-  // Capture before canvas placement handlers. Crop gestures are draft-only until Apply.
+  panel.append(crop,componentButton('Reset crop',()=>{for(const [key,value]of [['zoom',100],['x',50],['y',50]])$('mask-'+key).value=value;maskCommit(maskRead());}),componentButton('Remove frame',()=>maskCommit(null)));
+  $('wp-fields').append(panel);
+  for(const [key,label,value]of [['zoom','Media zoom',100],['x','Crop X',50],['y','Crop Y',50],['radius','Corner radius',12],['padding','Border padding',0]])numericAttach($('mask-'+key),{label,unit:'%',default:value,commit:()=>maskCommit(maskRead()),preview:()=>{const figure=ceFigure(),before=figure?.maskFrame&&{...figure.maskFrame},appearance=figure?.maskAppearance,styles=numericPaint([figure?.querySelector('.media-viewport'),figure?.querySelector('.media-asset')],maskPreview);return{paint:maskPreview,restore(){styles.restore();if(before)mediaMaskPaint(figure,before,appearance);else maskRestorePreview();}};}});
+  for(const key of ['shape','fit','shadow'])$('mask-'+key).onchange=()=>maskCommit(maskRead());
+  // Capture before canvas placement handlers; release saves a whole crop gesture.
   document.addEventListener('pointerdown',event=>{
     const figure=event.target.closest('.media-box');
     if(!$('mask-crop-mode').checked||!figure||!projectPreviewNode?.contains(figure)||vbMode!=='edit'||event.button!==0||icSelection().locked||'media-'+(figure.dataset.objectId||'primary')!==maskTarget)return;
@@ -113,7 +113,7 @@ projectInit=function(...args){
     const rect=figure.getBoundingClientRect(),start={x:Number($('mask-x').value),y:Number($('mask-y').value),clientX:event.clientX,clientY:event.clientY},stamp=maskStamp();
     const move=next=>{if(maskStamp()!==stamp){end();return;}for(const [key,client,size]of [['x','clientX',rect.width],['y','clientY',rect.height]])$('mask-'+key).value=Math.round(Math.max(0,Math.min(100,start[key]-(next[client]-start[client])/size*100)));numericRefreshScope(panel);maskPreview();};
     const key=event=>{if(event.key==='Escape'){event.preventDefault();event.stopImmediatePropagation();cancel();}};
-    const end=()=>{document.removeEventListener('pointermove',move,true);document.removeEventListener('pointerup',end,true);document.removeEventListener('pointercancel',cancel,true);document.removeEventListener('keydown',key,true);window.removeEventListener('blur',cancel);};
+    const end=event=>{document.removeEventListener('pointermove',move,true);document.removeEventListener('pointerup',end,true);document.removeEventListener('pointercancel',cancel,true);document.removeEventListener('keydown',key,true);window.removeEventListener('blur',cancel);if(event?.type==='pointerup'&&maskStamp()===stamp&&(Number($('mask-x').value)!==start.x||Number($('mask-y').value)!==start.y))maskCommit(maskRead());};
     const cancel=()=>{end();if(maskStamp()!==stamp)return;$('mask-x').value=start.x;$('mask-y').value=start.y;numericRefreshScope(panel);maskPreview();};
     document.addEventListener('pointermove',move,true);document.addEventListener('pointerup',end,true);document.addEventListener('pointercancel',cancel,true);document.addEventListener('keydown',key,true);window.addEventListener('blur',cancel);
   },true);

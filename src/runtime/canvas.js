@@ -696,10 +696,8 @@ function ceDropZones(existing = false) {
     const button = document.createElement("button");
     button.type = "button";
     button.dataset.dropZone = zone;
-    button.textContent =
-      zone === "replace"
-        ? "Replace " + (ceConfig()?.name || "selected media") + "…"
-        : (existing ? "" : "Add · ") + zone[0].toUpperCase() + zone.slice(1);
+    button.textContent = zone === 'replace'?'Replace selected media':(existing ? '' : 'Add · ') + zone[0].toUpperCase() + zone.slice(1);
+    if(zone==='replace'){const name=document.createElement('span');name.className='ce-drop-name';name.textContent=ceConfig()?.name||'Selected media';button.title=name.textContent;button.append(name);}
     if (existing) button.onclick = () => ceFinishPlacement(zone);
     layer.append(button);
   }

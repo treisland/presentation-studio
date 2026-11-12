@@ -12,6 +12,26 @@ test.after(()=>browser.close());
 const zipContext={setImmediate,clearImmediate,setTimeout,clearTimeout,Uint8Array,ArrayBuffer,TextEncoder,TextDecoder};
 vm.runInNewContext(await readFile('vendor/jszip-3.10.1.min.js','utf8'),zipContext);
 
+test('long filenames cannot overflow drop options and media controls share the Inspector scroll area',async()=>{
+  const {page,errors}=await openExample(browser,'portfolio-demo');
+  try{
+    await operations(page,[{type:'design.clear',slideId:(await snapshot(page)).state.slides[0].id}]);
+    await page.locator('#component-open').click();await page.getByRole('button',{name:'Insert Circle frame',exact:true}).click();
+    await page.locator('#ce-replace-file').setInputFiles({name:'a'.repeat(220)+'.svg',mimeType:'image/svg+xml',buffer:Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" width="320" height="180"><rect width="320" height="180" fill="#286875"/></svg>')});await page.locator('#fe-confirm-accept').click();
+    for(const width of [1366,1024]){
+      await page.setViewportSize({width,height:768});
+      assert.equal(await page.locator('#mask-panel').evaluate(element=>element.parentElement.id),'wp-fields');assert(await page.locator('#wp-fields').evaluate(element=>element.clientHeight>180&&element.scrollWidth<=element.clientWidth+1));
+      await page.locator('#nav-type').scrollIntoViewIfNeeded();assert.equal(await page.locator('#nav-type').isVisible(),true);
+      await page.locator('#fe-preview .me-preview-stage').evaluate(element=>{const transfer=new DataTransfer();transfer.items.add(new File(['image'],'another.png',{type:'image/png'}));element.dispatchEvent(new DragEvent('dragover',{bubbles:true,cancelable:true,dataTransfer:transfer}));});
+      assert.equal(await page.locator('.ce-drop-zones [data-drop-zone]').count(),5);
+      const grid=await page.locator('.ce-drop-zones').boundingBox();assert(await page.locator('.ce-drop-zones').evaluate(element=>element.scrollWidth<=element.clientWidth+1));
+      for(const zone of ['replace','left','right','background','floating']){const box=await page.locator('.ce-drop-zones [data-drop-zone="'+zone+'"]').boundingBox();assert(box.width>20&&box.height>20&&box.x>=grid.x-1&&box.y>=grid.y-1&&box.x+box.width<=grid.x+grid.width+1&&box.y+box.height<=grid.y+grid.height+1,zone+' stays inside grid');}
+      await page.locator('#fe-preview').evaluate(element=>element.dispatchEvent(new DragEvent('dragleave',{bubbles:true,relatedTarget:null})));
+    }
+    assert.deepEqual(errors,[]);
+  }finally{await page.close();}
+});
+
 test('masked Library media stays visible and retains its frame in structured placements',async()=>{
   const {page,errors}=await openExample(browser,'portfolio-demo');
   try{
@@ -46,14 +66,14 @@ test('structured placement swaps preserve both media frames and Undo restores th
   }finally{await page.close();}
 });
 
-test('border padding stages an inner gap, preserves the outer contour and reopens offline',async()=>{
+test('border padding saves an inner gap directly, preserves the contour and reopens offline',async()=>{
   const {page,errors}=await openExample(browser,'portfolio-demo');
   try{
     await page.locator('#component-open').click();await page.getByRole('button',{name:'Insert Circle frame',exact:true}).click();
     const initial=await snapshot(page),slideId=initial.state.slides[0].id,key=Object.keys(initial.state.design.slides[slideId].objects).find(key=>initial.state.design.slides[slideId].objects[key].frame);
     await page.locator('#mask-padding').fill('10');await page.locator('#mask-padding').press('Enter');
-    assert.equal((await snapshot(page)).revision,initial.revision);assert.equal(await page.locator('#fe-preview .mask-content').evaluate(element=>element.style.inset),'10%');assert.equal(await page.locator('#fe-preview .mask-outline circle').getAttribute('r'),'50');
-    await page.getByRole('button',{name:'Apply frame',exact:true}).click();assert.equal((await snapshot(page)).state.design.slides[slideId].objects[key].frame.padding,10);
+    assert.notEqual((await snapshot(page)).revision,initial.revision);assert.equal(await page.locator('#fe-preview .mask-content').evaluate(element=>element.style.inset),'10%');assert.equal(await page.locator('#fe-preview .mask-outline circle').getAttribute('r'),'50');
+    assert.equal(await page.getByRole('button',{name:'Apply frame',exact:true}).count(),0);assert.equal((await snapshot(page)).state.design.slides[slideId].objects[key].frame.padding,10);
     await page.locator('#fe-undo').click();assert.equal((await snapshot(page)).state.design.slides[slideId].objects[key].frame.padding,0);await page.locator('#fe-redo').click();
     await page.locator('#component-open').click();await page.locator('#component-save-panel > summary').click();await page.locator('#component-name').fill('Padded circle');await page.locator('#component-save').click();await page.getByRole('tab',{name:'My components',exact:true}).click();await page.getByRole('button',{name:'Insert Padded circle',exact:true}).click();
     assert.equal(Object.values((await snapshot(page)).state.design.slides[slideId].objects).filter(meta=>meta.frame?.padding===10).length,2);
@@ -81,7 +101,7 @@ test('Grid media masks preserve cell identity and reject locked parent edits',as
   try{
     const initial=await snapshot(page),slideId=initial.state.slides[0].id;
     await page.locator('#fe-preview .media-box[data-object-id="primary"]').click();
-    await page.locator('#mask-shape').selectOption('circle');await page.getByRole('button',{name:'Apply frame',exact:true}).click();
+    await page.locator('#mask-shape').selectOption('circle');
     assert.equal((await snapshot(page)).state.design.slides[slideId].objects['media-primary'].frame.shape,'circle');
     assert.match(await page.locator('#fe-preview .media-box[data-object-id="primary"] .media-viewport').evaluate(element=>element.style.clipPath),/^circle/);
     const grid=(await snapshot(page)).state.slides[0].tree.find(node=>node.attrs?.class?.includes('mg-grid')),key=grid.attrs.class.match(/layer-[\w-]+/)?.[0]||'node-'+initial.state.slides[0].tree.findIndex(node=>node.attrs?.class?.includes('mg-grid'));
@@ -91,25 +111,24 @@ test('Grid media masks preserve cell identity and reject locked parent edits',as
   }finally{await page.close();}
 });
 
-test('Library frame controls stage one Undo step, respect locks and retain component settings',async()=>{
+test('Library frame controls save directly, keep one Undo per gesture and retain preset settings',async()=>{
   const {page,errors}=await openExample(browser,'portfolio-demo');
   try{
     await page.locator('#component-open').click();await page.getByRole('button',{name:'Insert Rounded frame',exact:true}).click();
     const before=await snapshot(page),slideId=before.state.slides[0].id,key=Object.keys(before.state.design.slides[slideId].objects).find(key=>before.state.design.slides[slideId].objects[key].frame);
     assert.equal(await page.locator('#mask-panel').isVisible(),true);
     await page.locator('#mask-zoom').fill('175');await page.locator('#mask-zoom').press('Enter');
-    assert.equal((await snapshot(page)).revision,before.revision);
+    assert.equal((await snapshot(page)).state.design.slides[slideId].objects[key].frame.zoom,175);
     assert.equal(await page.locator('#fe-preview .mask-frame .media-asset').evaluate(element=>element.style.transform),'scale(1.75)');
     await page.locator('#mask-crop-mode').check();const bounds=await page.locator('#fe-preview .mask-frame').boundingBox();
-    await page.mouse.move(bounds.x+bounds.width*.5,bounds.y+bounds.height*.5);await page.mouse.down();await page.mouse.move(bounds.x+bounds.width*.6,bounds.y+bounds.height*.5);await page.mouse.up();
-    assert(Number(await page.locator('#mask-x').inputValue())<50);assert.equal((await snapshot(page)).revision,before.revision);
+    const zoomed=await snapshot(page);await page.mouse.move(bounds.x+bounds.width*.5,bounds.y+bounds.height*.5);await page.mouse.down();await page.mouse.move(bounds.x+bounds.width*.6,bounds.y+bounds.height*.5);assert.equal((await snapshot(page)).revision,zoomed.revision);await page.mouse.up();
+    assert(Number(await page.locator('#mask-x').inputValue())<50);assert.notEqual((await snapshot(page)).revision,zoomed.revision);
     const stagedX=await page.locator('#mask-x').inputValue();await page.mouse.move(bounds.x+bounds.width*.5,bounds.y+bounds.height*.5);await page.mouse.down();await page.mouse.move(bounds.x+bounds.width*.4,bounds.y+bounds.height*.5);await page.keyboard.press('Escape');await page.mouse.up();assert.equal(await page.locator('#mask-x').inputValue(),stagedX);
-    await page.getByRole('button',{name:'Apply frame',exact:true}).click();
     assert.equal((await snapshot(page)).state.design.slides[slideId].objects[key].frame.zoom,175);
-    await page.locator('#fe-undo').click();assert.equal((await snapshot(page)).state.design.slides[slideId].objects[key].frame.zoom,100);
-    const previous=page.locator('#fe-preview .mask-frame'),clip=await previous.locator('.media-viewport').evaluate(element=>element.style.clipPath);
+    await page.locator('#fe-undo').click();assert.equal((await snapshot(page)).state.design.slides[slideId].objects[key].frame.x,50);await page.locator('#fe-undo').click();assert.equal((await snapshot(page)).state.design.slides[slideId].objects[key].frame.zoom,100);
+    const previous=page.locator('#fe-preview .mask-frame');
     await page.locator('#mask-shape').selectOption('circle');await page.locator('#fe-preview .media-box[data-object-id="primary"]').click();
-    assert.equal(await previous.locator('.media-viewport').evaluate(element=>element.style.clipPath),clip);await previous.click();
+    assert.match(await previous.locator('.media-viewport').evaluate(element=>element.style.clipPath),/circle/);await previous.click();await page.locator('#fe-undo').click();
     await page.locator('#component-open').click();await page.locator('#component-save-panel > summary').click();await page.locator('#component-name').fill('Reusable mask');await page.locator('#component-save').click();
     await page.getByRole('tab',{name:'My components',exact:true}).click();await page.getByRole('button',{name:'Insert Reusable mask',exact:true}).click();
     const copies=Object.entries((await snapshot(page)).state.design.slides[slideId].objects).filter(([,meta])=>meta.frame);assert.equal(copies.length,2);assert.notEqual(copies[0][0],copies[1][0]);assert.equal(copies[1][1].frame.shape,'rounded');

@@ -1,4 +1,6 @@
 #mask-panel{padding:12px}#mask-panel>label{display:grid;gap:5px;margin-bottom:10px}#mask-panel input,#mask-panel select{min-width:0;max-width:100%}#mask-panel>button{margin:4px}#mask-panel[hidden]{display:none}
+#full-editor #wp-fields{min-width:0;overflow-x:hidden}#wp-fields>#nav-panel,#wp-fields>#mask-panel{min-width:0;max-width:100%;box-sizing:border-box}
+#full-editor #ce-panel{min-width:0;overflow-wrap:anywhere}#full-editor #ce-panel :is(button,b){min-width:0;max-width:100%;white-space:normal;overflow-wrap:anywhere}
 .mask-frame .media-viewport{isolation:isolate}.mask-frame .media-asset{will-change:auto}
 .slide .media-box.mask-frame{background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important;overflow:visible}
 .media-box.mask-frame:before{display:none!important}
