@@ -417,9 +417,7 @@ function ceGesture(e) {
   e.preventDefault();
   e.stopImmediatePropagation();
   vbEnd(false);
-  ceSelected = figure.dataset.objectId || "primary";
-  cePanel();
-  ceDecorate(root);
+  ceSelect(figure.dataset.objectId || "primary");
   figure.focus({ preventScroll: true });
   if (ceLocked(projectSelected, ceSelected)) return;
   const cfg = ceConfig(),
