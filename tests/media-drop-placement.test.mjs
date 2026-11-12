@@ -5,6 +5,7 @@ import {openExample,snapshot,operations} from './collection-ui.mjs';
 import {addSlide,reveal} from './ui.mjs';
 const browser=await chromium.launch({headless:true,args:['--no-sandbox'],executablePath:process.env.CHROMIUM_EXECUTABLE_PATH});test.after(()=>browser.close());
 const svg='<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect width="400" height="300" fill="#286875"/></svg>';
+const renderedFrame=(page,object)=>page.locator('#fe-preview [data-object-id="'+object+'"]').evaluate(element=>{const r=element.getBoundingClientRect(),s=element.closest('.slide').getBoundingClientRect();return{x:(r.x-s.x)/s.width,y:(r.y-s.y)/s.height,width:r.width/s.width,height:r.height/s.height};});
 async function drop(page,zone){const transfer=await page.evaluateHandle(svg=>{const d=new DataTransfer();d.items.add(new File([svg],'new-placement.svg',{type:'image/svg+xml'}));return d;},svg);try{await page.locator('#fe-preview').dispatchEvent('dragover',{dataTransfer:transfer});await page.locator('[data-drop-zone="'+zone+'"]').dispatchEvent('drop',{dataTransfer:transfer});}finally{await transfer.dispose();}}
 for(const zone of ['left','right','background','floating'])test('first file drop honors '+zone+' and is one Undo action',async()=>{
  const {page,errors}=await openExample(browser,'portfolio-demo');try{
@@ -35,5 +36,19 @@ for(const lock of ['metadata','canvas'])test('initial structured drop respects t
   if(lock==='metadata')assert.equal((await operations(page,[{type:'design.meta',slideId:id,keys:['media-primary'],changes:{locked:true}}])).ok,true);
   else {await reveal(page,'#ce-object-lock');await page.locator('#ce-object-lock').click();}
   const before=await snapshot(page);await drop(page,'left');assert.deepEqual(await snapshot(page),before);assert.match(await page.locator('#fe-message').textContent(),/Unlock the primary media/);assert.deepEqual(errors,[]);
+ }finally{await page.close();}
+});
+
+for(const layout of ['left','right','background'])for(const action of ['drop','change'])test('rotated '+layout+' primary keeps its rendered frame after '+action+' demotion',async()=>{
+ const {page,errors}=await openExample(browser,'portfolio-demo');try{
+  await addSlide(page,'blank');const id=await page.locator('#fe-preview .slide').getAttribute('data-media-id');await drop(page,layout);
+  assert.equal((await operations(page,[{type:'design.meta',slideId:id,keys:['media-primary'],changes:{name:'Rotated structured image',rotation:20}}])).ok,true);
+  if(action==='change')await drop(page,'floating');await page.locator('#we-zoom').selectOption('0.5');
+  await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));const before=await snapshot(page),old=before.state.media[id],bounds=await renderedFrame(page,'primary');assert.equal(old.canvas.placement,null);
+  const destination=layout==='left'?'right':'left';
+  if(action==='drop')await drop(page,destination);
+  else {const object=before.state.mediaObjects[id].at(-1);await page.locator('#fe-preview [data-object-id="'+object.id+'"] .ce-placement-handle').press('Enter');await page.locator('.ce-existing-grid [data-drop-zone="'+destination+'"]').click();}
+  await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));const after=(await snapshot(page)).state,retained=after.mediaObjects[id].find(o=>o.media.src===old.src);assert.ok(retained);const actual=await renderedFrame(page,retained.id);for(const dimension of ['x','y','width','height'])assert.ok(Math.abs(actual[dimension]-bounds[dimension])<.001,dimension+': '+JSON.stringify({before:bounds,after:actual}));
+  assert.deepEqual(after.design.slides[id].objects['media-'+retained.id],before.state.design.slides[id].objects['media-primary']);assert.deepEqual({...retained.media,canvas:old.canvas},old);assert.deepEqual(after.slides,before.state.slides);await page.locator('#fe-undo').click();assert.deepEqual((await snapshot(page)).state,before.state);assert.deepEqual(errors,[]);
  }finally{await page.close();}
 });

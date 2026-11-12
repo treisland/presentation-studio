@@ -280,15 +280,27 @@ function ceFigure(root = projectPreviewNode) {
   return root?.querySelector('.media-box[data-object-id="' + ceSelected + '"]');
 }
 function ceDefaultRect(figure) {
-  const slide = figure.closest(".slide"),
-    r = figure.getBoundingClientRect(),
-    s = slide.getBoundingClientRect();
-  return cePlacement({
-    x: (r.left - s.left) / s.width,
-    y: (r.top - s.top) / s.height,
-    w: r.width / s.width,
-    h: r.height / s.height,
-  });
+  // Rotation is retained separately in design metadata. Do not save its expanded
+  // screen bounds as placement and then apply the same rotation a second time.
+  const style = figure.style, properties = ['rotate','transform'];
+  const previous = properties.map(name => [name,style.getPropertyValue(name),style.getPropertyPriority(name)]);
+  try {
+    for (const name of properties) style.setProperty(name,'none','important');
+    const slide = figure.closest(".slide"),
+      r = figure.getBoundingClientRect(),
+      s = slide.getBoundingClientRect();
+    return cePlacement({
+      x: (r.left - s.left) / s.width,
+      y: (r.top - s.top) / s.height,
+      w: r.width / s.width,
+      h: r.height / s.height,
+    });
+  } finally {
+    for (const [name,value,priority] of previous) {
+      if (value) style.setProperty(name,value,priority);
+      else style.removeProperty(name);
+    }
+  }
 }
 function ceSelect(id) {
   ceSelected = id;
