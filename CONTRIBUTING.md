@@ -21,7 +21,7 @@ Edit source files rather than `dist/`. The runtime files share a single ordered 
 
 ### Linux CI toolchain
 
-Linux validation and tagged release builds run the full check/package commands in the same official Playwright image, pinned by version and digest in `.github/playwright-image.json`. The image supplies browsers and OS dependencies; no apt installation runs during tests. Node 22 from `actions/setup-node` is mounted read-only into the container. Windows validation remains native. Both platform results are required; matrix fail-fast is disabled so an infrastructure failure does not hide the other platform's result.
+Linux validation and tagged release builds run the full check/package commands in the same official Playwright image, pinned by version and digest in `.github/playwright-image.json`. The image supplies browsers and OS dependencies; no apt installation runs during tests. Node 22 from `actions/setup-node` is mounted read-only into the container. Windows validation remains native. The full validation matrix has a bounded 30-minute job budget: the expanded native Windows suite reached its final regression at the former 15-minute deadline. No check or packaging step is skipped. Both platform results are required; matrix fail-fast is disabled so an infrastructure failure does not hide the other platform's result.
 
 For local reproduction, use a fresh ordinary clone on Linux/WSL, Node 22 installed with its `bin/` and `lib/` distribution layout, and Docker. From that clone run:
 
