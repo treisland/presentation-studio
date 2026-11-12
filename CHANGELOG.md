@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Add Library buttons and reusable slide/external link actions with keyboard Preview/playback navigation, stable destinations and new-tab external resources.
+- Keep button presets visually distinct, show expanded action controls at the top of Content, save complete choices immediately and indicate pending URL edits without an Apply action step.
+
 - Restore Orbit Color 2 and Color 3 on individual SVG rings, preserving all three saved palette slots in previews and offline playback/booth.
 
 ## 0.12.0-beta.1 — 2026-11-11

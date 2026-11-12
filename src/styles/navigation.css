@@ -1,0 +1,15 @@
+.slide > .db-block.nav-button{display:flex;align-items:center;justify-content:center;text-align:center;border-radius:12px;min-height:0;padding:12px;background:var(--project-accent,#286875);color:var(--project-accent-ink,#fff);border:2px solid transparent;box-shadow:none}
+.nav-button p{margin:0!important;color:inherit!important;font-weight:700}
+.slide > .db-block.nav-outline-button{background:transparent;border:3px solid currentColor;color:var(--project-accent,#286875)}
+.slide > .db-block.nav-text-link{background:transparent;border-color:transparent;color:var(--project-accent,#286875);text-decoration:underline;border-radius:0}
+.slide > .db-block.nav-navigation-arrow{background:transparent;border-color:transparent;color:var(--project-accent,#286875);border-radius:0}
+.nav-linked{cursor:pointer}.nav-linked:focus-visible,.nav-media-link:focus-visible{outline:3px solid #4388ff;outline-offset:4px}
+#fe-preview.vb-edit .nav-linked{cursor:default}
+[data-block-mode=edit] .nav-linked:after{content:'↗ Link';position:absolute;left:4px;top:4px;padding:3px;background:#10213c;color:white;font:14px Arial;pointer-events:none}
+.nav-media-link{position:absolute;left:8px;top:8px;z-index:12;font-size:16px;padding:8px;background:#10213c;color:white;border:1px solid white;border-radius:6px}
+.mf-focused .nav-media-link,.bp-focused .nav-media-link{display:none}
+.nav-status{display:block;background:#10213c;color:white;padding:6px;font-size:18px}.nav-destination-preview{position:relative;aspect-ratio:16/9;overflow:hidden;width:100%;pointer-events:none}
+#nav-panel{padding:12px}#nav-panel label{display:grid;gap:5px;margin-bottom:10px}#nav-panel input,#nav-panel select{width:100%;min-width:0}#nav-panel [hidden]{display:none}
+#nav-panel h3{margin:0 0 12px}#nav-warning{font-size:13px;margin:10px 0}#nav-panel[data-pending=true] #nav-warning{border-left:3px solid #d79924;padding-left:8px}
+.component-preview-button span,.component-preview-outline-button span,.component-preview-text-link span,.component-preview-navigation-arrow span{display:block;border-radius:8px;background:#286875;color:white;padding:12px}.component-preview-button span:after{content:'Continue →'}.component-preview-outline-button span:after{content:'Learn more'}.component-preview-text-link span:after{content:'Open resource ↗'}.component-preview-navigation-arrow span:after{content:'Next →'}
+@media(forced-colors:active){.nav-button{border:2px solid ButtonText!important}.nav-linked:focus-visible{outline-color:Highlight}}
