@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Define companion guide/screenshot ownership, provenance, human review and local rollback responsibilities in contributor, agent, PR and release workflows (#193).
+
 - Define the locally reviewed companion-site architecture, canonical guide ownership, screenshot provenance and deferred publication boundary (#192).
 
 ## 0.15.0-beta.1 — 2026-11-12

@@ -43,6 +43,10 @@ If delivery reports HTTP 404 while reading repository settings, distinguish an i
 Record evidence links and results for supported browsers/OS, a real delivery video, OBS if claimed supported, keyboard authoring, screen-reader review, clean-profile editable ZIP restore, offline playback, and legacy import. Do not imply these passed from CI alone. Beta/RC/stable plans must list evidence for each gate and mark manualGatesPassed=true only after completion. Any unsupported environment must be stated in notes.
 
 
+## Companion content review
+
+Record each supported screenshot scene as refreshed, reviewed-and-still-accurate, or pending, with its app channel/version/SHA and provenance. Follow [the website process](website-process.md). Companion public launch remains deferred; app release authorization does not publish companion content.
+
 ## Additional distribution channels
 
 Docker/GHCR and Pages are downstream distributions, not release authorization. Tagged plans must explicitly list distribution targets/channels. Use the manual Distribute approved release workflow after canonical publication; never deploy a prerelease to stable. Preserve the existing four-asset contract. Isolated review previews may use successful owner-PR artifacts without publishing a release; they remain development builds, pending manual acceptance. See [deployment, Namecheap DNS and recovery](deployment.md).
