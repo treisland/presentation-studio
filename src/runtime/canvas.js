@@ -465,6 +465,7 @@ function ceMove(e) {
   if (!d || d.pointer !== e.pointerId) return;
   if(projectSelected!==d.id||projectMeta.id!==d.snapshot.projectId){ceEnd(true);return;}
   e.preventDefault();
+  d.lastX=e.clientX;d.lastY=e.clientY;
   const dx = (e.clientX - d.startX) / d.bounds.width,
     dy = (e.clientY - d.startY) / d.bounds.height;
   if (d.crop) {
@@ -985,7 +986,7 @@ function ceBind() {
   window.addEventListener("pointerup", (event) => {
     if (ceRelocate?.pointer === event.pointerId)
       ceHighlightPlacement(event.clientX, event.clientY);
-    if(ceDrag?.pointer===event.pointerId)ceMove(event);
+    if(ceDrag?.pointer===event.pointerId&&(event.clientX!==(ceDrag.lastX??ceDrag.startX)||event.clientY!==(ceDrag.lastY??ceDrag.startY)))ceMove(event);
     ceEnd();
   });
   window.addEventListener("pointercancel", () => ceEnd(true));

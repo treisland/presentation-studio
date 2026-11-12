@@ -254,6 +254,7 @@ projectInit = function () {
     if (!dbDrag || e.pointerId !== dbDrag.pointer) return;
     if(projectSelected!==dbDrag.slideId||projectMeta.id!==dbDrag.snapshot.projectId){dbFinish(true);return;}
     e.preventDefault(); const d = dbDrag, p = { ...d.p }, dx = (e.clientX - d.x) / d.bounds.width, dy = (e.clientY - d.y) / d.bounds.height;
+    d.lastX=e.clientX;d.lastY=e.clientY;
     if (d.mode === "move") {
       const snapped = spMove(d,p,dx,dy,e,d.el.closest('.slide'),d.id);if(!snapped)return;
       Object.assign(p, dbClampPlacement(dbNode(), { ...p, x: snapped.x, y: snapped.y }));
@@ -267,7 +268,7 @@ projectInit = function () {
     d.next = p; Object.assign(d.el.style, { left: p.x*100+"%", top:p.y*100+"%", width:p.w*100+"%", height:p.h*100+"%" });
   }
   window.addEventListener("pointermove",move,true);
-  window.addEventListener("pointerup", e => { if (dbDrag?.pointer === e.pointerId) {move(e);dbFinish();} }, true);
+  window.addEventListener("pointerup", e => { if (dbDrag?.pointer === e.pointerId) {if(e.clientX!==(dbDrag.lastX??dbDrag.x)||e.clientY!==(dbDrag.lastY??dbDrag.y))move(e);dbFinish();} }, true);
   window.addEventListener("pointercancel", () => dbFinish(true), true);
   window.addEventListener("lostpointercapture", e => { if (dbDrag?.pointer === e.pointerId) dbFinish(true); }, true);
   window.addEventListener("blur", () => dbFinish(true));

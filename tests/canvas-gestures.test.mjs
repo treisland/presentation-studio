@@ -67,3 +67,14 @@ test('capture loss and slide switches cancel batch movement; mixed locked items 
     const locked=await snapshot(page);const result=await operations(page,[{type:'component.arrange',slideId:id,keys:keys.slice(0,2),action:'move',dx:.1,dy:.1}]);assert.equal(result.code,'LOCKED');assert.deepEqual(await snapshot(page),locked);assert.deepEqual(errors,[]);
   }finally{await page.close();}
 });
+
+for(const kind of ['block','media'])test(kind+' stationary resize clicks do not snap geometry or add Undo history',async()=>{
+ const {page,errors,id,keys,selector}=await setup(kind);try{
+  const placement={x:.2,y:.2,w:.298,h:.2},objectId=kind==='media'?await page.locator(selector).getAttribute('data-object-id'):null;
+  assert.equal((await operations(page,[kind==='block'?{type:'block.place',slideId:id,blockId:keys[0],placement}:{type:'media.place',slideId:id,objectId,placement}])).ok,true);
+  await selectElement(page,kind==='block'?keys[0]:'media-'+objectId);
+  for(const zoom of ['0.5','1']){
+   await page.locator('#we-zoom').selectOption(zoom);const handle=page.locator(selector+(kind==='block'?' [data-db-direction=se]':' [data-corner=se]'));await handle.hover();const before=await snapshot(page);const box=await handle.boundingBox();await page.mouse.move(box.x+box.width/2,box.y+box.height/2);await page.mouse.down();await page.mouse.up();assert.deepEqual(await snapshot(page),before);
+  }assert.deepEqual(errors,[]);
+ }finally{await page.close();}
+});
