@@ -20,3 +20,12 @@ backup for recovery or transfer. No new library schema or service is introduced.
 Actual composition thumbnails and category/filter improvements are separate
 coordinated issues. Light/dark, touch, narrow layouts and screen-reader acceptance
 remain part of the consolidated milestone's manual review.
+
+## Categories and Blocks filters
+
+Blocks, Widgets, My components and Data & Code pair outline icons with visible labels.
+Arrow keys/Home/End retain category keyboard navigation. Within Blocks, All/Text/Shapes/Media
+filters combine with the existing category-scoped search. Clear search retains the selected
+filter and returns focus to the search field. Empty results suggest clearing search or changing
+category/filter. Media retains its upload picker; this does not add a stock icon catalog or
+cross-category search. Decorative line/arrow/button/step previews show their existing kinds.

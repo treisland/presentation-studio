@@ -1,0 +1,12 @@
+body #component-add #component-tabs [role=tab] { display:inline-flex; align-items:center; gap:7px; }
+body #component-add #component-tabs .wb-icon { flex:none; }
+body #component-add #cn-filters { display:flex; flex:none; flex-wrap:wrap; gap:6px; padding:0 24px 12px; }
+body #component-add #cn-filters[hidden] { display:none; }
+body #component-add #cn-filters button { min-height:36px; border:1px solid var(--wb-line,#aabbd0); }
+body #component-add #cn-filters [aria-pressed=true] { background:var(--wb-selected,#e4edff); color:var(--wb-selected-ink,#153b88); border-color:var(--wb-focus,#0066ff); font-weight:600; }
+body #component-add .cn-sample-line { width:75%; height:0; border-top:4px solid #3184ee; font-size:0; }
+body #component-add .cn-sample-arrow { width:72%; font-size:0; border-top:4px solid #3184ee; position:relative; }
+body #component-add .cn-sample-arrow:after { content:''; position:absolute; right:0; top:-9px; width:14px; height:14px; border-top:4px solid #3184ee; border-right:4px solid #3184ee; transform:rotate(45deg); }
+body #component-add .cn-sample-button { padding:12px 28px; color:#fff; background:#236be8; border-radius:7px; }
+body #component-add .cn-sample-step { border:2px solid #3184ee; border-radius:50%; padding:12px 18px; font-weight:bold; font-size:24px; }
+@media(forced-colors:active){body #component-add #cn-filters [aria-pressed=true]{outline:2px solid Highlight;}}

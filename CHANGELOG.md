@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add recognizable icon-and-label Library categories and All/Text/Shapes/Media filters that combine with category-scoped search (#210).
+
 - Make Library Insert and saved-component Rename/Duplicate/Delete permanent labeled actions, expose save/backup/recovery controls and add explicit inline rename commit/cancel (#209).
 
 - Define the locally reviewed companion-site architecture, canonical guide ownership, screenshot provenance and deferred publication boundary (#192).
