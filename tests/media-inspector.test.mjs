@@ -55,3 +55,37 @@ test('selected video settings, posters, lock guards and explicit restore preserv
   assert.deepEqual(errors,[]);
  }finally{await page.close();}
 });
+
+
+for(const kind of ['image','video'])test('unmasked '+kind+' double-click opens supported crop controls without enabling mask drag',async()=>{
+ const {page,errors}=await openExample(browser,'template');try{
+  await page.locator('.fe-slide-button[data-slide-id="studio-media"]').click();await selectElement(page,'media-primary');await page.locator('#wp-tab-content').click();
+  if(kind==='video'){await page.locator('#ce-replace-file').setInputFiles('tests/fixtures/media/pattern.webm');await page.locator('#fe-confirm-accept').click();}
+  await page.locator('#fe-preview .media-box[data-object-id="primary"]').dblclick();
+  assert.equal(await page.locator('#mask-crop-mode').isChecked(),false);
+  assert.equal(await page.locator('#mi-x').isVisible(),true);assert.equal(await page.evaluate(()=>document.activeElement.id),'mi-x');
+  const figure=page.locator('#fe-preview .media-box[data-object-id="primary"]'),b=await figure.boundingBox();await page.mouse.move(b.x+b.width/2,b.y+b.height/2);await page.mouse.down();await page.mouse.move(b.x+b.width/2+25,b.y+b.height/2+10);await page.mouse.up();
+  assert.deepEqual(errors,[]);
+ }finally{await page.close();}
+});
+
+for(const target of ['other media','empty grid cell'])test('video preview stops and restores mute on selecting '+target,async()=>{
+ const {page,errors}=await openExample(browser,'template');try{
+  if(target==='empty grid cell'){
+   await addSlide(page,'media-grid');await reveal(page,'#mg-cell');await page.locator('#mg-cell').selectOption({index:0});await reveal(page,'#mi-add-cell');const picker=page.waitForEvent('filechooser');await page.locator('#mi-add-cell').click();await(await picker).setFiles('tests/fixtures/media/pattern.webm');
+  }else{
+   await page.locator('.fe-slide-button[data-slide-id="studio-media"]').click();await selectElement(page,'media-primary');await page.locator('#wp-tab-content').click();await page.locator('#ce-replace-file').setInputFiles('tests/fixtures/media/pattern.webm');await page.locator('#fe-confirm-accept').click();
+  }
+  if(target==='empty grid cell'){await reveal(page,'#mg-cell');await page.locator('#mg-cell').selectOption({index:0});}
+  let other;
+  if(target==='other media'){await page.locator('#ce-file').setInputFiles(svg('other.svg'));other=(await snapshot(page)).state.mediaObjects['studio-media'].at(-1).id;await selectElement(page,'media-primary');await page.locator('#wp-tab-content').click();}
+  await reveal(page,'#mi-muted');await page.locator('#mi-muted').uncheck();await page.locator('#mi-loop').check();
+  const priorMuted=await page.locator('#fe-preview video').evaluate(video=>video.muted);
+  await page.locator('#mi-preview').click();await page.waitForFunction(()=>document.querySelector('#mi-preview').textContent==='Pause preview');
+  await page.evaluate(()=>window.reviewPreview=document.querySelector('#fe-preview video'));
+  if(target==='empty grid cell'){await reveal(page,'#mg-cell');await page.locator('#mg-cell').selectOption({index:1});}
+  else {await selectElement(page,'media-'+other);}
+  assert.equal(await page.evaluate(()=>window.reviewPreview.paused),true);assert.equal(await page.evaluate(()=>window.reviewPreview.muted),priorMuted);
+  assert.equal(await page.locator('#mi-preview').textContent(),'Preview clip (muted)');assert.deepEqual(errors,[]);
+ }finally{await page.close();}
+});

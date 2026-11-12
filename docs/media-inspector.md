@@ -29,3 +29,7 @@ Compact Placement buttons keep an icon and label, the same accessible name, keyb
 Browser tests cover target preservation and ambiguous selection, all seven placement choices and Undo, conditional fields, unified frame sizing, crop preservation, video/posters, restoration and locks, grid editing, editable/offline reopening and existing MP4/WebM focus/playback round trips. Run `npm run check`, `npm run package` and `git diff --check`.
 
 Manual checks remain: laptop/narrow and light/dark layouts, keyboard and screen-reader review, real image/video replacements at differing aspect ratios, muted preview and poster behavior, primary vs additional-video timing, restore confirmation scope, and clean-profile offline editable/playback/booth reopening. No manual release gates are implied by automated tests.
+
+### Crop shortcuts and preview lifetime
+
+Double-clicking unmasked media reveals the numeric crop controls without enabling frame-only drag mode. Framed media retains direct in-frame cropping. A clip preview belongs to the selected project, slide, object and grid cell: switching any of these stops it, restores its previous mute state and resets the preview button, including when the new grid cell is empty.
