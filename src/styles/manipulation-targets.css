@@ -9,4 +9,6 @@
 #full-editor [data-block-mode=edit] :is(.db-selected,.gs-selected,.ce-selected,.gs-bounds) { outline-width:calc(2px / var(--db-scale,.4))!important;outline-offset:0; }
 #full-editor .gs-bounds {border-width:calc(2px / var(--db-scale,.4));}
 #full-editor [data-block-mode=edit] :is(.db-handle,.ce-handle,.gs-handle):disabled {cursor:not-allowed;opacity:.65;}
+#full-editor .mh-target:popover-open {position:fixed!important;transform:translate(-50%,-50%)!important;rotate:0deg!important;overflow:visible;}
+#full-editor .mh-target::backdrop {pointer-events:none;background:transparent;}
 @media(forced-colors:active){#full-editor [data-block-mode=edit] :is(.db-handle,.ce-handle,.gs-handle){forced-color-adjust:auto;border:2px solid ButtonText!important;}}
