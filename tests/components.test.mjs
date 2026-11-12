@@ -26,7 +26,7 @@ test('Library has compact fixed navigation, responsive cards and an accessible e
     assert(await page.locator('#component-library-title').evaluate(element=>parseFloat(getComputedStyle(element).fontSize)<=28));
     assert.equal(await page.getByRole('button',{name:'Insert image or video…',exact:true}).count(),1);
     await page.getByRole('tab',{name:'My components',exact:true}).click();assert.match(await page.locator('.component-empty').textContent(),/Your reusable designs/);
-    await page.getByRole('tab',{name:'Blocks',exact:true}).click();await page.locator('#component-search').fill('circle');assert.equal(await page.locator('#component-items article').count(),1);await page.getByRole('button',{name:'Clear search',exact:true}).click();
+    await page.getByRole('tab',{name:'Blocks',exact:true}).click();await page.locator('#component-search').fill('circle');assert.equal(await page.locator('#component-items article').count(),2);await page.getByRole('button',{name:'Clear search',exact:true}).click();
     for(const width of [1024,600,390]){await page.setViewportSize({width,height:768});assert.equal(await page.locator('#component-add').evaluate(element=>element.scrollWidth<=element.clientWidth+1),true);assert.equal(await page.locator('#component-add > footer').evaluate(element=>getComputedStyle(element).position),'static');}
     assert.deepEqual(errors,[]);
   }finally{await page.close();}

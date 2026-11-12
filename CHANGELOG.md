@@ -3,6 +3,7 @@
 ## Unreleased
 
 - Add Library buttons and reusable slide/external link actions with keyboard Preview/playback navigation, stable destinations and new-tab external resources.
+- Add reusable image/video frame placeholders and rectangle/rounded/circle/oval masks with staged shared numeric zoom/crop/radius sliders, direct crop dragging and offline round trips.
 
 - Restore Orbit Color 2 and Color 3 on individual SVG rings, preserving all three saved palette slots in previews and offline playback/booth.
 

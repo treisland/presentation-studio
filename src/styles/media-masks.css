@@ -1,0 +1,4 @@
+#mask-panel{padding:12px}#mask-panel>label{display:grid;gap:5px;margin-bottom:10px}#mask-panel input,#mask-panel select{min-width:0;max-width:100%}#mask-panel>button{margin:4px}#mask-panel[hidden]{display:none}
+.mask-frame .media-viewport{isolation:isolate}.mask-frame .media-asset{will-change:auto}
+.mf-focused .media-viewport,.bp-focused .media-viewport{clip-path:none!important;border-radius:0!important}
+.mask-library-preview{background:#e4ebf0;color:#18304b;margin:auto;max-width:90%}.mask-library-rounded{border-radius:22px}.mask-library-circle{clip-path:circle(closest-side)}.mask-library-oval{clip-path:ellipse(48% 48%)}

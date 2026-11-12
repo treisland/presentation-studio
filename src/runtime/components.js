@@ -146,7 +146,7 @@ function componentValidateLibrary(items) {
       if(!mediaSafePath(path)||typeof asset!=='string'||asset.length>12000000||!/^data:(?:image\/(?:png|jpeg|webp|gif|svg\+xml)|video\/(?:mp4|webm));base64,[A-Za-z0-9+/=]+$/.test(asset))throw Error('Invalid component media.');
       copy.assets[path]=asset;
     }
-    for(const entry of copy.entries){if(entry.node)entry.node=projectValidateTree([entry.node])[0];else if(!entry.media)throw Error('Invalid component object.');entry.meta={...entry.meta,style:spStyle(entry.meta?.style||{})};if(entry.meta.action)entry.meta.action=navAction(entry.meta.action);}
+    for(const entry of copy.entries){if(entry.node)entry.node=projectValidateTree([entry.node])[0];else if(!entry.media)throw Error('Invalid component object.');entry.meta={...entry.meta,style:spStyle(entry.meta?.style||{})};if(entry.meta.action)entry.meta.action=navAction(entry.meta.action);if(entry.meta.frame)entry.meta.frame=maskSettings(entry.meta.frame);}
     for(const entry of copy.entries)if(entry.media)entry.media=mediaValidate({schemaVersion:1,slides:{component:entry.media}}).slides.component;
     return copy;
   });

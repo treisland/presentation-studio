@@ -27,7 +27,8 @@
     "src/styles/background-effects.css",
     "src/styles/numeric-controls.css",
     "src/styles/action-controls.css",
-    "src/styles/navigation.css"
+    "src/styles/navigation.css",
+    "src/styles/media-masks.css"
   ],
   "scripts": [
     "src/runtime/prelude.js",
@@ -89,6 +90,7 @@
     "src/runtime/numeric-controls.js",
     "src/runtime/action-controls.js",
     "src/runtime/navigation.js",
+    "src/runtime/media-masks.js",
     "src/runtime/boot.js"
   ],
   "vendor": "vendor/jszip-3.10.1.min.js"
