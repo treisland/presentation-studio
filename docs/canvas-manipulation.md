@@ -5,6 +5,15 @@
 Selecting template content leaves its layout intact. For one eligible template text/section, choose **Enable free positioning** in the toolbar or Inspector → Arrange. The measured starting geometry is retained so the item does not jump; its text stays editable. **Reset to template position** is nearby in Arrange and restores layout positioning without reverting edited content or the original element identity. Undo/Redo and portable editable restore retain the existing conversion/reset behavior.
 
 Structured tables, code and grids keep their specialized controls. The positioning panel explains that free positioning is unavailable and directs users to Content settings or media's Arrange → Change placement action. Multiple template selections must be narrowed to one before enabling. Locked items explain that the item or presentation must first be unlocked. No selection automatically detaches content, and no new saved fields or layout defaults are introduced.
+## Precision movement
+
+Single blocks, floating media and temporary/group selections use the same alignment/equal-spacing guides. A batch snaps its overall bounds as one unit, excludes its own members and retains relative spacing. Alt bypasses snapping. The existing Snap switch still applies.
+
+Hold Shift while moving to lock the dominant screen-space axis. Entering Shift mid-drag anchors at the current position; releasing it continues from there without replaying movement discarded on the locked axis. Snapping only affects the moving axis. Shift retains its existing resize and faster-keyboard-nudge meanings.
+
+Movement begins after more than four CSS pixels of pointer travel. Smaller motion creates no move or Undo entry. Escape, pointer cancellation, capture loss and slide changes cancel the preview; mouse-up uses the final pointer position and commits one Undo transaction. Mixed locked selections cannot partially move. A compact, non-live hint replaces the existing editing hint during a move and restores it afterwards; no per-frame assistive announcement is added.
+
+Automated workflows cover all four movement contexts, Shift entry/release, Alt, two-zoom batch snapping, relative spacing, threshold/no-history behavior, Escape from Layers-checkbox focus, capture loss, slide switching, atomic locks and Undo. The existing single-object/media/resize, marquee and pan coverage remains required.
 
 In Edit blocks, selected free blocks, floating media and temporary/group selections have an explicit Move grip and resize handles. Drag the grip to move; keep clicking text, table cells and existing controls for their normal editing behavior. Selecting an item does not detach template content or change saved positioning.
 

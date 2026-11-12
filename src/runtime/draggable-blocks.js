@@ -187,6 +187,7 @@ vbModify = function (action) {
   return dbModify(action);
 };
 function dbFinish(cancel = false) {
+  spMoveEnd();
   spClearGuides();
   const gesture = dbDrag;
   if (!gesture) return;
@@ -249,12 +250,13 @@ projectInit = function () {
       style: block.style.cssText, pointer: e.pointerId, snapshot: studioEditing.read() };
     block.setPointerCapture(e.pointerId);
   }, true);
-  window.addEventListener("pointermove", e => {
+  function move(e) {
     if (!dbDrag || e.pointerId !== dbDrag.pointer) return;
+    if(projectSelected!==dbDrag.slideId||projectMeta.id!==dbDrag.snapshot.projectId){dbFinish(true);return;}
     e.preventDefault(); const d = dbDrag, p = { ...d.p }, dx = (e.clientX - d.x) / d.bounds.width, dy = (e.clientY - d.y) / d.bounds.height;
+    d.lastX=e.clientX;d.lastY=e.clientY;
     if (d.mode === "move") {
-      p.x = Math.max(0, Math.min(1 - p.w, p.x + dx)); p.y = Math.max(0, Math.min(1 - p.h, p.y + dy));
-      const snapped = spSnap(p,d.el.closest('.slide'),d.id,false,e.altKey);
+      const snapped = spMove(d,p,dx,dy,e,d.el.closest('.slide'),d.id);if(!snapped)return;
       Object.assign(p, dbClampPlacement(dbNode(), { ...p, x: snapped.x, y: snapped.y }));
     } else {
       Object.assign(p, dbResize(d.p, d.direction, dx, dy, d.el.classList.contains('db-template') ? .005 : .05,
@@ -264,8 +266,9 @@ projectInit = function () {
       }
     }
     d.next = p; Object.assign(d.el.style, { left: p.x*100+"%", top:p.y*100+"%", width:p.w*100+"%", height:p.h*100+"%" });
-  }, true);
-  window.addEventListener("pointerup", e => { if (dbDrag?.pointer === e.pointerId) dbFinish(); }, true);
+  }
+  window.addEventListener("pointermove",move,true);
+  window.addEventListener("pointerup", e => { if (dbDrag?.pointer === e.pointerId) {if(e.clientX!==(dbDrag.lastX??dbDrag.x)||e.clientY!==(dbDrag.lastY??dbDrag.y))move(e);dbFinish();} }, true);
   window.addEventListener("pointercancel", () => dbFinish(true), true);
   window.addEventListener("lostpointercapture", e => { if (dbDrag?.pointer === e.pointerId) dbFinish(true); }, true);
   window.addEventListener("blur", () => dbFinish(true));
