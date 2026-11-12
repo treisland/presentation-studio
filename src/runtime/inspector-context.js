@@ -80,7 +80,6 @@ function icPaint() {
     if (changed) {
       icIdentity = context.identity;
       if ($('we-inspector').dataset.icKind !== kind) $('wp-fields').scrollTop = 0;
-      if (!idsReady && !(icInspectorTarget?.slide===projectSelected&&context.kind==='text'&&context.path===icInspectorTarget.path)) $('ic-text-editor').open = false;
     }
     $('we-inspector').dataset.icKind = kind;
     $('wp-selection-title').textContent = context.title;
@@ -144,7 +143,11 @@ function icPaint() {
     } else for (const id of ['wp-delete','wp-duplicate','db-remove','db-duplicate','vb-delete','vb-duplicate']) icVisible(id,true);
     const button=context.selected.length===1&&mgHas(context.selected[0].node,'nav-button');
     const primary=button&&$('nav-panel')?'nav-panel':{text:'fe-content-panel',widget:'component-widget-fields',code:'code-panel',table:'fe-table-panel',media:$('mi-content')?'mi-content':'ce-panel',grid:$('mi-content')?'mi-content':'mg-panel',multiple:'ic-member-field',notes:'fe-notes-panel'}[kind];
-    const fields=$('wp-fields');if(primary && $(primary)?.parentElement===fields && fields.firstElementChild!==$(primary))fields.prepend($(primary));
+    const fields=$('wp-fields'),panel=primary&&$(primary),guide=$('sg-guide');
+    if(panel?.parentElement===fields){
+      if(guide?.parentElement===fields){if(guide.nextElementSibling!==panel)guide.after(panel);}
+      else if(fields.firstElementChild!==panel)fields.prepend(panel);
+    }
   } finally { icPainting = false; }
 }
 
@@ -187,23 +190,23 @@ function icNavigate(kind) {
   icMember='';
   icInspectorTarget=null;
   weInspect(kind === 'code' ? 'commands' : kind); wpChooseTab('content');
-  if (kind === 'text') $('ic-text-editor').open = true;
+  if (kind === 'text') idsReveal('fe-block-text');
   icPaint();
 }
 function icExpandTextEditor() {
   const context=icSelection();if(context.kind==='text'&&context.path)icInspectorTarget={slide:projectSelected,path:context.path,key:context.selected[0]?.key};
   vbEnd(false); projectFlush(); icPaint();
   wePanels.inspector.open = true; wePanelView(); wpChooseTab('content');
-  $('ic-text-editor').open = true; idsReveal('fe-block-text'); $('fe-block-text').focus();
+  idsReveal('fe-block-text'); $('fe-block-text').focus();
 }
 const icInit = projectInit;
 projectInit = function() {
   icInit();
   const grid = $('fe-content-panel').querySelector('.fe-form-grid');
   grid.children[0].id = 'ic-slide-fields';
-  const editor = document.createElement('details'), summary = document.createElement('summary');
-  editor.id = 'ic-text-editor'; summary.textContent = 'Edit text in Inspector';
-  editor.append(summary,...grid.children[1].childNodes); grid.children[1].replaceWith(editor);
+  const editor = document.createElement('section');
+  editor.id = 'ic-text-editor'; editor.setAttribute('aria-label','Text editor');
+  editor.append(...grid.children[1].childNodes); grid.children[1].replaceWith(editor);
   document.querySelector('label[for="fe-block-select"]').id = 'ic-block-label';
   document.querySelector('label[for="fe-slide-title"]').id = 'ic-title-label';
   document.querySelector('label[for="we-slide-transition"]').id='ic-transition-label';
@@ -221,8 +224,7 @@ projectInit = function() {
     if (element) vbStart({el:element,path,kind:'text',slideID:projectSelected});
     icPaint();
   };
-  $('ic-text-editor').addEventListener('toggle',()=>{if(editor.open){const context=icSelection();if(context.kind==='text'&&context.path)icInspectorTarget={slide:projectSelected,path:context.path,key:context.selected[0]?.key};vbEnd(false);}});
-  editor.querySelector('summary').addEventListener('pointerdown',()=>{if(!editor.open){const context=icSelection();if(context.kind==='text'&&context.path)icInspectorTarget={slide:projectSelected,path:context.path,key:context.selected[0]?.key};}});
+  $('fe-block-text').addEventListener('focus',()=>{const context=icSelection();if(context.kind==='text'&&context.path)icInspectorTarget={slide:projectSelected,path:context.path,key:context.selected[0]?.key};vbEnd(false);});
   const panel = $('vb-panel').onclick;
   $('vb-panel').onclick = event => { const context = icSelection();if(context.kind === 'text')icExpandTextEditor();else if(context.kind === 'code')icNavigate('code');else panel?.call($('vb-panel'),event); };
   for (const [selector,kind] of [['#we-context-slide','slide'],['[data-fe-tab="commands"]','code'],['[data-fe-tab="table"]','table'],['[data-fe-tab="notes"]','notes'],['[data-fe-tab="content"]','text']]) {

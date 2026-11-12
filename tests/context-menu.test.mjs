@@ -132,7 +132,7 @@ test('catalog insertion reads current table settings and keeps the original Undo
 test('opening another object menu commits pending Inspector text against its original target',async()=>{
  const {page,errors}=await openExample(browser,'template');try{
   const slideId=(await snapshot(page)).state.slides[0].id,result=await operations(page,[{type:'block.create',slideId,kind:'text'},{type:'block.create',slideId,kind:'rectangle'}]),[text,shape]=result.created;
-  await selectElement(page,text);await page.locator('#wp-tab-content').click();await page.locator('#ic-text-editor > summary').click();await page.locator('#fe-block-text').fill('Keep this original text');
+  await selectElement(page,text);await page.locator('#wp-tab-content').click();await page.locator('#fe-block-text').focus();await page.locator('#fe-block-text').fill('Keep this original text');
   await page.locator('#fe-preview .'+shape).click({button:'right',position:{x:40,y:30}});
   const state=(await snapshot(page)).state;assert.match(JSON.stringify(state.slides[0].tree.find(node=>node.attrs?.class?.includes(text))),/Keep this original text/);
   assert.equal(await page.locator('.sp-layer-row[data-key="'+shape+'"] button').first().getAttribute('aria-pressed'),'true');assert.equal(await menu(page).isVisible(),true);assert.deepEqual(errors,[]);
