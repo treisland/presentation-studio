@@ -39,6 +39,7 @@ test('Library frame controls stage one Undo step, respect locks and retain compo
     await page.locator('#mask-crop-mode').check();const bounds=await page.locator('#fe-preview .mask-frame').boundingBox();
     await page.mouse.move(bounds.x+bounds.width*.5,bounds.y+bounds.height*.5);await page.mouse.down();await page.mouse.move(bounds.x+bounds.width*.6,bounds.y+bounds.height*.5);await page.mouse.up();
     assert(Number(await page.locator('#mask-x').inputValue())<50);assert.equal((await snapshot(page)).revision,before.revision);
+    const stagedX=await page.locator('#mask-x').inputValue();await page.mouse.move(bounds.x+bounds.width*.5,bounds.y+bounds.height*.5);await page.mouse.down();await page.mouse.move(bounds.x+bounds.width*.4,bounds.y+bounds.height*.5);await page.keyboard.press('Escape');await page.mouse.up();assert.equal(await page.locator('#mask-x').inputValue(),stagedX);
     await page.getByRole('button',{name:'Apply frame',exact:true}).click();
     assert.equal((await snapshot(page)).state.design.slides[slideId].objects[key].frame.zoom,175);
     await page.locator('#fe-undo').click();assert.equal((await snapshot(page)).state.design.slides[slideId].objects[key].frame.zoom,100);

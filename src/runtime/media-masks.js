@@ -79,9 +79,10 @@ projectInit=function(...args){
     event.preventDefault();event.stopImmediatePropagation();
     const rect=figure.getBoundingClientRect(),start={x:Number($('mask-x').value),y:Number($('mask-y').value),clientX:event.clientX,clientY:event.clientY},stamp=maskStamp();
     const move=next=>{if(maskStamp()!==stamp){end();return;}for(const [key,client,size]of [['x','clientX',rect.width],['y','clientY',rect.height]])$('mask-'+key).value=Math.round(Math.max(0,Math.min(100,start[key]-(next[client]-start[client])/size*100)));numericRefreshScope(panel);maskPreview();};
-    const end=()=>{document.removeEventListener('pointermove',move,true);document.removeEventListener('pointerup',end,true);document.removeEventListener('pointercancel',cancel,true);window.removeEventListener('blur',cancel);};
+    const key=event=>{if(event.key==='Escape'){event.preventDefault();event.stopImmediatePropagation();cancel();}};
+    const end=()=>{document.removeEventListener('pointermove',move,true);document.removeEventListener('pointerup',end,true);document.removeEventListener('pointercancel',cancel,true);document.removeEventListener('keydown',key,true);window.removeEventListener('blur',cancel);};
     const cancel=()=>{end();if(maskStamp()!==stamp)return;$('mask-x').value=start.x;$('mask-y').value=start.y;numericRefreshScope(panel);maskPreview();};
-    document.addEventListener('pointermove',move,true);document.addEventListener('pointerup',end,true);document.addEventListener('pointercancel',cancel,true);window.addEventListener('blur',cancel);
+    document.addEventListener('pointermove',move,true);document.addEventListener('pointerup',end,true);document.addEventListener('pointercancel',cancel,true);document.addEventListener('keydown',key,true);window.addEventListener('blur',cancel);
   },true);
   document.addEventListener('dblclick',event=>{const figure=event.target.closest('.media-box');if(!figure||!projectPreviewNode?.contains(figure)||vbMode!=='edit'||icSelection().locked)return;event.preventDefault();event.stopImmediatePropagation();ceSelect(figure.dataset.objectId||'primary');maskPaint();$('mask-crop-mode').checked=true;$('mask-zoom').focus();},true);
   maskReady=true;maskPaint();return result;
