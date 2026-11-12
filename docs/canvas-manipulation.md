@@ -1,5 +1,15 @@
 # Canvas movement and manipulation
 
+## Selection context and keyboard guidance
+
+The Inspector identifies the current item by type/name, shared selection count, group/member editing state, active text editing, or slide background/settings. **Back to group/shared selection** exits member editing without ungrouping or changing content. **Find in Layers** reveals the existing selection for inspection and unlock actions.
+
+Important movement blockers explain the next action: switch out of Preview, unlock the presentation/slide/items, or deliberately enable eligible template positioning/use structured layout controls. The compact guidance area scrolls on short layouts and is keyboard-focusable; Content retains its own scroll viewport.
+
+Expand **Keyboard and positioning help** for exact units. Move-grip Arrows use 0.2% of slide width/height for blocks and batch/group selections, 0.1% for floating media; Shift uses 1%. Arrange's individual free-item fields also use slide-relative percentages. These are not one-screen-pixel nudges. Existing resize semantics remain unchanged.
+
+A polite status announces changed selection/lock context and completed keyboard moves/resizes, with percentages. The new status does not update on every pointer movement or unchanged refresh. Existing editing transactions and stale-target guards still own content. Automated checks cover these flows and existing Inspector/visibility behavior; no real screen-reader session is claimed. Manual assistive review and issue #9 remain separate.
+
 ## Template positioning
 
 Selecting template content leaves its layout intact. For one eligible template text/section, choose **Enable free positioning** in the toolbar or Inspector → Arrange. The measured starting geometry is retained so the item does not jump; its text stays editable. **Reset to template position** is nearby in Arrange and restores layout positioning without reverting edited content or the original element identity. Undo/Redo and portable editable restore retain the existing conversion/reset behavior.

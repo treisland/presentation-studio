@@ -1,0 +1,6 @@
+#sg-guide{padding:6px 12px;border-bottom:1px solid var(--wb-line,#ccd7e5);font:12px/1.4 Arial;color:var(--wb-ink,#26354b);flex:0 1 auto;min-height:0;max-height:100px;overflow:auto;}
+#full-editor #we-inspector #wp-fields{min-height:32px;}
+#sg-guide p{margin:4px 0;overflow-wrap:anywhere;}#sg-context{font-weight:700;}#sg-reason{border-left:3px solid var(--project-accent,#0066ff);padding-left:7px;}
+#sg-guide>div{display:flex;gap:5px;flex-wrap:wrap;}#full-editor #sg-guide button{min-height:28px;padding:4px 7px;font-size:12px;}#sg-guide details{margin-top:6px;}#sg-guide summary{cursor:pointer;}
+#sg-guide :is(button,summary):focus-visible{outline:2px solid var(--project-accent,#0066ff);outline-offset:2px;}
+@media(max-height:600px){#sg-guide{max-height:52px;}}

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Clarify selected item/type, shared/group/member and active text context; show actionable movement blockers, accurate keyboard units and completed keyboard-move announcements (#175).
+
 - Explain template-managed positioning with explicit Enable free positioning and Reset to template position actions, plus structured-layout and lock guidance (#174).
 
 - Keep block, media and group movement/resize targets consistent in screen space, with reachable grips at visible canvas edges and clearer locked-handle guidance (#172).

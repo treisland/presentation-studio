@@ -283,7 +283,8 @@ projectInit = function () {
     else p = dbClampPlacement(dbNode(), { ...p, x: Math.max(0, Math.min(1 - p.w, p.x + dx)), y: Math.max(0, Math.min(1 - p.h, p.y + dy)) });
     const before = dbRect(dbNode());
     if (!["x", "y", "w", "h"].some(key => Math.abs(p[key] - before[key]) > .00000001)) return;
-    dbRun({ type:"block.place", blockId: dbSelected, placement: p });
+    const result=dbRun({ type:"block.place", blockId: dbSelected, placement: p });
+    if(result?.ok&&result.changed!==false)sgAnnounceMove(handleKind==='resize'?'Resized':'Moved');
     const root = projectPreviewNode.querySelector('.' + dbSelected);
     (handleKind ? root?.querySelector(handleKind === "resize" ? '[data-db-direction="' + direction + '"]' : '.db-move') : root)?.focus();
   }, true);
