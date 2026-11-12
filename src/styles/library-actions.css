@@ -1,0 +1,29 @@
+body #component-add[open] { width:min(1200px,96vw); height:min(940px,96dvh); max-height:96dvh; }
+body #component-add .component-library-header { padding:14px 22px 8px; }
+body #component-add .component-library-header p { margin:8px 0; }
+body #component-add .component-library-search { padding-bottom:10px; }
+body #component-add .cl-card-actions { display:flex; flex-wrap:wrap; gap:5px; border-top:1px solid var(--wb-border,#bdcada); padding-top:9px; margin-top:9px; }
+body #component-add #component-items .cl-card-actions button { display:flex; align-items:center; gap:5px; flex:1 1 auto; min-height:40px; padding:8px; font-size:12px; }
+body #component-add [data-cl-action=insert] { display:inline-flex; gap:5px; min-height:40px; padding:8px 12px; width:auto; justify-self:start; }
+body #component-add .cl-rename { display:flex; flex-wrap:wrap; gap:7px; margin-top:9px; }
+body #component-add .cl-rename label { width:100%; }
+body #component-add .cl-rename input { width:100%; }
+body #component-add [hidden] { display:none!important; }
+body #component-add .cl-object-count,#cl-save-reason { font-size:12px; line-height:1.5; }
+body #component-add #component-save-panel,body #component-add #component-manage { display:flex; flex-wrap:wrap; align-items:center; gap:6px; padding:8px 0; }
+body #component-add #component-save-panel { padding:8px 22px; }
+body #component-add #component-save-panel label { margin:0; }
+body #component-add #component-save-panel input { margin:0; padding:8px; }
+body #component-add footer { padding:8px 22px; gap:6px 16px; }
+body #component-add footer > p { margin:2px 0; }
+body #component-add #component-save-panel h3,body #component-add #component-manage h3 { flex-basis:100%; margin:0; font-size:14px; }
+body #component-add #component-save-panel label { flex:1 1 200px; }
+body #component-add #component-save-panel p { flex-basis:100%; margin:0; }
+body #component-add #component-manage > button,body #component-add #component-manage > label { min-height:40px; }
+body #component-add button:disabled { opacity:.5; cursor:not-allowed; }
+@media(forced-colors:active) { body #component-add .cl-card-actions { border-color:CanvasText; } }
+@media(max-width:760px),(max-height:650px) {
+ body #component-add[open] { overflow:auto; }
+ body #component-add #component-items { flex:1 0 auto; overflow:visible; }
+ body #component-add #component-items article { min-height:320px; }
+}
