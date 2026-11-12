@@ -1,4 +1,4 @@
-import {inspectContent} from './ui.mjs';
+import {inspectContent,selectElement} from './ui.mjs';
 import {selectStartingExample} from './ui.mjs';
 import { reveal } from './ui.mjs';
 import { selectTab, addSlide } from './ui.mjs';
@@ -250,8 +250,8 @@ test("Floating placement, scaled dragging, undo, crop, multiple objects and expo
     );
     await upload(p);
     assert.equal(await p.locator("#fe-preview .media-box").count(), 2);
-    await reveal(p,"#ce-fit");
-    await p.locator("#ce-fit").selectOption("cover");
+    await reveal(p,"#mi-fit");
+    await p.locator("#mi-fit").selectOption("cover");
     await reveal(p,"#ce-crop");
     await p.locator("#ce-crop").check();
     const extra = p.locator("#fe-preview .ce-selected");
@@ -803,10 +803,10 @@ test("Structured placement of additional media keeps both assets and respects pr
     assert(after.mediaObjects["studio-media"][0].media.canvas.placement);
     await p.locator("#fe-undo").click();
     assert.deepEqual((await json(p)).state.mediaObjects, before.mediaObjects);
-    await p.locator("#ce-objects button").first().click();
+    await selectElement(p,'media-primary');
     await reveal(p,"#ce-object-lock");
     await p.locator("#ce-object-lock").click();
-    await p.locator("#ce-objects button").nth(1).click();
+    await selectElement(p,'media-'+extra.id);
     await p.locator("#fe-preview .ce-placement-handle").focus();
     await p.keyboard.press("Enter");
     await p.locator(".ce-existing-grid [data-drop-zone=left]").click();

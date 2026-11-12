@@ -89,11 +89,12 @@ test('mixed batch values stay mixed until intentionally adjusted',async()=>{
 });
 
 test('media overlay keeps its preview and commits one undo at slider release',async()=>{
-  const {page,errors}=await openExample(browser,'portfolio-demo');try{
+  const {page,errors}=await openExample(browser,'template');try{
+    await page.locator('.fe-slide-button[data-slide-id="studio-media"]').click();
     await page.locator('#fe-preview .media-box').first().click();await reveal(page,'#vb-panel');await page.locator('#vb-panel').click();
-    await page.locator('#me-layout').selectOption('background');const before=await snapshot(page);
-    await drag(page,'me-overlay',[30,40,70],false);assert.deepEqual((await snapshot(page)).state,before.state);
-    await page.locator('#me-overlay-range').dispatchEvent('pointerup');assert.notDeepEqual((await snapshot(page)).state,before.state);
-    await page.locator('#me-close').click();await page.locator('#open-full-editor').click();await page.locator('#fe-undo').click();assert.deepEqual((await snapshot(page)).state,before.state);assert.deepEqual(errors,[]);
+    await reveal(page,'#mi-layout');await page.locator('#mi-layout').selectOption('background');const before=await snapshot(page);
+    await drag(page,'mi-overlay',[30,40,70],false);assert.deepEqual((await snapshot(page)).state,before.state);
+    await page.locator('#mi-overlay-range').dispatchEvent('pointerup');assert.notDeepEqual((await snapshot(page)).state,before.state);
+    await page.locator('#fe-undo').click();assert.deepEqual((await snapshot(page)).state,before.state);assert.deepEqual(errors,[]);
   }finally{await page.close();}
 });

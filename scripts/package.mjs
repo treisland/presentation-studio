@@ -10,6 +10,7 @@ const zip = new sandbox.JSZip();
 for (const file of ['docs/deployment.md','docs/import-compatibility.md','docs/navigation.md','docs/interactive-elements.md','docs/0.13.0-manual-test-plan.md']) zip.file(file,new Uint8Array(await readFile(resolve(root,file))),{date:new Date('2026-01-01T00:00:00Z')});
 zip.file('docs/content-inspector.md', new Uint8Array(await readFile(resolve(root, 'docs/content-inspector.md'))), {date:new Date('2026-01-01T00:00:00Z')});
 zip.file('docs/inspector-navigation.md', new Uint8Array(await readFile(resolve(root, 'docs/inspector-navigation.md'))), {date:new Date('2026-01-01T00:00:00Z')});
+zip.file('docs/media-inspector.md', new Uint8Array(await readFile(resolve(root, 'docs/media-inspector.md'))), {date:new Date('2026-01-01T00:00:00Z')});
 zip.file('docs/layers-style-workflow.md', new Uint8Array(await readFile(resolve(root, 'docs/layers-style-workflow.md'))), {date:new Date('2026-01-01T00:00:00Z')});
 zip.file('docs/editor-workbench.md', new Uint8Array(await readFile(resolve(root, 'docs/editor-workbench.md'))), {date:new Date('2026-01-01T00:00:00Z')});
   zip.file('docs/canvas-manipulation.md', new Uint8Array(await readFile(resolve(root, 'docs/canvas-manipulation.md'))), {date:new Date('2026-01-01T00:00:00Z')});
