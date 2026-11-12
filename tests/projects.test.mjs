@@ -7,6 +7,7 @@ import { mkdir, mkdtemp, readFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { resolve } from "node:path";
 import { click } from "./ui.mjs";
+import {openExample,snapshot,operations,exportZip,importZip} from './collection-ui.mjs';
 const { chromium } = createRequire(import.meta.url)("playwright");
 const root = fileURLToPath(new URL("../", import.meta.url));
 const options = {
@@ -18,6 +19,43 @@ const options = {
 };
 const browser = await chromium.launch(options);
 test.after(() => browser.close());
+for (const surface of ['canvas','Inspector']) test(`rapid Library typing in ${surface} avoids packing and stays one Undo edit`, async () => {
+  const {page,errors}=await openExample(browser,'portfolio-demo');
+  try {
+    const id=(await snapshot(page)).state.slides[0].id;
+    const result=await operations(page,[{type:'block.create',slideId:id,kind:'button'}]),key=result.created[0];
+    const original=(await snapshot(page)).state.slides[0].tree.find(node=>node.attrs?.class?.includes(key));
+    await exportZip(page);
+    await page.waitForFunction(()=>document.getElementById('fe-status').dataset.saveState==='saved');
+    assert.match(await page.locator('#fe-status').textContent(),/Editable ZIP created/);
+    if(surface==='canvas')await page.locator('#fe-preview .'+key+' p').dblclick();
+    else {await page.locator('#fe-preview .'+key).click();await page.locator('#ic-text-editor summary').click();await page.locator('#fe-block-text').focus();}
+    await page.keyboard.press('Control+a');
+    await page.evaluate(()=>{
+      window.typingCosts={packs:0,stateCopies:0};
+      const stringify=JSON.stringify;
+      JSON.stringify=function(value,...args){
+        if(value?.state&&value?.checkpoints&&value?.history)window.typingCosts.packs++;
+        if(Array.isArray(value?.slides)&&Array.isArray(value?.sections))window.typingCosts.stateCopies++;
+        return stringify.call(this,value,...args);
+      };
+    });
+    const text='Fast Library typing';await page.keyboard.type(text);
+    const costs=await page.evaluate(()=>window.typingCosts);
+    assert.equal(costs.packs,0,'typing must not construct or serialize an export/recovery pack');
+    assert.ok(costs.stateCopies<=1,'copy the starting state once per typing burst, not per key: '+JSON.stringify(costs));
+    assert.match(await page.locator('#fe-status').textContent(),/Changes need an editable ZIP backup/);
+    await page.locator('#fe-undo').click();
+    assert.deepEqual((await snapshot(page)).state.slides[0].tree.find(node=>node.attrs?.class?.includes(key)),original);
+    await page.locator('#fe-redo').click();
+    const edited=(await snapshot(page)).state.slides[0].tree.find(node=>node.attrs?.class?.includes(key));
+    assert.match(JSON.stringify(edited),new RegExp(text));
+    const bytes=await exportZip(page),restored=await importZip(browser,bytes,(await snapshot(page)).projectId);
+    try {assert.deepEqual((await snapshot(restored)).state.slides[0].tree.find(node=>node.attrs?.class?.includes(key)),edited);}finally{await restored.close();}
+    assert.match(await page.locator('#fe-status').textContent(),/Editable ZIP created/);
+    assert.deepEqual(errors,[]);
+  }finally{await page.close();}
+});
 const tab = (page, name) =>
   selectTab(page, name);
 async function saved(page) {
