@@ -472,6 +472,7 @@ test("Booth export removes authoring, private notes/history and omitted slides, 
       await q.locator(".slide.active").getAttribute("id"),
       "studio-story",
     );
+    assert.equal(await q.locator("#stage > footer").isVisible(), true);
     await q.locator("#booth-access").click();
     await q.locator("#booth-passphrase").fill("conference-test-passphrase");
     await q.locator("#booth-access-form button").first().click();
