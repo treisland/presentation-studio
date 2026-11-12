@@ -1,5 +1,5 @@
 // One selected-media editor. Legacy modal DOM remains inert for old import plumbing.
-let miReady=false, miPainting=false, miSaved=null, miProject='', miPreview=null, miPreviewMuted=true;
+let miReady=false, miPainting=false, miSaved=null, miProject='', miPreview=null, miPreviewMuted=true, miPreviewKey='';
 const miFields=new Map();
 function miContext(){
   const context=icSelection(),grid=context.kind==='grid',cell=grid&&mgRoot(projectModel())?.children.find(node=>mgCellID(node)===mgSelected);
@@ -47,7 +47,8 @@ function miCrop(){
   if(grid)mgRun({type:'grid.appearance',cellId:mgSelected,fit:$('mi-fit').value,x,y});
   else miChange(cfg=>cfg.canvas={...ceObject(cfg.canvas),crop:{x,y}});
 }
-function miPreviewStop(){if(miPreview){miPreview.pause();miPreview.muted=miPreviewMuted;miPreview=null;}if($('mi-preview'))$('mi-preview').textContent='Preview clip (muted)';}
+function miPreviewIdentity(){const {context,grid,object}=miContext();return [projectMeta.id,projectSelected,context.kind,object,grid?mgSelected:''].join(':');}
+function miPreviewStop(){if(miPreview){miPreview.pause();miPreview.muted=miPreviewMuted;miPreview=null;}miPreviewKey='';if($('mi-preview'))$('mi-preview').textContent='Preview clip (muted)';}
 function miRestoreSelected(){
   const {object}=miContext(),slide=projectSelected,revision=editingRevision();
   const cfg=object==='primary'?miSaved?.media?.[slide]:miSaved?.mediaObjects?.[slide]?.find(item=>item.id===object)?.media;
@@ -74,6 +75,7 @@ function miPaint(){
     for(const id of ['mi-placement','mi-video']){$(id).hidden=!active||!cfg||id==='mi-video'&&cfg.kind!=='video';$(id).dataset.icVisible=String(!$(id).hidden);}
     $('mi-content').hidden=!active;$('mi-content').dataset.icVisible=String(active);
     $('ce-panel').hidden=!active;$('ce-panel').dataset.icVisible=String(active);
+    if(miPreview&&(miPreviewKey!==miPreviewIdentity()||!projectPreviewNode?.contains(miPreview)))miPreviewStop();
     if(!active){miPreviewStop();return;}
     $('mi-target').textContent=cfg?(cfg.name||'Selected media')+(grid?' · Grid cell':object==='primary'?' · Primary media':' · Additional media'):'No media selected. Choose media in Layers or add a file.';
     $('mi-thumb').hidden=!cfg; if(cfg){const src=cfg.kind==='image'?cfg.src:cfg.poster;$('mi-thumb').hidden=!src;if(src)$('mi-thumb').src=mediaAssetURL(src);}
@@ -178,7 +180,7 @@ projectInit=function(...args){
     const field=miField(video,key,label);field.onchange=()=>{const value=field.type==='checkbox'?field.checked:field.value;miChange(cfg=>{cfg[key]=value;if(cfg.advance==='ended')cfg.loop=false;});};
   }
   const note=document.createElement('p');note.id='mi-advance-note';note.textContent='Slide advancement is controlled by the primary media. Additional and grid videos use normal slide timing.';video.append(note);
-  const preview=componentButton('Preview clip (muted)',()=>{const asset=ceFigure()?.querySelector('video');if(!asset)return;if(miPreview===asset&&!asset.paused){miPreviewStop();return;}miPreviewStop();miPreviewMuted=asset.muted;asset.muted=true;miPreview=asset;asset.play().then(()=>{if(miPreview===asset)preview.textContent='Pause preview';}).catch(()=>projectMessage('Preview unavailable. Check this video format.'));});preview.id='mi-preview';video.append(preview);
+  const preview=componentButton('Preview clip (muted)',()=>{const asset=ceFigure()?.querySelector('video');if(!asset)return;if(miPreview===asset&&!asset.paused){miPreviewStop();return;}miPreviewStop();miPreviewMuted=asset.muted;asset.muted=true;miPreview=asset;miPreviewKey=miPreviewIdentity();asset.play().then(()=>{if(miPreview===asset)preview.textContent='Pause preview';}).catch(()=>{if(miPreview===asset){miPreviewStop();projectMessage('Preview unavailable. Check this video format.');}});});preview.id='mi-preview';video.append(preview);
   const poster=document.createElement('input');poster.id='mi-poster-file';poster.type='file';poster.accept='image/*';poster.hidden=true;
   poster.onchange=()=>{const file=poster.files[0];poster.value='';if(!file||miLocked()||!file.type.startsWith('image/'))return;const path='assets/'+projectID('poster')+'-'+mediaFilename(file.name);miChange(cfg=>{mediaRemember(path,file);cfg.poster=path;cfg.posterName=file.name;});};
   const choose=componentButton('Choose poster image…',()=>poster.click());choose.id='mi-poster-choose';
