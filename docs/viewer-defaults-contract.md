@@ -37,3 +37,14 @@ progress. Hidden conceals footer information without removing navigation/More.
 Temporary choices remain session-only; explicit deck defaults preserve the enum
 through recovery and editable/playback exports. Older defaults fall back to Modern.
 Booth keeps its permission-limited chrome; Hidden suppresses its slide footer.
+
+
+Optional `holdingScreen` is either `{kind:"builtin"}` or
+`{kind:"slide",slideId:"existing-id"}` (a bounded safe ID). Extra keys and malformed
+types are rejected. The field is absent from legacy defaults and then uses the
+built-in holding design. Missing/hidden target IDs do not prevent recovery/import;
+Presenter View reports the fallback, and public exports omit the unavailable ID.
+Only explicit Save as deck default persists this UI choice through the existing
+viewer.defaults transaction. Temporary session holding HTML, display mode, notes
+source, font size and workspace geometry are never saved here. No content format
+number changes. Earlier editors may omit optional UI preferences when resaving.

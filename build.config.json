@@ -41,7 +41,9 @@
     "src/styles/presenter-session.css",
     "src/styles/presenter-browser.css",
     "src/styles/library-navigation.css",
-    "src/styles/component-thumbnails.css"
+    "src/styles/component-thumbnails.css",
+    "src/styles/presenter-holding.css",
+    "src/styles/presenter-workspace.css"
   ],
   "scripts": [
     "src/runtime/prelude.js",
@@ -120,6 +122,8 @@
     "src/runtime/presenter-thumbnails.js",
     "src/runtime/presenter-browser.js",
     "src/runtime/presenter-controls.js",
+    "src/runtime/presenter-holding.js",
+    "src/runtime/presenter-workspace.js",
     "src/runtime/library-navigation.js",
     "src/runtime/component-thumbnails.js",
     "src/runtime/boot.js"
