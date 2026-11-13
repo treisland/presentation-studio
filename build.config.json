@@ -37,7 +37,8 @@
     "src/styles/custom-backgrounds.css",
     "src/styles/viewer-footer.css",
     "src/styles/viewer-presets.css",
-    "src/styles/presenter-session.css"
+    "src/styles/presenter-session.css",
+    "src/styles/presenter-browser.css"
   ],
   "scripts": [
     "src/runtime/prelude.js",
@@ -111,6 +112,8 @@
     "src/runtime/viewer-footer.js",
     "src/runtime/viewer-presets.js",
     "src/runtime/presenter-session.js",
+    "src/runtime/presenter-thumbnails.js",
+    "src/runtime/presenter-browser.js",
     "src/runtime/boot.js"
   ],
   "vendor": "vendor/jszip-3.10.1.min.js"

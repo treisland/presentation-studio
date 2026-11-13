@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add private numbered List/Grid browsing, local title/text/notes search with literal excerpts, and bounded script-free slide thumbnails in Presenter View (#205).
+
 - Add immutable Presenter View sessions with private notes/browsing, sanitized audience windows, source-validated message channels and explicit live commits (#204).
 
 - Restore the animated per-slide time line, enabled by default with an independent Show slide time bar option; keep seconds and deck position separate (#203).
