@@ -54,7 +54,8 @@ test('viewer defaults survive playback and booth exports without exposing privat
 
 test('narrow controls move secondary utilities into More before primary navigation overlaps',async()=>{
  const {page,errors}=await viewer();try{
-  await page.setViewportSize({width:360,height:720});const boxes=await page.locator('.vf-left,.vf-center,.vf-right').evaluateAll(nodes=>nodes.map(n=>{const r=n.getBoundingClientRect();return{x:r.x,right:r.right};}));assert(boxes[0].right<=boxes[1].x+1);assert(boxes[1].right<=boxes[2].x+1);
+  for(const width of [390,640,480,800,360]){await page.setViewportSize({width,height:720});await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));}
+  const boxes=await page.locator('.vf-left,.vf-center,.vf-right').evaluateAll(nodes=>nodes.map(n=>{const r=n.getBoundingClientRect();return{x:r.x,right:r.right};}));assert(boxes[0].right<=boxes[1].x+1);assert(boxes[1].right<=boxes[2].x+1);
   await page.locator('#hub-player-more > summary').click();assert.equal(await page.locator('#vc-presentation #open-full-editor').isVisible(),true);assert.equal(await page.locator('#vc-presentation #vf-count').isVisible(),true);assert.deepEqual(errors,[]);
  }finally{await page.close();}
 });

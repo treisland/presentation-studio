@@ -94,7 +94,7 @@ function vfMount() {
   controls.append(position,left,center,right);
   const compact = () => {
     if (innerWidth < 560) more.prepend($('full'));
-    else right.insertBefore($('full'),$('open-full-editor'));
+    else right.insertBefore($('full'),$('open-full-editor').parentElement===right?$('open-full-editor'):$('hub-player-more'));
   };
   addEventListener('resize',compact); compact();
   const nav = document.createElement('section'); nav.id = 'vf-navigator';
