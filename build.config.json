@@ -114,6 +114,7 @@
     "src/runtime/presenter-session.js",
     "src/runtime/presenter-thumbnails.js",
     "src/runtime/presenter-browser.js",
+    "src/runtime/presenter-controls.js",
     "src/runtime/boot.js"
   ],
   "vendor": "vendor/jszip-3.10.1.min.js"

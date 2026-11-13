@@ -14,3 +14,8 @@ body.editor-dark #pv-panel { background:#152238; color:#eaf2ff; }
 body.pv-output > :not(#stage):not(script):not(style) { display:none!important; }
 body.pv-static * { animation:none!important; transition:none!important; }
 @media(max-width:700px){.pv-views{grid-template-columns:1fr;}}
+
+body.pv-output.pv-blackout { background:#000!important; }
+body.pv-output.pv-blackout #stage { visibility:hidden!important; }
+#pc-controls { border-block:1px solid #8196b3; padding:12px 0; margin:12px 0; }
+#pc-follow { width:auto; margin-right:8px; }

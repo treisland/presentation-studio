@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add independent presenter live navigation, Follow live, deliberate Q&A resume points, elapsed time and reversible audience blackout.
+
 - Add private numbered List/Grid browsing, local title/text/notes search with literal excerpts, and bounded script-free slide thumbnails in Presenter View (#205).
 
 - Add immutable Presenter View sessions with private notes/browsing, sanitized audience windows, source-validated message channels and explicit live commits (#204).

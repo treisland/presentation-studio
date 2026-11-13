@@ -6,9 +6,9 @@ status appears only after the audience completes its per-window handshake.
 
 LIVE identifies the last acknowledged audience slide. Browse slides privately in
 the separate silent preview and read its speaker notes. Browsing, Return preview
-to live and closing this panel do not change the audience. Only Present this slide
-commits the selected preview. The initial session starts paused; later live-playback,
-search/grid and detour controls are coordinated milestone work.
+to live and closing this panel do not change the audience. Present this slide commits the selected preview. Previous/Next live advance from
+LIVE, independently of private browsing. Play/Pause controls audience playback. The
+initial session and an explicitly reopened audience start paused.
 
 The session is an immutable snapshot. Source edits do not update its content, notes
 or original media bytes. End presentation and launch again to include changes.
@@ -32,7 +32,7 @@ Each output binds an exact window identity, origin (including normalized file
 origins), random per-window nonce and project identity. A one-time validated
 handshake transfers a dedicated MessagePort and at most 1000 referenced assets,
 with a 200 MB session media budget. Output initialization waits for those original
-immutable blobs. Subsequent messages allow only bounded explicit present/ping/end
+immutable blobs. Subsequent messages allow only bounded explicit present/ping/end, audience play/step/blackout and private thumbnail
 commands with monotonic sequence numbers and known public slide IDs. Invalid,
 stale, wrong-project/session or detached-window messages are ignored. Unused assets
 and private history do not travel to outputs. No external service is used.
@@ -65,3 +65,21 @@ markup have a useful full-preview fallback. The cache holds at most 24 documents
 and 16 million HTML characters, and each document is bounded to two million. Assets
 and HTML are discarded when the session ends. These are runtime work/memory bounds,
 not a guarantee of frame rate on every device; large-media/laptop review is manual.
+
+## Live controls and Q&A detours
+
+Private preview follows live initially. Browsing away turns Follow live off; only
+the explicit checkbox turns it back on. Live navigation uses the audience’s active
+loop and position, even while a different slide is selected privately. Native
+buttons, search and select inputs retain their keyboard behavior.
+
+Begin Q&A detour saves LIVE once. Repeated presents do not replace that resume point.
+Resume presentation explicitly presents the saved snapshot slide and clears the
+anchor after acknowledgement. Return preview to live never resumes or changes the
+audience. An unavailable saved target disables Resume with recovery instructions.
+
+Blackout pauses playback and media while retaining the current live slide and timer
+position. Restore audience restores the prior play/pause state. Reopening retains
+blackout and the saved resume point, but starts paused. End presentation is separate
+and disposes all outputs, ports, caches and session timers. Session elapsed time is
+independent of the optional per-slide time line and private search.
