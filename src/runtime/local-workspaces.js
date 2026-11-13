@@ -65,7 +65,7 @@ function lwCheckJSON(raw) {
 async function lwLoad(file, { identity = null, browserAssets = false, allowLegacy = false, allowMissingAssets = false, cancelled = () => false } = {}) {
   if (file.size > lwLimits.input) throw new Error("File exceeds the 100 MB input limit.");
   if (!/\.(json|zip)$/i.test(file.name)) throw new Error("Choose a presentation JSON or editable ZIP.");
-  let raw, zip = null, expanded = 0;
+  let raw, zip = null, expanded = 0, jsonBytes = file.size;
   const decoded = new Map();
   if (/\.zip$/i.test(file.name)) {
     zip = await JSZip.loadAsync(file);
@@ -97,6 +97,7 @@ async function lwLoad(file, { identity = null, browserAssets = false, allowLegac
       decoded.set(path, bytes);
     }
     if (!decoded.has("presentation.json")) throw new Error("ZIP is missing presentation.json.");
+    jsonBytes = decoded.get("presentation.json").byteLength;
     raw = lwParseJSON(new TextDecoder("utf-8", { fatal: true }).decode(decoded.get("presentation.json")));
   } else {
     if (file.size > lwLimits.json) throw new Error("JSON exceeds the 20 MB limit.");
@@ -105,7 +106,7 @@ async function lwLoad(file, { identity = null, browserAssets = false, allowLegac
   lwCheckJSON(raw);
   if (allowLegacy && raw?.schemaVersion === 1) return { legacy: true };
   const authoring = raw?.format === "presentation-studio-authoring";
-  if (authoring && file.size > paLimits.bytes) throw new Error("Authoring JSON exceeds the 2 MB limit.");
+  if (authoring && jsonBytes > paLimits.bytes) throw new Error("Authoring JSON exceeds the 2 MB limit.");
   const built = authoring ? paBuild(raw, identity) : { pack: projectValidatePack(raw) };
   const pack = built.pack;
   if (pack.playbackOnly) throw new Error("Choose an editable project, not a playback export.");
@@ -237,6 +238,7 @@ function lwMount() {
   $("lw-pack").onclick = () => lwRun(async () => {
     const zip = new JSZip(); for (const [name, content] of Object.entries(lwPackFiles)) zip.file(name, content);
     zip.file("presentation.schema.json", JSON.stringify(paSchema(), null, 2));
+    zip.file("presentation-v2.schema.json", JSON.stringify(paSchema(2), null, 2));
     zip.file("capabilities.json", JSON.stringify(paCatalog(), null, 2));
     mediaDownload(await zip.generateAsync({ type: "blob" }), "studio-ai-authoring-v1.zip");
   });

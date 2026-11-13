@@ -34,8 +34,9 @@
     "src/styles/inspector-sections.css",
     "src/styles/media-inspector.css",
     "src/styles/context-menu.css",
-    "src/styles/library-actions.css",
-    "src/styles/viewer-footer.css"
+    "src/styles/custom-backgrounds.css",
+    "src/styles/viewer-footer.css",
+    "src/styles/library-actions.css"
   ],
   "scripts": [
     "src/runtime/prelude.js",
@@ -71,6 +72,7 @@
     "src/runtime/example-walkthroughs.js",
     "src/runtime/text-types.js",
     "src/runtime/background-effects-core.js",
+    "src/runtime/custom-background-core.js",
     "src/runtime/authoring-definitions.js",
     "src/runtime/components.js",
     "src/runtime/code-library.js",
@@ -103,8 +105,10 @@
     "src/runtime/inspector-sections.js",
     "src/runtime/media-inspector.js",
     "src/runtime/context-menu.js",
-    "src/runtime/library-actions.js",
+    "src/runtime/custom-backgrounds.js",
+    "src/runtime/custom-background-ui.js",
     "src/runtime/viewer-footer.js",
+    "src/runtime/library-actions.js",
     "src/runtime/boot.js"
   ],
   "vendor": "vendor/jszip-3.10.1.min.js"

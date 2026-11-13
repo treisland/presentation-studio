@@ -105,7 +105,8 @@ function paBuild(raw, identity) {
     state.backgroundEffects={version:1,defaults:raw.background?bgEngine.clean(raw.background):null,slides:{}};
     raw.slides.forEach((slide,i)=>{if(slide.background)state.backgroundEffects.slides[state.slides[i].id]=bgEngine.clean(slide.background);});
   }
-  const pack = projectValidatePack({ schemaVersion: state.backgroundEffects?3:2, kind: "presentation-studio-project", meta: {
+  if(raw.backdrop||raw.slides.some(s=>s.backdrop)){state.backgrounds={version:1,defaults:raw.backdrop?cbEngine.clean(raw.backdrop):null,slides:{}};raw.slides.forEach((slide,i)=>{if(slide.backdrop)state.backgrounds.slides[state.slides[i].id]=cbEngine.clean(slide.backdrop);});}
+  const pack = projectValidatePack({ schemaVersion: state.backgrounds?4:state.backgroundEffects?3:2, kind: "presentation-studio-project", meta: {
     id: identity || projectID("project"), name: raw.title, updatedAt: new Date().toISOString(),
   }, state, checkpoints: [], history: { past: [], future: [] } });
   return { pack, report };

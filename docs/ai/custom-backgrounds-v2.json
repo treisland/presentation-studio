@@ -1,0 +1,7 @@
+{
+  "format":"presentation-studio-authoring",
+  "version":2,
+  "title":"A clearer story",
+  "backdrop":{"kind":"gradient","colors":["background","accent"],"angle":135},
+  "slides":[{"title":"Start with one useful idea","blocks":[{"type":"paragraph","text":"Original local example. Edit the story, export an editable backup and reopen it."}]}]
+}
