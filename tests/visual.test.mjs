@@ -457,7 +457,7 @@ test("legacy ZIP supports theme and block editing through export and reopen", as
       "visual-legacy-v2.zip",
     );
     await p.locator("#fe-close").click();
-    await p.locator("#hub-presentations").click();
+    await click(p,'#hub-presentations');
     await p.locator("#hub-file").setInputFiles(legacyFile);
     await p.locator("#hub-picker").waitFor({ state: "hidden" });
     await p.locator("#open-full-editor").click();
@@ -515,7 +515,7 @@ test("legacy ZIP supports theme and block editing through export and reopen", as
     );
     await q.locator("#menu").click();
     await q.locator('[data-deck="qa"]').click();
-    await q.locator("#browse-questions").click();
+    await click(q,'#browse-questions');
     assert.equal(await q.locator(".question-option").count(), 1);
     await q.close();
     assert.deepEqual(errors, []);

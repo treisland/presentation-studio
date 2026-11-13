@@ -118,3 +118,11 @@ export async function selectElement(page,key) {
   await page.locator('.sp-layer-row[data-key="'+key+'"] button').first().click();
   if(slides)await page.locator('#ld-tab-slides').click();
 }
+
+export async function chooseViewerSlide(page,index) {
+  const label=await page.locator('#dots .dot').nth(index).getAttribute('aria-label');
+  const title=label.replace(/^Slide \d+: /,'');
+  await page.locator('#menu').click();
+  await page.locator('#vf-search').fill(title);
+  await page.locator('#vf-results .vf-slide').filter({hasText:title}).first().click();
+}
