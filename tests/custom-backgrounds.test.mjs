@@ -99,3 +99,21 @@ test('Cancel invalidates an image still decoding rather than restoring a cancell
   assert.equal(await page.locator('#cb-source').inputValue(),'inherit');assert.equal(await page.locator('#cb-kind').inputValue(),'theme');assert.deepEqual((await snapshot(page)).state,before.state);assert.deepEqual(errors,[]);
  }finally{await page.close();}
 });
+
+test('readability controls stage deterministic image overlays without rewriting content',async()=>{
+ const {page,errors}=await setup();try{
+  await settings(page);await page.locator('#cb-look').selectOption('horizon');await page.locator('#cb-composition').selectOption('text-right');const before=await snapshot(page);
+  await page.locator('#cb-use-look').click();assert.deepEqual((await snapshot(page)).state,before.state);await page.locator('#cb-overlay-color').fill('#112233');await page.locator('#cb-overlay-opacity').fill('65');
+  assert.equal(await page.locator('#cb-protect').inputValue(),'right');assert.equal(await page.locator('#cb-preview .cb-overlay').evaluate(n=>n.style.opacity),'0.65');assert.match(await page.locator('#cb-preview .cb-protect').evaluate(n=>n.style.background),/270deg/);
+  await page.locator('#cb-apply').click();const after=await snapshot(page);assert.deepEqual(after.state.slides,before.state.slides);assert.equal(after.state.backgrounds.defaults.overlay.opacity,.65);assert.equal(after.state.backgrounds.defaults.overlay.color,'#112233');assert.equal(after.state.backgrounds.defaults.protectText,'right');
+  await page.locator('#cb-look').selectOption('theme');await page.locator('#cb-composition').selectOption('divider');await page.locator('#cb-use-look').click();assert.equal(await page.locator('#cb-first').inputValue(),'background');assert.equal(await page.locator('#cb-second').inputValue(),'muted');await page.locator('#cb-cancel').click();assert.deepEqual((await snapshot(page)).state,after.state);assert.deepEqual(errors,[]);
+ }finally{await page.close();}
+});
+
+test('coordinated variants map only to the explicitly selected composition and remain keyboard reachable',async()=>{
+ const {page,errors}=await setup();try{
+  await settings(page);await page.locator('#cb-look').selectOption('horizon');
+  for(const [composition,side]of [['title','left'],['text-left','left'],['text-right','right'],['divider','off']]){await page.locator('#cb-composition').selectOption(composition);await page.locator('#cb-use-look').focus();await page.locator('#cb-use-look').press('Enter');assert.equal(await page.locator('#cb-protect').inputValue(),side);}
+  await page.setViewportSize({width:390,height:740});await page.locator('#cb-use-look').scrollIntoViewIfNeeded();assert.equal(await page.locator('#cb-use-look').isVisible(),true);assert.equal(await page.locator('#cb-panel').evaluate(n=>n.scrollWidth<=n.clientWidth),true);assert.deepEqual(errors,[]);
+ }finally{await page.close();}
+});
