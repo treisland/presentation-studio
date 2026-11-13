@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add a short first-presentation guide and a curated Studio, Portfolio and Newsletter companion content map.
+
 - Add digest-verified, reproducible companion screenshot recipes and ignored before/after review candidates with provenance.
 
 - Focus the appended saved-component duplicate so keyboard Rename edits the new copy (#209).
