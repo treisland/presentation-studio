@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Record v0.16 development acceptance evidence, local companion rollback and separate manual beta review checklists.
+
 - Focus the appended saved-component duplicate so keyboard Rename edits the new copy (#209).
 
 - Make Library Insert and saved-component Rename/Duplicate/Delete permanent labeled actions, expose save/backup/recovery controls and add explicit inline rename commit/cancel (#209).
