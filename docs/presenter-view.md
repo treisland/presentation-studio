@@ -175,4 +175,12 @@ players. Omitted holding-slide references are removed from public export setting
 
 After this redesign, repeat real-device notes reading, touch/keyboard and screen-
 reader review, fullscreen/popup behavior and holding/blackout restore with actual
-video/OBS. Prior sign-off applies to the earlier tested build, not untested changes.
+video and window capture. The later maintainer acceptance and reported Windows 11
+browser versions are recorded in [the v0.16 beta validation record](releases/0.16.0-beta.1-validation.md).
+OBS-specific sign-off is no longer a release gate by maintainer decision.
+
+Known limitation: if a saved holding slide was deleted or hidden, Cancel/Escape
+in Holding screen settings can restore an unavailable choice. Explicitly select
+Built-in design before Show holding screen. This is accepted for a patch under
+[#241](https://github.com/treisland/presentation-studio/issues/241); see
+[known issues](known-issues.md).

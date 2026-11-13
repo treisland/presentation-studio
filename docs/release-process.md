@@ -42,6 +42,12 @@ If delivery reports HTTP 404 while reading repository settings, distinguish an i
 
 Record evidence links and results for supported browsers/OS, a real delivery video, OBS if claimed supported, keyboard authoring, screen-reader review, clean-profile editable ZIP restore, offline playback, and legacy import. Do not imply these passed from CI alone. Beta/RC/stable plans must list evidence for each gate and mark manualGatesPassed=true only after completion. Any unsupported environment must be stated in notes.
 
+On 2026-11-13 the maintainer removed OBS-specific sign-off as a release gate and
+selected ordinary window capture as the recommended capture path. Future OBS
+Browser Source deprecation is planned separately. Historical OBS evidence stays
+historical; untested Browser Source entries remain unverified, not passed. This
+decision does not waive actual delivery-video or other app acceptance checks.
+
 
 ## Companion content review
 

@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## 0.16.0-beta.1 — 2026-11-13
+
+- Prepare the maintainer-authorized beta for the integrated presentation, Library and custom-background milestone; companion publication remains deferred.
+- Document the accepted holding-settings Cancel/Escape fallback defect as known issue #241, with an explicit built-in-design workaround and patch follow-up.
+- Record maintainer-reported Chrome, Firefox and Edge acceptance versions; recommend window capture and remove OBS-specific release sign-off by maintainer decision, with future Browser Source deprecation kept separate.
 - Align Presenter View to the approved full-window UX: compact title/thumbnail cards, private Live/Preview notes with text sizing, independent scrolling and persistent audience controls.
 - Correct true audience blackout and add optional static built-in/custom holding screens with retained live/timer/Q&A state, explicit Restore, session-only choice or undoable portable deck default.
 
