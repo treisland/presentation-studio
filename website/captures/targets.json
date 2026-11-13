@@ -1,0 +1,13 @@
+{
+  "stable-v0.11.0": {
+    "channel": "stable",
+    "version": "0.11.0",
+    "appSha": "5af10b008fb53c12a479fbfa8913f7ad1b798173",
+    "artifact": "presentation-studio.html",
+    "sha256": "835ba1165cf637974b6bf163b046e9018188435b13cf920d3cc694a1073e40b2",
+    "release": "https://github.com/treisland/presentation-studio/releases/tag/v0.11.0",
+    "asset": "https://github.com/treisland/presentation-studio/releases/download/v0.11.0/presentation-studio.html",
+    "verifiedAt": "2026-11-13",
+    "scenes": ["editor-overview", "examples-gallery", "finished-playback"]
+  }
+}
