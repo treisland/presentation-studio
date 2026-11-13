@@ -26,6 +26,15 @@ body #controls.vf-footer:has(.hub-menu[open]) { transform:none!important; }
 #vf-results .vf-thumbnail * { animation:none!important; transition:none!important; }
 .vf-pages { display:flex; gap:8px; margin:12px 0; }
 @media(max-width:850px) { body #controls.vf-footer { gap:4px; padding:10px 6px; } #vf-title { display:none; } #controls.vf-footer button,#controls.vf-footer summary { padding:8px; } }
-@media(max-width:560px) { body #controls.vf-footer { grid-template-columns:auto 1fr auto; font-size:12px; } #vf-results { grid-template-columns:1fr; } #vf-countdown { display:none; } }
+@media(max-width:560px) { body #controls.vf-footer { grid-template-columns:auto 1fr auto; font-size:12px; } #vf-results { grid-template-columns:1fr; }  }
 @media(prefers-color-scheme:dark) { body:not(.project-light) #controls.vf-footer { background:#1b2330f5; color:#eef3ff; } }
 @media(forced-colors:active) { #controls.vf-footer,#vf-results .vf-slide { border:1px solid CanvasText; } #vf-position-fill { background:Highlight; } }
+
+/* Keep menu surfaces and ink paired; editor-dark styles also affect viewer menus. */
+body #controls.vf-footer .hub-menu-items { background:#f8fafc; color:#172033; border-color:#aebfd5; }
+body #controls.vf-footer .hub-menu-items :is(button,summary) { color:inherit; }
+body.editor-dark #controls.vf-footer .hub-menu-items { background:#152238; color:#eaf2ff; border-color:#4b607d; }
+body.editor-dark #controls.vf-footer .hub-menu-items :is(button,summary):hover { background:#2b4261; color:#fff; }
+@media(prefers-color-scheme:dark){body:not(.project-light) #controls.vf-footer .hub-menu-items { background:#152238; color:#eaf2ff; border-color:#4b607d; } body:not(.project-light) #controls.vf-footer .hub-menu-items :is(button,summary):hover { background:#2b4261; color:#fff; }}
+@media(max-width:375px){#controls.vf-footer button,#controls.vf-footer summary { padding:8px 6px; } .vf-left,.vf-center,.vf-right { gap:3px; }}
+@media(forced-colors:active){body #controls.vf-footer .hub-menu-items { background:Canvas; color:CanvasText; border-color:CanvasText; }}

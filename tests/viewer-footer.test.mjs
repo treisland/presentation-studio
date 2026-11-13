@@ -74,3 +74,24 @@ test('large decks page bounded thumbnails and omit hidden or empty sections',asy
   assert.deepEqual(errors,[]);
  }finally{await page.close();}
 });
+
+test('multi-slide phone viewers retain non-overlapping controls and visible timer',async()=>{
+ const {page,errors}=await open();try{
+  for(const width of [320,360,375,640,320]){await page.setViewportSize({width,height:740});await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));const boxes=await page.locator('.vf-left,.vf-center,.vf-right').evaluateAll(nodes=>nodes.map(n=>{const b=n.getBoundingClientRect();return{x:b.x,right:b.right};}));assert(boxes[0].right<=boxes[1].x+1,JSON.stringify(boxes));assert(boxes[1].right<=boxes[2].x+1,JSON.stringify(boxes));assert.equal(await page.locator('#vf-countdown').isVisible(),true);}
+  assert.deepEqual(errors,[]);
+ }finally{await page.close();}
+});
+
+test('More menu labels have contrast before hovering in both themes',async()=>{
+ const {page,errors}=await open();try{
+  await page.locator('#hub-player-more > summary').click();await page.mouse.move(0,0);
+  for(const dark of [false,true]){await page.evaluate(d=>document.body.classList.toggle('editor-dark',d),dark);const pairs=await page.locator('#hub-player-more .hub-menu-items button:visible').evaluateAll(nodes=>nodes.map(n=>({ink:getComputedStyle(n).color,paper:getComputedStyle(n.closest('.hub-menu-items')).backgroundColor,label:n.textContent})));
+   const luminance=color=>{const rgb=color.match(/[\d.]+/g).slice(0,3).map(Number).map(n=>{const c=n/255;return c<=.04045?c/12.92:((c+.055)/1.055)**2.4;});return rgb[0]*.2126+rgb[1]*.7152+rgb[2]*.0722;};assert(pairs.length>2);for(const pair of pairs){const a=luminance(pair.ink),b=luminance(pair.paper);assert((Math.max(a,b)+.05)/(Math.min(a,b)+.05)>=4.5,JSON.stringify(pair));}}
+  assert.deepEqual(errors,[]);
+ }finally{await page.close();}
+});
+
+test('completion-driven video countdown uses video duration while manual holds stay hidden',async()=>{
+ const {mkdirSync,writeFileSync}=await import('node:fs');mkdirSync('test-results',{recursive:true});const fixture=readFileSync('dist/presentation-studio.html','utf8').replace('  projectInit();',`window.__vfVideo=(advance,duration,time,active=true)=>{const slide=slides[index];slide.querySelectorAll('video.media-asset,.vf-test-video').forEach(n=>n.remove());const box=document.createElement('figure');box.className='media-box vf-test-video';const video=document.createElement('video');video.className='media-asset';Object.defineProperty(video,'duration',{value:duration});Object.defineProperty(video,'currentTime',{value:time});box.append(video);slide.append(box);mediaConfig.slides[slide.dataset.mediaId]={...mediaDefaults,kind:'video',advance,autoplay:false};playing=active;vfTiming();return {hidden:$('vf-countdown').hidden,text:$('vf-countdown').textContent};};\n  projectInit();`);writeFileSync('test-results/viewer-video-timer.html',fixture);
+ const {page,errors}=await open();try{await page.goto('file://'+resolve('test-results/viewer-video-timer.html'));assert.deepEqual(await page.evaluate(()=>window.__vfVideo('ended',30,12)),{hidden:false,text:'18s'});assert.equal((await page.evaluate(()=>window.__vfVideo('manual',30,12))).hidden,true);assert.equal((await page.evaluate(()=>window.__vfVideo('ended',30,12,false))).hidden,true);assert.deepEqual(errors,[]);}finally{await page.close();}
+});

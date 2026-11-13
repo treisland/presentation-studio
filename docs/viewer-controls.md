@@ -18,7 +18,10 @@ buttons remain available below the search results. Native search-field keys stay
 
 More retains Presentations, Notes, Kiosk, Help and applicable question/command actions.
 Edit remains a direct authoring shortcut; playback-only files retain their existing
-capability restrictions. On narrow screens Fullscreen moves to More. Hidden authored
+capability restrictions. On narrow screens slide count and Edit move to More; Fullscreen also moves there
+below 560px. Timed playback keeps its separate countdown visible, including videos
+configured to advance on completion. More menu labels remain legible before hover
+in light and dark modes. Hidden authored
 footer/number settings suppress title/progress/count without removing essential controls.
 Editor thumbnails and exported slide content retain their existing footer geometry.
 

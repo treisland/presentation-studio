@@ -33,7 +33,8 @@ function vfTiming() {
   const video = current?.querySelector('video.media-asset');
   let remaining = Number(current?.dataset.time) - elapsed / 1000;
   if (cfg?.advance === 'ended' && video && Number.isFinite(video.duration)) remaining = video.duration - video.currentTime;
-  const timed = playing && !mediaHoldSlide() && Number.isFinite(remaining);
+  const completionVideo = cfg?.advance === 'ended' && video && Number.isFinite(video.duration) && !video.closest('.media-box')?.classList.contains('is-missing');
+  const timed = playing && (completionVideo || !mediaHoldSlide()) && Number.isFinite(remaining);
   $('vf-countdown').hidden = !timed;
   const text = timed ? `${Math.max(0, Math.ceil(remaining))}s` : '';
   if ($('vf-countdown').textContent !== text) $('vf-countdown').textContent = text;
@@ -84,7 +85,7 @@ function vfMount() {
   const left = document.createElement('div'); left.className = 'vf-left';
   const title = document.createElement('span'); title.id = 'vf-title'; left.append(title,$('menu'));
   const center = document.createElement('div'); center.className = 'vf-center';
-  const countdown = document.createElement('span'); countdown.id = 'vf-countdown'; countdown.setAttribute('aria-hidden','true');
+  const countdown = document.createElement('span'); countdown.id = 'vf-countdown'; countdown.setAttribute('role','timer'); countdown.setAttribute('aria-live','off'); countdown.title='Time remaining on this slide';
   center.append($('prev'),$('play'),$('next'),countdown);
   const right = document.createElement('div'); right.className = 'vf-right';
   const count = document.createElement('button'); count.id = 'vf-count'; count.onclick = openMenu;
@@ -93,6 +94,8 @@ function vfMount() {
   for (const id of ['hub-presentations','browse-questions','qa','steps']) more.append($(id));
   controls.append(position,left,center,right);
   const compact = () => {
+    if (innerWidth < 640) more.append(count,$('open-full-editor'));
+    else { right.prepend(count); right.insertBefore($('open-full-editor'),$('hub-player-more')); }
     if (innerWidth < 560) more.prepend($('full'));
     else right.insertBefore($('full'),$('open-full-editor').parentElement===right?$('open-full-editor'):$('hub-player-more'));
   };
