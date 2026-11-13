@@ -63,3 +63,30 @@ Manual review pending: hide/show blocks, images, tables, code and groups; reveal
 ## Tables and direct canvas selection (0.11.0)
 
 See [Tables and Library manipulation](tables-and-grouping.md) for the new cell/structure/style controls, Shift+click and marquee selection, direct Group/Ungroup actions, member editing and compatibility/review checklist. Existing Layers selection remains available.
+
+## Saved composition previews
+
+My components shows a decorative thumbnail fitted to the combined object bounds,
+including rotation and padding for frames/shadows. Text, shapes, tables and code
+reuse the existing tree renderer; explicit appearance and media masks use the
+shared design renderer on a cloned candidate. Theme-inherited colors use a neutral
+light preview theme. Inserted copies may adapt to the destination slide theme.
+
+Embedded images use temporary static WebP derivatives, without replacing original
+library/project bytes. Videos use a saved poster or a video/filename placeholder;
+no video or audio element is created. Missing, oversized or undecodable media has
+an informative fallback. Previews have no scripts, navigation, animation or remote
+network permissions. Existing library JSON and project formats stay unchanged.
+
+The 40-component library is generated lazily, one composition at a time, with at
+most eight mounted preview documents, 16 cached documents and 16 million cached
+HTML characters. Individual documents are limited to two million characters;
+image inputs over four million data-URL characters use placeholders. Derivatives
+fit within 640×360 and decoded images over 32 million pixels use placeholders.
+Closing, changing tabs or filtering disposes the view/cache. No temporary Blob URLs
+are allocated. Original assets, insertion independence, locks and Undo are retained.
+
+Manual acceptance: compare representative text, grouped shapes, tables, code,
+masked images and poster/no-poster videos against inserted copies; review laptop
+sizes, theme adaptation and assistive-technology names outside decorative content.
+Large-library automated work bounds do not establish device-specific frame rates.

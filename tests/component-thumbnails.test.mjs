@@ -1,0 +1,48 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {chromium} from 'playwright';import {openExample,snapshot,operations} from './collection-ui.mjs';import {selectElement} from './ui.mjs';
+const browser=await chromium.launch({headless:true,args:['--no-sandbox']});test.after(()=>browser.close());
+test('saved composition previews preserve geometry and appearance without changing the active project',async()=>{const {page,errors}=await openExample(browser,'template');try{const id=(await snapshot(page)).state.slides[0].id,result=await operations(page,[{type:'block.create',slideId:id,kind:'rectangle'}]);
+await selectElement(page,result.created[0]);
+await page.locator('#component-open').click();
+await page.locator('#component-name').fill('Original rectangle');
+await page.locator('#component-save').click();
+const before=await snapshot(page);
+await page.getByRole('tab',{name:'My components',exact:true}).click();
+const frame=page.locator('.ct-preview iframe').first();
+await frame.waitFor();
+assert.equal(await frame.getAttribute('sandbox'),'');
+assert.equal(await frame.evaluate(n=>n.inert),true);
+const child=page.frameLocator('.ct-preview iframe').first();
+assert.equal(await child.locator('.db-block').count(),1);assert.equal(await child.locator('.db-block').evaluate(n=>getComputedStyle(n).backgroundColor),'rgb(0, 102, 255)');
+assert.equal(await child.locator('script,video,audio').count(),0);
+assert.match(await child.locator('meta[http-equiv="Content-Security-Policy"]').getAttribute('content'),/default-src 'none'/);
+assert.match(await page.locator('.cl-object-count').textContent(),/1 object/);
+assert.deepEqual((await snapshot(page)).state,before.state);
+assert.deepEqual(errors,[]);
+await page.screenshot({path:'test-results/component-thumbnail-candidate.png'});
+await page.locator('#component-close').click();
+await page.locator('#component-open').click();
+await page.locator('.ct-preview iframe').first().waitFor();}finally{await page.close();}});
+
+test('imported grouped compositions retain stacking, rotation and masks; videos are silent posters or filenames',async()=>{const {page,errors}=await openExample(browser,'template');try{const svg='data:image/svg+xml;base64,'+Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" width="320" height="180"><rect width="320" height="180" fill="#145678"/></svg>').toString('base64'),shape=(text,x,y,z)=>({node:{tag:'div',attrs:{class:'db-block card db-rectangle block-synthetic-'+z,style:'position:absolute;left:'+x+'%;top:'+y+'%;width:30%;height:25%;z-index:'+z},children:[{tag:'p',attrs:{},children:[{text}]}]},meta:{rotation:z===2?30:0,z,group:'group-synthetic',style:{fill:{hex:z===2?'#ffcc00':'#abcdef'}}}}),media=(kind,poster)=>({media:{kind,caption:'Original caption',captionPlace:kind==='video'?'overlay':'below',src:kind==='video'?'assets/sample.webm':'assets/original.svg',name:kind==='video'?'Original video.webm':'Original image.svg',poster,canvas:{placement:{x:.5,y:.5,w:.35,h:.3},z:5}},meta:{frame:{shape:'oval',fit:'cover',zoom:100,x:50,y:50,radius:12,padding:0,shadow:'none'}}}),items=[{id:'group',name:'Two overlapping shapes',entries:[shape('First',5,5,1),shape('Second',30,30,2)],assets:{}},{id:'image',name:'Masked image',entries:[media('image')],assets:{'assets/original.svg':svg}},{id:'poster',name:'Video poster',entries:[media('video','assets/poster.svg')],assets:{'assets/poster.svg':svg,'assets/sample.webm':'data:video/webm;base64,AAAA'}},{id:'video',name:'Video filename',entries:[media('video')],assets:{'assets/sample.webm':'data:video/webm;base64,AAAA'}}];
+const before=await snapshot(page);
+await page.locator('#component-open').click();
+await page.locator('#component-import').setInputFiles({name:'library.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify({kind:'presentation-studio-components',version:1,items}))});
+await page.getByRole('tab',{name:'My components',exact:true}).click();
+await page.locator('.ct-preview iframe').nth(2).waitFor();
+const frames=page.locator('.ct-preview iframe');
+const group=page.frameLocator('.ct-preview iframe').nth(0);
+assert.equal(await group.locator('.db-block').count(),2);for(const bounds of await group.locator('.db-block').evaluateAll(nodes=>nodes.map(n=>{const r=n.getBoundingClientRect();return{x:r.x,y:r.y,right:r.right,bottom:r.bottom};})))
+assert(bounds.x>=0&&bounds.y>=0&&bounds.right<=640&&bounds.bottom<=360);
+assert.equal(await group.locator('.db-block').last().evaluate(n=>getComputedStyle(n).backgroundColor),'rgb(255, 204, 0)');
+const img=page.frameLocator('.ct-preview iframe').nth(1);
+await img.locator('.mask-frame img').waitFor();assert.equal(await img.locator('figcaption').textContent(),'Original caption');
+assert((await img.locator('img').getAttribute('src')).startsWith('data:image/webp'));
+const poster=page.frameLocator('.ct-preview iframe').nth(2);
+await poster.locator('img').waitFor();assert.equal(await poster.locator('.caption-overlay figcaption').textContent(),'Original caption');
+const videoCard=page.locator('#component-items article').filter({has:page.getByRole('heading',{name:'Video filename',exact:true})});await videoCard.scrollIntoViewIfNeeded();await videoCard.locator('iframe').waitFor();const noPoster=videoCard.frameLocator('iframe');
+assert.match(await noPoster.locator('.ct-media-fallback').textContent(),/Video.*Original video.webm/);assert.equal(await noPoster.locator('video,audio,script').count(),0);
+assert.deepEqual((await snapshot(page)).state,before.state);
+assert.deepEqual(errors,[]);
+await page.screenshot({path:'test-results/component-compositions-candidate.png'});}finally{await page.close();}});
+
+test('a 40-item legacy library is lazy and bounded while tables and command text stay inert',async()=>{const {page,errors}=await openExample(browser,'template');try{const entries=[{node:{tag:'div',attrs:{class:'db-block card db-text block-table',style:'position:absolute;left:5%;top:10%;width:40%;height:40%;z-index:1'},children:[{tag:'table',attrs:{},children:[{tag:'tbody',attrs:{},children:[{tag:'tr',attrs:{},children:[{tag:'td',attrs:{},children:[{text:'Quarter'}]},{tag:'td',attrs:{},children:[{text:'42%'}]}]}]}]}]},meta:{}},{node:{tag:'div',attrs:{class:'db-block card db-text block-code',style:'position:absolute;left:50%;top:10%;width:40%;height:40%;z-index:2'},children:[{tag:'div',attrs:{class:'terminal'},children:[{tag:'pre',attrs:{},children:[{text:'Display only'}]}]}]},commands:{powershell:'echo display-only',bash:'printf display-only'},meta:{}}],items=Array.from({length:40},(_,i)=>({id:'legacy-'+i,name:'Saved composition '+i,entries,assets:{}})),before=await snapshot(page);await page.locator('#component-open').click();await page.locator('#component-import').setInputFiles({name:'legacy-library.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify({kind:'presentation-studio-components',version:1,items}))});await page.getByRole('tab',{name:'My components',exact:true}).click();assert.equal(await page.locator('#component-items article').count(),40);await page.locator('.ct-preview iframe').first().waitFor();const first=page.frameLocator('.ct-preview iframe').first();assert.equal(await first.locator('table td').count(),2);assert.equal(await first.locator('.terminal pre').textContent(),'echo display-only');const last=page.locator('#component-items article').last();await last.scrollIntoViewIfNeeded();await last.locator('iframe').waitFor();assert(await page.locator('.ct-preview iframe').count()<=8);assert.deepEqual((await snapshot(page)).state,before.state);assert.deepEqual(errors,[]);await page.locator('#component-close').click();}finally{await page.close();}});

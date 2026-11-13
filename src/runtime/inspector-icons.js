@@ -1,5 +1,7 @@
 function workbenchIcon(name) {
   const paths = {
+    widgets: 'M3 3h7v7H3Z M14 3h7v7h-7Z M3 14h7v7H3Z M14 14h7v7h-7Z',
+    bookmark: 'M5 3h14v18l-7-5-7 5Z',
     plus: 'M12 4v16 M4 12h16',
     check: 'm5 12 4 4L19 6',
     rename: 'm4 16 12-12 4 4L8 20H4Z M13 7l4 4',

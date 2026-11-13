@@ -136,11 +136,11 @@ function spCSS(color,palette=studioPalette(projectState.brand)){
   return 'rgba('+[1,3,5].map(i=>parseInt(hex.slice(i,i+2),16)).join(',')+','+(color.opacity??1)+')';
 }
 function spElement(slide,e){return e.node?e.key.startsWith('node-')?slide.querySelector('[data-vb-node="'+vbIDs.get(e.node)+'"]'):slide.querySelector('.'+e.key):slide.querySelector('[data-object-id="'+e.object+'"]');}
-function spApply(slide,palette=projectState&&studioPalette(projectState.brand)){
+function spApply(slide,palette=projectState&&studioPalette(projectState.brand),state=projectState){
   if(!projectReady||!projectState)return;
-  const model=projectModel(slide.dataset.mediaId);if(!model)return;
-  const data=spData(projectState,model.id);if(data.background)slide.style.background=spCSS(data.background,palette);
-  const entries=spEntries(model),pane=slide.querySelector(':scope > .media-original'),boxes=new Map();
+  const model=slide.studioPreviewModel||projectModel(slide.dataset.mediaId);if(!model)return;
+  const data=spData(state,model.id);if(data.background)slide.style.background=spCSS(data.background,palette);
+  const entries=spEntries(model,state),pane=slide.querySelector(':scope > .media-original'),boxes=new Map();
   if(entries.some(e=>e.meta.z!=null)&&pane&&!pane.classList.contains('sp-stack-pane')){
     const bounds=slide.getBoundingClientRect();
     if(bounds.width&&bounds.height)for(const e of entries){const el=spElement(slide,e);if(e.node&&el&&pane.contains(el)){const b=el.getBoundingClientRect();boxes.set(el,{left:(b.left-bounds.left)/bounds.width*100+'%',top:(b.top-bounds.top)/bounds.height*100+'%',width:b.width/bounds.width*100+'%',height:b.height/bounds.height*100+'%'});}}
