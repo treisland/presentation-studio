@@ -7,7 +7,7 @@ import {chromium} from 'playwright';
 import {openExample,snapshot,operations,exportZip,importZip} from './collection-ui.mjs';
 import {selectTab} from './ui.mjs';
 const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH,args:['--no-sandbox']});test.after(()=>browser.close());
-const defaults={version:1,preset:'presentation',autoHide:false,showNotes:true,showProgress:false,showCount:false};
+const defaults={version:1,preset:'presentation',autoHide:false,showNotes:true,showProgress:false,showCount:false,showTimer:true};
 const zipContext={setImmediate,clearImmediate,setTimeout,clearTimeout,Uint8Array,ArrayBuffer,TextEncoder,TextDecoder};vm.runInNewContext(await readFile('vendor/jszip-3.10.1.min.js','utf8'),zipContext);
 async function viewer(){const page=await browser.newPage({viewport:{width:1366,height:768}}),errors=[];page.on('pageerror',e=>errors.push(e.message));await page.goto('file://'+resolve('dist/presentation-studio.html'));return{page,errors};}
 test('Presentation preset changes controls without changing automatic playback or project data',async()=>{
@@ -58,4 +58,16 @@ test('narrow controls move secondary utilities into More before primary navigati
   const boxes=await page.locator('.vf-left,.vf-center,.vf-right').evaluateAll(nodes=>nodes.map(n=>{const r=n.getBoundingClientRect();return{x:r.x,right:r.right};}));assert(boxes[0].right<=boxes[1].x+1);assert(boxes[1].right<=boxes[2].x+1);
   await page.locator('#hub-player-more > summary').click();assert.equal(await page.locator('#vc-presentation #open-full-editor').isVisible(),true);assert.equal(await page.locator('#vc-presentation #vf-count').isVisible(),true);assert.deepEqual(errors,[]);
  }finally{await page.close();}
+});
+
+test('slide timer stays independent of presets and narrow screens without changing playback',async()=>{
+ const {page,errors}=await viewer();try{
+  await page.locator('#hub-player-more > summary').click();const paused=await page.locator('body').evaluate(n=>n.classList.contains('paused'));await page.locator('#vc-preset').selectOption('presentation');assert.equal(await page.locator('#vc-showTimer').isChecked(),true);assert.equal(await page.locator('#vf-countdown').isVisible(),true);
+  await page.locator('#vc-showTimer').uncheck();assert.equal(await page.locator('#vf-countdown').isVisible(),false);await page.locator('#vc-preset').selectOption('playback');assert.equal(await page.locator('#vf-countdown').isVisible(),false);await page.locator('#vc-showTimer').check();assert.equal(await page.locator('#vf-countdown').isVisible(),true);assert.equal(await page.locator('body').evaluate(n=>n.classList.contains('paused')),paused);
+  await page.locator('#hub-player-more > summary').click();await page.setViewportSize({width:320,height:740});assert.equal(await page.locator('#vf-countdown').isVisible(),true);await page.locator('#hub-player-more > summary').click();await page.locator('#vc-preset').selectOption('presentation');await page.locator('#hub-player-more > summary').click();const boxes=await page.locator('.vf-left,.vf-center,.vf-right').evaluateAll(nodes=>nodes.map(n=>{const r=n.getBoundingClientRect();return{x:r.x,right:r.right};}));assert(boxes[0].right<=boxes[1].x+1);assert(boxes[1].right<=boxes[2].x+1);assert.equal(await page.locator('.vf-left #notes').count(),0);assert.deepEqual(errors,[]);
+ }finally{await page.close();}
+});
+
+test('older authored viewer defaults gain the visible timer and reject malformed timer values',async()=>{
+ const {page,errors}=await openExample(browser,'template');try{const before=await snapshot(page),slideId=before.state.slides[0].id;const legacy={...defaults};delete legacy.showTimer;assert.equal((await operations(page,[{type:'viewer.defaults',slideId,config:legacy}])).ok,true);assert.equal((await snapshot(page)).state.viewerDefaults.showTimer,true);const saved=await snapshot(page);assert.equal((await operations(page,[{type:'viewer.defaults',slideId,config:{...defaults,showTimer:'yes'}}])).ok,false);assert.deepEqual((await snapshot(page)).state,saved.state);assert.deepEqual(errors,[]);}finally{await page.close();}
 });

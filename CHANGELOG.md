@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add an independent Show slide timer preference, enabled for both presets and narrow screens; preserve older viewer defaults (#203).
+
 - Add Presentation/Playback control presets, independent focus-safe auto-hide, grouped More controls and explicit portable deck defaults without changing automatic playback (#203).
 - Keep More menu labels readable before hover, fit multi-slide phone controls, and show remaining time for completion-driven videos (#202).
 

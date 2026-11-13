@@ -1,5 +1,5 @@
 body #controls .vc-group { margin:0; padding:10px 4px; border:0; border-bottom:1px solid #aebed266; display:flex; flex-direction:column; gap:7px; }
-body #controls .vc-group legend { font:600 12px Arial; color:#526078; padding-top:8px; }
+body #controls .vc-group legend { font:600 12px Arial; color:inherit; padding-top:8px; }
 body #controls .vc-group label { display:flex; align-items:center; flex-wrap:wrap; gap:7px; font:13px/1.4 Arial; padding:4px; }
 body #controls .vc-group select { width:100%; font:14px Arial; padding:8px; }
 body #controls .vc-group input { width:18px; height:18px; accent-color:#0066ff; }
@@ -16,3 +16,5 @@ body.obs #controls.vf-footer { display:none!important; }
 #booth-vc-progress { height:4px; background:#aebed2; margin-top:12px; }
 #booth-vc-progress > span { display:block; height:100%; background:#0066ff; }
 #booth-controls.vc-idle { opacity:0; pointer-events:none; }
+
+body #controls .vc-group select { background:#fff; color:#172033; border:1px solid #8196b3; }

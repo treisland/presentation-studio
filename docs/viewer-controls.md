@@ -33,7 +33,11 @@ from automated regression results. No beta publication is authorized by this fea
 ## Presets and visibility
 
 More groups Presenter tools, Appearance and controls, Presentation and Help. Choose Presentation
-for direct Notes/manual-navigation emphasis or Playback for Play/Pause and countdown. Changing
+for direct Notes/manual-navigation emphasis or Playback for Play/Pause.
+**Show slide timer** independently controls the seconds countdown in either preset,
+including narrow screens and videos that advance on completion. Older defaults
+without this option keep the timer enabled. Paused or manually held slides have no
+active countdown. Changing
 a preset never pauses or starts slides. Auto-hide and Always visible are independent of Kiosk
 after an explicit choice; hover, keyboard focus and open menus pin controls. OBS still hides
 controls, and reduced motion removes visibility fades.

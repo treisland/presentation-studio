@@ -1,10 +1,10 @@
 let vcSession=null,vcReady=false,vcPolicy='';
 const vcKeys=['autoHide','showNotes','showProgress','showCount'];
 function vcClean(raw){
-  if(!raw||typeof raw!=='object'||Array.isArray(raw)||Object.keys(raw).some(k=>!['version','preset',...vcKeys].includes(k))||raw.version!==1||!['presentation','playback'].includes(raw.preset)||vcKeys.some(k=>typeof raw[k]!=='boolean'))throw Error('Invalid viewer control defaults.');
-  return {version:1,preset:raw.preset,...Object.fromEntries(vcKeys.map(k=>[k,raw[k]]))};
+  if(!raw||typeof raw!=='object'||Array.isArray(raw)||Object.keys(raw).some(k=>!['version','preset','showTimer',...vcKeys].includes(k))||raw.version!==1||!['presentation','playback'].includes(raw.preset)||vcKeys.some(k=>typeof raw[k]!=='boolean')||(raw.showTimer!==undefined&&typeof raw.showTimer!=='boolean'))throw Error('Invalid viewer control defaults.');
+  return {version:1,preset:raw.preset,showTimer:raw.showTimer??true,...Object.fromEntries(vcKeys.map(k=>[k,raw[k]]))};
 }
-function vcDefaults(){return projectState.viewerDefaults||{version:1,preset:'playback',autoHide:kiosk,showNotes:true,showProgress:true,showCount:true};}
+function vcDefaults(){return projectState.viewerDefaults||{version:1,preset:'playback',autoHide:kiosk,showNotes:true,showProgress:true,showCount:true,showTimer:true};}
 function vcSettings(){if(vcSession&&vcSession.project!==projectMeta.id)vcSession=null;return vcSession?.settings||vcDefaults();}
 const vcValidate=projectValidateState;
 projectValidateState=function(raw,...args){const state=vcValidate(raw,...args);if(Object.hasOwn(raw,'viewerDefaults'))state.viewerDefaults=vcClean(raw.viewerDefaults);return state;};
@@ -20,15 +20,15 @@ function vcSchedule(){
 function vcSync(){
   if(!vcReady)return;const settings=vcSettings(),current=slides[index];
   $('play').hidden=settings.preset==='presentation';
-  $('vf-countdown').classList.toggle('vc-concealed',settings.preset==='presentation');
+  $('vf-countdown').classList.toggle('vc-concealed',settings.showTimer===false);
   $('notes').hidden=!settings.showNotes||projectPlayback;
   const chrome=current?visibilitySettings(projectState,current.dataset.mediaId):{footer:true,number:true};
   $('vf-position').hidden=!settings.showProgress||!chrome.footer;
   $('vf-count').hidden=!settings.showCount||!chrome.number||slides.length<=1;
-  const notesParent=settings.preset==='presentation'&&settings.showNotes&&!projectPlayback?document.querySelector('.vf-left'):$('vc-presenter-tools');
+  const notesParent=settings.preset==='presentation'&&settings.showNotes&&!projectPlayback&&innerWidth>=640?document.querySelector('.vf-left'):$('vc-presenter-tools');
   if($('notes').parentElement!==notesParent)notesParent.append($('notes'));
   $('vc-preset').value=settings.preset;
-  for(const key of vcKeys)$('vc-'+key).checked=settings[key];
+  for(const key of [...vcKeys,'showTimer'])$('vc-'+key).checked=settings[key]!==false;
   $('vc-pin').checked=!settings.autoHide;
   const locked=projectPlayback||projectState.editLocked||projectState.slides.some(s=>s.editLocked);
   for(const id of ['vc-save-defaults','vc-clear-defaults'])if($(id))$(id).disabled=!!locked;
@@ -53,10 +53,10 @@ function vcMount(){
   for(const id of ['bg-viewer-motion','kiosk'])if($(id))appearance.append($(id));
   for(const id of ['hub-presentations','open-full-editor','browse-questions','qa','steps','detection'])if($(id)&&$(id).closest('#hub-player-more'))presentation.append($(id));
   help.append($('info'));
-  const compact=()=>{const right=document.querySelector('.vf-right');if(innerWidth<640)presentation.append($('vf-count'),$('open-full-editor'));else{right.prepend($('vf-count'));right.insertBefore($('open-full-editor'),$('hub-player-more'));}};
+  const compact=()=>{const right=document.querySelector('.vf-right');if(innerWidth<640)presentation.append($('vf-count'),$('open-full-editor'));else{right.prepend($('vf-count'));right.insertBefore($('open-full-editor'),$('hub-player-more'));}vcSync();};
   addEventListener('resize',compact);compact();
   const presetLabel=document.createElement('label');presetLabel.textContent='Control preset';const preset=document.createElement('select');preset.id='vc-preset';preset.add(new Option('Presentation','presentation'));preset.add(new Option('Playback','playback'));preset.onchange=()=>vcOverride({preset:preset.value});presetLabel.append(preset);appearance.prepend(presetLabel);
-  for(const [key,label]of [['autoHide','Auto-hide controls'],['pin','Always visible'],['showNotes','Show Notes shortcut'],['showProgress','Show deck position'],['showCount','Show slide count']]){
+  for(const [key,label]of [['autoHide','Auto-hide controls'],['pin','Always visible'],['showNotes','Show Notes shortcut'],['showProgress','Show deck position'],['showCount','Show slide count'],['showTimer','Show slide timer']]){
     const wrapper=document.createElement('label'),input=document.createElement('input');input.type='checkbox';input.id='vc-'+key;wrapper.append(input,document.createTextNode(label));appearance.append(wrapper);input.onchange=()=>vcOverride(key==='pin'?{autoHide:!input.checked}:{[key]:input.checked});
   }
   const reset=componentButton('Reset session controls to defaults',()=>{vcSession=null;vcSync();$('vc-announcement').textContent='Session controls reset to deck defaults.';});appearance.append(reset);
