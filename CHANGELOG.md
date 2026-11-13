@@ -7,6 +7,10 @@
 - Add an independent Show slide timer preference, enabled for both presets and narrow screens; preserve older viewer defaults (#203).
 
 - Add Presentation/Playback control presets, independent focus-safe auto-hide, grouped More controls and explicit portable deck defaults without changing automatic playback (#203).
+- Keep decorative effects above custom bases and below content regardless of initialization order; apply the authoring JSON limit to decoded JSON, excluding bundled images (#213).
+
+- Add staged presentation/slide Theme, Solid, Gradient and Image backgrounds with complete overrides, local images, focal Fill/Fit, guarded native v4/portable-authoring v2, recovery-aware asset retention and shared offline/booth rendering (#213).
+
 - Keep More menu labels readable before hover, fit multi-slide phone controls, and show remaining time for completion-driven videos (#202).
 
 - Unify viewer controls into a slim viewport footer with deck-position progress, separate timed countdown and a bounded searchable slide navigator; retain shared playback actions and offline rendering (#202).

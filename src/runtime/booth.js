@@ -365,9 +365,10 @@ async function boothExport() {
       json +
       "<\/script><script>(" +
       boothStandalone.toString() +
-      ")("+authoringGeometry.toString()+","+visibilityMediaLayout.toString()+","+backgroundEffectsEngine.toString()+","+navigationWire.toString()+","+mediaMaskPaint.toString()+");<\/script></html>";
+      ")("+authoringGeometry.toString()+","+visibilityMediaLayout.toString()+","+backgroundEffectsEngine.toString()+","+navigationWire.toString()+","+mediaMaskPaint.toString()+","+customBackgroundEngine.toString()+");<\/script></html>";
     const refs = projectReferenced({
       brand: data.brand,
+      backgrounds: data.backgrounds,
       media: data.media,
       mediaObjects: data.mediaObjects,
       slides: data.slides,
