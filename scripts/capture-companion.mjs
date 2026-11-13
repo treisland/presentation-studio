@@ -1,5 +1,5 @@
 import {readFile,writeFile,mkdir,copyFile} from 'node:fs/promises';
-import {resolve,relative,dirname,join,sep} from 'node:path';
+import {resolve,relative,dirname,join,sep,isAbsolute} from 'node:path';
 import {pathToFileURL,fileURLToPath} from 'node:url';
 import {createHash} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
@@ -7,7 +7,7 @@ import {platform,release,arch} from 'node:os';
 import {chromium} from 'playwright';
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
 export const digest=bytes=>createHash('sha256').update(bytes).digest('hex');
-export function candidatePath(path){const target=resolve(root,path),inside=relative(join(root,'test-results','companion-captures'),target);if(!inside||inside==='..'||inside.startsWith('..'+sep)||resolve(target)===root)throw Error('Choose a new run directory inside test-results/companion-captures/.');return target;}
+export function candidatePath(path){const target=resolve(root,path),inside=relative(join(root,'test-results','companion-captures'),target);if(!inside||isAbsolute(inside)||inside==='..'||inside.startsWith('..'+sep)||resolve(target)===root)throw Error('Choose a new run directory inside test-results/companion-captures/.');return target;}
 export function verifyTarget(target,bytes){if(!target||!['stable','beta','development'].includes(target.channel)||!/^\d+\.\d+\.\d+(?:-[\w.]+)?$/.test(target.version)||!/^([a-f0-9]{40})$/.test(target.appSha)||!/^([a-f0-9]{64})$/.test(target.sha256)||target.channel==='stable'&&target.version.includes('-')||target.channel==='beta'&&!target.version.includes('-beta.')||digest(bytes)!==target.sha256)throw Error('Artifact identity or SHA256 does not match the selected target.');return target;}
 const escape=text=>String(text).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('"','&quot;');
 async function ready(page){await page.evaluate(async()=>{await document.fonts.ready;await Promise.all([...document.images].map(img=>img.decode().catch(()=>{})));});await page.addStyleTag({content:'*,*::before,*::after{animation:none!important;transition:none!important;caret-color:transparent!important}'});await page.waitForFunction(()=>document.getElementById('open-full-editor')&&window.presentationStudioEditing);}
