@@ -112,6 +112,7 @@
     "src/runtime/context-menu.js",
     "src/runtime/custom-backgrounds.js",
     "src/runtime/custom-background-ui.js",
+    "src/runtime/custom-background-bulk.js",
     "src/runtime/viewer-footer.js",
     "src/runtime/library-actions.js",
     "src/runtime/viewer-presets.js",

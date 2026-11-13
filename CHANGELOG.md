@@ -16,6 +16,9 @@
 - Show inert visual thumbnails for saved My components, fitted to the complete composition with original assets preserved.
 
 - Add recognizable icon-and-label Library categories and All/Text/Shapes/Media filters that combine with category-scoped search (#210).
+- Add staged representative deck previews, explicit section/selected-slide background targets, override preservation and atomic bulk/reset operations (#216).
+
+- Add staged image readability controls and explicit title/content/divider coordinated background looks with original neutral illustration.
 
 - Focus the appended saved-component duplicate so keyboard Rename edits the new copy (#209).
 
