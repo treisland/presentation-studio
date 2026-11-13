@@ -29,3 +29,6 @@ filters combine with the existing category-scoped search. Clear search retains t
 filter and returns focus to the search field. Empty results suggest clearing search or changing
 category/filter. Media retains its upload picker; this does not add a stock icon catalog or
 cross-category search. Decorative line/arrow/button/step previews show their existing kinds.
+
+Duplicating a saved component focuses the new copy’s Rename action, so keyboard
+renaming applies to that copy. Existing saved and placed copies remain independent.
