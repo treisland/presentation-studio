@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Reconcile merged v0.16 implementation with the remaining acceptance checklist and record maintainer footer sign-off; companion publishing remains local-only.
+
 - Support optional Classic/Modern/Hidden slide footers, including a passive classic audience footer and portable offline playback defaults.
 
 - Add independent presenter live navigation, Follow live, deliberate Q&A resume points, elapsed time and reversible audience blackout.
