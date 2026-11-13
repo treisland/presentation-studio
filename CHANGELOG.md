@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 0.16.0 — 2026-11-13
+
+- Promote the verified v0.16.0-beta.1 runtime to the maintainer-authorized official release without feature changes. Retain known issue #241 for a patch and recommend window capture; companion public launch remains deferred.
+
 ## 0.16.0-beta.1 — 2026-11-13
 
 - Prepare the maintainer-authorized beta for the integrated presentation, Library and custom-background milestone; companion publication remains deferred.
