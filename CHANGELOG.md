@@ -3,6 +3,7 @@
 ## Unreleased
 
 - Unify viewer controls into a slim viewport footer with deck-position progress, separate timed countdown and a bounded searchable slide navigator; retain shared playback actions and offline rendering (#202).
+- Document the proposed custom-background inheritance, layering, asset recovery and guarded native/portable format contract for maintainer review (#212).
 - Define companion guide/screenshot ownership, provenance, human review and local rollback responsibilities in contributor, agent, PR and release workflows (#193).
 
 - Define the locally reviewed companion-site architecture, canonical guide ownership, screenshot provenance and deferred publication boundary (#192).
