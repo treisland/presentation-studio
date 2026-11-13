@@ -35,7 +35,8 @@
     "src/styles/media-inspector.css",
     "src/styles/context-menu.css",
     "src/styles/custom-backgrounds.css",
-    "src/styles/viewer-footer.css"
+    "src/styles/viewer-footer.css",
+    "src/styles/library-actions.css"
   ],
   "scripts": [
     "src/runtime/prelude.js",
@@ -108,6 +109,7 @@
     "src/runtime/custom-background-ui.js",
     "src/runtime/custom-background-bulk.js",
     "src/runtime/viewer-footer.js",
+    "src/runtime/library-actions.js",
     "src/runtime/boot.js"
   ],
   "vendor": "vendor/jszip-3.10.1.min.js"

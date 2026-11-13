@@ -79,13 +79,14 @@ function cbMountUI(){
     }catch(error){URL.revokeObjectURL(url);$('cb-status').textContent='Image preview failed: '+error.message;}
   };
   $('cb-use-look').onclick=()=>{
+    state.uploadEpoch++;
     const composition=$('cb-composition').value,right=composition==='text-right',divider=composition==='divider';
     let config={kind:'gradient',colors:divider?['background','muted']:['background','accent'],angle:right?270:90};
     if($('cb-look').value==='horizon'){
       // Original static geometry; no remote image or copied mock-up assets.
       const svg='<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080"><path fill="#dce6ef" d="M0 0h1920v1080H0z"/><path fill="#b2c8d8" d="M0 780 450 480 850 720 1270 340 1920 700v380H0z"/><path fill="#7898b2" d="m0 980 550-250 450 180 500-340 420 240v270H0z"/></svg>';
       const path='assets/'+projectID('quiet-horizon')+'.svg',blob=new Blob([svg],{type:'image/svg+xml'}),url=URL.createObjectURL(blob);
-      for(const resource of state.uploads.values())URL.revokeObjectURL(resource.url);state.uploads.clear();state.uploadEpoch++;
+      for(const resource of state.uploads.values())URL.revokeObjectURL(resource.url);state.uploads.clear();
       state.uploads.set(path,{blob,url});
       config={kind:'image',asset:path,fit:'fill',focal:{x:.5,y:.5},fallback:'background',overlay:{color:'background',opacity:divider?.65:.4},protectText:divider?'off':right?'right':'left'};
     }

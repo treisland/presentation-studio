@@ -145,7 +145,7 @@ test('table presets and custom colors survive independent library copies and edi
     assert.equal(style.fill,'rgb(224, 239, 255)');assert.equal(style.padding,'8px 12px');
     const expected=await snapshot(page),restored=await importZip(browser,await exportZip(page),expected.projectId);
     try{assert.deepEqual((await snapshot(restored)).state,expected.state);assert.equal(await restored.locator('#fe-preview tbody tr').nth(1).locator('td').first().evaluate(el=>getComputedStyle(el).backgroundColor),style.fill);}finally{await restored.close();}
-    await page.locator('#component-open').click();await page.locator('#component-save-panel > summary').click();await page.locator('#component-name').fill('Banded milestones');await page.locator('#component-save').click();await page.getByRole('tab',{name:'My components',exact:true}).click();await page.getByRole('button',{name:'Insert Banded milestones',exact:true}).click();
+    await page.locator('#component-open').click();await page.locator('#component-name').fill('Banded milestones');await page.locator('#component-save').click();await page.getByRole('tab',{name:'My components',exact:true}).click();await page.getByRole('button',{name:'Insert Banded milestones',exact:true}).click();
     assert.equal(await page.locator('#fe-preview table.ts-table').count(),2);
     const first=findTable(expected.state).node.attrs.class;assert.match(first,/ts-alternate-ce0efff/);
     assert.equal((await operations(page,[{type:'table.style',slideId:id,path:table.path,reset:true}])).ok,true);
