@@ -1,13 +1,12 @@
 {
-  "version": "0.15.0-beta.1",
+  "version": "0.16.0-beta.1",
   "publish": true,
-  "notes": "docs/releases/0.15.0-beta.1.md",
+  "notes": "docs/releases/0.16.0-beta.1.md",
   "manualGatesPassed": true,
   "evidence": [
-    "docs/releases/0.15.0-beta.1-validation.md",
-    "docs/inspector-navigation.md",
-    "docs/media-inspector.md",
-    "docs/context-menus.md",
+    "docs/releases/0.16.0-beta.1-validation.md",
+    "docs/v0.16.0-acceptance.md",
+    "docs/known-issues.md",
     "docs/import-compatibility.md"
   ],
   "distribution": {
