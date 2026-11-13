@@ -6,6 +6,7 @@
 
 - Prepare the maintainer-authorized beta for the integrated presentation, Library and custom-background milestone; companion publication remains deferred.
 - Document the accepted holding-settings Cancel/Escape fallback defect as known issue #241, with an explicit built-in-design workaround and patch follow-up.
+- Record maintainer-reported Chrome, Firefox and Edge acceptance versions; recommend window capture and remove OBS-specific release sign-off by maintainer decision, with future Browser Source deprecation kept separate.
 
 - Add direct slide Background controls to the Inspector with exact single-slide apply, inherited/reset status and the shared staged editor.
 - Add private Presenter Previous/Next controls and explicit double-click-to-present on List/Grid cards and the large preview; label audience navigation separately.

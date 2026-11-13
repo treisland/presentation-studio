@@ -1,6 +1,12 @@
 # Media compatibility evidence
 
-Results describe exact tested encodings and workflows, not a guarantee for every MP4/WebM file or browser. Use muted video for automated playback. Test your actual delivery files and OBS setup before presenting.
+Results describe exact tested encodings and workflows, not a guarantee for every MP4/WebM file or browser. Use muted video for automated playback. Test your actual delivery files and capture setup before presenting.
+
+The maintainer selected ordinary window capture as the recommended capture path
+on 2026-11-13. OBS-specific release sign-off is no longer required; OBS Browser
+Source deprecation is planned for the future. Existing source-specific pending
+results below remain unverified. This does not remove app functionality or claim
+Browser Source compatibility from ordinary browser tests.
 
 The maintainer subsequently reported the alpha.2 OBS recording/actual delivery-video checklist passing without defects. Exact versions, capture method and opening mode were not supplied; see [the consolidated release evidence](releases/0.2.0-evidence.md). That report does not identify OBS Browser Source specifically, so the source-specific matrix entry remains pending.
 
