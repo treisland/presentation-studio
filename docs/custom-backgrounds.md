@@ -67,3 +67,25 @@ when enabled later; the same order is used in offline booth playback. Authoring
 ZIPs enforce the 2 MB authoring limit on decoded presentation.json bytes, separately
 from archive expansion and image-size limits. Bundled images do not consume that
 JSON budget. Oversized JSON is still rejected before active work is replaced.
+
+## Review a deck and apply backgrounds in bulk
+
+Scope distinguishes presentation defaults from explicit Section and Selected slides
+overrides. Review the named targets and affected count before Apply. Existing slide
+overrides are preserved by default; explicitly choose Replace existing slide
+overrides to replace them. Changing a presentation default with replacement removes
+slide overrides so those slides inherit the new default. Explicit bulk slide changes
+leave the presentation default alone.
+
+Choose actual slides for the Title, Content and Divider representative previews;
+these labels never infer or change slide layouts. Previews use actual content, show
+inherited/custom and staged/unchanged state, and remain silent and inert. At most
+three representative previews plus the current slide are mounted.
+
+A locked requested target blocks the entire operation, even when its existing
+override would be preserved. Unlock targets or choose a different set; application
+is never silently partial. Apply is one Undo step. Project/revision/selection or
+deleted-target changes require cancelling to refresh review. Cancel changes nothing.
+Reset all slide backgrounds is a separate confirmed action that restores original
+background inheritance across the entire presentation in one Undo step. Undo/history
+continue retaining original image assets.

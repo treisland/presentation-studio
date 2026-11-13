@@ -21,3 +21,13 @@
 /* Explicit stacking is independent of lazy effect initialization and DOM order. */
 .cb-active > .bg-effect,.cb-active > .grid,.cb-active > .orb { z-index:1; }
 .cb-active .slide { z-index:2; }
+.cb-bulk { border-top:1px solid var(--wb-line,#bcc8d8); margin-top:16px; padding-top:12px; }
+#cb-target-list { display:grid; gap:6px; max-height:200px; overflow:auto; }
+#cb-target-list label,#cb-replace-label { display:flex; align-items:center; gap:8px; }
+.cb-samples { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin:12px 0; }
+.cb-samples article { min-width:0; }
+.cb-samples p { font-size:12px; overflow-wrap:anywhere; }
+.cb-sample-preview { position:relative; overflow:hidden; aspect-ratio:16/9; background:#e8edf3; }
+.cb-sample-preview > .me-preview-stage { transform-origin:top left; }
+.cb-sample-preview * { animation:none!important; transition:none!important; }
+@media(max-width:700px){.cb-samples{grid-template-columns:1fr;}}

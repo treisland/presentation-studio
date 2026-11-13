@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add staged representative deck previews, explicit section/selected-slide background targets, override preservation and atomic bulk/reset operations (#216).
+
 - Add staged image readability controls and explicit title/content/divider coordinated background looks with original neutral illustration.
 
 - Keep decorative effects above custom bases and below content regardless of initialization order; apply the authoring JSON limit to decoded JSON, excluding bundled images (#213).
