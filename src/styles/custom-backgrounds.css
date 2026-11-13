@@ -1,0 +1,18 @@
+.cb-layer { position:absolute; inset:0; z-index:0; overflow:hidden; pointer-events:none!important; }
+.cb-layer[hidden] { display:none!important; }
+.cb-layer > img,.cb-layer > div { position:absolute; inset:0; width:100%; height:100%; pointer-events:none!important; }
+.cb-active .slide { background:transparent!important; }
+.cb-panel { border:1px solid var(--wb-line,#bcc8d8); padding:16px; border-radius:8px; margin-bottom:18px; }
+.cb-fields { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+.cb-panel label { display:block; font-size:13px; }
+.cb-panel input,.cb-panel select { max-width:100%; }
+.cb-panel .cb-actions { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+.cb-preview { position:relative; overflow:hidden; aspect-ratio:16/9; margin-top:12px; background:#eef2f7; border:1px solid #aebed2; border-radius:6px; }
+.cb-preview > .me-preview-stage { transform-origin:top left; }
+@media(max-width:650px){.cb-fields{grid-template-columns:1fr;}}
+
+.cb-preview * { animation:none!important; transition:none!important; }
+
+/* Explicit stacking is independent of lazy effect initialization and DOM order. */
+.cb-active > .bg-effect,.cb-active > .grid,.cb-active > .orb { z-index:1; }
+.cb-active .slide { z-index:2; }

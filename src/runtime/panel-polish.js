@@ -153,6 +153,7 @@ projectInit=function(){
       if(projectState.design?.slides[source.id])projectState.design.slides[copy.id]=projectCopy(projectState.design.slides[source.id]);
       for(const map of ['slides','groups'])if(projectState.visibility?.[map]?.[source.id])projectState.visibility[map][copy.id]=projectCopy(projectState.visibility[map][source.id]);
       if(projectState.backgroundEffects?.slides?.[source.id])projectState.backgroundEffects.slides[copy.id]=projectCopy(projectState.backgroundEffects.slides[source.id]);
+      if(projectState.backgrounds?.slides?.[source.id])projectState.backgrounds.slides[copy.id]=projectCopy(projectState.backgrounds.slides[source.id]);
       for(const loop of Object.values(projectState.loops)){const i=loop.slideIds.indexOf(source.id);if(i>=0)loop.slideIds.splice(i+1,0,copy.id);}
       projectSelected=copy.id;
     });
