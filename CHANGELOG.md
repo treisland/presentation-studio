@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add a local-only companion with authentic example previews, canonical guide rendering and separate stable/beta downloads.
+
 - Add a short first-presentation guide and a curated Studio, Portfolio and Newsletter companion content map.
 
 - Add digest-verified, reproducible companion screenshot recipes and ignored before/after review candidates with provenance.
