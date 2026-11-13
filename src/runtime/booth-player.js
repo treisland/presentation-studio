@@ -233,6 +233,7 @@ function boothStandalone(geometry, mediaLayout, backgroundFactory, wireNavigatio
   function paintViewerDefaults(){
     if(!data.viewerDefaults)return;
     const viewer=data.viewerDefaults,position=data.loop.indexOf(current),chrome={footer:true,number:true,...data.visibility?.defaults,...data.visibility?.slides?.[current]};
+    stage.querySelector('footer').style.display=viewer.footerStyle==='hidden'?'none':'';
     $('booth-vc-count').hidden=!viewer.showCount||!chrome.footer||!chrome.number||position<0;
     $('booth-vc-count').textContent=(position+1)+' / '+data.loop.length;
     $('booth-vc-progress').hidden=!viewer.showProgress||!chrome.footer||position<0;
