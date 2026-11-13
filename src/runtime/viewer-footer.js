@@ -97,7 +97,7 @@ function vfMount() {
     if (innerWidth < 640) more.append(count,$('open-full-editor'));
     else { right.prepend(count); right.insertBefore($('open-full-editor'),$('hub-player-more')); }
     if (innerWidth < 560) more.prepend($('full'));
-    else right.insertBefore($('full'),$('open-full-editor'));
+    else right.insertBefore($('full'),$('open-full-editor').parentElement===right?$('open-full-editor'):$('hub-player-more'));
   };
   addEventListener('resize',compact); compact();
   const nav = document.createElement('section'); nav.id = 'vf-navigator';
