@@ -1,0 +1,99 @@
+{
+  "title": "Presentation Studio",
+  "tagline": "Create in your browser. Present anywhere.",
+  "publication": "local-review-only",
+  "stable": {
+    "version": "0.11.0",
+    "app": "https://pres-studio.com/",
+    "release": "https://github.com/treisland/presentation-studio/releases/tag/v0.11.0"
+  },
+  "beta": {
+    "version": "0.15.0-beta.1",
+    "app": "https://beta.pres-studio.com/",
+    "release": "https://github.com/treisland/presentation-studio/releases/tag/v0.15.0-beta.1"
+  },
+  "examples": [
+    {
+      "id": "studio",
+      "name": "Studio",
+      "purpose": "Learn the editor with an eight-slide sample presentation.",
+      "detail": "Editable headings, a table, an original diagram and display-only commands.",
+      "previewScene": "example-studio",
+      "guide": "first-presentation"
+    },
+    {
+      "id": "portfolio",
+      "name": "Portfolio",
+      "purpose": "Show a project from problem to approach and evidence.",
+      "detail": "An original fictional community-library case study with multiple visuals.",
+      "previewScene": "example-portfolio",
+      "guide": "first-presentation"
+    },
+    {
+      "id": "newsletter",
+      "name": "Newsletter",
+      "purpose": "Build a recurring update with a clear story and sections.",
+      "detail": "Original editable starter with masthead, columns and a shared visual.",
+      "previewScene": "example-newsletter",
+      "guide": "first-presentation"
+    }
+  ],
+  "guides": [
+    {
+      "id": "first-presentation",
+      "title": "Your first presentation",
+      "group": "Start here",
+      "source": "docs/first-presentation.md",
+      "channel": "stable"
+    },
+    {
+      "id": "quick-start",
+      "title": "Create, export and reopen",
+      "group": "Create",
+      "source": "docs/quick-start.md",
+      "channel": "reference"
+    },
+    {
+      "id": "examples",
+      "title": "Examples and layouts",
+      "group": "Create",
+      "source": "docs/examples.md",
+      "channel": "reference"
+    },
+    {
+      "id": "media-compatibility",
+      "title": "Present offline and check media",
+      "group": "Present",
+      "source": "docs/media-compatibility.md",
+      "channel": "reference"
+    },
+    {
+      "id": "portable-ai",
+      "title": "Portable AI authoring",
+      "group": "Portable AI authoring",
+      "source": "docs/ai/AUTHORING.md",
+      "channel": "development"
+    },
+    {
+      "id": "troubleshooting",
+      "title": "Backups and recovery",
+      "group": "Save & recover",
+      "source": "docs/troubleshooting.md",
+      "channel": "reference"
+    },
+    {
+      "id": "import-compatibility",
+      "title": "File compatibility",
+      "group": "Reference",
+      "source": "docs/import-compatibility.md",
+      "channel": "development"
+    },
+    {
+      "id": "content-and-branding",
+      "title": "Content and licensing",
+      "group": "Reference",
+      "source": "docs/content-and-branding.md",
+      "channel": "reference"
+    }
+  ]
+}

@@ -230,6 +230,16 @@ function boothStandalone(geometry, mediaLayout, backgroundFactory, wireNavigatio
     $("booth-slides").append(slide);
     nodes.set(model.id, slide);
   }
+  function paintViewerDefaults(){
+    if(!data.viewerDefaults)return;
+    const viewer=data.viewerDefaults,position=data.loop.indexOf(current),chrome={footer:true,number:true,...data.visibility?.defaults,...data.visibility?.slides?.[current]};
+    $('booth-vc-count').hidden=!viewer.showCount||!chrome.footer||!chrome.number||position<0;
+    $('booth-vc-count').textContent=(position+1)+' / '+data.loop.length;
+    $('booth-vc-progress').hidden=!viewer.showProgress||!chrome.footer||position<0;
+    $('booth-vc-progress').setAttribute('aria-valuenow',String(position+1));
+    $('booth-vc-progress').setAttribute('aria-valuemax',String(data.loop.length));
+    $('booth-vc-progress').firstElementChild.style.width=(data.loop.length>1?position/(data.loop.length-1)*100:100)+'%';
+  }
   function paint() {
     for (const [id, slide] of nodes) {
       slide.classList.toggle("active", id === current);
@@ -244,6 +254,7 @@ function boothStandalone(geometry, mediaLayout, backgroundFactory, wireNavigatio
     $("booth-title").textContent =
       data.slides.find((s) => s.id === current)?.title || "";
     $("booth-play").textContent = playing ? "Pause" : "Play";
+    paintViewerDefaults();
   }
   function show(id) {
     if (!nodes.has(id)) return;
@@ -545,6 +556,7 @@ function boothStandalone(geometry, mediaLayout, backgroundFactory, wireNavigatio
   function permissions() {
     for (const id of ["prev", "next", "play"])
       $("booth-" + id).hidden = !p.navigation && !unlocked;
+    if(data.viewerDefaults?.preset==='presentation')$("booth-play").hidden=true;
     $("booth-questions").hidden = !p.questions && !unlocked;
     $("booth-access").textContent = unlocked
       ? "Relock booth"
@@ -652,6 +664,14 @@ function boothStandalone(geometry, mediaLayout, backgroundFactory, wireNavigatio
       "translate(-50%,-50%) scale(" +
       Math.min(innerWidth / 1920, innerHeight / 1080) +
       ")";
+  }
+  if(data.viewerDefaults){
+    const count=document.createElement('span');count.id='booth-vc-count';stage.querySelector('footer').append(count);
+    const line=document.createElement('div');line.id='booth-vc-progress';line.setAttribute('role','progressbar');line.setAttribute('aria-label','Loop position');line.setAttribute('aria-valuemin','1');line.append(document.createElement('span'));stage.querySelector('footer').append(line);
+    let controlsTimer;const controls=$('booth-controls');
+    const pinned=()=>controls.matches(':hover')||controls.contains(document.activeElement)||!!document.querySelector('dialog[open]');
+    const reveal=()=>{clearTimeout(controlsTimer);controls.classList.remove('vc-idle');if(data.viewerDefaults.autoHide&&!pinned())controlsTimer=setTimeout(()=>{if(!pinned())controls.classList.add('vc-idle');},3000);};
+    document.addEventListener('pointermove',reveal);document.addEventListener('pointerdown',reveal);controls.addEventListener('pointerenter',reveal);controls.addEventListener('pointerleave',reveal);controls.addEventListener('focusin',reveal);controls.addEventListener('focusout',()=>setTimeout(reveal,0));document.addEventListener('close',reveal,true);reveal();
   }
   window.onresize = resize;
   resize();

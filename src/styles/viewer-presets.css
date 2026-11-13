@@ -1,0 +1,20 @@
+body #controls .vc-group { margin:0; padding:10px 4px; border:0; border-bottom:1px solid #aebed266; display:flex; flex-direction:column; gap:7px; }
+body #controls .vc-group legend { font:600 12px Arial; color:inherit; padding-top:8px; }
+body #controls .vc-group label { display:flex; align-items:center; flex-wrap:wrap; gap:7px; font:13px/1.4 Arial; padding:4px; }
+body #controls .vc-group select { width:100%; font:14px Arial; padding:8px; }
+body #controls .vc-group input { width:18px; height:18px; accent-color:#0066ff; }
+body #controls .vc-group button { text-align:left; width:100%; white-space:normal; }
+body #controls .vc-group small { font:12px/1.5 Arial; color:#526078; }
+.vc-concealed { display:none!important; }
+.vc-sr { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
+body.obs #controls.vf-footer { display:none!important; }
+.vc-defaults { border:1px solid var(--wb-line,#aebed2); border-radius:7px; margin-bottom:16px; padding:14px; }
+@media(prefers-reduced-motion:reduce){body #controls.vf-footer { transition:none!important; }}
+@media(forced-colors:active){body #controls .vc-group { border-color:CanvasText; }}
+
+#booth-vc-count { float:right; font:18px Arial; }
+#booth-vc-progress { height:4px; background:#aebed2; margin-top:12px; }
+#booth-vc-progress > span { display:block; height:100%; background:#0066ff; }
+#booth-controls.vc-idle { opacity:0; pointer-events:none; }
+
+body #controls .vc-group select { background:#fff; color:#172033; border:1px solid #8196b3; }

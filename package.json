@@ -9,17 +9,20 @@
   },
   "scripts": {
     "build": "node scripts/build.mjs",
-    "test": "node --test tests/build.test.mjs tests/delivery.test.mjs tests/distribution.test.mjs tests/docker.test.mjs tests/ci-toolchain.test.mjs tests/capture-companion.test.mjs",
+    "test": "node --test tests/build.test.mjs tests/delivery.test.mjs tests/distribution.test.mjs tests/docker.test.mjs tests/ci-toolchain.test.mjs tests/capture-companion.test.mjs tests/companion-site.test.mjs",
     "test:browser": "node --test tests/browser.test.mjs tests/experience.test.cjs tests/portability.test.mjs tests/projects.test.mjs tests/studio-demo.test.mjs tests/visual.test.mjs tests/focus.test.mjs tests/compat.test.mjs tests/canvas-booth.test.mjs tests/media-drop-placement.test.mjs tests/workspace.test.mjs tests/preflight.test.mjs tests/media-roundtrip.test.mjs tests/backup-verification.test.mjs tests/accessibility.test.mjs tests/editing-api.test.mjs tests/draggable-blocks.test.mjs tests/media-grid.test.mjs tests/panel-polish.test.mjs tests/precision.test.mjs tests/layouts.test.mjs tests/layout-retention.test.mjs tests/comic.test.mjs tests/editorial.test.mjs tests/newsletter.test.mjs tests/flyer.test.mjs tests/example-pairs.test.mjs tests/example-gallery.test.mjs tests/example-walkthroughs.test.mjs tests/layout-acceptance.test.mjs tests/layout-review.test.mjs tests/text-types.test.mjs tests/new-presentation.test.mjs",
-    "test:components": "node --test tests/components.test.mjs tests/code-library.test.mjs tests/visibility.test.mjs tests/visibility-layout.test.mjs tests/inspector-context.test.mjs tests/content-inspector.test.mjs tests/customization.test.mjs tests/local-workspaces.test.mjs tests/authoring-layouts.test.mjs tests/editor-workbench.test.mjs tests/manipulation-handles.test.mjs tests/layer-dock.test.mjs tests/inspector-style.test.mjs tests/app-info.test.mjs tests/table-selection.test.mjs tests/background-effects.test.mjs tests/numeric-controls.test.mjs tests/action-controls.test.mjs tests/navigation.test.mjs tests/media-masks.test.mjs tests/custom-backgrounds.test.mjs tests/library-actions.test.mjs",
+    "test:components": "node --test tests/components.test.mjs tests/code-library.test.mjs tests/visibility.test.mjs tests/visibility-layout.test.mjs tests/inspector-context.test.mjs tests/content-inspector.test.mjs tests/customization.test.mjs tests/local-workspaces.test.mjs tests/authoring-layouts.test.mjs tests/editor-workbench.test.mjs tests/manipulation-handles.test.mjs tests/layer-dock.test.mjs tests/inspector-style.test.mjs tests/app-info.test.mjs tests/table-selection.test.mjs tests/background-effects.test.mjs tests/numeric-controls.test.mjs tests/action-controls.test.mjs tests/navigation.test.mjs tests/media-masks.test.mjs tests/custom-backgrounds.test.mjs tests/library-actions.test.mjs tests/library-navigation.test.mjs tests/component-thumbnails.test.mjs",
     "test:manipulation": "node --test tests/manipulation-targets.test.mjs tests/canvas-gestures.test.mjs tests/selection-guidance.test.mjs tests/inspector-stability.test.mjs",
     "test:inspector-sections": "node --test tests/inspector-sections.test.mjs tests/media-inspector.test.mjs tests/context-menu.test.mjs",
     "check": "npm run build && npm test && npm run test:browser && npm run test:components && npm run test:manipulation && npm run test:inspector-sections && npm run test:viewer",
     "package": "node scripts/package.mjs",
     "serve": "node scripts/serve.mjs",
     "profile:canvas": "npm run build && node tests/profile-canvas.mjs",
-    "test:viewer": "node --test tests/viewer-footer.test.mjs",
-    "capture:companion": "node scripts/capture-companion.mjs"
+    "test:viewer": "node --test tests/viewer-footer.test.mjs tests/viewer-presets.test.mjs tests/presenter-session.test.mjs tests/presenter-browser.test.mjs tests/presenter-controls.test.mjs",
+    "capture:companion": "node scripts/capture-companion.mjs",
+    "build:companion": "node scripts/build-companion.mjs",
+    "serve:companion": "node scripts/serve-companion.mjs",
+    "test:companion": "node tests/companion-review.mjs"
   },
   "devDependencies": {
     "playwright": "1.62.1"

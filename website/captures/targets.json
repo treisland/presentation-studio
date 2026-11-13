@@ -8,6 +8,13 @@
     "release": "https://github.com/treisland/presentation-studio/releases/tag/v0.11.0",
     "asset": "https://github.com/treisland/presentation-studio/releases/download/v0.11.0/presentation-studio.html",
     "verifiedAt": "2026-11-13",
-    "scenes": ["editor-overview", "examples-gallery", "finished-playback"]
+    "scenes": [
+      "editor-overview",
+      "examples-gallery",
+      "finished-playback",
+      "example-studio",
+      "example-portfolio",
+      "example-newsletter"
+    ]
   }
 }

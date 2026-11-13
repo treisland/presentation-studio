@@ -23,8 +23,19 @@ Use appropriately licensed images and test large images with actual delivery med
 Background media stays in its existing position above the custom base and can cover
 it. This feature never silently moves/deletes that media. Decorative effects remain
 separate, with their existing motion and Decorations controls. Decorations visibility
-does not remove a solid/gradient/image base required for text readability. Readability
-overlays, coordinated looks and bulk representative previews are coordinated issues.
+does not remove a solid/gradient/image base required for text readability. Image overlay color/opacity and Protect text area are explicit, staged controls.
+Protect left/right adds a full-strength overlay-color fade from that side; opacity
+controls the separate full-image overlay. Text and content are never recolored.
+
+Coordinated looks offer a theme-linked blend and an original static Quiet horizon
+illustration. Choose Title, text-left, text-right or Divider explicitly; the choice
+maps to the current scope only and never guesses from slide content. Preview the
+chosen look, then Apply or Cancel. Theme roles adapt to the deck palette; literal
+hex colors remain literal. Bulk representative previews are a separate issue.
+
+Review dense text, code, tables and photographs at playback size in light and dark
+themes. Quiet areas and overlays help composition but cannot guarantee contrast,
+readability or accessibility, especially over textured images.
 
 ## Files, recovery and offline delivery
 
@@ -56,3 +67,25 @@ when enabled later; the same order is used in offline booth playback. Authoring
 ZIPs enforce the 2 MB authoring limit on decoded presentation.json bytes, separately
 from archive expansion and image-size limits. Bundled images do not consume that
 JSON budget. Oversized JSON is still rejected before active work is replaced.
+
+## Review a deck and apply backgrounds in bulk
+
+Scope distinguishes presentation defaults from explicit Section and Selected slides
+overrides. Review the named targets and affected count before Apply. Existing slide
+overrides are preserved by default; explicitly choose Replace existing slide
+overrides to replace them. Changing a presentation default with replacement removes
+slide overrides so those slides inherit the new default. Explicit bulk slide changes
+leave the presentation default alone.
+
+Choose actual slides for the Title, Content and Divider representative previews;
+these labels never infer or change slide layouts. Previews use actual content, show
+inherited/custom and staged/unchanged state, and remain silent and inert. At most
+three representative previews plus the current slide are mounted.
+
+A locked requested target blocks the entire operation, even when its existing
+override would be preserved. Unlock targets or choose a different set; application
+is never silently partial. Apply is one Undo step. Project/revision/selection or
+deleted-target changes require cancelling to refresh review. Cancel changes nothing.
+Reset all slide backgrounds is a separate confirmed action that restores original
+background inheritance across the entire presentation in one Undo step. Undo/history
+continue retaining original image assets.

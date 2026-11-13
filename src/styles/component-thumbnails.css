@@ -1,0 +1,6 @@
+#component-add #component-items .ct-preview { display:block; position:relative;  height:clamp(104px,15dvh,180px); min-height:0; padding:0; overflow:hidden; background:#edf2f8; }
+.ct-preview iframe { position:absolute; left:0; top:0; width:640px; height:360px; border:0; pointer-events:none; transform-origin:0 0; }
+
+#component-add #component-items .ct-card { gap:6px; }
+#component-add .ct-card h3,#component-add .ct-card .cl-object-count { margin:0; }
+#component-add .ct-card .cl-card-actions { margin-top:0; padding-top:6px; }

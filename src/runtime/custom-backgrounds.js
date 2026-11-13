@@ -82,3 +82,24 @@ paRenderReview=function(candidate,summary){
   const previous=lwPreviewCleanup;
   lwPreviewCleanup=()=>{previous();for(const url of source.urls.values())URL.revokeObjectURL(url);source.urls.clear();if(cbReviewSources.get(state)===source)cbReviewSources.delete(state);};return result;
 };
+
+// One pure plan supplies both staged previews and the atomic mutation.
+function cbBulkPlan(state,op){
+  if(!['presentation','slides'].includes(op.scope)||typeof op.replaceOverrides!=='boolean'||!Array.isArray(op.ids)||!op.ids.length||op.ids.length>1000||new Set(op.ids).size!==op.ids.length)editingFail('INVALID','Choose a distinct, nonempty background target set.');
+  const requested=op.ids.map(id=>{const slide=state.slides.find(s=>s.id===id);if(!slide)editingFail('NOT_FOUND','Background target changed. Refresh the review.');return slide;});
+  if(op.scope==='presentation'&&(op.ids.length!==state.slides.length||state.slides.some(s=>!op.ids.includes(s.id))))editingFail('STALE','The presentation changed. Refresh the background review.');
+  const settings=state.backgrounds?cbEngine.settings(state.backgrounds):{version:1,defaults:null,slides:Object.create(null)},config=op.config==null?null:cbEngine.clean(op.config);
+  const affected=requested.filter(s=>op.replaceOverrides||!settings.slides[s.id]).map(s=>s.id);
+  if(op.scope==='presentation'){settings.defaults=config;if(op.replaceOverrides)for(const id of op.ids)delete settings.slides[id];}
+  else for(const id of affected){if(config)settings.slides[id]=projectCopy(config);else delete settings.slides[id];}
+  return {settings,requested:op.ids,affected,locked:requested.filter(s=>s.editLocked||state.editLocked).map(s=>s.id)};
+}
+editingRegisterOperation('background.bulk',(state,op)=>{
+  const plan=cbBulkPlan(state,op);if(plan.locked.length)editingFail('LOCKED','Unlock every requested target before applying backgrounds. No slides were changed.');
+  if(plan.settings.defaults||Object.keys(plan.settings.slides).length)state.backgrounds=plan.settings;else delete state.backgrounds;
+});
+editingRegisterOperation('background.resetAll',(state,op)=>{
+  if(!Array.isArray(op.ids)||op.ids.length!==state.slides.length||new Set(op.ids).size!==state.slides.length||state.slides.some(s=>!op.ids.includes(s.id)))editingFail('STALE','The presentation changed. Review Reset all backgrounds again.');
+  if(state.editLocked||state.slides.some(s=>s.editLocked))editingFail('LOCKED','Unlock every slide before resetting backgrounds.');
+  delete state.backgrounds;
+});

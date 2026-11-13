@@ -1,3 +1,4 @@
+function studioBoot(){
   mediaApplyAll();
   mediaState();
 
@@ -26,4 +27,6 @@
     setPlaying(true);
   }
   requestAnimationFrame(tick);
+}
+if(window.__studioAudienceBootstrap)pvReceiveAudience(studioBoot);else studioBoot();
 })();

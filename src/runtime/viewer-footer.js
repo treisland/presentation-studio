@@ -30,6 +30,7 @@ function vfSync() {
 function vfTiming() {
   if (!$('vf-countdown')) return;
   const current = slides[index], cfg = mediaGetAssignment(current?.dataset.mediaId);
+  if ($('vf-time-fill')) { const percent=Math.max(0,Math.min(100,parseFloat($('fill').style.width)||0));$('vf-time-fill').style.width=percent+'%';$('vf-time-bar').setAttribute('aria-valuenow',String(Math.round(percent)));$('vf-time-bar').setAttribute('aria-valuetext',Math.round(percent)+'% of current slide time elapsed'); }
   const video = current?.querySelector('video.media-asset');
   let remaining = Number(current?.dataset.time) - elapsed / 1000;
   if (cfg?.advance === 'ended' && video && Number.isFinite(video.duration)) remaining = video.duration - video.currentTime;
@@ -92,7 +93,8 @@ function vfMount() {
   right.append(count,$('full'),$('open-full-editor'),$('hub-player-more'));
   const more = right.querySelector('.hub-menu-items');
   for (const id of ['hub-presentations','browse-questions','qa','steps']) more.append($(id));
-  controls.append(position,left,center,right);
+  const timeBar=document.createElement('div');timeBar.id='vf-time-bar';timeBar.setAttribute('role','progressbar');timeBar.setAttribute('aria-label','Current slide time');timeBar.setAttribute('aria-valuemin','0');timeBar.setAttribute('aria-valuemax','100');timeBar.setAttribute('aria-live','off');const timeFill=document.createElement('span');timeFill.id='vf-time-fill';timeBar.append(timeFill);
+  controls.append(timeBar,position,left,center,right);
   const compact = () => {
     if (innerWidth < 640) more.append(count,$('open-full-editor'));
     else { right.prepend(count); right.insertBefore($('open-full-editor'),$('hub-player-more')); }

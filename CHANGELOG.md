@@ -2,6 +2,28 @@
 
 ## Unreleased
 
+- Add independent presenter live navigation, Follow live, deliberate Q&A resume points, elapsed time and reversible audience blackout.
+
+- Add private numbered List/Grid browsing, local title/text/notes search with literal excerpts, and bounded script-free slide thumbnails in Presenter View (#205).
+
+- Add immutable Presenter View sessions with private notes/browsing, sanitized audience windows, source-validated message channels and explicit live commits (#204).
+
+- Restore the animated per-slide time line, enabled by default with an independent Show slide time bar option; keep seconds and deck position separate (#203).
+
+- Add an independent Show slide timer preference, enabled for both presets and narrow screens; preserve older viewer defaults (#203).
+
+- Add Presentation/Playback control presets, independent focus-safe auto-hide, grouped More controls and explicit portable deck defaults without changing automatic playback (#203).
+- Show inert visual thumbnails for saved My components, fitted to the complete composition with original assets preserved.
+
+- Add recognizable icon-and-label Library categories and All/Text/Shapes/Media filters that combine with category-scoped search (#210).
+- Add staged representative deck previews, explicit section/selected-slide background targets, override preservation and atomic bulk/reset operations (#216).
+
+- Add staged image readability controls and explicit title/content/divider coordinated background looks with original neutral illustration.
+- Add a local-only companion with authentic example previews, canonical guide rendering and separate stable/beta downloads.
+
+- Add a short first-presentation guide and a curated Studio, Portfolio and Newsletter companion content map.
+
+- Record v0.16 development acceptance evidence, local companion rollback and separate manual beta review checklists.
 - Add digest-verified, reproducible companion screenshot recipes and ignored before/after review candidates with provenance.
 
 - Focus the appended saved-component duplicate so keyboard Rename edits the new copy (#209).

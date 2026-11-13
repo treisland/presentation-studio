@@ -1,0 +1,2 @@
+const search=document.getElementById('guide-search');
+if(search)search.addEventListener('input',()=>{const query=search.value.toLocaleLowerCase().trim();let count=0;for(const link of document.querySelectorAll('[data-guide-title]')){link.hidden=!link.dataset.guideTitle.toLocaleLowerCase().includes(query);if(!link.hidden)count++;}document.getElementById('guide-search-status').textContent=count?'':'No matching guides. Clear search to show all guides.';});
