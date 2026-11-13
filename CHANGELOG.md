@@ -4,6 +4,8 @@
 
 - Add staged image readability controls and explicit title/content/divider coordinated background looks with original neutral illustration.
 
+- Keep decorative effects above custom bases and below content regardless of initialization order; apply the authoring JSON limit to decoded JSON, excluding bundled images (#213).
+
 - Add staged presentation/slide Theme, Solid, Gradient and Image backgrounds with complete overrides, local images, focal Fill/Fit, guarded native v4/portable-authoring v2, recovery-aware asset retention and shared offline/booth rendering (#213).
 
 - Document the proposed custom-background inheritance, layering, asset recovery and guarded native/portable format contract for maintainer review (#212).

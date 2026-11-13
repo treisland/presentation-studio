@@ -61,3 +61,9 @@ active work is replaced. Component-library format remains v1.
 
 Automated checks are distinct from manual supported-browser, screen-reader, large
 image/video performance and delivery review. This feature does not publish a beta.
+
+Decorative effects render above the custom base and below editable content even
+when enabled later; the same order is used in offline booth playback. Authoring
+ZIPs enforce the 2 MB authoring limit on decoded presentation.json bytes, separately
+from archive expansion and image-size limits. Bundled images do not consume that
+JSON budget. Oversized JSON is still rejected before active work is replaced.
