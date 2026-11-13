@@ -3,6 +3,7 @@
 ## Unreleased
 
 - Make Library Insert and saved-component Rename/Duplicate/Delete permanent labeled actions, expose save/backup/recovery controls and add explicit inline rename commit/cancel (#209).
+- Define companion guide/screenshot ownership, provenance, human review and local rollback responsibilities in contributor, agent, PR and release workflows (#193).
 
 - Define the locally reviewed companion-site architecture, canonical guide ownership, screenshot provenance and deferred publication boundary (#192).
 
