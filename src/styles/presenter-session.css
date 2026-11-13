@@ -19,3 +19,7 @@ body.pv-output.pv-blackout { background:#000!important; }
 body.pv-output.pv-blackout #stage { visibility:hidden!important; }
 #pc-controls { border-block:1px solid #8196b3; padding:12px 0; margin:12px 0; }
 #pc-follow { width:auto; margin-right:8px; }
+
+.pv-preview-navigation { display:flex; flex-wrap:wrap; gap:8px; margin:8px 0; }
+
+#pv-panel button:disabled { opacity:.5; cursor:default; }

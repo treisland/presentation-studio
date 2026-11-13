@@ -1,9 +1,13 @@
 let cbExtendBackgroundUI=null;
 let cbRefreshUI=()=>{};
+let cbPlaceUI=()=>{};
 function cbMountUI(){
   const panel=document.createElement('fieldset');panel.id='cb-panel';panel.className='cb-panel';
   panel.innerHTML='<legend>Background appearance</legend><p>Preview changes before applying. Existing slide overrides are preserved.</p><div class="cb-fields"><label>Scope<select id="cb-scope"><option value="presentation">Presentation</option><option value="slide">This slide</option></select></label><label>Settings source<select id="cb-source"><option value="inherit">Original / inherited background</option><option value="custom">Custom background</option></select></label><label>Background type<select id="cb-kind"><option value="theme">Theme</option><option value="solid">Solid</option><option value="gradient">Gradient</option><option value="image">Image</option></select></label><label data-cb-kind="solid">Color · hex or theme role<input id="cb-color" value="#10203a"></label><label data-cb-kind="gradient">First color<input id="cb-first" value="background"></label><label data-cb-kind="gradient">Second color<input id="cb-second" value="accent"></label><label data-cb-kind="gradient">Angle<input id="cb-angle" type="number" min="0" max="360" value="120"></label><label data-cb-kind="image">Image from this project<select id="cb-asset"></select></label><label data-cb-kind="image">Upload an image<input id="cb-file" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml"></label><label data-cb-kind="image">Image sizing<select id="cb-fit"><option value="fill">Fill · crop edges</option><option value="fit">Fit · show entire image</option></select></label><label data-cb-kind="image">Horizontal focal point (%)<input id="cb-x" type="number" min="0" max="100" value="50"></label><label data-cb-kind="image">Vertical focal point (%)<input id="cb-y" type="number" min="0" max="100" value="50"></label><label data-cb-kind="image">Fallback color · hex or theme role<input id="cb-fallback" value="background"></label><label data-cb-kind="image">Overlay color · hex or theme role<input id="cb-overlay-color" value="ink"></label><label data-cb-kind="image">Overlay opacity (%)<input id="cb-overlay-opacity" type="number" min="0" max="100" value="0"></label><label data-cb-kind="image">Protect text area<select id="cb-protect"><option value="off">Off</option><option value="left">Left · fade toward right</option><option value="right">Right · fade toward left</option></select></label></div><fieldset class="cb-looks"><legend>Coordinated looks</legend><label>Look<select id="cb-look"><option value="theme">Theme blend</option><option value="horizon">Quiet horizon · original illustration</option></select></label><label>Composition<select id="cb-composition"><option value="title">Title · quiet left</option><option value="text-left">Content · text left</option><option value="text-right">Content · text right</option><option value="divider">Divider · centered</option></select></label><button id="cb-use-look">Preview selected look</button><p>The selected composition applies to the current scope only. Content is never analyzed, moved or recolored. Choose the variant that matches your layout.</p></fieldset><p>Check text, code and tables at playback size. Overlays and quiet areas can help contrast but cannot guarantee readability or accessibility on textured images.</p><p id="cb-image-info" role="status"></p><p id="cb-inheritance"></p><div id="cb-preview" class="cb-preview" aria-label="Staged background preview"></div><div class="cb-actions"><button id="cb-start">Start from presentation background</button><button id="cb-reset">Reset to original / inheritance</button><button id="cb-cancel">Cancel changes</button><button id="cb-apply">Apply background</button></div><p id="cb-status" role="status"></p>';
+  const section=document.createElement('details');section.id='cb-inspector-background';section.className='ids-section';const summary=document.createElement('summary');summary.textContent='Background';const host=document.createElement('div');host.id='cb-inspector-host';section.append(summary,host);$('ic-slide-fields').append(section);idsRegister(section);
   $('fe-background-panel').prepend(panel);
+  cbPlaceUI=()=>{const inSettings=$('we-settings').open,target=inSettings?$('fe-background-panel'):host;if(panel.parentElement===target)return;target.prepend(panel);panel.classList.toggle('cb-in-inspector',!inSettings);$('cb-scope').closest('label').hidden=!inSettings;$('cb-scope').value=inSettings?'presentation':'slide';state.identity='';state.dirty=false;load();};
+  section.addEventListener('toggle',()=>{if(section.open){cbPlaceUI();cbRefreshUI();}});
   const state={identity:'',revision:0,selected:'',project:'',dirty:false,uploadEpoch:0,uploads:new Map(),root:null,controller:null};
   let bulk=null;
   function dispose(){bulk?.dispose();imageInfoEpoch++;imageInfoKey='';state.uploadEpoch++;state.controller?.dispose();state.controller=null;state.root=null;for(const resource of state.uploads.values())URL.revokeObjectURL(resource.url);state.uploads.clear();}
@@ -35,6 +39,7 @@ function cbMountUI(){
   }
   function paint(){
     imageInfo();
+    const inline=panel.parentElement===host;panel.querySelector(':scope > p').textContent=inline?'Applies to this slide only. Preview, then Apply; other slides and the presentation default stay unchanged.':'Preview changes before applying. Existing slide overrides are preserved.';$('cb-apply').textContent=inline?'Apply to this slide':'Apply background';$('cb-source').options[0].textContent=inline?'Use presentation background':'Original / inherited background';$('cb-source').options[1].textContent=inline?'Custom background for this slide':'Custom background';
     for(const node of panel.querySelectorAll('[data-cb-kind]'))node.hidden=node.dataset.cbKind!==$('cb-kind').value||$('cb-source').value==='inherit';
     $('cb-kind').disabled=$('cb-source').value==='inherit';
     $('cb-start').hidden=$('cb-scope').value!=='slide';
@@ -104,11 +109,11 @@ function cbMountUI(){
     }catch(error){$('cb-status').textContent=error.message;}
   };
   new ResizeObserver(()=>{if(state.root)state.root.style.transform=`scale($('cb-preview').clientWidth/1920)`;}).observe($('cb-preview'));
-  cbRefreshUI=()=>{if(!$('full-editor').open||!panel.checkVisibility())return;const identity=JSON.stringify([projectMeta.id,projectSelected,$('cb-scope').value]);if(!state.root||identity!==state.identity&&!state.dirty)load();else paint();};
-  const shortcut=componentButton('Edit slide background…',()=>{weOpenSettings('background');$('cb-scope').value='slide';load();panel.scrollIntoView({block:'start'});});
-  shortcut.id='cb-slide-open';$('ic-slide-fields').append(shortcut);
+  cbRefreshUI=()=>{if(!$('full-editor').open||!panel.checkVisibility())return;const identity=JSON.stringify([projectMeta.id,projectSelected,$('cb-scope').value]);const changed=identity!==state.identity||state.revision!==editingRevision();if(!state.root||changed&&(!state.dirty||identity!==state.identity&&panel.parentElement===host))load();else paint();};
+  $('we-settings').addEventListener('close',()=>{cbPlaceUI();cbRefreshUI();});
   $('full-editor').addEventListener('close',()=>{dispose();state.identity='';});
   bulk=cbExtendBackgroundUI?.({panel,state,read,fill,paint,load});
+  cbPlaceUI();
   load();
 }
 const cbUIInit=projectInit;
@@ -116,6 +121,8 @@ projectInit=function(...args){const result=cbUIInit(...args);cbMountUI();return 
 const cbUIForm=projectForm;
 projectForm=function(...args){const result=cbUIForm(...args);cbRefreshUI();return result;};
 const cbUISettings=weOpenSettings;
-weOpenSettings=function(...args){const result=cbUISettings(...args);cbRefreshUI();return result;};
+weOpenSettings=function(...args){const result=cbUISettings(...args);cbPlaceUI();cbRefreshUI();return result;};
+const cbUICloseSettings=weCloseSettings;
+weCloseSettings=function(...args){const result=cbUICloseSettings(...args);cbPlaceUI();cbRefreshUI();return result;};
 const cbUITab=projectSelectTab;
-projectSelectTab=function(...args){const result=cbUITab(...args);cbRefreshUI();return result;};
+projectSelectTab=function(...args){const result=cbUITab(...args);cbPlaceUI();cbRefreshUI();return result;};

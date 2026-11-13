@@ -6,7 +6,7 @@ status appears only after the audience completes its per-window handshake.
 
 LIVE identifies the last acknowledged audience slide. Browse slides privately in
 the separate silent preview and read its speaker notes. Browsing, Return preview
-to live and closing this panel do not change the audience. Present this slide commits the selected preview. Previous/Next live advance from
+to live and closing this panel do not change the audience. Present this slide or a deliberate double-click on a slide commits the selected preview. Previous/Next live advance from
 LIVE, independently of private browsing. Play/Pause controls audience playback. The
 initial session and an explicitly reopened audience start paused.
 
@@ -89,3 +89,24 @@ starting playback. It starts from the current viewer preferences and persists fo
 explicit audience reconnects. Classic shows passive on-slide title/count, time line
 and segmented progress; its segments cannot navigate or receive keyboard focus in
 the audience. The private LIVE preview follows footer-style changes.
+
+
+## Preview navigation and double-click presentation
+
+Use **Previous slide** and **Next slide** beside PRIVATE PREVIEW to browse the
+visible snapshot in presentation order. These buttons change only the private
+preview and its notes; they stop at the first/last slide. **Previous audience
+slide** and **Next audience slide** remain separate live actions and use the
+audience's current loop, even while you browse privately.
+
+Single-click a List/Grid card to preview privately. Double-click a card, or the
+large private preview, to present it to the audience. This is an explicit live
+change, equivalent to **Present this slide**. Keyboard users can select a card
+with Enter and use Present this slide; double-click is never required. Search
+and changing List/Grid remain private. A disconnected audience still requires
+an explicit reopen before a slide can be presented.
+
+Affected companion scenes for future development/beta capture: editor-overview
+(slide Background section). The current companion's stable-v0.11.0 images remain
+accurate for that immutable artifact. Presenter navigation screenshots are local
+review candidates, not published stable claims.

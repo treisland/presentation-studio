@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Add direct slide Background controls to the Inspector with exact single-slide apply, inherited/reset status and the shared staged editor.
+- Add private Presenter Previous/Next controls and explicit double-click-to-present on List/Grid cards and the large preview; label audience navigation separately.
+
 - Reconcile merged v0.16 implementation with the remaining acceptance checklist and record maintainer footer sign-off; companion publishing remains local-only.
 
 - Support optional Classic/Modern/Hidden slide footers, including a passive classic audience footer and portable offline playback defaults.

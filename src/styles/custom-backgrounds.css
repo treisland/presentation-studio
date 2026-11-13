@@ -31,3 +31,15 @@
 .cb-sample-preview > .me-preview-stage { transform-origin:top left; }
 .cb-sample-preview * { animation:none!important; transition:none!important; }
 @media(max-width:700px){.cb-samples{grid-template-columns:1fr;}}
+
+/* One editor moves between slide Inspector and presentation settings; no duplicate IDs. */
+#cb-inspector-background { margin-top:12px; }
+#cb-inspector-background > summary { cursor:pointer; font-weight:600; padding:10px; }
+#cb-inspector-host .cb-panel { min-width:0; margin:8px 0; padding:8px; }
+#cb-inspector-host .cb-fields { grid-template-columns:minmax(0,1fr); }
+#cb-inspector-host .cb-fields > label[hidden],#cb-inspector-host .cb-bulk { display:none; }
+#cb-inspector-host .cb-looks { display:block; }
+#cb-inspector-host input,#cb-inspector-host select { width:100%; }
+#cb-inspector-host .cb-actions button { white-space:normal; }
+
+.cb-panel [hidden] { display:none!important; }

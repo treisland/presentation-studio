@@ -1,6 +1,14 @@
 # Custom backgrounds
 
-In Project settings → Background, choose Presentation or This slide, then a custom
+For one slide, select it, choose **Inspector > Content > Background**, then
+**Custom background for this slide**. Preview a Theme, Solid, Gradient or Image,
+then **Apply to this slide**. This does not change the presentation default or
+other slides. Reset restores inheritance; Cancel discards staged changes. Moving
+to another slide discards the uncommitted preview and loads that slide's settings.
+
+For presentation defaults or section/selected-slide bulk work, use
+Project settings > Background. It uses the same background editor, with explicit
+scope and override-preservation controls. Choose Presentation or This slide, then a custom
 Theme, Solid, Gradient or Image background. Theme follows the existing deck theme;
 solid/gradient colors accept six-digit hex values or bounded theme roles such as
 background, ink, accent, secondary and muted. Explicit colors stay explicit when the
@@ -89,3 +97,8 @@ deleted-target changes require cancelling to refresh review. Cancel changes noth
 Reset all slide backgrounds is a separate confirmed action that restores original
 background inheritance across the entire presentation in one Undo step. Undo/history
 continue retaining original image assets.
+
+Inspector and project settings share one editor; they do not keep conflicting
+copies of staged fields. Opening project settings starts at Presentation scope;
+returning to the canvas restores This slide scope. Existing background media can
+still cover a custom layer; inspect that media when a saved background is obscured.
