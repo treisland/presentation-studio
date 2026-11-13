@@ -3,6 +3,7 @@
 ## Unreleased
 
 - Record v0.16 development acceptance evidence, local companion rollback and separate manual beta review checklists.
+- Add digest-verified, reproducible companion screenshot recipes and ignored before/after review candidates with provenance.
 
 - Focus the appended saved-component duplicate so keyboard Rename edits the new copy (#209).
 
