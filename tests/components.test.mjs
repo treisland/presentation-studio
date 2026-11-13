@@ -56,12 +56,12 @@ test('grouped image library transfer remaps media and preserves offline editable
     const created=await operations(page,[{type:'block.create',slideId:slideID,kind:'callout',placement:{x:.1,y:.2,w:.3,h:.3}}]);assert.equal(created.ok,true);
     assert.equal((await operations(page,[{type:'component.group',slideId:slideID,keys:[created.created[0],'media-primary']}])).ok,true);
     await page.locator('#wp-tab-layers').click();await page.locator('.sp-layer-row[data-key="'+created.created[0]+'"] button').first().click();
-    await page.locator('#component-open').click();await page.locator('#component-save-panel > summary').click();await page.locator('#component-name').fill('Card and image');await page.locator('#component-save').click();await page.locator('#component-manage > summary').click();
+    await page.locator('#component-open').click();await page.locator('#component-name').fill('Card and image');await page.locator('#component-save').click();
     const downloadEvent=page.waitForEvent('download');await page.locator('#component-export').click();const bytes=await readFile(await(await downloadEvent).path());
     const library=JSON.parse(bytes);assert.equal(Object.keys(library.items[0].assets).length,1);
     const {page:clean,errors:cleanErrors}=await openExample(browser,'portfolio-demo');
     try {
-      await clean.context().setOffline(true);await clean.locator('#component-open').click();await clean.locator('#component-manage > summary').click();await clean.locator('#component-import').setInputFiles({name:'library.json',mimeType:'application/json',buffer:bytes});await clean.getByRole('tab',{name:'My components',exact:true}).click();await clean.getByRole('button',{name:'Insert Card and image',exact:true}).click();
+      await clean.context().setOffline(true);await clean.locator('#component-open').click();await clean.locator('#component-import').setInputFiles({name:'library.json',mimeType:'application/json',buffer:bytes});await clean.getByRole('tab',{name:'My components',exact:true}).click();await clean.getByRole('button',{name:'Insert Card and image',exact:true}).click();
       const expected=await snapshot(clean),slide=expected.state.slides[0],media=expected.state.mediaObjects[slide.id].at(-1).media;assert.match(media.src,/assets\/component-/);assert.notEqual(media.src,initial.state.media[slideID].src);
       const restored=await importZip(browser,await exportZip(clean),expected.projectId);try{assert.deepEqual((await snapshot(restored)).state,expected.state);await restored.waitForFunction(()=>[...document.querySelectorAll('#fe-preview img')].every(image=>image.complete&&image.naturalWidth>0));}finally{await restored.close();}assert.deepEqual(cleanErrors,[]);
     }finally{await clean.close();}assert.deepEqual(errors,[]);
@@ -109,14 +109,14 @@ test('library exports independent copies, imports in a clean profile, and recove
   const {page,errors}=await openExample(browser,'portfolio-demo');
   try {
     await page.locator('#component-open').click();await page.getByRole('tab',{name:'Widgets',exact:true}).click();await page.getByRole('button',{name:'Insert Quote',exact:true}).click();
-    await page.locator('#component-open').click();await page.locator('#component-save-panel > summary').click();await page.locator('#component-name').fill('Reusable quote');await page.locator('#component-save').click();
-    await page.getByRole('tab',{name:'My components',exact:true}).click();assert.equal(await page.getByRole('button',{name:'Insert Reusable quote',exact:true}).count(),1);await page.locator('#component-manage > summary').click();
+    await page.locator('#component-open').click();await page.locator('#component-name').fill('Reusable quote');await page.locator('#component-save').click();
+    await page.getByRole('tab',{name:'My components',exact:true}).click();assert.equal(await page.getByRole('button',{name:'Insert Reusable quote',exact:true}).count(),1);
     const downloadEvent=page.waitForEvent('download');await page.locator('#component-export').click();const bytes=await readFile(await(await downloadEvent).path());
     await page.getByRole('button',{name:'Actions for Reusable quote',exact:true}).click();await page.getByRole('menuitem',{name:'Delete saved component',exact:true}).click();assert.equal(await page.getByRole('button',{name:'Insert Reusable quote',exact:true}).count(),0);
     await page.locator('#component-restore').click();await page.getByRole('button',{name:'Insert Reusable quote',exact:true}).click();
     const copies=(await snapshot(page)).state.slides[0].tree.filter(node=>node.attrs?.class?.includes('component-quote'));assert.equal(copies.length,2);assert.notEqual(blockID(copies[0]),blockID(copies[1]));
     const {page:clean,errors:cleanErrors}=await openExample(browser,'portfolio-demo');
-    try {await clean.locator('#component-open').click();await clean.locator('#component-manage > summary').click();await clean.locator('#component-import').setInputFiles({name:'library.json',mimeType:'application/json',buffer:bytes});await clean.getByRole('tab',{name:'My components',exact:true}).click();await clean.getByRole('button',{name:'Insert Reusable quote',exact:true}).click();assert.equal(await clean.locator('#fe-preview .component-quote').count(),1);assert.deepEqual(cleanErrors,[]);}finally{await clean.close();}
+    try {await clean.locator('#component-open').click();await clean.locator('#component-import').setInputFiles({name:'library.json',mimeType:'application/json',buffer:bytes});await clean.getByRole('tab',{name:'My components',exact:true}).click();await clean.getByRole('button',{name:'Insert Reusable quote',exact:true}).click();assert.equal(await clean.locator('#fe-preview .component-quote').count(),1);assert.deepEqual(cleanErrors,[]);}finally{await clean.close();}
     assert.deepEqual(errors,[]);
   } finally {await page.close();}
 });
