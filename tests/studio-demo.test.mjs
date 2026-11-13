@@ -1,3 +1,4 @@
+import {chooseViewerSlide} from './ui.mjs';
 import {selectStartingExample} from './ui.mjs';
 import { selectTab } from './ui.mjs';
 import {legacyHTML} from './legacy-fixture.mjs';
@@ -64,7 +65,7 @@ test("generic demo is offline, fits both viewports, and exports its bundled imag
     ]) {
       await page.setViewportSize(size);
       for (let i = 0; i < 7; i++) {
-        await page.locator(".dot").nth(i).click();
+        await chooseViewerSlide(page,i);
         await page.waitForTimeout(450);
         const overflow = await page
           .locator("#stage .slide.active")
@@ -102,14 +103,14 @@ test("generic demo is offline, fits both viewports, and exports its bundled imag
       !(await page.locator(".section-options").innerText()).includes("legacy"),
     );
     await page.locator('[data-deck="studio-demonstration"]').click();
-    await page.locator(".dot").nth(2).click();
+    await chooseViewerSlide(page,2);
     await page.waitForFunction(
       () =>
         document.querySelector("#stage .slide.active .media-asset")
           ?.naturalWidth > 0,
     );
     await page.keyboard.press("q");
-    await page.locator("#browse-questions").click();
+    await click(page,'#browse-questions');
     assert.equal(await page.locator(".question-option").count(), 1);
     await page.locator("#questions-close").click();
     await page.locator("#open-full-editor").click();
@@ -139,7 +140,7 @@ test("generic demo is offline, fits both viewports, and exports its bundled imag
     await reopened.goto("file://" + resolve(folder, "index.html"));
     await reopened.locator("#menu").click();
     await reopened.locator('[data-deck="studio-demonstration"]').click();
-    await reopened.locator(".dot").nth(2).click();
+    await chooseViewerSlide(reopened,2);
     await reopened.waitForFunction(
       () =>
         document.querySelector("#stage .slide.active .media-asset")
@@ -176,7 +177,7 @@ test("existing legacy schema-v2 ZIP opens in generic studio and keeps its reset 
     );
     await archive.close();
     await page.goto("file://" + resolve(root, "dist/presentation-studio.html"));
-    await page.locator("#hub-presentations").click();
+    await click(page,'#hub-presentations');
     await page.locator("#hub-file").setInputFiles(file);
     await page.locator("#hub-picker").waitFor({ state: "hidden" });
     await page.locator("#open-full-editor").click();
@@ -195,12 +196,12 @@ test("existing legacy schema-v2 ZIP opens in generic studio and keeps its reset 
     await page.locator("#fe-close").click();
     await page.locator("#menu").click();
     await page.locator('[data-deck="qa"]').click();
-    await page.locator("#browse-questions").click();
+    await click(page,'#browse-questions');
     assert.equal(await page.locator(".question-option").count(), 1);
     await page.locator("#questions-close").click();
     await page.locator("#menu").click();
     await page.locator('[data-deck="remqa"]').click();
-    await page.locator("#browse-questions").click();
+    await click(page,'#browse-questions');
     assert.equal(await page.locator(".question-option").count(), 1);
     await page.locator("#questions-close").click();
     await page.locator("#open-full-editor").click();

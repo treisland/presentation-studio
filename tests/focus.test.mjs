@@ -1,3 +1,4 @@
+import {chooseViewerSlide} from './ui.mjs';
 import { selectTab } from './ui.mjs';
 import { waitForVideo } from './media-diagnostics.mjs';
 import test from 'node:test';
@@ -38,7 +39,7 @@ test('Focus pauses advancement, preserves image identity, zooms, and returns in 
 test('Live focus fills canvas, restores pause, respects settings and reduced motion',async()=>{const {p,errors}=await setup();try{
  await p.locator('#fe-close').click();
  // Selecting a slide in the editor does not navigate the live deck.
- await p.locator('#stage .dot').nth(4).click();
+ await chooseViewerSlide(p,4);
  await p.locator('#stage .slide.active .mf-expand').press('Enter');await opened(p);
  const size=await p.locator('#media-focus .mf-focused').evaluate(el=>{const a=el.getBoundingClientRect(),b=document.querySelector('#stage').getBoundingClientRect();return a.width/b.width;});assert(size>.9);
  await p.keyboard.press('ArrowRight');assert.equal(await p.locator('#media-focus').count(),1);
@@ -61,7 +62,7 @@ test('Video keeps its element, position, and user pause decision through focus',
  assert.deepEqual(errors,[]);
  }finally{await p.close();}});
 test('Active playback resumes after focus, reduced motion and repeated close are safe',async()=>{const {p,errors}=await setup();try{
- await p.emulateMedia({reducedMotion:'reduce'});await p.locator('#fe-close').click();await p.locator('#stage .dot').nth(4).click();await p.locator('#play').click();
+ await p.emulateMedia({reducedMotion:'reduce'});await p.locator('#fe-close').click();await chooseViewerSlide(p,4);await p.locator('#play').click();
  await p.locator('#stage .slide.active .mf-expand').press('Enter');await opened(p);assert.equal(await p.locator('#play').textContent(),'Play');
  const before=await p.locator('#stage .slide.active').getAttribute('data-media-id');await p.waitForTimeout(300);assert.equal(await p.locator('#stage .slide.active').getAttribute('data-media-id'),before);
  await p.keyboard.press('Escape');await p.waitForSelector('#media-focus',{state:'detached'});assert.equal(await p.locator('#play').textContent(),'Pause');

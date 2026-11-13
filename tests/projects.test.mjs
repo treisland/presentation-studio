@@ -67,7 +67,7 @@ async function picker(page) {
   if (!(await page.locator("#hub-picker").isVisible())) {
     if (await page.locator("#full-editor").isVisible())
       await click(page, "#hub-editor-projects");
-    else await page.locator("#hub-presentations").click();
+    else await click(page,'#hub-presentations');
   }
   await page.waitForFunction(
     () =>
@@ -101,7 +101,7 @@ test("compact controls and recent drafts support safe switching, duplication, ba
   page.on("pageerror", (e) => errors.push(e.message));
   try {
     await page.goto("file://" + resolve(root, "dist/presentation-studio.html"));
-    assert.equal(await page.locator("#controls>button:visible").count(), 7);
+    assert.equal(await page.locator("#controls .vf-center > button:visible").count(), 3);
     await page.locator("#open-full-editor").click();
     assert.equal(
       await page.locator(".fe-top-actions>button:visible").count(),

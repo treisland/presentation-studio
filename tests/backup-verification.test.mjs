@@ -86,7 +86,7 @@ test('verification preserves active project, undo, local drafts and backup statu
     const restored = await browser.newPage({ acceptDownloads: true });
     try {
       await restored.goto('file://' + resolve('dist/presentation-studio-blank.html'));
-      await restored.locator('#hub-presentations').click();
+      await click(restored,'#hub-presentations');
       await restored.locator('#hub-file').setInputFiles({ name: 'restore.zip', mimeType: 'application/zip', buffer: Buffer.from(bytes) });
       await restored.waitForFunction(() => document.querySelector('#fe-status').dataset.saveState === 'saved' && document.querySelector('#fe-title').textContent === 'From idea to presentation');
       await restored.locator('#open-full-editor').click();
