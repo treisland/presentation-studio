@@ -80,7 +80,7 @@ For a localhost preview, run `npm run serve`, then open `http://127.0.0.1:4173`.
 
 [Quick start](docs/quick-start.md) · [Architecture](docs/architecture.md) · [Contributing](CONTRIBUTING.md) · [Content and branding](docs/content-and-branding.md) · [Open-source release](docs/open-source-release.md) · [Roadmap](docs/roadmap.md) · [Troubleshooting](docs/troubleshooting.md)
 
-Version 0.16.0-beta.1. Beta for switchable presentation bars, private Presenter View, Library improvements and custom backgrounds. See the [release notes](docs/releases/0.16.0-beta.1.md), [validation record](docs/releases/0.16.0-beta.1-validation.md) and [known issues](docs/known-issues.md). Released under the [Apache License 2.0](LICENSE).
+Version 0.16.0. Official release for switchable presentation bars, private Presenter View, Library improvements and custom backgrounds. See the [release notes](docs/releases/0.16.0.md), [validation record](docs/releases/0.16.0-validation.md) and [known issues](docs/known-issues.md). Released under the [Apache License 2.0](LICENSE).
 
 ## Development process
 
