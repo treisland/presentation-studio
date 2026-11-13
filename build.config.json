@@ -37,7 +37,8 @@
     "src/styles/custom-backgrounds.css",
     "src/styles/viewer-footer.css",
     "src/styles/library-actions.css",
-    "src/styles/library-navigation.css"
+    "src/styles/library-navigation.css",
+    "src/styles/component-thumbnails.css"
   ],
   "scripts": [
     "src/runtime/prelude.js",
@@ -111,6 +112,7 @@
     "src/runtime/viewer-footer.js",
     "src/runtime/library-actions.js",
     "src/runtime/library-navigation.js",
+    "src/runtime/component-thumbnails.js",
     "src/runtime/boot.js"
   ],
   "vendor": "vendor/jszip-3.10.1.min.js"

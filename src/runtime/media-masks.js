@@ -55,7 +55,7 @@ function maskEntries(state,slide){
 }
 function maskAppearance(style={},palette){return {...(style.fill!=null?{fill:spCSS(style.fill,palette)}:{}),...(style.border!=null?{border:spCSS(style.border,palette)}:{}),...(style.borderWidth!=null?{width:style.borderWidth}:{})};}
 const maskApply=spApply;
-spApply=function(slide,...args){const result=maskApply(slide,...args),model=projectReady&&projectModel(slide.dataset.mediaId);if(model)for(const entry of maskEntries(projectState,model))if(entry.meta.frame)mediaMaskPaint(spElement(slide,entry),entry.meta.frame,maskAppearance(entry.meta.style,args[0]));return result;};
+spApply=function(slide,palette,state=projectState){const result=maskApply(slide,palette,state),model=projectReady&&(slide.studioPreviewModel||projectModel(slide.dataset.mediaId));if(model)for(const entry of maskEntries(state,model))if(entry.meta.frame)mediaMaskPaint(spElement(slide,entry),entry.meta.frame,maskAppearance(entry.meta.style,palette));return result;};
 let maskReady=false,maskIdentity='',maskTarget='',maskSnapshot=null,maskDraft=null,maskContext='';
 const maskDefault=()=>({shape:'rectangle',fit:'cover',zoom:100,x:50,y:50,radius:12,padding:0,shadow:'none'});
 function maskRead(){return maskSettings({shape:$('mask-shape').value,fit:$('mask-fit').value,shadow:$('mask-shadow').value,...Object.fromEntries(['zoom','x','y','radius','padding'].map(key=>[key,Number($('mask-'+key).value)]))});}
