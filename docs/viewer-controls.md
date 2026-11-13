@@ -1,8 +1,9 @@
 # Presentation controls
 
 The viewer uses one viewport footer: slide title and Sections/Slides navigation,
-Previous/Play/Next, slide count, Fullscreen, Edit and More. The thin line above it
-means position in the active section or loop. A separate seconds indicator shows
+Previous/Play/Next, slide count, Fullscreen, Edit and More. The animated blue line above it shows time elapsed on the current slide, matching
+the previous release. It freezes when paused and resets on slide changes. The
+separate line below the footer means position in the active section or loop. A separate seconds indicator shows
 remaining time only during timed advancement. It is not a second deck-position bar.
 
 Sections appears when two or more named, nonempty visible sections exist;
@@ -47,3 +48,8 @@ In Project settings → Presentation settings, explicitly save the current viewe
 portable deck defaults, or restore legacy defaults. These changes respect locks and Undo,
 survive recovery/editable/playback/booth export, and do not change presentation content.
 Older editors use legacy controls and may omit these optional UI preferences when saving.
+
+**Show slide time bar** restores the animated per-slide line and is enabled by
+default, including older saved viewer defaults. It follows the existing slide/video
+playback clock. It is independent of Show timer seconds, Show deck position and
+control presets. Hiding any indicator does not alter playback or slide durations.

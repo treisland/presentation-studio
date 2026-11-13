@@ -38,3 +38,9 @@ body.editor-dark #controls.vf-footer .hub-menu-items :is(button,summary):hover {
 @media(prefers-color-scheme:dark){body:not(.project-light) #controls.vf-footer .hub-menu-items { background:#152238; color:#eaf2ff; border-color:#4b607d; } body:not(.project-light) #controls.vf-footer .hub-menu-items :is(button,summary):hover { background:#2b4261; color:#fff; }}
 @media(max-width:375px){#controls.vf-footer button,#controls.vf-footer summary { padding:8px 6px; } .vf-left,.vf-center,.vf-right { gap:3px; }}
 @media(forced-colors:active){body #controls.vf-footer .hub-menu-items { background:Canvas; color:CanvasText; border-color:CanvasText; }}
+
+/* The original per-slide elapsed-time animation remains distinct from deck position. */
+#vf-time-bar { position:absolute;left:0;right:0;top:0;height:3px;background:#cbd5e4;overflow:hidden; }
+#vf-time-fill { display:block;height:100%;width:0;background:#0066ff; }
+#vf-position { top:auto;bottom:0;height:2px; }
+@media(forced-colors:active){#vf-time-fill { background:Highlight; }}

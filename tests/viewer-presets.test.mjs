@@ -7,7 +7,7 @@ import {chromium} from 'playwright';
 import {openExample,snapshot,operations,exportZip,importZip} from './collection-ui.mjs';
 import {selectTab} from './ui.mjs';
 const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH,args:['--no-sandbox']});test.after(()=>browser.close());
-const defaults={version:1,preset:'presentation',autoHide:false,showNotes:true,showProgress:false,showCount:false,showTimer:true};
+const defaults={version:1,preset:'presentation',autoHide:false,showNotes:true,showProgress:false,showCount:false,showTimer:true,showTimeBar:true};
 const zipContext={setImmediate,clearImmediate,setTimeout,clearTimeout,Uint8Array,ArrayBuffer,TextEncoder,TextDecoder};vm.runInNewContext(await readFile('vendor/jszip-3.10.1.min.js','utf8'),zipContext);
 async function viewer(){const page=await browser.newPage({viewport:{width:1366,height:768}}),errors=[];page.on('pageerror',e=>errors.push(e.message));await page.goto('file://'+resolve('dist/presentation-studio.html'));return{page,errors};}
 test('Presentation preset changes controls without changing automatic playback or project data',async()=>{
@@ -24,7 +24,7 @@ test('auto-hide is independent of Kiosk and pinned by open menus or keyboard foc
  const {page,errors}=await viewer();try{
   await page.locator('#hub-player-more > summary').click();await page.locator('#vc-autoHide').check();
   await page.waitForTimeout(3200);assert.equal(await page.locator('body').evaluate(n=>n.classList.contains('idle')),false);
-  await page.locator('#hub-player-more > summary').click();await page.mouse.click(5,5);await page.mouse.move(5,5);
+  await page.locator('#hub-player-more > summary').click();await page.locator('#hub-player-more > summary').blur();await page.mouse.move(5,5);assert.equal(await page.locator('#controls').evaluate(n=>n.contains(document.activeElement)),false);
   await page.waitForFunction(()=>document.body.classList.contains('idle'),{},{timeout:6000});
   assert.equal(await page.locator('#kiosk').textContent(),'Kiosk');
   await page.locator('#next').focus();assert.equal(await page.locator('body').evaluate(n=>n.classList.contains('idle')),false);
@@ -69,5 +69,11 @@ test('slide timer stays independent of presets and narrow screens without changi
 });
 
 test('older authored viewer defaults gain the visible timer and reject malformed timer values',async()=>{
- const {page,errors}=await openExample(browser,'template');try{const before=await snapshot(page),slideId=before.state.slides[0].id;const legacy={...defaults};delete legacy.showTimer;assert.equal((await operations(page,[{type:'viewer.defaults',slideId,config:legacy}])).ok,true);assert.equal((await snapshot(page)).state.viewerDefaults.showTimer,true);const saved=await snapshot(page);assert.equal((await operations(page,[{type:'viewer.defaults',slideId,config:{...defaults,showTimer:'yes'}}])).ok,false);assert.deepEqual((await snapshot(page)).state,saved.state);assert.deepEqual(errors,[]);}finally{await page.close();}
+ const {page,errors}=await openExample(browser,'template');try{const before=await snapshot(page),slideId=before.state.slides[0].id;const legacy={...defaults};delete legacy.showTimer;delete legacy.showTimeBar;assert.equal((await operations(page,[{type:'viewer.defaults',slideId,config:legacy}])).ok,true);assert.equal((await snapshot(page)).state.viewerDefaults.showTimer,true);assert.equal((await snapshot(page)).state.viewerDefaults.showTimeBar,true);const saved=await snapshot(page);assert.equal((await operations(page,[{type:'viewer.defaults',slideId,config:{...defaults,showTimer:'yes'}}])).ok,false);assert.deepEqual((await snapshot(page)).state,saved.state);assert.deepEqual(errors,[]);}finally{await page.close();}
+});
+
+test('original animated slide-time line advances, pauses and resets independently of other indicators',async()=>{
+ const {page,errors}=await viewer();try{await page.waitForFunction(()=>parseFloat(document.getElementById('vf-time-fill').style.width)>1);assert.equal(await page.locator('#vf-time-bar').isVisible(),true);await page.locator('#play').click();const width=await page.locator('#vf-time-fill').evaluate(n=>n.style.width);await page.waitForTimeout(250);assert.equal(await page.locator('#vf-time-fill').evaluate(n=>n.style.width),width);assert.equal(await page.locator('#vf-time-fill').evaluate(n=>n.style.width),await page.locator('#fill').evaluate(n=>n.style.width));await page.locator('#next').click();assert.equal(await page.locator('#vf-time-fill').evaluate(n=>parseFloat(n.style.width)),0);
+  await page.locator('#hub-player-more > summary').click();await page.locator('#vc-showTimer').uncheck();assert.equal(await page.locator('#vf-time-bar').isVisible(),true);await page.locator('#vc-showTimeBar').uncheck();assert.equal(await page.locator('#vf-time-bar').isVisible(),false);assert.equal(await page.locator('#vf-position').isVisible(),true);await page.locator('#vc-preset').selectOption('presentation');assert.equal(await page.locator('#vf-time-bar').isVisible(),false);await page.locator('#vc-showTimeBar').check();assert.equal(await page.locator('#vf-time-bar').isVisible(),true);assert.equal(await page.locator('body').evaluate(n=>n.classList.contains('paused')),true);assert.deepEqual(errors,[]);
+ }finally{await page.close();}
 });

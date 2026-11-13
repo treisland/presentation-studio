@@ -2,7 +2,7 @@
 
 Issue #203. Optional `state.viewerDefaults` contains only version 1, preset
 (`presentation`/`playback`), autoHide, showNotes, showProgress and showCount (booleans).
-Optional showTimer is a boolean that defaults to true when omitted, including older
+Optional showTimer and showTimeBar are booleans that default to true when omitted, including older
 authored defaults. Unknown fields/versions/types are rejected. No presentation content, media paths,
 scripts or provider settings belong in it. Authoring uses an explicit Save defaults
 transaction and respects project/slide locks, Undo, recovery and export.
@@ -27,3 +27,7 @@ reveals controls. Hover, focused controls and open menus/dialogs pin visibility;
 hidden controls remain in keyboard order and reveal on focus. Always visible turns
 auto-hide off. Session options live under grouped More controls. Playback changes
 are announced briefly, never on animation frames. Reduced motion disables fades.
+
+showTimeBar controls the original animated per-slide time line independently of
+showTimer (numeric seconds) and showProgress (deck position). All use the existing
+playback clock; hiding indicators never changes advancement.

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Restore the animated per-slide time line, enabled by default with an independent Show slide time bar option; keep seconds and deck position separate (#203).
+
 - Add an independent Show slide timer preference, enabled for both presets and narrow screens; preserve older viewer defaults (#203).
 
 - Add Presentation/Playback control presets, independent focus-safe auto-hide, grouped More controls and explicit portable deck defaults without changing automatic playback (#203).
