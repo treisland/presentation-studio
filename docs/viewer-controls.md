@@ -53,3 +53,25 @@ Older editors use legacy controls and may omit these optional UI preferences whe
 default, including older saved viewer defaults. It follows the existing slide/video
 playback clock. It is independent of Show timer seconds, Show deck position and
 control presets. Hiding any indicator does not alter playback or slide durations.
+
+
+## Classic slide footer
+
+Choose **More > Appearance and controls > Slide footer > Classic** to show the
+original title, slide count, animated time line and segmented slide progress, with
+compact floating playback controls. Modern uses the full-width viewport toolbar.
+Modern remains the default. Hidden conceals footer information; navigation and
+More remain accessible so you can restore it. Show slide time bar, Show deck
+position and Show slide count independently control the corresponding indicators.
+Authored footer/number visibility still takes precedence.
+
+In Presenter View, **Audience slide footer** switches the audience between these
+styles without changing the live slide or play/pause state. The audience receives
+only passive information; presentation controls and notes stay private. Reopening
+the audience retains the session choice. Classic is included in ordinary offline
+playback exports when explicitly saved as a portable deck default. Booth exports
+retain their permission-limited chrome rather than gaining interactive navigation.
+
+Companion scene impact: finished-playback is affected for future development/beta
+captures. Current local companion images target stable v0.11.0 and remain accurate
+for that immutable artifact; new public imagery/claim acceptance is pending.

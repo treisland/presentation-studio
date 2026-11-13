@@ -83,3 +83,9 @@ position. Restore audience restores the prior play/pause state. Reopening retain
 blackout and the saved resume point, but starts paused. End presentation is separate
 and disposes all outputs, ports, caches and session timers. Session elapsed time is
 independent of the optional per-slide time line and private search.
+
+Audience slide footer selects Modern, Classic or Hidden without navigating or
+starting playback. It starts from the current viewer preferences and persists for
+explicit audience reconnects. Classic shows passive on-slide title/count, time line
+and segmented progress; its segments cannot navigate or receive keyboard focus in
+the audience. The private LIVE preview follows footer-style changes.

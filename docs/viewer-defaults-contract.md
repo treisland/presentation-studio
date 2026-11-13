@@ -2,7 +2,7 @@
 
 Issue #203. Optional `state.viewerDefaults` contains only version 1, preset
 (`presentation`/`playback`), autoHide, showNotes, showProgress and showCount (booleans).
-Optional showTimer and showTimeBar are booleans that default to true when omitted, including older
+Optional footerStyle is modern (default), classic or hidden. Optional showTimer and showTimeBar are booleans that default to true when omitted, including older
 authored defaults. Unknown fields/versions/types are rejected. No presentation content, media paths,
 scripts or provider settings belong in it. Authoring uses an explicit Save defaults
 transaction and respects project/slide locks, Undo, recovery and export.
@@ -31,3 +31,9 @@ are announced briefly, never on animation frames. Reduced motion disables fades.
 showTimeBar controls the original animated per-slide time line independently of
 showTimer (numeric seconds) and showProgress (deck position). All use the existing
 playback clock; hiding indicators never changes advancement.
+
+Classic reuses the original on-slide title, number, animated time line and segmented
+progress. Hidden conceals footer information without removing navigation/More.
+Temporary choices remain session-only; explicit deck defaults preserve the enum
+through recovery and editable/playback exports. Older defaults fall back to Modern.
+Booth keeps its permission-limited chrome; Hidden suppresses its slide footer.
