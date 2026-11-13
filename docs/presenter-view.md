@@ -110,3 +110,69 @@ Affected companion scenes for future development/beta capture: editor-overview
 (slide Background section). The current companion's stable-v0.11.0 images remain
 accurate for that immutable artifact. Presenter navigation screenshots are local
 review candidates, not published stable claims.
+
+
+## Full-window presenter workspace
+
+Presenter View fills the app window by default; browser fullscreen is a separate,
+explicit **Fullscreen** action. **Back to editor** exits owned fullscreen and
+closes the panel while retaining the audience session. **End presentation** is
+separate and closes outputs and releases ports, previews and timers.
+
+The three desktop columns are Slides, LIVE/private preview, and Speaker notes.
+The slide browser and notes scroll independently; essential audience controls stay
+visible. Narrow windows adapt without horizontal page overflow. Secondary controls
+remain in **More**: Follow live, return-preview-to-live, Q&A detour/resume, audience
+reopen, footer style, holding settings, snapshot information and help.
+
+Normal List/Grid cards show only thumbnails, numbered titles and LIVE/PRIVATE
+PREVIEW markers. Search still indexes titles, slide text and private notes. An
+active query can show a short highlighted matching excerpt; clearing it restores
+compact cards. These excerpts are private and never travel to audience output.
+
+The notes pane has **Live / Preview** source buttons, an explicit slide/title label,
+independent scrolling, and **A− / A+** controls (18–32px; 22px initially). Preview is
+the initial source. Reading position survives status/clock updates; changing the
+notes source resets its scroll. Notes, text size and workspace state are session
+UI only, not project content or portable viewer defaults. New sessions reset them.
+
+## Blackout and optional holding screen
+
+**Blackout audience** hides the complete slide, including descendants with their
+own visibility rules. The audience viewport is entirely black; this is separate
+from changing a slide's background. It pauses media and automatic advancement.
+The private retained-live monitor and prominent output-state banner stay visible.
+
+**Show holding screen** instead displays either the built-in “We’ll be right back”
+design or a chosen visible slide from the immutable session. Configure it in
+**More > Holding screen settings**. Choosing/previewing settings does not change
+the audience; Show is explicit. Cancel or Escape closes the staged settings without
+presenting them. A missing/hidden saved slide falls back visibly to the built-in
+design for that session; no authored content is silently rewritten.
+
+Both modes retain the live slide, timer position and Q&A resume point. Private
+browsing remains available. Present, audience navigation/play and Q&A Resume are
+disabled until **Restore audience**. Restore returns the retained live content and
+its prior play/pause state. Switching between Blackout and Holding retains that
+state. Explicit audience reopen preserves the output mode but starts paused.
+
+Holding output is a static, silent public snapshot: videos become saved posters
+or placeholders, images are flattened display derivatives, and scripts, audio,
+iframes, animation and interaction are unavailable. A sandbox and restrictive CSP
+prevent scripts or remote fetching. Original media bytes are not replaced. Custom
+snapshot generation is bounded (up to 1920×1080 image derivatives, 6M image-string
+budget, 8M document characters, two cached documents and a 10-second timeout).
+Failures are actionable and retries require an explicit user action. The separate
+private-browser thumbnail budgets remain unchanged.
+
+**This session only** is the default. **Save as deck default** is deliberate and
+requires an editable, unlocked presentation and unlocked slides. It saves only the
+bounded holding-screen choice, through the existing Undo/recovery/ZIP contract;
+rendered HTML and notes never enter project state. It does not start a new content
+format or publish a release. Ordinary playback/booth exports remain separate;
+this feature does not add unrestricted holding controls to permission-limited booth
+players. Omitted holding-slide references are removed from public export settings.
+
+After this redesign, repeat real-device notes reading, touch/keyboard and screen-
+reader review, fullscreen/popup behavior and holding/blackout restore with actual
+video/OBS. Prior sign-off applies to the earlier tested build, not untested changes.

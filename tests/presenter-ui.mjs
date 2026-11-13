@@ -1,0 +1,2 @@
+// Exercise secondary Presenter controls through their visible More entry point.
+export async function presenterAction(page,id,action='click',...args){const control=page.locator('#'+id),more=page.locator('#pv-panel .pw-more');const opened=!(await control.isVisible());if(opened)await more.locator(':scope > summary').click();await control[action](...args);if(opened&&await more.evaluate(n=>n.open))await more.locator(':scope > summary').click();}

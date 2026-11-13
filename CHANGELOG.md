@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Align Presenter View to the approved full-window UX: compact title/thumbnail cards, private Live/Preview notes with text sizing, independent scrolling and persistent audience controls.
+- Correct true audience blackout and add optional static built-in/custom holding screens with retained live/timer/Q&A state, explicit Restore, session-only choice or undoable portable deck default.
+
 - Add direct slide Background controls to the Inspector with exact single-slide apply, inherited/reset status and the shared staged editor.
 - Add private Presenter Previous/Next controls and explicit double-click-to-present on List/Grid cards and the large preview; label audience navigation separately.
 

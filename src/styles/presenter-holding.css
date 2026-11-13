@@ -1,0 +1,16 @@
+body.pv-output.pv-holding > #pv-holding-output { display:block!important; position:fixed; inset:0; background:#000; z-index:1000; pointer-events:none; overflow:hidden; }
+#pv-holding-output iframe,#ph-preview iframe { position:absolute; left:50%; top:50%; width:1920px; height:1080px; transform-origin:center; border:0; pointer-events:none; }
+/* Opacity composites the entire stage, including descendants that explicitly set visibility. */
+body.pv-output:is(.pv-blackout,.pv-holding) { background:#000!important; }
+body.pv-output:is(.pv-blackout,.pv-holding) #stage { opacity:0!important; visibility:hidden!important; pointer-events:none!important; }
+#ph-banner { background:#543c08; color:#fff2bf; padding:12px 18px; font-weight:bold; margin:0; }
+#ph-settings { border:1px solid #8196b3; border-radius:8px; padding:12px; margin:12px 0; }
+#ph-settings > summary { cursor:pointer; font-weight:bold; padding:8px; }
+#ph-settings label { display:block; margin:12px 0; }
+#ph-settings select { width:100%; }
+#ph-settings input { width:auto; }
+#ph-preview { position:relative; aspect-ratio:16/9; max-width:600px; overflow:hidden; background:#000; border-radius:8px; }
+#ph-renderer { position:fixed; left:-10000px; top:0; width:1920px; height:1080px; pointer-events:none; }
+#ph-renderer iframe { width:1920px; height:1080px; border:0; }
+#pv-panel [hidden] { display:none!important; }
+#ph-restore { background:#005ce6; color:white; }
