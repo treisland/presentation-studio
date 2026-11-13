@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add digest-verified, reproducible companion screenshot recipes and ignored before/after review candidates with provenance.
+
 - Focus the appended saved-component duplicate so keyboard Rename edits the new copy (#209).
 
 - Make Library Insert and saved-component Rename/Duplicate/Delete permanent labeled actions, expose save/backup/recovery controls and add explicit inline rename commit/cancel (#209).

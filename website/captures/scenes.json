@@ -1,0 +1,7 @@
+[
+  {"id":"editor-overview","alt":"Presentation Studio editor with slide navigation, editable canvas and inspector.","fixture":"Bundled original Studio demo, first slide; clean browser profile.","consumers":["home","first-presentation"]},
+  {"id":"examples-gallery","alt":"Studio’s original example collection with editable starters and finished demos.","fixture":"Bundled original examples gallery; no imported customer content.","consumers":["examples"]},
+  {"id":"finished-playback","alt":"The first slide of the original Studio demo in paused playback.","fixture":"Bundled original Studio demo, first slide, paused at zero elapsed time.","consumers":["home","present-offline"]},
+  {"id":"media-focus","alt":"Media Focus showing an original media asset.","fixture":"Deferred until a selected promoted artifact and original media fixture are reviewed.","consumers":["media"]},
+  {"id":"ai-import-preview","alt":"Portable AI authoring import preview before applying a project.","fixture":"Deferred until a selected promoted artifact and validated original authoring fixture are reviewed.","consumers":["portable-ai"]}
+]
