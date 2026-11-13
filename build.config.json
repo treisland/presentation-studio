@@ -35,7 +35,8 @@
     "src/styles/media-inspector.css",
     "src/styles/context-menu.css",
     "src/styles/library-actions.css",
-    "src/styles/library-navigation.css"
+    "src/styles/library-navigation.css",
+    "src/styles/viewer-footer.css"
   ],
   "scripts": [
     "src/runtime/prelude.js",
@@ -105,6 +106,7 @@
     "src/runtime/context-menu.js",
     "src/runtime/library-actions.js",
     "src/runtime/library-navigation.js",
+    "src/runtime/viewer-footer.js",
     "src/runtime/boot.js"
   ],
   "vendor": "vendor/jszip-3.10.1.min.js"

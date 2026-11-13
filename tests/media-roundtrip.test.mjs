@@ -1,3 +1,4 @@
+import {chooseViewerSlide} from './ui.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { chromium } from 'playwright';
@@ -62,7 +63,7 @@ for (const name of ['pattern.mp4', 'pattern.webm']) {
         const reopened = await context.newPage();
         const bootErrors=[];reopened.on('pageerror',e=>bootErrors.push(e.message));
         await reopened.goto('file://' + resolve(destination, 'index.html'));
-        await reopened.locator('#stage .dot').nth(4).click();
+        await chooseViewerSlide(reopened,4);await reopened.locator('#play').click();
         await playing(reopened, '#stage .slide.active video');
         assert.deepEqual(bootErrors,[]);
         if(kind==='editable') {
@@ -77,7 +78,7 @@ for (const name of ['pattern.mp4', 'pattern.webm']) {
           const imported = await browser.newPage();
           try {
             await imported.goto('file://' + resolve('dist/presentation-studio-blank.html'));
-            await imported.locator('#hub-presentations').click();
+            await click(imported,'#hub-presentations');
             await imported.locator('#hub-file').setInputFiles(archive);
             await imported.waitForFunction(() => document.querySelector('#fe-status').dataset.saveState === 'saved' && document.querySelector('#fe-title').textContent === 'From idea to presentation');
             await imported.locator('#open-full-editor').click();

@@ -1,0 +1,40 @@
+/* Viewport controls are distinct from the legacy stage footer cloned by editors. */
+body:has(#controls):not(.booth-active) #stage > footer { visibility:hidden; }
+body #controls.vf-footer { position:fixed; inset:auto 0 0; width:100%; max-width:none; bottom:0; transform:none!important; border:0; border-radius:0; display:grid; grid-template-columns:minmax(0,1fr) auto minmax(0,1fr); align-items:center; gap:16px; padding:12px 20px; background:#f8fafcee; color:#172033; box-shadow:0 -1px 0 #bcc8d8; font:14px/1.3 Arial,sans-serif; z-index:30; }
+#controls.vf-footer button,#controls.vf-footer summary { min-height:40px; background:transparent; color:inherit; border:1px solid transparent; border-radius:7px; font:inherit; padding:8px 12px; white-space:nowrap; }
+#controls.vf-footer button:hover,#controls.vf-footer summary:hover { background:#dce8fb; border-color:#9eb8dc; }
+#controls.vf-footer :focus-visible { outline:3px solid #0066ff; outline-offset:2px; }
+body #controls.vf-footer:has(.hub-menu[open]) { transform:none!important; }
+#controls.vf-footer [hidden] { display:none!important; }
+.vf-left,.vf-center,.vf-right { display:flex; align-items:center; gap:5px; min-width:0; }
+.vf-left { justify-content:flex-start; }.vf-center { justify-content:center; }.vf-right { justify-content:flex-end; }
+#vf-title { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:28vw; }
+#vf-countdown { min-width:32px; color:#526078; font-size:12px; }
+#vf-position { position:absolute; left:0; right:0; top:0; height:3px; background:#cbd5e4; }
+#vf-position-fill { display:block; height:100%; background:#0066ff; }
+#controls.vf-footer .hub-menu-items { color:#172033; max-height:min(72vh,600px); overflow:auto; }
+#section-menu { max-height:86vh; width:min(900px,94vw); overflow:auto; }
+#vf-navigator label { display:block; margin:12px 0 6px; font-size:14px; }
+#vf-search { width:100%; padding:12px; border:1px solid #8196b3; border-radius:7px; font:16px Arial; }
+#vf-result-count { font:13px Arial; color:#526078; }
+#vf-results { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+#vf-results .vf-slide { display:flex; gap:12px; align-items:center; padding:10px; text-align:left; background:#f4f6fa; color:#172033; border:1px solid #bcc8d8; border-radius:8px; min-width:0; }
+#vf-results .vf-slide[aria-current=true] { border:2px solid #0066ff; }
+.vf-slide > span:last-child { min-width:0; overflow-wrap:anywhere; }
+.vf-slide strong,.vf-slide small { display:block; }.vf-slide strong { font:600 14px Arial; }.vf-slide small { font:12px Arial; margin-top:5px; }
+#vf-results .vf-thumbnail { display:block; position:relative; overflow:hidden; width:112px; height:63px; flex:none; background:#e3e9f3; border-radius:4px; }
+#vf-results .vf-thumbnail * { animation:none!important; transition:none!important; }
+.vf-pages { display:flex; gap:8px; margin:12px 0; }
+@media(max-width:850px) { body #controls.vf-footer { gap:4px; padding:10px 6px; } #vf-title { display:none; } #controls.vf-footer button,#controls.vf-footer summary { padding:8px; } }
+@media(max-width:560px) { body #controls.vf-footer { grid-template-columns:auto 1fr auto; font-size:12px; } #vf-results { grid-template-columns:1fr; }  }
+@media(prefers-color-scheme:dark) { body:not(.project-light) #controls.vf-footer { background:#1b2330f5; color:#eef3ff; } }
+@media(forced-colors:active) { #controls.vf-footer,#vf-results .vf-slide { border:1px solid CanvasText; } #vf-position-fill { background:Highlight; } }
+
+/* Keep menu surfaces and ink paired; editor-dark styles also affect viewer menus. */
+body #controls.vf-footer .hub-menu-items { background:#f8fafc; color:#172033; border-color:#aebfd5; }
+body #controls.vf-footer .hub-menu-items :is(button,summary) { color:inherit; }
+body.editor-dark #controls.vf-footer .hub-menu-items { background:#152238; color:#eaf2ff; border-color:#4b607d; }
+body.editor-dark #controls.vf-footer .hub-menu-items :is(button,summary):hover { background:#2b4261; color:#fff; }
+@media(prefers-color-scheme:dark){body:not(.project-light) #controls.vf-footer .hub-menu-items { background:#152238; color:#eaf2ff; border-color:#4b607d; } body:not(.project-light) #controls.vf-footer .hub-menu-items :is(button,summary):hover { background:#2b4261; color:#fff; }}
+@media(max-width:375px){#controls.vf-footer button,#controls.vf-footer summary { padding:8px 6px; } .vf-left,.vf-center,.vf-right { gap:3px; }}
+@media(forced-colors:active){body #controls.vf-footer .hub-menu-items { background:Canvas; color:CanvasText; border-color:CanvasText; }}
