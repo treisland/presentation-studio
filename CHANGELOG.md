@@ -7,6 +7,9 @@
 - Add an independent Show slide timer preference, enabled for both presets and narrow screens; preserve older viewer defaults (#203).
 
 - Add Presentation/Playback control presets, independent focus-safe auto-hide, grouped More controls and explicit portable deck defaults without changing automatic playback (#203).
+- Focus the appended saved-component duplicate so keyboard Rename edits the new copy (#209).
+
+- Make Library Insert and saved-component Rename/Duplicate/Delete permanent labeled actions, expose save/backup/recovery controls and add explicit inline rename commit/cancel (#209).
 - Keep decorative effects above custom bases and below content regardless of initialization order; apply the authoring JSON limit to decoded JSON, excluding bundled images (#213).
 
 - Add staged presentation/slide Theme, Solid, Gradient and Image backgrounds with complete overrides, local images, focal Fill/Fit, guarded native v4/portable-authoring v2, recovery-aware asset retention and shared offline/booth rendering (#213).

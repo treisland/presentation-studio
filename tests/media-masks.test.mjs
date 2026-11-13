@@ -97,7 +97,7 @@ test('border padding saves an inner gap directly, preserves the contour and reop
     assert.notEqual((await snapshot(page)).revision,initial.revision);assert.equal(await page.locator('#fe-preview .mask-content').evaluate(element=>element.style.inset),'10%');assert.equal(await page.locator('#fe-preview .mask-outline circle').getAttribute('r'),'50');
     assert.equal(await page.getByRole('button',{name:'Apply frame',exact:true}).count(),0);assert.equal((await snapshot(page)).state.design.slides[slideId].objects[key].frame.padding,10);
     await page.locator('#fe-undo').click();assert.equal((await snapshot(page)).state.design.slides[slideId].objects[key].frame.padding,0);await page.locator('#fe-redo').click();
-    await page.locator('#component-open').click();await page.locator('#component-save-panel > summary').click();await page.locator('#component-name').fill('Padded circle');await page.locator('#component-save').click();await page.getByRole('tab',{name:'My components',exact:true}).click();await page.getByRole('button',{name:'Insert Padded circle',exact:true}).click();
+    await page.locator('#component-open').click();await page.locator('#component-name').fill('Padded circle');await page.locator('#component-save').click();await page.getByRole('tab',{name:'My components',exact:true}).click();await page.getByRole('button',{name:'Insert Padded circle',exact:true}).click();
     assert.equal(Object.values((await snapshot(page)).state.design.slides[slideId].objects).filter(meta=>meta.frame?.padding===10).length,2);
     assert.equal((await operations(page,[{type:'media.mask',slideId,keys:[key],frame:{shape:'circle',fit:'cover',padding:26}}])).ok,false);
     const bytes=await exportZip(page),restored=await importZip(browser,bytes,initial.projectId);
@@ -151,7 +151,7 @@ test('Library frame controls save directly, keep one Undo per gesture and retain
     const previous=page.locator('#fe-preview .mask-frame');
     await page.locator('#mask-shape').selectOption('circle');await page.locator('#fe-preview .media-box[data-object-id="primary"]').click();
     assert.match(await previous.locator('.media-viewport').evaluate(element=>element.style.clipPath),/circle/);await previous.click();await page.locator('#fe-undo').click();assert.equal((await snapshot(page)).state.design.slides[slideId].objects[key].frame.shape,'rounded');await selectElement(page,key);
-    await page.locator('#component-open').click();await page.locator('#component-save-panel > summary').click();await page.locator('#component-name').fill('Reusable mask');await page.locator('#component-save').click();
+    await page.locator('#component-open').click();await page.locator('#component-name').fill('Reusable mask');await page.locator('#component-save').click();
     await page.getByRole('tab',{name:'My components',exact:true}).click();await page.getByRole('button',{name:'Insert Reusable mask',exact:true}).click();
     const copies=Object.entries((await snapshot(page)).state.design.slides[slideId].objects).filter(([,meta])=>meta.frame);assert.equal(copies.length,2);assert.notEqual(copies[0][0],copies[1][0]);assert.equal(copies[1][1].frame.shape,'rounded');
     assert.equal((await operations(page,[{type:'design.meta',slideId,keys:[key],changes:{locked:true}}])).ok,true);
