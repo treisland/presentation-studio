@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add immutable Presenter View sessions with private notes/browsing, sanitized audience windows, source-validated message channels and explicit live commits (#204).
+
 - Restore the animated per-slide time line, enabled by default with an independent Show slide time bar option; keep seconds and deck position separate (#203).
 
 - Add an independent Show slide timer preference, enabled for both presets and narrow screens; preserve older viewer defaults (#203).

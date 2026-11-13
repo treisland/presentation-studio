@@ -1830,6 +1830,33 @@
   }
   const projectLegacyMediaImport = mediaImport;
   mediaImport = projectImport;
+  function projectDocumentHTML(pack) {
+    const json = JSON.stringify(pack, null, 2),
+      escaped = json.replace(/</g, "\\u003c"),
+      media = JSON.stringify({
+        schemaVersion: 1,
+        slides: pack.state.media,
+      }).replace(/</g, "\\u003c");
+    const projectPattern =
+        /<script\b(?=[^>]*\bid=["']project-config["'])[^>]*>[\s\S]*?<\/script>/i,
+      mediaPattern =
+        /<script\b(?=[^>]*\bid=["']media-config["'])[^>]*>[\s\S]*?<\/script>/i;
+    return sourceTemplate
+      .replace(
+        projectPattern,
+        () =>
+          '<script id="project-config" type="application/json">' +
+          escaped +
+          "<\/script>",
+      )
+      .replace(
+        mediaPattern,
+        () =>
+          '<script id="media-config" type="application/json">' +
+          media +
+          "<\/script>",
+      );
+  }
   async function projectExport(playback = false) {
     if (projectPlayback || mediaExporting) return;
     projectFlush();
@@ -1851,31 +1878,7 @@
       "Building " + (playback ? "playback" : "editable project") + " package…",
     );
     try {
-      const json = JSON.stringify(pack, null, 2),
-        escaped = json.replace(/</g, "\\u003c"),
-        media = JSON.stringify({
-          schemaVersion: 1,
-          slides: pack.state.media,
-        }).replace(/</g, "\\u003c");
-      const projectPattern =
-          /<script\b(?=[^>]*\bid=["']project-config["'])[^>]*>[\s\S]*?<\/script>/i,
-        mediaPattern =
-          /<script\b(?=[^>]*\bid=["']media-config["'])[^>]*>[\s\S]*?<\/script>/i;
-      let output = sourceTemplate
-        .replace(
-          projectPattern,
-          () =>
-            '<script id="project-config" type="application/json">' +
-            escaped +
-            "<\/script>",
-        )
-        .replace(
-          mediaPattern,
-          () =>
-            '<script id="media-config" type="application/json">' +
-            media +
-            "<\/script>",
-        );
+      const json = JSON.stringify(pack, null, 2), output = projectDocumentHTML(pack);
       const zip = new JSZip();
       zip.file("index.html", output, { compression: "DEFLATE" });
       zip.file("presentation.json", json, { compression: "DEFLATE" });

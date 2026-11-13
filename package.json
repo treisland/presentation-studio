@@ -18,7 +18,7 @@
     "package": "node scripts/package.mjs",
     "serve": "node scripts/serve.mjs",
     "profile:canvas": "npm run build && node tests/profile-canvas.mjs",
-    "test:viewer": "node --test tests/viewer-footer.test.mjs tests/viewer-presets.test.mjs"
+    "test:viewer": "node --test tests/viewer-footer.test.mjs tests/viewer-presets.test.mjs tests/presenter-session.test.mjs"
   },
   "devDependencies": {
     "playwright": "1.62.1"

@@ -7,7 +7,7 @@ const root = fileURLToPath(new URL('../', import.meta.url));
 const sandbox = { setImmediate, clearImmediate, setTimeout, clearTimeout, Uint8Array, ArrayBuffer, TextEncoder, TextDecoder };
 vm.runInNewContext(await readFile(resolve(root, 'vendor/jszip-3.10.1.min.js'), 'utf8'), sandbox);
 const zip = new sandbox.JSZip();
-for (const file of ['docs/viewer-controls.md','docs/custom-backgrounds.md','docs/deployment.md','docs/import-compatibility.md','docs/navigation.md','docs/interactive-elements.md','docs/0.13.0-manual-test-plan.md','docs/viewer-defaults-contract.md']) zip.file(file,new Uint8Array(await readFile(resolve(root,file))),{date:new Date('2026-01-01T00:00:00Z')});
+for (const file of ['docs/presenter-view.md','docs/viewer-controls.md','docs/custom-backgrounds.md','docs/deployment.md','docs/import-compatibility.md','docs/navigation.md','docs/interactive-elements.md','docs/0.13.0-manual-test-plan.md','docs/viewer-defaults-contract.md']) zip.file(file,new Uint8Array(await readFile(resolve(root,file))),{date:new Date('2026-01-01T00:00:00Z')});
 zip.file('docs/content-inspector.md', new Uint8Array(await readFile(resolve(root, 'docs/content-inspector.md'))), {date:new Date('2026-01-01T00:00:00Z')});
 zip.file('docs/inspector-navigation.md', new Uint8Array(await readFile(resolve(root, 'docs/inspector-navigation.md'))), {date:new Date('2026-01-01T00:00:00Z')});
 zip.file('docs/media-inspector.md', new Uint8Array(await readFile(resolve(root, 'docs/media-inspector.md'))), {date:new Date('2026-01-01T00:00:00Z')});
