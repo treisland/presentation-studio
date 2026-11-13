@@ -7,6 +7,7 @@ function cbMountUI(){
   const section=document.createElement('details');section.id='cb-inspector-background';section.className='ids-section';const summary=document.createElement('summary');summary.textContent='Background';const host=document.createElement('div');host.id='cb-inspector-host';section.append(summary,host);$('ic-slide-fields').append(section);idsRegister(section);
   $('fe-background-panel').prepend(panel);
   cbPlaceUI=()=>{const inSettings=$('we-settings').open,target=inSettings?$('fe-background-panel'):host;if(panel.parentElement===target)return;target.prepend(panel);panel.classList.toggle('cb-in-inspector',!inSettings);$('cb-scope').closest('label').hidden=!inSettings;$('cb-scope').value=inSettings?'presentation':'slide';state.identity='';state.dirty=false;load();};
+  summary.addEventListener('click',()=>{if(!section.open){cbPlaceUI();cbRefreshUI(true);}});
   section.addEventListener('toggle',()=>{if(section.open){cbPlaceUI();cbRefreshUI();}});
   const state={identity:'',revision:0,selected:'',project:'',dirty:false,uploadEpoch:0,uploads:new Map(),root:null,controller:null};
   let bulk=null;
@@ -109,7 +110,7 @@ function cbMountUI(){
     }catch(error){$('cb-status').textContent=error.message;}
   };
   new ResizeObserver(()=>{if(state.root)state.root.style.transform=`scale($('cb-preview').clientWidth/1920)`;}).observe($('cb-preview'));
-  cbRefreshUI=()=>{if(!$('full-editor').open||!panel.checkVisibility())return;const identity=JSON.stringify([projectMeta.id,projectSelected,$('cb-scope').value]);const changed=identity!==state.identity||state.revision!==editingRevision();if(!state.root||changed&&(!state.dirty||identity!==state.identity&&panel.parentElement===host))load();else paint();};
+  cbRefreshUI=(force=false)=>{if(!$('full-editor').open||!force&&!panel.checkVisibility())return;const identity=JSON.stringify([projectMeta.id,projectSelected,$('cb-scope').value]);const changed=identity!==state.identity||state.revision!==editingRevision();if(!state.root||changed&&(!state.dirty||identity!==state.identity&&panel.parentElement===host))load();else paint();};
   $('we-settings').addEventListener('close',()=>{cbPlaceUI();cbRefreshUI();});
   $('full-editor').addEventListener('close',()=>{dispose();state.identity='';});
   bulk=cbExtendBackgroundUI?.({panel,state,read,fill,paint,load});
