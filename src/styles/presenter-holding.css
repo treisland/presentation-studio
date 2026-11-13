@@ -1,4 +1,4 @@
-body.pv-output > #pv-holding-output { display:block!important; position:fixed; inset:0; background:#000; z-index:1000; pointer-events:none; overflow:hidden; }
+body.pv-output.pv-holding > #pv-holding-output { display:block!important; position:fixed; inset:0; background:#000; z-index:1000; pointer-events:none; overflow:hidden; }
 #pv-holding-output iframe,#ph-preview iframe { position:absolute; left:50%; top:50%; width:1920px; height:1080px; transform-origin:center; border:0; pointer-events:none; }
 /* Opacity composites the entire stage, including descendants that explicitly set visibility. */
 body.pv-output:is(.pv-blackout,.pv-holding) { background:#000!important; }
