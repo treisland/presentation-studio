@@ -38,7 +38,7 @@ function clCards() {
     copy.hidden=false;remove.hidden=false;
     clAction(copy,'duplicate','duplicate','Duplicate','Duplicate saved component '+item.name);
     clAction(remove,'delete','trash','Delete','Delete saved component '+item.name);
-    const oldCopy=copy.onclick;copy.onclick=()=>{const before=new Set(componentLibrary.map(i=>i.id));oldCopy();clFocus(componentLibrary.find(i=>!before.has(i.id))?.id);};
+    const oldCopy=copy.onclick;copy.onclick=()=>{const count=componentLibrary.length;oldCopy();clFocus(componentLibrary.length>count?componentLibrary.at(-1)?.id:componentLibrary[Math.min(index,componentLibrary.length-1)]?.id);};
     const oldRemove=remove.onclick;remove.onclick=()=>{oldRemove();clFocus(componentLibrary[Math.min(index,componentLibrary.length-1)]?.id);};
     const count=document.createElement('small');count.className='cl-object-count';count.textContent=`${item.entries.length} object${item.entries.length===1?'':'s'}`;
     actions.append(rename,copy,remove);options.replaceWith(count,actions,panel);

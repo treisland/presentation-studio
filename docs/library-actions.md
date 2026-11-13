@@ -20,3 +20,5 @@ backup for recovery or transfer. No new library schema or service is introduced.
 Actual composition thumbnails and category/filter improvements are separate
 coordinated issues. Light/dark, touch, narrow layouts and screen-reader acceptance
 remain part of the consolidated milestone's manual review.
+Duplicating a saved component focuses the new copy’s Rename action, so keyboard
+renaming applies to that copy. Existing saved and placed copies remain independent.

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Focus the appended saved-component duplicate so keyboard Rename edits the new copy (#209).
+
 - Make Library Insert and saved-component Rename/Duplicate/Delete permanent labeled actions, expose save/backup/recovery controls and add explicit inline rename commit/cancel (#209).
 - Document the proposed custom-background inheritance, layering, asset recovery and guarded native/portable format contract for maintainer review (#212).
 - Define companion guide/screenshot ownership, provenance, human review and local rollback responsibilities in contributor, agent, PR and release workflows (#193).

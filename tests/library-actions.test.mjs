@@ -28,7 +28,7 @@ test('duplicate, delete and restore preserve original saved and placed copies',a
   const card=await saved(page),before=await snapshot(page);
   await card.locator('[data-cl-action=duplicate]').click();assert.equal(await page.locator('#component-items article').count(),2);
   const copy=page.locator('#component-items article').filter({has:page.getByRole('heading',{name:'Reusable original copy',exact:true})});
-  await copy.locator('[data-cl-action=delete]').click();assert.equal(await page.locator('#component-items article').count(),1);
+  assert.equal(await copy.locator('[data-cl-action=rename]').evaluate(n=>document.activeElement===n),true);await page.keyboard.press('Enter');await copy.getByRole('textbox',{name:'Component name',exact:true}).fill('Keyboard renamed copy');await copy.getByRole('button',{name:'Save component name',exact:true}).click();assert.equal(await page.locator('#component-items article').first().getByRole('heading').textContent(),'Reusable original');const renamed=page.locator('#component-items article').filter({has:page.getByRole('heading',{name:'Keyboard renamed copy',exact:true})});await renamed.locator('[data-cl-action=delete]').click();assert.equal(await page.locator('#component-items article').count(),1);
   await page.locator('#component-restore').click();assert.equal(await page.locator('#component-items article').count(),2);
   assert.equal(await page.locator('#component-export').isVisible(),true);assert.equal(await page.locator('#component-import').isVisible(),true);
   assert.deepEqual((await snapshot(page)).state,before.state);assert.deepEqual(errors,[]);
