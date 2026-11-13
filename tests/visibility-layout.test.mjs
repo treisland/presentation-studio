@@ -124,7 +124,7 @@ test('customized nested text/cards and Library copies hide despite template disp
       // Save and reinsert the actual template-derived object through the public Library UI.
       await page.locator('#wp-tab-layers').click();await page.locator('#sp-layers [data-key="'+key+'"] button').first().click();
       await page.locator('#component-open').click();
-      if(!await page.locator('#component-save-panel').evaluate(el=>el.open))await page.locator('#component-save-panel > summary').click();
+
       const name=selector==='h1'?'Template title':'Template card';
       await page.locator('#component-name').fill(name);await page.locator('#component-save').click();
       await page.getByRole('tab',{name:'My components',exact:true}).click();await page.getByRole('button',{name:'Insert '+name,exact:true}).click();

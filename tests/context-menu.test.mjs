@@ -67,11 +67,11 @@ test('locks disable mutation shortcuts and a changed revision cannot retarget a 
 test('saved-component menus manage originals without deleting placed copies and text fields keep native menus',async()=>{
  const {page,errors}=await openExample(browser,'template');try{
   await page.locator('#component-open').click();await page.getByRole('tab',{name:'Widgets',exact:true}).click();await page.getByRole('button',{name:'Insert Quote',exact:true}).click();
-  await page.locator('#component-open').click();await page.locator('#component-save-panel > summary').click();await page.locator('#component-name').fill('Menu quote');await page.locator('#component-save').click();await page.getByRole('tab',{name:'My components',exact:true}).click();
+  await page.locator('#component-open').click();await page.locator('#component-name').fill('Menu quote');await page.locator('#component-save').click();await page.getByRole('tab',{name:'My components',exact:true}).click();
   const before=await snapshot(page);await page.getByRole('button',{name:'Actions for Menu quote',exact:true}).click();await menu(page).getByRole('menuitem',{name:'Rename saved component…',exact:true}).click();
   const input=page.getByRole('textbox',{name:'Component name',exact:true});await input.fill('Renamed quote');
   assert.equal(await input.evaluate(node=>{const event=new MouseEvent('contextmenu',{bubbles:true,cancelable:true});node.dispatchEvent(event);return event.defaultPrevented;}),false);assert.equal(await menu(page).isVisible(),false);
-  await page.getByRole('button',{name:'Rename',exact:true}).click();await page.getByRole('button',{name:'Actions for Renamed quote',exact:true}).click();await menu(page).getByRole('menuitem',{name:'Delete saved component',exact:true}).click();
+  await page.getByRole('button',{name:'Save component name',exact:true}).click();await page.getByRole('button',{name:'Actions for Renamed quote',exact:true}).click();await menu(page).getByRole('menuitem',{name:'Delete saved component',exact:true}).click();
   assert.equal(await page.getByRole('button',{name:'Insert Renamed quote',exact:true}).count(),0);assert.deepEqual((await snapshot(page)).state,before.state);assert.deepEqual(errors,[]);
  }finally{await page.close();}
 });

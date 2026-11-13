@@ -1,3 +1,4 @@
+function pvNonce(){return Array.from(crypto.getRandomValues(new Uint8Array(16)),byte=>byte.toString(16).padStart(2,'0')).join('');}
 // Session state and notes remain in the opener's closure, never in the playback HTML.
 let pvSession=null,pvOutput=false;
 const pvOrigin=location.protocol==='file:'?'null':location.origin;
@@ -26,7 +27,7 @@ function pvReceiveAudience(start){
   }
   addEventListener('message',connect);parent.postMessage({type:'ps-presenter-ready',nonce,project},pvTarget(bootstrap.origin));
   addEventListener('beforeunload',()=>send('disconnected'));
-  document.addEventListener('keydown',event=>{if(event.key==='Escape')return;event.stopImmediatePropagation();if(event.key.toLowerCase()==='f'&&bootstrap.kind==='audience'){event.preventDefault();fullscreen();}else if([' ','ArrowLeft','ArrowRight','PageUp','PageDown','Home','End'].includes(event.key))event.preventDefault();},true);
+  document.addEventListener('keydown',event=>{event.stopImmediatePropagation();if(event.key==='Escape')return;if(event.key.toLowerCase()==='f'&&bootstrap.kind==='audience'){event.preventDefault();fullscreen();}else if([' ','ArrowLeft','ArrowRight','PageUp','PageDown','Home','End'].includes(event.key))event.preventDefault();},true);
 }
 function pvSend(node,type,id){if(!node?.port||!node.connected)return;const seq=++node.seq;node.port.postMessage({type,nonce:node.nonce,project:pvSession.project,seq,...id?{id}:{}});}
 function pvStatus(text){if($('pv-status'))$('pv-status').textContent=text;}
@@ -43,7 +44,7 @@ function pvReady(event){
 }
 addEventListener('message',pvReady);
 function pvNode(session,kind,target){
-  const node={kind,window:target,nonce:crypto.randomUUID(),origin:kind==='audience'?pvOrigin:'null',port:null,connected:false,seq:0,ack:0,lastSeen:Date.now()};session.nodes.push(node);return node;
+  const node={kind,window:target,nonce:pvNonce(),origin:kind==='audience'?pvOrigin:'null',port:null,connected:false,seq:0,ack:0,lastSeen:Date.now()};session.nodes.push(node);return node;
 }
 function pvFrame(session,kind,parent){const frame=document.createElement('iframe');frame.title=kind==='live'?'Silent live slide preview':'Private slide preview';frame.setAttribute('sandbox','allow-scripts');frame.inert=true;frame.tabIndex=-1;frame.setAttribute('aria-hidden','true');parent.replaceChildren(frame);const node=pvNode(session,kind,frame.contentWindow);frame.srcdoc=pvHTML(session,kind,node.nonce);return node;}
 function pvWriteAudience(session,target){const node=pvNode(session,'audience',target);try{target.document.open();target.document.write(pvHTML(session,'audience',node.nonce));target.document.close();}catch{node.connected=false;pvStatus('Could not initialize the audience window. Allow popups or use the ordinary playback export.');}return node;}
@@ -54,10 +55,10 @@ function pvEnd(message='Presentation session ended.'){
 function pvPick(id){const session=pvSession;if(!session||!session.ids.has(id))return;session.preview=id;for(const node of session.nodes.filter(n=>n.kind==='preview'))pvSend(node,'present',id);pvPaint();}
 function pvPresent(){const session=pvSession,audience=session?.nodes.find(n=>n.kind==='audience');if(!audience?.connected){pvStatus('Audience is not connected. Reopen the audience window first.');return;}pvSend(audience,'present',session.preview);}
 function pvPaint(){const s=pvSession;if(!s)return;$('pv-live-title').textContent=s.pack.state.slides.find(n=>n.id===s.live)?.title||'';$('pv-preview-title').textContent=s.pack.state.slides.find(n=>n.id===s.preview)?.title||'';$('pv-select').value=s.preview;$('pv-notes').textContent=s.notes.get(s.preview)||'No speaker notes for this slide.';$('pv-present').disabled=!s.nodes.some(n=>n.kind==='audience'&&n.connected);if(projectMeta.id!==s.project){pvEnd('Session ended because the active project changed.');return;}if(editingRevision()!==s.revision)$('pv-snapshot').textContent='The source presentation changed. Restart Presenter View to include edits; the audience remains on the original session snapshot.';}
-function pvOpenAudience(){const s=pvSession;if(!s||s.project!==projectMeta.id)return;const existing=s.nodes.find(n=>n.kind==='audience');if(existing&&!existing.window.closed){try{existing.window.focus();}catch{}if(existing.connected)return;try{existing.window.close();}catch{}}if(existing){existing.port?.close();s.nodes=s.nodes.filter(n=>n!==existing);}const target=window.open('about:blank','ps-audience-'+crypto.randomUUID(),'popup,width=1280,height=800');if(!target){pvStatus('Popup blocked. Allow popups, then choose Reopen audience.');return;}pvWriteAudience(s,target);pvStatus('Connecting audience window…');}
+function pvOpenAudience(){const s=pvSession;if(!s||s.project!==projectMeta.id)return;const existing=s.nodes.find(n=>n.kind==='audience');if(existing&&!existing.window.closed){try{existing.window.focus();}catch{}if(existing.connected)return;try{existing.window.close();}catch{}}if(existing){existing.port?.close();s.nodes=s.nodes.filter(n=>n!==existing);}const target=window.open('about:blank','ps-audience-'+pvNonce(),'popup,width=1280,height=800');if(!target){pvStatus('Popup blocked. Allow popups, then choose Reopen audience.');return;}pvWriteAudience(s,target);pvStatus('Connecting audience window…');}
 function pvLaunch(){
   if(pvSession){$('pv-panel').showModal();pvPaint();return;}
-  const target=window.open('about:blank','ps-audience-'+crypto.randomUUID(),'popup,width=1280,height=800');
+  const target=window.open('about:blank','ps-audience-'+pvNonce(),'popup,width=1280,height=800');
   try{vbEnd(false);projectFlush();setPlaying(false);const pack=pvFreeze(projectCopy(projectPack(true)));if(!pack.state.slides.length)throw Error('The presentation has no visible slides.');const refs=[...projectReferenced(pack)],missing=refs.filter(path=>!mediaBlobs.has(path));if(missing.length)throw Error('Open the complete editable ZIP before presenting: '+missing.length+' media assets are missing.');let bytes=0;const assets=refs.map(path=>{const blob=mediaBlobs.get(path);bytes+=blob.size;return{path,blob:blob.slice(0,blob.size,blob.type)};});if(assets.length>1000||bytes>200*1024*1024)throw Error('This presenter session exceeds the 200 MB media budget. Use the playback export for this deck.');
     const ids=new Set(pack.state.slides.map(s=>s.id)),live=ids.has(slides[index]?.dataset.mediaId)?slides[index].dataset.mediaId:pack.state.slides[0].id;
     const session=pvSession={project:pack.meta.id,pack,assets,ids,notes:new Map(projectState.slides.filter(s=>ids.has(s.id)).map(s=>[s.id,s.notes||''])),live,preview:live,revision:editingRevision(),nodes:[],timer:null};
