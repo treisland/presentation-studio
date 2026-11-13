@@ -1,8 +1,12 @@
+function vcHoldingClean(raw){
+  if(!raw||typeof raw!=='object'||Array.isArray(raw)||!['builtin','slide'].includes(raw.kind)||Object.keys(raw).some(k=>!['kind','slideId'].includes(k))||raw.kind==='builtin'&&Object.hasOwn(raw,'slideId')||raw.kind==='slide'&&(typeof raw.slideId!=='string'||!raw.slideId.length||raw.slideId.length>160||!/^[-\w]+$/.test(raw.slideId)))throw Error('Invalid holding screen defaults.');
+  return raw.kind==='builtin'?{kind:'builtin'}:{kind:'slide',slideId:raw.slideId};
+}
 let vcSession=null,vcReady=false,vcPolicy='',vcOutputSettings=null;
 const vcKeys=['autoHide','showNotes','showProgress','showCount'];
 function vcClean(raw){
-  if(!raw||typeof raw!=='object'||Array.isArray(raw)||Object.keys(raw).some(k=>!['version','preset','footerStyle','showTimer','showTimeBar',...vcKeys].includes(k))||raw.version!==1||!['presentation','playback'].includes(raw.preset)||vcKeys.some(k=>typeof raw[k]!=='boolean')||(raw.footerStyle!==undefined&&!['modern','classic','hidden'].includes(raw.footerStyle))||(raw.showTimer!==undefined&&typeof raw.showTimer!=='boolean')||(raw.showTimeBar!==undefined&&typeof raw.showTimeBar!=='boolean'))throw Error('Invalid viewer control defaults.');
-  return {version:1,preset:raw.preset,footerStyle:raw.footerStyle??'modern',showTimer:raw.showTimer??true,showTimeBar:raw.showTimeBar??true,...Object.fromEntries(vcKeys.map(k=>[k,raw[k]]))};
+  if(!raw||typeof raw!=='object'||Array.isArray(raw)||Object.keys(raw).some(k=>!['version','preset','footerStyle','holdingScreen','showTimer','showTimeBar',...vcKeys].includes(k))||raw.version!==1||!['presentation','playback'].includes(raw.preset)||vcKeys.some(k=>typeof raw[k]!=='boolean')||(raw.footerStyle!==undefined&&!['modern','classic','hidden'].includes(raw.footerStyle))||(raw.showTimer!==undefined&&typeof raw.showTimer!=='boolean')||(raw.showTimeBar!==undefined&&typeof raw.showTimeBar!=='boolean'))throw Error('Invalid viewer control defaults.');
+  return {...(Object.hasOwn(raw,'holdingScreen')?{holdingScreen:vcHoldingClean(raw.holdingScreen)}:{}),version:1,preset:raw.preset,footerStyle:raw.footerStyle??'modern',showTimer:raw.showTimer??true,showTimeBar:raw.showTimeBar??true,...Object.fromEntries(vcKeys.map(k=>[k,raw[k]]))};
 }
 function vcDefaults(){return projectState.viewerDefaults||{version:1,preset:'playback',autoHide:kiosk,showNotes:true,showProgress:true,showCount:true,showTimer:true,showTimeBar:true};}
 function vcSettings(){if(vcOutputSettings)return vcOutputSettings;if(vcSession&&vcSession.project!==projectMeta.id)vcSession=null;return vcSession?.settings||vcDefaults();}
@@ -52,7 +56,7 @@ setPlaying=function(value,...args){const changed=value!==playing,result=vcPlay(v
 const vcAccept=projectAcceptPack;
 projectAcceptPack=function(...args){vcSession=null;vcPolicy='';const result=vcAccept(...args);vcSync();return result;};
 const vcBooth=boothExportData;
-boothExportData=function(...args){const data=vcBooth(...args);if(projectState.viewerDefaults)data.viewerDefaults=vcClean(projectState.viewerDefaults);return data;};
+boothExportData=function(...args){const data=vcBooth(...args);if(projectState.viewerDefaults){data.viewerDefaults=vcClean(projectState.viewerDefaults);const holding=data.viewerDefaults.holdingScreen;if(holding?.kind==='slide'&&!data.slides.some(n=>n.id===holding.slideId))data.viewerDefaults.holdingScreen={kind:'builtin'};}return data;};
 function vcMount(){
   const more=$('hub-player-more').querySelector('.hub-menu-items');
   const group=(id,label)=>{const fieldset=document.createElement('fieldset'),legend=document.createElement('legend');fieldset.id=id;fieldset.className='vc-group';legend.textContent=label;fieldset.append(legend);more.append(fieldset);return fieldset;};
@@ -83,3 +87,6 @@ function vcMount(){
 }
 const vcInit=projectInit;
 projectInit=function(...args){const result=vcInit(...args);vcMount();return result;};
+
+// Hidden or omitted holding-slide identities do not travel in public exports.
+const vcPublicPack=projectPack;projectPack=function(playback=false){const pack=vcPublicPack(playback),holding=pack.state.viewerDefaults?.holdingScreen;if(playback&&holding?.kind==='slide'&&!pack.state.slides.some(n=>n.id===holding.slideId))pack.state.viewerDefaults.holdingScreen={kind:'builtin'};return pack;};
