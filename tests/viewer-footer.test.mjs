@@ -77,7 +77,7 @@ test('large decks page bounded thumbnails and omit hidden or empty sections',asy
 
 test('multi-slide phone viewers retain non-overlapping controls and visible timer',async()=>{
  const {page,errors}=await open();try{
-  for(const width of [320,360,375,640,320]){await page.setViewportSize({width,height:740});await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));const boxes=await page.locator('.vf-left,.vf-center,.vf-right').evaluateAll(nodes=>nodes.map(n=>{const b=n.getBoundingClientRect();return{x:b.x,right:b.right};}));assert(boxes[0].right<=boxes[1].x+1,JSON.stringify(boxes));assert(boxes[1].right<=boxes[2].x+1,JSON.stringify(boxes));assert.equal(await page.locator('#vf-countdown').isVisible(),true);}
+  for(const width of [320,360,375,560,620,640,320]){await page.setViewportSize({width,height:740});await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));const boxes=await page.locator('.vf-left,.vf-center,.vf-right').evaluateAll(nodes=>nodes.map(n=>{const b=n.getBoundingClientRect();return{x:b.x,right:b.right};}));assert(boxes[0].right<=boxes[1].x+1,JSON.stringify(boxes));assert(boxes[1].right<=boxes[2].x+1,JSON.stringify(boxes));assert.equal(await page.locator('#vf-countdown').isVisible(),true);}
   assert.deepEqual(errors,[]);
  }finally{await page.close();}
 });
