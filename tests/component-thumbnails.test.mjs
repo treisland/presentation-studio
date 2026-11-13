@@ -40,7 +40,7 @@ assert((await img.locator('img').getAttribute('src')).startsWith('data:image/web
 const poster=page.frameLocator('.ct-preview iframe').nth(2);
 await poster.locator('img').waitFor();assert.equal(await poster.locator('.caption-overlay figcaption').textContent(),'Original caption');
 const videoCard=page.locator('#component-items article').filter({has:page.getByRole('heading',{name:'Video filename',exact:true})});await videoCard.scrollIntoViewIfNeeded();await videoCard.locator('iframe').waitFor();const noPoster=videoCard.frameLocator('iframe');
-assert.match(await noPoster.locator('.ct-media-fallback').textContent(),/Video.*Original video.webm/);assert.equal(await noPoster.locator('video,audio,script').count(),0);
+assert.match(await noPoster.locator('.ct-media-fallback').textContent(),/Video.*Original video.webm/);assert.equal(await noPoster.locator('.mask-frame .ct-media-fallback').count(),1);assert.equal(await noPoster.locator('video,audio,script').count(),0);
 assert.deepEqual((await snapshot(page)).state,before.state);
 assert.deepEqual(errors,[]);
 await page.screenshot({path:'test-results/component-compositions-candidate.png'});}finally{await page.close();}});
