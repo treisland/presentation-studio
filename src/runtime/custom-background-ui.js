@@ -127,3 +127,6 @@ const cbUICloseSettings=weCloseSettings;
 weCloseSettings=function(...args){const result=cbUICloseSettings(...args);cbPlaceUI();cbRefreshUI();return result;};
 const cbUITab=projectSelectTab;
 projectSelectTab=function(...args){const result=cbUITab(...args);cbPlaceUI();cbRefreshUI();return result;};
+
+const cbInspectorTab=wpChooseTab;
+wpChooseTab=function(...args){const result=cbInspectorTab(...args);cbRefreshUI();return result;};
