@@ -8,6 +8,8 @@ Read [the release process](docs/release-process.md) and [roadmap](docs/roadmap.m
 
 Release preparation uses a separate explicit version and release plan. Feature PRs update Unreleased without choosing a release version. New features increment minor; compatible fixes increment patch. See the release process for alpha, beta, RC and stable gates.
 
+Companion documentation and image updates follow [the website maintenance process](docs/website-process.md). Public launch remains separately approved.
+
 ## Local checks
 
 ```sh
