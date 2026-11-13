@@ -468,8 +468,8 @@ const showcase = [...document.querySelectorAll("#stage > .slide")],
     }
     activity();
   });
-  document.addEventListener("mousemove", activity);
-  document.addEventListener("touchstart", activity, { passive: true });
+  document.addEventListener("mousemove", event => activity(event));
+  document.addEventListener("touchstart", event => activity(event), { passive: true });
   window.addEventListener("resize", resize);
   document.addEventListener("visibilitychange", () => {
     last = performance.now();
