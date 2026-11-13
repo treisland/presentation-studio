@@ -56,7 +56,7 @@ test('path-like text saves and script delimiters survive editable and playback e
   pack.state.slides[0].tree = [{ tag: 'p', children: [{ text: 'assets/example.png' }, { text: payload }] }];
   try {
     await page.goto('file://' + resolve(root, 'dist/presentation-studio-blank.html'));
-    await page.locator('#hub-presentations').click();
+    await click(page,'#hub-presentations');
     await page.locator('#hub-file').setInputFiles({ name: 'text-only.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(pack)) });
     await page.waitForFunction(() => document.getElementById('fe-status').dataset.saveState === 'saved');
     await page.locator('#open-full-editor').click();
