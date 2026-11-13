@@ -49,7 +49,8 @@
     "consumers": [
       "examples"
     ],
-    "crop": "#lc-example-preview"
+    "crop": "#lc-example-preview",
+    "mode": "demo"
   },
   {
     "id": "example-portfolio",
@@ -59,16 +60,18 @@
     "consumers": [
       "examples"
     ],
-    "crop": "#lc-example-preview"
+    "crop": "#lc-example-preview",
+    "mode": "demo"
   },
   {
     "id": "example-newsletter",
     "scene": "examples-gallery",
     "alt": "Actual newsletter example preview in stable Studio.",
-    "fixture": "Bundled original newsletter demo selected through the examples gallery.",
+    "fixture": "Bundled original newsletter starter selected through the examples gallery.",
     "consumers": [
       "examples"
     ],
-    "crop": "#lc-example-preview"
+    "crop": "#lc-example-preview",
+    "mode": "starter"
   }
 ]

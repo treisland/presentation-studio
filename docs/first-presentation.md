@@ -7,8 +7,9 @@ This short path uses the existing example and ZIP menus; it needs no account.
 
 Open Studio and choose **Edit**. Choose **Project → New presentation**, then
 **Start from an example**. Preview **Studio**, **Portfolio** or **Newsletter**.
-Choose its demo to explore finished content, or a starter where offered to begin
-with editable prompts. Continue setup, name your presentation and use the defaults.
+For Studio and Portfolio, choose the demo to explore finished content, or a
+starter where offered to begin with editable prompts. Newsletter offers an editable
+starter. Continue setup, name your presentation and use the defaults.
 
 If another presentation has changes, use the save/export choice before switching,
 or cancel and keep working. Starting from an example creates a separate project;
