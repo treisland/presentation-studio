@@ -1,5 +1,8 @@
 # Quick start
 
+New to Studio? Follow [Your first presentation](first-presentation.md) for the short
+create, editable-backup, restore and offline-delivery path.
+
 ## Check readiness before presenting
 
 In the editor, choose **Check readiness**. Choose all visible slides or a named playback loop, then review the findings. Missing active/recovery media or logos and content reaching the slide edge/footer are blockers. Hidden slides, slides outside the selected loop, backup freshness and video capability are advisories; these can be intentional or require manual verification.

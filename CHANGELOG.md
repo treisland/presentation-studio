@@ -19,6 +19,11 @@
 - Add staged representative deck previews, explicit section/selected-slide background targets, override preservation and atomic bulk/reset operations (#216).
 
 - Add staged image readability controls and explicit title/content/divider coordinated background looks with original neutral illustration.
+- Add a local-only companion with authentic example previews, canonical guide rendering and separate stable/beta downloads.
+
+- Add a short first-presentation guide and a curated Studio, Portfolio and Newsletter companion content map.
+
+- Add digest-verified, reproducible companion screenshot recipes and ignored before/after review candidates with provenance.
 
 - Focus the appended saved-component duplicate so keyboard Rename edits the new copy (#209).
 
