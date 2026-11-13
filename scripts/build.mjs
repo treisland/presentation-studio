@@ -21,16 +21,18 @@ if (process.env.STUDIO_SOURCE_COMMIT !== undefined) {
   commit=supplied;tagged=false;dirty=true;
 }
 const buildInfo = {version, commit, channel: tagged && !dirty ? (version.match(/-(alpha|beta|rc)\./)?.[1] || 'stable') : 'development', dirty,
-  imports:{native:[2,3],legacy:[1],authoring:[1],library:[1]}};
+  imports:{native:[2,3,4],legacy:[1],authoring:[1,2],library:[1]}};
 const authoringFiles = {
   "AUTHORING.md": await read("docs/ai/AUTHORING.md"),
   "example.json": await read("docs/ai/example.json"),
   "project-update.json": await read("docs/ai/project-update.json"),
   "technical-walkthrough.json": await read("docs/ai/technical-walkthrough.json"),
+  "custom-backgrounds-v2.json": await read("docs/ai/custom-backgrounds-v2.json"),
   "background-effects.json": await read("docs/ai/background-effects.json"),
 };
 const authoringContext = vm.createContext({ URL });
 vm.runInContext(await read("src/runtime/background-effects-core.js"), authoringContext);
+vm.runInContext(await read("src/runtime/custom-background-core.js"), authoringContext);
 vm.runInContext(await read("src/runtime/authoring-definitions.js"), authoringContext);
 vm.runInContext(await read("src/runtime/authoring-contract.js"), authoringContext);
 const authoringSchema = vm.runInContext("JSON.stringify(paSchema(), null, 2)", authoringContext);
@@ -41,7 +43,7 @@ authoringFiles["CAPABILITIES.md"] = vm.runInContext("paCapabilityGuide()", autho
 await mkdir(resolve(root, "dist/ai-authoring"), { recursive: true });
 // Remove only this obsolete generated diagnostic when rebuilding an older checkout.
 await unlink(resolve(root, "dist/folder-picker-probe.html")).catch(error => { if (error.code !== "ENOENT") throw error; });
-for (const [name, content] of Object.entries({ ...authoringFiles, "presentation.schema.json": authoringSchema }))
+for (const [name, content] of Object.entries({ ...authoringFiles, "presentation.schema.json": authoringSchema, "presentation-v2.schema.json": vm.runInContext("JSON.stringify(paSchema(2), null, 2)", authoringContext) }))
   await writeFile(resolve(root, "dist/ai-authoring", name), content);
 const styles = (await Promise.all(config.styles.map(read))).join("\n");
 const vendor = await read(config.vendor);

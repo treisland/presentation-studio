@@ -614,6 +614,7 @@
         add(cfg.src);
         add(cfg.poster);
       }
+      for (const config of [value.backgrounds?.defaults,...Object.values(value.backgrounds?.slides||{})]) if(config?.kind==='image') add(config.asset);
       state(value.startingState);
     }
     // Booth exports pass a state-shaped payload rather than a project pack.
@@ -2078,7 +2079,7 @@
     let initial = null;
     try {
       const raw = JSON.parse($("project-config").textContent);
-      if ([2,3].includes(raw?.schemaVersion)) initial = projectValidatePack(raw);
+      if ([2,3,4].includes(raw?.schemaVersion)) initial = projectValidatePack(raw);
     } catch (e) {
       console.warn("Project content could not be loaded:", e.message);
     }

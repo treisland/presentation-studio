@@ -7,7 +7,8 @@ function navSignature(model) {
     projectState.design?.slides?.[model.id],projectState.design?.palette,
     projectState.visibility?.defaults,projectState.visibility?.slides?.[model.id],projectState.visibility?.groups?.[model.id],
     projectState.brand,projectState.settings,projectState.sections,
-    projectState.backgroundEffects?.defaults,projectState.backgroundEffects?.slides?.[model.id]]);
+    projectState.backgroundEffects?.defaults,projectState.backgroundEffects?.slides?.[model.id],
+    projectState.backgrounds?.defaults,projectState.backgrounds?.slides?.[model.id]]);
 }
 function navBusy() {
   return !!(vbSession || ceDrag || ceRelocate || dbDrag || mgDrag || editingGestureBusy() ||
