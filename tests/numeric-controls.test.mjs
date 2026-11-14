@@ -19,6 +19,7 @@ test('background sliders stage values, reverse speed, cancel inheritance and app
     await page.locator('#bg-presentation-speed-range').press('End');assert.equal(await page.locator('#bg-presentation-speed').inputValue(),'10');
     await page.locator('#bg-presentation-apply').click();assert.equal((await snapshot(page)).state.backgroundEffects.defaults.intensity,75);await page.locator('#we-settings-close').click();
     if(await page.locator('#ic-slide-settings').isVisible())await page.locator('#ic-slide-settings').click();
+    await reveal(page,'.bg-slide-settings');
     if(!await page.locator('.bg-slide-settings').evaluate(el=>el.open))await page.locator('.bg-slide-settings > summary').click();
     await page.locator('.bg-slide-settings .bg-advanced > summary').click();
     await drag(page,'bg-slide-intensity',[60]);await page.locator('[data-numeric="bg-slide-intensity"] .nc-reset').click();assert.equal(await page.locator('#bg-slide-intensity').inputValue(),'75');assert.deepEqual((await snapshot(page)).state.backgroundEffects.slides,{});

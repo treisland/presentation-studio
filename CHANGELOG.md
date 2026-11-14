@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Refine audio authoring with a dedicated Project Settings Audio tab, scoped Inspector Sound controls, audible preview seeking, and paired volume sliders/precise percentages. Consolidate slide Background navigation into Fill & image and Effects & motion while preserving existing settings and staged Apply behavior (#261).
+
 - Add audio corruption/recovery and overall/music acceptance coverage, exact development validation evidence and a concrete pending manual checklist (#247); no audible or release acceptance is inferred from CI.
 
 - Add explicit-gesture audience/booth audio playback, blocked-play recovery, session controls, narration-end padding arbitration and stale-event cancellation (#246). Keep private previews silent and independent audible acceptance pending.

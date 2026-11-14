@@ -8,7 +8,7 @@ import {reveal} from './ui.mjs';
 const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH,args:['--no-sandbox']});test.after(()=>browser.close());
 await mkdir('test-results',{recursive:true});
 await writeFile('test-results/audio-authoring.html',(await readFile('dist/presentation-studio.html','utf8')).replace('  projectInit();','window.__auTest={pack:projectPack,validate:projectValidatePack,legacy:auValidatePack,refs:()=>[...projectReferenced()],bytes:path=>mediaBlobs.get(path)?.size,byteData:async path=>Array.from(new Uint8Array(await mediaBlobs.get(path).arrayBuffer())),delayProbe:()=>{const probe=audioCore.probe;audioCore.probe=async(...args)=>{const info=await probe(...args);await new Promise(resolve=>window.__auRelease=resolve);return info;};}};\n  projectInit();'));
-function wave(){const rate=8000,count=rate,buffer=Buffer.alloc(44+count*2);buffer.write('RIFF');buffer.writeUInt32LE(buffer.length-8,4);buffer.write('WAVEfmt ',8);buffer.writeUInt32LE(16,16);buffer.writeUInt16LE(1,20);buffer.writeUInt16LE(1,22);buffer.writeUInt32LE(rate,24);buffer.writeUInt32LE(rate*2,28);buffer.writeUInt16LE(2,32);buffer.writeUInt16LE(16,34);buffer.write('data',36);buffer.writeUInt32LE(count*2,40);for(let i=0;i<count;i++)buffer.writeInt16LE(Math.round(Math.sin(i/rate*2*Math.PI*440)*1000),44+i*2);return buffer;}
+function wave(seconds=1){const rate=8000,count=rate*seconds,buffer=Buffer.alloc(44+count*2);buffer.write('RIFF');buffer.writeUInt32LE(buffer.length-8,4);buffer.write('WAVEfmt ',8);buffer.writeUInt32LE(16,16);buffer.writeUInt16LE(1,20);buffer.writeUInt16LE(1,22);buffer.writeUInt32LE(rate,24);buffer.writeUInt32LE(rate*2,28);buffer.writeUInt16LE(2,32);buffer.writeUInt16LE(16,34);buffer.write('data',36);buffer.writeUInt32LE(count*2,40);for(let i=0;i<count;i++)buffer.writeInt16LE(Math.round(Math.sin(i/rate*2*Math.PI*440)*1000),44+i*2);return buffer;}
 const fixture=wave();
 async function setup(){const page=await browser.newPage({acceptDownloads:true,viewport:{width:1366,height:900}}),errors=[];page.setDefaultTimeout(15000);page.on('pageerror',e=>errors.push(e.message));await page.goto('file://'+resolve('test-results/audio-authoring.html'));await page.locator('#open-full-editor').click();await chooseExample(page,'portfolio-demo');return {page,errors};}
 async function attach(page){await reveal(page,'#au-slide-file');await page.locator('#au-slide-file').setInputFiles({name:'original-tone.wav',mimeType:'audio/wav',buffer:fixture});await page.waitForFunction(()=>window.presentationStudioEditing.read().state.audio?.slides&&Object.keys(window.presentationStudioEditing.read().state.audio.slides).length===1);}
@@ -37,5 +37,32 @@ test('asynchronous attachment rejects a changed slide and locked authoring',asyn
   const before=await snapshot(page),[a,b]=before.state.slides;await page.evaluate(()=>window.__auTest.delayProbe());await reveal(page,'#au-slide-file');await page.locator('#au-slide-file').setInputFiles({name:'original.wav',mimeType:'audio/wav',buffer:fixture});await page.waitForFunction(()=>typeof window.__auRelease==='function');
   await page.locator('.fe-slide-button[data-slide-id="'+b.id+'"]').click();await page.evaluate(()=>window.__auRelease());await page.waitForFunction(()=>document.querySelector('#au-slide-status').textContent.includes('selection changed'));assert.equal((await snapshot(page)).state.audio,undefined);
   await page.locator('#wp-tab-arrange').click();await page.locator('#ce-slide-lock').click();const locked=await snapshot(page);const result=await operations(page,[{type:'audio.settings',role:'mode',slideId:b.id,mode:'slide'}]);assert.equal(result.ok,false);assert.deepEqual((await snapshot(page)).state,locked.state);assert.deepEqual(errors,[]);
+ }finally{await page.close();}
+});
+
+
+test('Audio settings has scoped audible transport and volume controls without duplicate background homes',async()=>{
+ const {page,errors}=await setup();try{
+  await page.evaluate(()=>{const create=document.createElement;window.__previewMedia=[];document.createElement=function(tag,...args){const node=create.call(this,tag,...args);if(tag.toLowerCase()==='audio')window.__previewMedia.push(node);return node;};});
+  await page.locator('#we-settings-open').click();await page.getByRole('tab',{name:'Audio',exact:true}).click();
+  assert.equal(await page.locator('#fe-audio-panel').isVisible(),true);assert.equal(await page.locator('#fe-brand-panel #au-presentation').count(),0);
+  await page.locator('#au-music-file').setInputFiles({name:'soundtrack.wav',mimeType:'audio/wav',buffer:wave(8)});
+  await page.waitForFunction(()=>!!window.presentationStudioEditing.read().state.audio?.music);
+  const attached=await snapshot(page);assert.match(await page.locator('#au-music-info').textContent(),/8.0 seconds/);
+  await page.locator('#au-music-preview').click();await page.waitForFunction(()=>document.querySelector('#au-music-preview').textContent==='Pause preview');
+  assert.equal(await page.locator('#au-music-stop').isEnabled(),true);assert.equal(await page.locator('#au-overall-stop').isDisabled(),true);
+  await page.locator('#au-music-preview').click();await page.locator('#au-music-seek').focus();await page.keyboard.press('Home');await page.keyboard.press('ArrowRight');
+  assert.equal(await page.locator('#au-music-seek').inputValue(),'0.1');assert.deepEqual((await snapshot(page)).state,attached.state);
+  await page.locator('#au-music-volume-slider').focus();await page.keyboard.press('Home');await page.keyboard.press('ArrowRight');
+  assert.equal((await snapshot(page)).state.audio.music.volume,.01);assert.equal(await page.locator('#au-music-volume').inputValue(),'1');assert.equal(await page.locator('#au-music-seek').isDisabled(),true);
+  await page.locator('#fe-undo').click();assert.equal((await snapshot(page)).state.audio.music.volume,0);await page.locator('#fe-undo').click();assert.equal((await snapshot(page)).state.audio.music.volume,1);
+  await page.locator('#au-music-preview').click();await page.waitForFunction(()=>document.querySelector('#au-music-preview').textContent==='Pause preview');
+  await page.evaluate(()=>window.__uiPreview=window.__previewMedia.find(n=>!n.paused));
+  await page.getByRole('tab',{name:'Branding',exact:true}).click();assert.equal(await page.locator('#fe-audio-panel').isVisible(),false);
+  assert.equal(await page.evaluate(()=>!!window.__uiPreview&&window.__uiPreview.paused&&!window.__uiPreview.getAttribute('src')&&window.__previewMedia.every(n=>n.paused)),true);
+  await page.locator('#we-settings-close').click();await reveal(page,'#cb-source');
+  assert.equal(await page.locator('#ic-slide-fields > details > summary').filter({hasText:/^Background$/}).count(),1);
+  assert.equal(await page.locator('#cb-inspector-background .bg-slide-settings > summary').textContent(),'Effects & motion');
+  assert.equal(await page.locator('#cb-panel').count(),1);assert.equal(await page.locator('#au-slide > summary').textContent(),'Sound This slide');assert.deepEqual(errors,[]);
  }finally{await page.close();}
 });
