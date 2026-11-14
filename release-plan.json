@@ -1,8 +1,8 @@
 {
   "version": "0.17.0-beta.1",
-  "publish": true,
+  "publish": false,
   "notes": "docs/releases/0.17.0-beta.1.md",
-  "manualGatesPassed": true,
+  "manualGatesPassed": false,
   "evidence": [
     "docs/releases/0.17.0-beta.1-validation.md",
     "docs/audio-acceptance.md",
