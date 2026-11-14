@@ -23,7 +23,7 @@ test('attach, replace, remove and Undo preserve guarded audio and original share
  }finally{await page.close();}
 });
 test('invalid audio, stale paths and locks cannot mutate authored state',async()=>{
- const {page,errors}=await setup();try{await reveal(page,'#au-slide-file');const before=await snapshot(page);await page.locator('#au-slide-file').setInputFiles({name:'broken.wav',mimeType:'audio/wav',buffer:Buffer.from('not wave')});await page.waitForFunction(()=>document.querySelector('#au-status').textContent.includes('cannot decode'));assert.deepEqual((await snapshot(page)).state,before.state);
+ const {page,errors}=await setup();try{await reveal(page,'#au-slide-file');const before=await snapshot(page);await page.locator('#au-slide-file').setInputFiles({name:'broken.wav',mimeType:'audio/wav',buffer:Buffer.from('not wave')});await page.waitForFunction(()=>document.querySelector('#au-slide-status').textContent.includes('cannot decode'));assert.deepEqual((await snapshot(page)).state,before.state);assert.equal(await page.locator('#au-slide-status').isVisible(),true);
  const id=before.state.slides[0].id,result=await operations(page,[{type:'audio.settings',role:'slide',slideId:id,track:{src:'assets/../secret.wav',name:'x.wav',mime:'audio/wav',bytes:1,durationMs:1000,volume:1,advanceOnEnd:false,paddingMs:500}}]);assert.equal(result.ok,false);assert.deepEqual((await snapshot(page)).state,before.state);assert.deepEqual(errors,[]);
  }finally{await page.close();}
 });
@@ -35,7 +35,7 @@ test('editable ZIP restores audio original bytes and guarded metadata in a clean
 test('asynchronous attachment rejects a changed slide and locked authoring',async()=>{
  const {page,errors}=await setup();try{
   const before=await snapshot(page),[a,b]=before.state.slides;await page.evaluate(()=>window.__auTest.delayProbe());await reveal(page,'#au-slide-file');await page.locator('#au-slide-file').setInputFiles({name:'original.wav',mimeType:'audio/wav',buffer:fixture});await page.waitForFunction(()=>typeof window.__auRelease==='function');
-  await page.locator('.fe-slide-button[data-slide-id="'+b.id+'"]').click();await page.evaluate(()=>window.__auRelease());await page.waitForFunction(()=>document.querySelector('#au-status').textContent.includes('selection changed'));assert.equal((await snapshot(page)).state.audio,undefined);
+  await page.locator('.fe-slide-button[data-slide-id="'+b.id+'"]').click();await page.evaluate(()=>window.__auRelease());await page.waitForFunction(()=>document.querySelector('#au-slide-status').textContent.includes('selection changed'));assert.equal((await snapshot(page)).state.audio,undefined);
   await page.locator('#wp-tab-arrange').click();await page.locator('#ce-slide-lock').click();const locked=await snapshot(page);const result=await operations(page,[{type:'audio.settings',role:'mode',slideId:b.id,mode:'slide'}]);assert.equal(result.ok,false);assert.deepEqual((await snapshot(page)).state,locked.state);assert.deepEqual(errors,[]);
  }finally{await page.close();}
 });

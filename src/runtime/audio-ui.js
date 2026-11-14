@@ -2,7 +2,7 @@ let auUIReady=false,auUIBusy=false,auPreview=null,auPreviewIdentity='',auUIEpoch
 const auCards=new Map();
 function auIdentity(){return JSON.stringify([projectMeta.id,projectSelected,editingRevision()]);}
 function auTrack(role){const audio=projectState.audio;return role==='slide'?audio?.slides?.[projectSelected]:audio?.[role];}
-function auStatus(message){if($('au-status'))$('au-status').textContent=message;}
+function auStatus(message){const settings=$('we-settings')?.open;for(const [id,active]of [['au-status',settings],['au-slide-status',!settings]])if($(id))$(id).textContent=active?message:'';}
 function auStopPreview(){if(auPreview){auPreview.pause();auPreview.removeAttribute('src');auPreview.load();auPreview=null;}auPreviewIdentity='';for(const card of auCards.values())card.preview.textContent='Play preview';}
 function auLocked(role){const slide=projectModel();return !weEditing()||vbMode!=='edit'||projectDraftPending||boothActive||projectState.editLocked||!slide||slide.editLocked||role!=='slide'&&projectState.slides.some(s=>s.editLocked);}
 function auApply(role,track,mode){
@@ -47,7 +47,7 @@ function auPaint(){
 function auMountUI(){
  const presentation=document.createElement('fieldset');presentation.id='au-presentation';presentation.className='au-panel';presentation.innerHTML='<legend>Presentation audio</legend><p>Use local prerecorded narration and separate background music. Audio-free projects keep their existing format. Audio projects require an audio-capable Studio.</p><label>Narration mode<select id="au-mode"><option value="none">None · retain attachments</option><option value="slide">Per-slide narration</option><option value="overall">One presentation-wide narration track</option></select></label><p>Overall narration continues across navigation and does not synchronize slides. Music and existing video audio mix independently; mute video where needed.</p><p id="au-status" role="status" aria-live="polite"></p>';
  $('fe-brand-panel').append(presentation);
- const section=document.createElement('details');section.id='au-slide';section.innerHTML='<summary>Slide audio</summary>';section.className='ids-section';$('ic-slide-fields').append(section);idsRegister(section);
+ const section=document.createElement('details');section.id='au-slide';section.innerHTML='<summary>Slide audio</summary><p id="au-slide-status" role="status" aria-live="polite"></p>';section.className='ids-section';$('ic-slide-fields').append(section);idsRegister(section);
  for(const [role,title,parent]of [['slide','Slide narration',section],['overall','Presentation-wide narration',presentation],['music','Background music',presentation]]){
   const card=document.createElement('fieldset');card.className='au-card';const legend=document.createElement('legend');legend.textContent=title;card.append(legend);
   const info=document.createElement('p');info.id='au-'+role+'-info';card.append(info);
