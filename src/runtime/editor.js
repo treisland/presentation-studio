@@ -602,6 +602,7 @@
     }
     function state(value) {
       if (!value) return;
+      for (const track of Object.values(value.audio?.slides || {}).concat([value.audio?.overall, value.audio?.music]).filter(Boolean)) add(track.src);
       for (const key of ["logo", "logoLight", "logoDark"])
         add(value.brand?.[key]);
       const media = [
@@ -2082,7 +2083,7 @@
     let initial = null;
     try {
       const raw = JSON.parse($("project-config").textContent);
-      if ([2,3,4].includes(raw?.schemaVersion)) initial = projectValidatePack(raw);
+      if ([2,3,4,5].includes(raw?.schemaVersion)) initial = projectValidatePack(raw);
     } catch (e) {
       console.warn("Project content could not be loaded:", e.message);
     }
