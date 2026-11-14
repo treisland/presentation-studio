@@ -1,8 +1,9 @@
 # Companion documentation and image maintenance
 
 Issue #193. Follow the [companion charter](companion-site-charter.md). The maintainer
-approved local implementation/review; public hostname, hosting and launch remain
-deferred. No content PR enables public publication implicitly.
+confirmed the public launch at https://docs.pres-studio.com/. Deployment is owned
+by treisland/presentation-studio-site. App content PRs do not authorize changes
+to that deployment, its DNS or publication policy.
 
 ## Updating content
 
@@ -56,8 +57,6 @@ when unperformed. Implementation assignment does not grant DNS or service adopti
 
 Local rollback rebuilds a previous content commit against its recorded app artifact
 and image manifest. Verify content identity, links and output isolation; application
-release identity and browser recovery remain untouched. Public rollback procedures,
-environment permissions and immutable inputs must be approved with the separate
-launch policy before a publishing workflow exists. A later content correction may
-publish independently only under that explicit policy. App promotions continue to
+release identity and browser recovery remain untouched. Public rollback, permissions and immutable inputs belong to the separate deployment
+repository and its approved policy. Content corrections publish only under that policy. App promotions continue to
 use their existing release-plan, exact-commit, workflow and artifact gates.

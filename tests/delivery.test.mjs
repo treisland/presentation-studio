@@ -227,3 +227,8 @@ test('queue reviews are head-bound and dev integration never supplies release co
   f.state.prs=[{...pr,baseRefName:'main'}];
   assert.deepEqual(f.run(true),[]);
 });
+
+test('delivery requires dev protection before any queue or publication mutation', () => {
+ const paths=[];assert.throws(()=>deliver(true,{api:path=>{paths.push(path);if(path==='')return {allow_auto_merge:true};if(path==='branches/main/protection')return {enforce_admins:{enabled:true},required_status_checks:{strict:true,checks:requiredChecks.map(context=>({context,app_id:15368}))},required_pull_request_reviews:{},required_conversation_resolution:{enabled:true}};return null;},run:()=>{throw Error('Must not queue');}}),/dev protections/);
+ assert(paths.includes('branches/dev/protection'));
+});

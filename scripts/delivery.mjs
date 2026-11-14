@@ -64,9 +64,10 @@ export function deliver(apply = false, { api = createGitHubAPI(), run = gh } = {
   const changes = [];
   if (apply) {
     const settings = api('');
-    const protection = optional('branches/main/protection');
-    if (!protectedDelivery(settings, protection))
-      throw new Error('Automatic delivery blocked: approved repository auto-merge and main protection configuration must be enabled first');
+    for (const branch of ['main', 'dev']) {
+      if (!protectedDelivery(settings, optional(`branches/${branch}/protection`)))
+        throw new Error(`Automatic delivery blocked: approved repository auto-merge and ${branch} protections are required`);
+    }
   }
   const prs = JSON.parse(run(['pr', 'list', '--repo', repository, '--state', 'open', '--limit', '100', '--json', 'number,baseRefName,headRefName,isDraft,author,labels,headRefOid,isCrossRepository,reviewDecision,autoMergeRequest,mergeStateStatus']));
   for (const pr of prs) {
