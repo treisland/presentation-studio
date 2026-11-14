@@ -43,7 +43,8 @@
     "src/styles/library-navigation.css",
     "src/styles/component-thumbnails.css",
     "src/styles/presenter-holding.css",
-    "src/styles/presenter-workspace.css"
+    "src/styles/presenter-workspace.css",
+    "src/styles/audio.css"
   ],
   "scripts": [
     "src/runtime/prelude.js",
@@ -80,6 +81,7 @@
     "src/runtime/text-types.js",
     "src/runtime/background-effects-core.js",
     "src/runtime/custom-background-core.js",
+    "src/runtime/audio-core.js",
     "src/runtime/authoring-definitions.js",
     "src/runtime/components.js",
     "src/runtime/code-library.js",
@@ -118,6 +120,7 @@
     "src/runtime/viewer-footer.js",
     "src/runtime/library-actions.js",
     "src/runtime/viewer-presets.js",
+    "src/runtime/audio-authoring.js",
     "src/runtime/presenter-session.js",
     "src/runtime/presenter-thumbnails.js",
     "src/runtime/presenter-browser.js",
@@ -126,6 +129,7 @@
     "src/runtime/presenter-workspace.js",
     "src/runtime/library-navigation.js",
     "src/runtime/component-thumbnails.js",
+    "src/runtime/audio-ui.js",
     "src/runtime/boot.js"
   ],
   "vendor": "vendor/jszip-3.10.1.min.js"
