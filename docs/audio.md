@@ -30,4 +30,5 @@ Standalone booth exports include the shared controller and original audio files,
 
 Automated synthetic WAV checks prove timing/state, asset bundling and offline restoration; they do not prove physical speakers, audible level, real codec coverage or dual-display/screen-reader acceptance. Record those separately under #247.
 
+Use [the manual acceptance checklist](audio-acceptance.md) and [development validation record](audio-validation.md) for exact evidence and pending checks.
 Public playback, Presenter snapshots and booth exports include only active narration mode/music and eligible visible slides. Inactive narration assignments and their unused original files remain in editable ZIPs and recovery, not public delivery packages. Choosing None without music produces silent public output.
