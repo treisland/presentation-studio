@@ -555,6 +555,7 @@ function boothStandalone(geometry, mediaLayout, backgroundFactory, wireNavigatio
     if (p.navigation || unlocked) {
       playing = !playing;
       paint();
+      if(playing){audioChannel?.postMessage({owner:audioOwner,project:audioProject});audio?.enable();}
     }
   };
   $("booth-home").onclick = home;
@@ -711,6 +712,7 @@ function boothStandalone(geometry, mediaLayout, backgroundFactory, wireNavigatio
       cfg = data.media[current];
     if (
       playing &&
+      !audio?.hold() &&
       !focus &&
       data.loop.includes(current) &&
       !(cfg?.kind === "video" && ["manual", "ended"].includes(cfg.advance))
