@@ -15,3 +15,5 @@ test('audio roles retain original references with bounded authored metadata',()=
  assert.equal(core.mime('recording.MP3',''),'audio/mpeg');
  assert.throws(()=>core.mime('recording.mp3','audio/ogg'));
 });
+
+test('build identity advertises guarded native v5 without changing authoring/component generations',()=>{const source=readFileSync(new URL('../scripts/build.mjs',import.meta.url),'utf8');assert.match(source,/native:\[2,3,4,5\]/);assert.match(source,/authoring:\[1,2\],library:\[1\]/);});
