@@ -1,6 +1,6 @@
 # Contributing
 
-Use a feature branch and pull request. Describe the user-visible problem, changed behavior, and validation. Keep customer-specific projects, credentials, proprietary source code, and recordings outside the repository.
+Use a codex/ feature branch and pull request targeting dev. Promote dev through a reviewed dev-to-main PR; never commit or push directly to either protected branch. Describe the user-visible problem, changed behavior, and validation. Keep customer-specific projects, credentials, proprietary source code, and recordings outside the repository.
 
 ## Delivery workflow
 
@@ -8,7 +8,7 @@ Read [the release process](docs/release-process.md) and [roadmap](docs/roadmap.m
 
 Release preparation uses a separate explicit version and release plan. Feature PRs update Unreleased without choosing a release version. New features increment minor; compatible fixes increment patch. See the release process for alpha, beta, RC and stable gates.
 
-Companion documentation and image updates follow [the website maintenance process](docs/website-process.md). Public launch remains separately approved.
+Companion documentation and image updates follow [the website maintenance process](docs/website-process.md). The public companion is https://docs.pres-studio.com/; treisland/presentation-studio-site owns deployment separately.
 
 ## Local checks
 
