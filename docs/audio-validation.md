@@ -1,5 +1,7 @@
 # Audio development validation
 
+Beta update: the maintainer subsequently reported audible playback, browser activation/codecs, dual windows/displays, keyboard/screen-reader, layout and exported asset reload checks passed and authorized v0.17.0 beta. See [the release evidence record](releases/0.17.0-beta.1-validation.md). Historical pending statements below describe the earlier development run, not the later maintainer report. Final manual artifact/environment details remain unspecified.
+
 This is development evidence, not release or manual sign-off. The validated candidate below includes the authoring-status, audience-timeout, public-export privacy and booth/video ownership fixes. Earlier baseline evidence is retained separately. Published v0.16.0 remains unchanged. The maintainer approved guarded native v5 for audio-bearing projects on 2026-11-13; legacy/audio-free formats remain supported.
 
 ## Validated runtime candidate

@@ -1,22 +1,13 @@
 {
-  "version": "0.16.0",
+  "version": "0.17.0-beta.1",
   "publish": true,
-  "notes": "docs/releases/0.16.0.md",
+  "notes": "docs/releases/0.17.0-beta.1.md",
   "manualGatesPassed": true,
   "evidence": [
-    "docs/releases/0.16.0-validation.md",
-    "docs/releases/0.16.0-beta.1-validation.md",
-    "docs/v0.16.0-acceptance.md",
+    "docs/releases/0.17.0-beta.1-validation.md",
+    "docs/audio-acceptance.md",
+    "docs/audio-validation.md",
     "docs/known-issues.md",
     "docs/import-compatibility.md"
-  ],
-  "distribution": {
-    "targets": [
-      "pages",
-      "docker"
-    ],
-    "channels": [
-      "stable"
-    ]
-  }
+  ]
 }
