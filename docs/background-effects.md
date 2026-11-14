@@ -10,7 +10,7 @@ The beta improvement keeps the existing native-v3 settings unchanged. Start with
 
 Open **Project settings → Background**. Choose a visual preset, then **Apply background**. Controls stage an independent preview until Apply; changes are one Undo step. **Restore original orb** removes the presentation override while preserving any slide overrides.
 
-For one slide, open **Slide settings → Content → Background** in the Inspector. **Use presentation default** removes the slide override; **Slide override** replaces the complete inherited effect configuration. Newly added slides inherit the defaults. Duplicating a slide copies its explicit override independently. Slide/presentation locks reject protected changes.
+For one slide, open **Slide settings → Content → Background → Effects & motion** in the Inspector. **Use presentation default** removes the slide override; **Slide override** replaces the complete inherited effect configuration. Newly added slides inherit the defaults. Duplicating a slide copies its explicit override independently. Slide/presentation locks reject protected changes.
 
 | Preset | Appearance |
 | --- | --- |

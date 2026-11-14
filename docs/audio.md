@@ -2,9 +2,9 @@
 
 Development feature for milestone 22; not part of the published v0.16.0 app. Authoring is introduced in #245. Audience/booth playback is implemented in #246; independent actual audible acceptance remains #247. These development changes do not authorize a release.
 
-In the slide Inspector, open **Slide audio** to attach or replace local per-slide narration. **Project settings → Presentation audio** owns the narration mode, one overall narration track and separate background music. Modes are None, Per-slide and Presentation-wide; switching modes retains inactive attachments. Background music has its own volume and looping. Existing video audio is independent; mute it if you do not want mixing.
+In the slide Inspector, open **Sound** to attach or replace local per-slide narration. **Project settings → Audio** owns the narration mode, one overall narration track and separate background music. Modes are None, Per-slide and Presentation-wide; switching modes retains inactive attachments. Background music has its own volume and looping. Existing video audio is independent; mute it if you do not want mixing.
 
-Choose a supported MP3, WAV, M4A/AAC or Ogg file. MP3/WAV are recommended; actual codec support depends on the browser. Empty, malformed, unsupported or timed-out files leave the previous assignment intact. Tracks show filename and measured duration. Playback preview is local to the editor, never advances slides and never sends sound to Presenter. Play/Pause preview retains position; Stop resets it. Switching slide/project, replacing settings or closing the editor stops preview.
+Choose a supported MP3, WAV, M4A/AAC or Ogg file. MP3/WAV are recommended; actual codec support depends on the browser. Empty, malformed, unsupported or timed-out files leave the previous assignment intact. Tracks show filename and measured duration. Playback preview is local to the editor, never advances slides and never sends sound to Presenter. **Preview with sound** plays an audible local preview. Pause/Resume retains position; Stop resets it. The seek bar shows elapsed/total time and supports keyboard seeking after preview starts. Paired volume sliders and percentage fields edit the same authored setting in one undoable change. Each track identifies its scope and whether the selected narration mode uses it. Switching slide/project, replacing settings or closing the editor stops preview.
 
 Each role has authored volume. A slide can request advance on narration end, with integer padding from 0 to 600000 ms (500 ms default); narration-end playback arbitration takes precedence over both slide timers and video-ended advancement. Overall narration does not synchronize slide changes or advance individual slides. There is no ducking, recording, TTS or timeline editor.
 
@@ -32,3 +32,9 @@ Automated synthetic WAV checks prove timing/state, asset bundling and offline re
 
 Use [the manual acceptance checklist](audio-acceptance.md) and [development validation record](audio-validation.md) for exact evidence and pending checks.
 Public playback, Presenter snapshots and booth exports include only active narration mode/music and eligible visible slides. Inactive narration assignments and their unused original files remain in editable ZIPs and recovery, not public delivery packages. Choosing None without music produces silent public output.
+
+## Audio properties and design scope
+
+Project Settings has a dedicated **Audio** tab; Branding no longer contains audio properties. Choose the narration mode, manage the presentation-wide narration track, and attach a presentation soundtrack with independent volume and looping. Soundtrack start/stop behavior is fixed by presentation playback; its helper text describes that behavior. Slide narration remains under Inspector → Sound, including advance-on-end and padding. Video mute/loop/playback stays with the selected video. Switching settings tabs, closing settings/editor, changing slide/project or changing an assignment stops the local preview. Preview seeking never changes slides or saved track positions.
+
+The design concepts include possible future ducking, fades/trimming and waveform editing. Those capabilities are not implemented by this UI refinement, and no nonfunctional controls are shown. Project formats and playback policy remain unchanged.

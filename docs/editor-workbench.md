@@ -34,3 +34,7 @@ Editor layout, snap preference, theme tokens and panel geometry are not saved in
 6. Export a media/history editable ZIP, restore in a clean profile and verify offline playback and legacy imports. Verify component library transfer separately.
 
 Automated regression coverage does not substitute for manual screen-reader, real browser zoom or final visual acceptance.
+
+## Wide-screen editor sizing
+
+The editor follows the browser window with an 8 px inset on each side, including displays wider than 1920 px. Its workspace and Fit slide view resize with the available canvas area. Side-panel visibility, widths and zoom remain view preferences; resizing does not alter slide dimensions or saved project content.

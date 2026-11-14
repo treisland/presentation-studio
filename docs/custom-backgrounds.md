@@ -102,3 +102,7 @@ Inspector and project settings share one editor; they do not keep conflicting
 copies of staged fields. Opening project settings starts at Presentation scope;
 returning to the canvas restores This slide scope. Existing background media can
 still cover a custom layer; inspect that media when a saved background is obscured.
+
+### Consolidated Inspector navigation
+
+Open the slide Inspector’s single **Background** section. **Fill & image** contains the staged theme, solid, gradient and image controls. **Effects & motion** contains decorative presets and motion. Each editor keeps its own Apply/reset actions; a fill change does not overwrite effects or vice versa. Presentation defaults remain in Project Settings → Background.

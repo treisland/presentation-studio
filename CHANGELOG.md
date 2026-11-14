@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Refine audio authoring with a dedicated Project Settings Audio tab, scoped Inspector Sound controls, audible preview seeking, and paired volume sliders/precise percentages. Consolidate slide Background navigation into Fill & image and Effects & motion while preserving existing settings and staged Apply behavior (#261).
+
+- Let the editor use the available browser width on ultrawide displays instead of stopping at 1920 pixels.
+
 ## 0.17.0-beta.1 — 2026-11-13
 
 - Prepare the maintainer-authorized Audio & narrated playback beta; retain known issue #241 and original asset compatibility.

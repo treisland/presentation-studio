@@ -38,7 +38,7 @@ body #full-editor {
   box-sizing: border-box;
   width: calc(100vw - 16px);
   height: calc(100dvh - 16px);
-  max-width: 1920px;
+  max-width: none;
   max-height: none;
   border: 1px solid var(--wb-line);
   border-radius: 12px;
