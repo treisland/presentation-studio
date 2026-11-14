@@ -34,6 +34,6 @@ editingRegisterOperation('audio.settings',(state,op)=>{
  if(audio.mode==='none'&&!Object.keys(audio.slides).length&&!audio.overall&&!audio.music)delete state.audio;else state.audio=audio;
 });
 const auBooth=boothExportData;
-boothExportData=function(...args){const data=auBooth(...args);if(projectState.audio){data.audio=audioCore.settings(projectState.audio);const ids=new Set(data.slides.map(s=>s.id));data.audio.slides=Object.fromEntries(Object.entries(data.audio.slides).filter(([id])=>ids.has(id)));}return data;};
+boothExportData=function(...args){const data=auBooth(...args);if(projectState.audio){data.audioProject=projectMeta.id;data.audio=audioCore.settings(projectState.audio);const ids=new Set(data.slides.map(s=>s.id));data.audio.slides=Object.fromEntries(Object.entries(data.audio.slides).filter(([id])=>ids.has(id)));}return data;};
 const auComponentSave=componentSave;
 componentSave=function(...args){if(projectState.audio?.slides?.[projectSelected]){projectMessage('Slide narration is not supported by the current component format. Save the complete editable ZIP to retain audio.');return;}return auComponentSave(...args);};
