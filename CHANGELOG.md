@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Propose the Audio & narrated playback behavior, compatibility and acceptance contract (#244); native v5 remains subject to maintainer approval, with no runtime or format change yet.
+
 ## 0.16.0 — 2026-11-13
 
 - Promote the verified v0.16.0-beta.1 runtime to the maintainer-authorized official release without feature changes. Retain known issue #241 for a patch and recommend window capture; companion public launch remains deferred.

@@ -1,5 +1,7 @@
 # Roadmap
 
+Audio milestone 22 is the next maintainer-assigned workstream after v0.16.0. Start with [the proposed audio contract](audio-contract.md) in #244; #245/#246 persistence awaits explicit format review, followed by #247 independent acceptance. Known #241 remains outside this milestone.
+
 The maintainer also approved the action-control concept within 0.12.0 / PR #161: shared outline icons for repetitive editor actions, contextual hover/focus tooltips, labeled Edit blocks/Preview modes, accessible names, safe destructive-action emphasis and touch/forced-color support. Existing handlers, saved formats and release gates remain authoritative. The broader illustrative mockup layout is outside this refinement. See [action behavior](editor-workbench.md). The maintainer confirmed all manual gates passed for final runtime build `2354557` and approved beta release; protected delivery remains required.
 
 0.11.0 production acceptance: after RC testing passed, the maintainer explicitly approved production sign-off. [#156](https://github.com/treisland/presentation-studio/issues/156) prepares [stable 0.11.0](releases/0.11.0-validation.md) and production Pages/Docker promotion without runtime changes. The accepted [RC](releases/0.11.0-rc.1-validation.md) includes template-table focus/data-preservation fixes (#139/#140) and stable navigator snapshots (#143/#144). Existing-template grouping convenience remains outside this scope. Background-effects planning PR #155 is deferred and is not part of this production release.
