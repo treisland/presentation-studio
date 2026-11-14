@@ -4,6 +4,12 @@
 
 The roadmap describes Now/Next/Later. GitHub issues hold scope, acceptance criteria, risks, and validation. Milestones define a release's scope; their issues are its delivery board until GitHub Projects access is configured. CONTRIBUTING.md is the contributor entry point; AGENTS.md applies the same rules to coding agents. CHANGELOG.md records shipped behavior and pending changes.
 
+## Protected integration branches
+
+Ordinary codex/* feature and fix PRs target dev. Only same-repository dev-to-main promotion PRs target main. Never commit or push directly to main or dev. Both branches require strict, up-to-date GitHub Actions Windows/Linux validation, enforced administrators, pull requests and resolved conversations; force pushes and deletion are disabled. The branch-policy check rejects feature-to-main and fork dev impersonation. Keep these protections intact. The default branch is dev after the migration is deployed.
+
+Release preparation may be integrated on dev, but only its reviewed promotion into main authorizes publication. Dev builds and plans never publish. If main receives a platform-created promotion merge commit, bring it back through a main-to-dev synchronization PR before the next promotion; do not reset or force-push dev. Required checks run independently on both branches and promotion PRs.
+
 ## Versions and readiness
 
 Use MAJOR.MINOR.PATCH. Backward-compatible features increment MINOR; fixes increment PATCH. Breaking changes need explicit migration and compatibility review (before 1.0, signal these with a minor increment). Version 1.0 commits to documented project-format and core-workflow compatibility. Stable 0.x releases still state their support scope explicitly.
@@ -16,7 +22,7 @@ For 0.2 use 0.2.0-alpha.1, alpha.2, beta.1, rc.1, then 0.2.0. Alpha scope can ev
 2. A maintainer assigns a milestone and labels complete, approved work agent-ready. Ready issues are actionable; blocked issues are not.
 3. Implement on a feature branch, link the issue, test, and update docs/changelog. Draft PRs remain outside automatic merging.
 4. Ready PRs require both Windows and Linux validation, an up-to-date branch, and resolved conversations. No admin bypass, force push, or branch deletion is allowed on main.
-5. The delivery heartbeat enables native GitHub auto-merge for non-draft main-targeting PRs authored by the repository owner or approved with auto-merge by a maintainer. hold blocks automation. External contributions need maintainer scope approval before receiving auto-merge. GitHub enforces required checks at merge time. Outstanding changes-requested reviews are never bypassed.
+5. The delivery heartbeat enables native GitHub auto-merge for non-draft dev-targeting PRs and same-repository dev-to-main promotion PRs authored by the repository owner or approved with auto-merge by a maintainer. hold blocks automation. External contributions need maintainer scope approval before receiving auto-merge. GitHub enforces required checks at merge time. Outstanding changes-requested reviews are never bypassed.
 
 No approving review is mandatory for the current solo-maintainer workflow; review remains available and conversations must be resolved. Add required approvals when another maintainer is available. Automation must not grant itself approval labels on unapproved contributions.
 
@@ -24,7 +30,7 @@ No approving review is mandatory for the current solo-maintainer workflow; revie
 
 Routine feature PRs do not publish. A release preparation PR aligns package.json, package-lock.json, README version, CHANGELOG.md and release-plan.json, and adds focused notes under docs/releases/. Merging this explicit plan authorizes its version for automatic publication after gates pass. Never reuse a published version or move an existing tag.
 
-The delivery heartbeat runs scripts/delivery.mjs --apply from a clean checkout of main. Without --apply it reports intended actions. It first queues eligible PRs, then examines main independently. A release requires successful Windows/Linux checks on the exact main SHA, a matching approved release plan and package version, valid release notes, and no open release-blocker issues. Beta/RC/stable additionally require recorded manual gate evidence in the plan. The script creates a lightweight vVERSION tag on that validated SHA through GitHub's API; the tag workflow rebuilds and tests before creating a draft.
+The delivery heartbeat runs scripts/delivery.mjs --apply from a clean checkout of main. Without --apply it reports intended actions. It verifies both protected branches, excludes unresolved review threads at the verified PR head, queues eligible PRs, then examines main independently. A release requires successful Windows/Linux checks on the exact main SHA, a matching approved release plan and package version, valid release notes, and no open release-blocker issues. Beta/RC/stable additionally require recorded manual gate evidence in the plan. The script creates a lightweight vVERSION tag on that validated SHA through GitHub's API; the tag workflow rebuilds and tests before creating a draft.
 
 On a later run, the script discovers drafts through authenticated paginated release listings and retrieves the matching release by ID. It verifies the immutable tagged commit's validation and successful tag workflow, and exactly four expected nonempty uploaded artifacts with digests. Main may advance, but the tagged commit must remain its ancestor and the current release authorization must match the tagged plan. Notes come from the tagged commit, never newer main content. Changed or cancelled plans require review; tags are never moved. The script publishes alpha/beta/rc as prereleases and stable as a normal release. Publication never runs on a failed or pending workflow. Subsequent runs do nothing for an already published version. Missing drafts, discovery failures and invalid artifacts produce distinct diagnostics.
 
@@ -51,7 +57,7 @@ decision does not waive actual delivery-video or other app acceptance checks.
 
 ## Companion content review
 
-Record each supported screenshot scene as refreshed, reviewed-and-still-accurate, or pending, with its app channel/version/SHA and provenance. Follow [the website process](website-process.md). Companion public launch remains deferred; app release authorization does not publish companion content.
+Record each supported screenshot scene as refreshed, reviewed-and-still-accurate, or pending, with its app channel/version/SHA and provenance. Follow [the website process](website-process.md). The companion is live at https://docs.pres-studio.com/ with deployment owned by treisland/presentation-studio-site. App release authorization does not publish companion content or authorize changes to that deployment.
 
 ## Additional distribution channels
 

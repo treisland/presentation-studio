@@ -6,6 +6,18 @@ The maintainer also approved the action-control concept within 0.12.0 / PR #161:
 
 ## Current delivery plan
 
+As of 2026-11-13, v0.16.0 is published and latest, with stable Pages/GHCR promotion complete. Historical shipped milestones have been archived. Independent remaining acceptance is tracked in [Ongoing validation and maintenance](https://github.com/treisland/presentation-studio/milestone/25), including #7, #9, #195 and #197. Known #241 remains open for a separately scoped patch; it is not part of the audio work.
+
+**Now — [Audio & narrated playback](https://github.com/treisland/presentation-studio/milestone/22):** #244 defines the behavior, compatibility and acceptance contract first; #245 authoring follows that contract, #246 implements playback, and #247 records automated and independent audible/manual evidence. A new saved-format generation needs explicit maintainer review before implementation. No release version is selected by this roadmap.
+
+**Later:** quiz/poll interactions (milestone 23), charts (24), and advanced masking (15) remain planning scope. Their existence is not implementation authorization.
+
+The public companion is [docs.pres-studio.com](https://docs.pres-studio.com/), deployed by the separate presentation-studio-site repository. Its provenance still records fresh-user and screen-reader checks as pending.
+
+## Historical delivery log
+
+The entries below retain the decisions and evidence recorded at each historical stage; their old pending/stable statements are not the current release status.
+
 **v0.15.0 — Unified Inspector and Contextual Actions — [milestone 16](https://github.com/treisland/presentation-studio/milestone/16):** the maintainer authorized beginning implementation after release acceptance. #188 establishes collapsible Inspector navigation and the control ownership/deprecation map; #189 consolidates media editing after parity; #190 adds shared accessible context menus for Library cards and placed objects. Keep one primary home per setting and consistent alternative shortcuts. Preserve locks, Undo, identities, recovery and offline formats. See [navigation contract and review](inspector-navigation.md). Release preparation and manual acceptance remain separate.
 
 The maintainer confirmed all UI tests and explicitly listed manual release gates passed on latest 0.13.0 runtime `1361138`, with beta sign-off. Release preparation is [#166](https://github.com/treisland/presentation-studio/issues/166), targeting 0.13.0-beta.1. See [release notes](releases/0.13.0-beta.1.md), [validation and authorization](releases/0.13.0-beta.1-validation.md) and [manual checklist](0.13.0-manual-test-plan.md). Protected source/release/exact-main/tag/artifact gates remain mandatory.

@@ -69,21 +69,19 @@ Read-only routing observation on 2026-11-12: `https://pres-studio.com/` returned
 These observations are evidence of current routing, not permission to reconfigure it.
 
 Preserve stable/beta app URLs, browser storage/recovery and verified app HTML bytes.
-No hostname or hosting provider is chosen for the companion. No public trigger,
-environment, token, deployment workflow or automatic publication is enabled. A
-future launch proposal must specify hostname/hosting, least-privilege authority,
-immutable content/app inputs, manual approval, rollback and tested separation from
-app promotion. Content-only publication can be independent only after that policy
-is explicitly approved. Local preview rollback is rebuilding an earlier content
-commit against the same recorded artifact; it does not roll back the app or drafts.
+The maintainer confirmed on 2026-11-13 that https://docs.pres-studio.com/ is public,
+with deployment handled by treisland/presentation-studio-site. Preserve that separate
+ownership; this app repository supplies canonical content and capture tooling,
+not implicit authority to change DNS or deployment. Local preview rollback rebuilds
+an earlier content commit against its recorded app artifact and does not roll back
+the app or drafts.
 
-## Acceptance and deferred launch
+## Acceptance after launch
 
-#193 documents maintenance and concise agent/PR/release responsibilities. #194
-implements captures/provenance, #195 the first-success guide/examples, and #196 the
-local companion. #197 validates isolation, rollback and launch readiness, recording
-public deployment as deferred by the maintainer. A first-user walkthrough and manual
-keyboard/mobile/image review remain actual evidence to collect, not CI assumptions.
+#193/#194/#196 are implemented. #195 and #197 remain open for independent first-user
+and accessibility acceptance under ongoing validation milestone 25. Public launch
+is confirmed, while public provenance still records fresh-user observation and
+screen-reader review as pending. See [milestone reconciliation](milestone-reconciliation.md).
 
 Documentation-only PRs run build, unit tests and diff checks. Build/capture/workflow
 changes run the full check and package commands plus focused link, provenance and
