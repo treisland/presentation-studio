@@ -1,8 +1,8 @@
 # Audio development validation
 
-This is development evidence, not release or manual sign-off. Published v0.16.0 remains unchanged. The maintainer approved guarded native v5 for audio-bearing projects on 2026-11-13; legacy/audio-free formats remain supported.
+This is development evidence, not release or manual sign-off. The earlier baseline below is superseded by later authoring-status, audience-timeout recovery and public-export privacy fixes. Use the latest candidate receipt and PR validation for manual review. Published v0.16.0 remains unchanged. The maintainer approved guarded native v5 for audio-bearing projects on 2026-11-13; legacy/audio-free formats remain supported.
 
-## Completed baseline
+## Superseded development baseline
 
 - Runtime revision: 7bff824f7ea945b73ce2b82084cacc1e2a4c10b6; embedded channel development, dirty=false, package version 0.16.0 (no new release version selected).
 - Environment: Windows 10.0.26300 x64; Node v26.13.0; Playwright Chromium 151.0.7922.34, headless file-URL checks. This is not Chrome/Edge/Firefox manual sign-off.
