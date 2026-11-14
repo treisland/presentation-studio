@@ -1,6 +1,6 @@
 # Roadmap
 
-Audio milestone 22 is the next maintainer-assigned workstream after v0.16.0. Start with [the proposed audio contract](audio-contract.md) in #244; #245/#246 persistence awaits explicit format review, followed by #247 independent acceptance. Known #241 remains outside this milestone.
+Audio milestone 22 is the next maintainer-assigned workstream after v0.16.0. Start with [the approved audio contract](audio-contract.md) in #244; #245/#246 use the maintainer-approved guarded v5 design, followed by #247 independent acceptance. Known #241 remains outside this milestone.
 
 The maintainer also approved the action-control concept within 0.12.0 / PR #161: shared outline icons for repetitive editor actions, contextual hover/focus tooltips, labeled Edit blocks/Preview modes, accessible names, safe destructive-action emphasis and touch/forced-color support. Existing handlers, saved formats and release gates remain authoritative. The broader illustrative mockup layout is outside this refinement. See [action behavior](editor-workbench.md). The maintainer confirmed all manual gates passed for final runtime build `2354557` and approved beta release; protected delivery remains required.
 

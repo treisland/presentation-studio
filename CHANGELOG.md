@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- Propose the Audio & narrated playback behavior, compatibility and acceptance contract (#244); native v5 remains subject to maintainer approval, with no runtime or format change yet.
+- Record the Audio & narrated playback contract (#244) and maintainer-approved guarded native v5 design; runtime implementation and acceptance remain outstanding.
 
 ## 0.16.0 — 2026-11-13
 

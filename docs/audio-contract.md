@@ -1,6 +1,6 @@
 # Audio and narrated playback — proposed contract (#244)
 
-Status: design proposal for milestone 22, not implemented or release approval. The maintainer authorized this milestone after v0.16.0. Native format v5 below requires explicit maintainer approval before persistence/runtime work in #245/#246. Current v0.16.0 remains unchanged; #241 is deferred separately.
+Status: maintainer-approved design for milestone 22, not implemented or release approval. On 2026-11-13 the maintainer explicitly answered “Approve guarded audio v5” for audio-bearing projects, with retained v1–v4 imports and existing audio-free export generations. This authorizes the guarded format design for #245/#246. Current v0.16.0 remains unchanged; #241 is deferred separately.
 
 ## Roles and authoring
 
@@ -44,7 +44,7 @@ Propose native project schemaVersion 5 only when audio settings/assignments are 
 
 Older v0.16 readers must reject v5 explicitly instead of silently dropping audio. Import/recovery/component/AI/HTML/playback/booth/editable-ZIP paths must preserve supported roles and original bytes or reject clearly. Ordinary components exclude presentation-wide audio; component save/import of a slide with narration must either carry its typed dependency under an explicitly compatible component version or visibly reject it until that version is approved. Do not imply current component formats can carry it. Never add a downgrade option that silently strips audio. AI instructions/schema/catalog need an explicit compatible authoring extension before audio can be generated/imported there; older authored packs still work.
 
-Approval requested: guarded native v5 for audio-bearing projects, retaining v1–v4 import and existing generation for audio-free packs. This proposal is not self-approval. Authoring/playback persistence is blocked until the maintainer accepts or revises it.
+Approval recorded: guarded native v5 for audio-bearing projects, retaining v1–v4 import and existing generation for audio-free packs. The maintainer approved this concrete proposal in chat on 2026-11-13. Runtime implementation and actual acceptance evidence remain outstanding.
 
 ## Acceptance matrix and delivery order
 
