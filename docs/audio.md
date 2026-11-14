@@ -29,3 +29,5 @@ Blackout/holding pauses audio and keeps positions. Restore requires explicit Res
 Standalone booth exports include the shared controller and original audio files, work offline and expose their own explicit activation/controls. Their slide and video timers yield to narration-end ownership. Existing video audio stays independent; no automatic ducking or implicit video muting is added. Media focus pauses/resumes under the same single controller and does not instantiate duplicate tracks.
 
 Automated synthetic WAV checks prove timing/state, asset bundling and offline restoration; they do not prove physical speakers, audible level, real codec coverage or dual-display/screen-reader acceptance. Record those separately under #247.
+
+Public playback, Presenter snapshots and booth exports include only active narration mode/music and eligible visible slides. Inactive narration assignments and their unused original files remain in editable ZIPs and recovery, not public delivery packages. Choosing None without music produces silent public output.

@@ -20,7 +20,7 @@ const auLiveInit=projectInit;projectInit=function(...args){const result=auLiveIn
   const parent=auDocumentKind==='audience'?document.body:$('hub-player-more').querySelector('.hub-menu-items');auLive.mount(parent,'au-live',()=>{auClaimAudio();setPlaying(true);});
   // A separate audience window needs its own explicit activation; control-channel messages do not grant it.
   const enable=document.createElement('button');enable.id='au-enable-audio';enable.textContent='Enable audio and play';enable.className='au-enable-audio';enable.onclick=()=>{auClaimAudio();setPlaying(true);auLive.enable();};document.body.append(enable);
-  const tickButton=()=>{const state=auLive.snapshot();enable.hidden=!projectState.audio||!auCanOwn()||state.enabled&&!state.failed||$('full-editor').open||document.body.classList.contains('pv-blackout')||document.body.classList.contains('pv-holding');};
+  const tickButton=()=>{const state=auLive.snapshot(),cfg=projectState.audio,hasAudio=!!(cfg?.music||cfg?.mode==='overall'&&cfg.overall||cfg?.mode==='slide'&&cfg.slides?.[slides[index]?.dataset.mediaId]);enable.hidden=!hasAudio||!auCanOwn()||state.enabled&&!state.failed||$('full-editor').open||document.body.classList.contains('pv-blackout')||document.body.classList.contains('pv-holding');};
   const previousSync=auLiveSync;auLiveSync=function(...values){const value=previousSync(...values);tickButton();return value;};
   $('play').addEventListener('click',()=>{if(playing&&auCanOwn()){auClaimAudio();auLive.enable();}});
   document.addEventListener('keydown',event=>{if(event.key===' '&&!event.target.closest('input,textarea,select,button,summary,[contenteditable]')&&playing&&auLiveOwner()&&!$('full-editor').open){auClaimAudio();auLive.enable();}});
