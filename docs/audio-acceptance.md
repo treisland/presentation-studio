@@ -1,6 +1,6 @@
 # Audio milestone acceptance (#247)
 
-Status: automated development validation in progress; independent manual acceptance is **pending**. No package version, prerelease, publication or distribution is authorized by this checklist. The maintainer approved guarded native v5, not an assumption that speakers, codecs or assistive technology passed. Known #241 stays open separately.
+Status: integrated automated validation passed; the maintainer reported the listed audio manual checks passed for beta preparation. Exact manual environment/final-artifact metadata was not supplied; see [the beta evidence record](releases/0.17.0-beta.1-validation.md). This checklist itself does not authorize publication; the separately requested beta follows its reviewed release plan. The maintainer approved guarded native v5, not an assumption that speakers, codecs or assistive technology passed. Known #241 stays open separately.
 
 ## Record the tested artifact first
 
@@ -10,12 +10,12 @@ Record the exact commit, dirty flag, embedded development/release identity, HTML
 | --- | --- | --- |
 | Full npm run check and package | Passed on clean runtime 3b7ed22; acceptance-test revision tracked in PR #259 | See audio-validation.md and PR logs |
 | Synthetic WAV metadata/state/timing and exact-byte ZIP restore | Automated checks passed on the validated runtime | tests/audio-core, audio-authoring, audio-player and audio-playback |
-| Actual audible narration/music and volume/mute | Pending | Tester, device, artifact and result required |
-| Chrome, Edge and Firefox activation and codecs | Pending | Exact versions/builds and real local files required |
-| Audience-only sound with two windows/displays | Pending | Actual setup and reconnect/close observations required |
-| Keyboard and screen reader | Pending | Actual assistive technology and focus/status observations required |
-| Light/dark and laptop/narrow layout | Pending independent review | Record viewport, zoom, theme and result |
-| Fresh-profile offline editable/playback/booth use | Pending independent review | Record package hashes and network-disabled observations |
+| Actual audible narration/music and volume/mute | Maintainer reported pass | Beta evidence record; exact environment not supplied |
+| Supported-browser activation and codecs | Maintainer reported pass | Exact versions/codecs not supplied; beta evidence record |
+| Audience-only sound with two windows/displays | Maintainer reported pass | Beta evidence record |
+| Keyboard and screen reader | Maintainer reported pass | Assistive-technology version not supplied |
+| Layout | Maintainer reported pass | Detailed viewport/theme metadata not supplied |
+| Exported assets after unzip and reload | Maintainer reported pass | Offline browser automation is separate; beta evidence record |
 
 ## Concrete manual procedure
 
@@ -29,10 +29,14 @@ Record the exact commit, dirty flag, embedded development/release identity, HTML
 8. Export editable, ordinary playback and standalone booth ZIPs. Copy to a fresh browser profile/device with network disabled and unzip the whole package. Confirm actual sound after activation, original media and IDs, saved settings, hidden/deleted/reordered slide behavior, and no private notes/history in public playback/booth. Reimport the editable ZIP and verify authoring/recovery and older audio-free project fixtures. Corrupt/remove an audio asset and confirm a clear refusal without replacing active work.
 9. Keyboard-only: attach/replace/remove, disclosure navigation, preview, narration mode, volume, padding, live Enable/Retry/Continue/Mute/Seek/Restart, Presenter and booth. Confirm visible focus, labels and actionable status with the recorded screen reader. Check 1366×768 and a narrower laptop view at browser zoom, light/dark and forced colors; no clipped essential controls or inaccessible error/activation overlay.
 
-For each step record Passed/Failed/Not tested with the exact artifact/environment. A failure is a scoped follow-up, never permission to disable checks. Keep #247 and milestone acceptance open until the actual required evidence is recorded. OBS-specific sign-off is waived by the maintainer; this does not waive actual audio/video delivery evidence.
+For each step record Passed/Failed/Not tested with the exact artifact/environment. A failure is a scoped follow-up, never permission to disable checks. The beta evidence update below records the subsequent maintainer confirmation; independent evidence remains separate. OBS-specific sign-off is waived by the maintainer; this does not waive actual audio/video delivery evidence.
 
 ## Automated coverage boundaries
 
 Synthetic PCM WAV bytes are original fixtures, not spoken-content or sound-quality acceptance. Browser media currentTime/ended assertions establish state and timing. Deterministic controller tests exercise stale callbacks and padding cancellation; ZIP tests inspect and reopen bundled sources offline. Existing legacy/privacy suites stay enabled. CI does not listen to speakers or certify every codec/browser/assistive-technology setup.
 
 See [the audio guide](audio.md), [approved behavior and compatibility](audio-contract.md), [release gates](release-process.md), and independent ongoing evidence #7/#9/#195/#197. Public companion deployment belongs to the separate site repository; no publishing or DNS action is part of this acceptance work.
+
+## Beta preparation update
+
+The maintainer explicitly confirmed the listed audio manual checks passed and authorized v0.17.0 beta. Exported original assets and complete presentation reload were reconfirmed. See the beta evidence record for exact scope, missing metadata and automated review-fix evidence. This supersedes earlier pending audio sign-off statements; it does not close independent delivery-video evidence or known #241. OBS evidence is not required.

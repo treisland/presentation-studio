@@ -4,6 +4,14 @@
 
 - Refine audio authoring with a dedicated Project Settings Audio tab, scoped Inspector Sound controls, audible preview seeking, and paired volume sliders/precise percentages. Consolidate slide Background navigation into Fill & image and Effects & motion while preserving existing settings and staged Apply behavior (#261).
 
+- Let the editor use the available browser width on ultrawide displays instead of stopping at 1920 pixels.
+
+## 0.17.0-beta.1 — 2026-11-13
+
+- Prepare the maintainer-authorized Audio & narrated playback beta; retain known issue #241 and original asset compatibility.
+- Cancel intentionally interrupted play attempts without false failures and preserve native keyboard input in booth audio controls.
+- Allow the complete tag release validation suite the same bounded 30-minute budget as platform validation.
+
 - Add audio corruption/recovery and overall/music acceptance coverage, exact development validation evidence and a concrete pending manual checklist (#247); no audible or release acceptance is inferred from CI.
 
 - Add explicit-gesture audience/booth audio playback, blocked-play recovery, session controls, narration-end padding arbitration and stale-event cancellation (#246). Keep private previews silent and independent audible acceptance pending.
