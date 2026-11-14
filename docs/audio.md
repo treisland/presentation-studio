@@ -2,7 +2,7 @@
 
 Development feature for milestone 22; not part of the published v0.16.0 app. Authoring is introduced in #245. Audience/booth playback is implemented in #246; independent actual audible acceptance remains #247. These development changes do not authorize a release.
 
-In the slide Inspector, open **Slide audio** to attach or replace local per-slide narration. **Project settings → Brand → Presentation audio** owns the narration mode, one overall narration track and separate background music. Modes are None, Per-slide and Presentation-wide; switching modes retains inactive attachments. Background music has its own volume and looping. Existing video audio is independent; mute it if you do not want mixing.
+In the slide Inspector, open **Slide audio** to attach or replace local per-slide narration. **Project settings → Presentation audio** owns the narration mode, one overall narration track and separate background music. Modes are None, Per-slide and Presentation-wide; switching modes retains inactive attachments. Background music has its own volume and looping. Existing video audio is independent; mute it if you do not want mixing.
 
 Choose a supported MP3, WAV, M4A/AAC or Ogg file. MP3/WAV are recommended; actual codec support depends on the browser. Empty, malformed, unsupported or timed-out files leave the previous assignment intact. Tracks show filename and measured duration. Playback preview is local to the editor, never advances slides and never sends sound to Presenter. Play/Pause preview retains position; Stop resets it. Switching slide/project, replacing settings or closing the editor stops preview.
 
