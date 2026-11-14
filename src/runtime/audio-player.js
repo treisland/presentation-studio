@@ -65,7 +65,7 @@ function studioAudioPlayer({resolve,advance,notice=()=>{},createMedia=()=>docume
   const mute=button('mute','Mute audio',()=>{muted=!muted;mute.textContent=muted?'Unmute audio':'Mute audio';mute.setAttribute('aria-pressed',String(muted));if(context)sync(context);});mute.setAttribute('aria-pressed','false');
   const label=document.createElement('label');label.textContent='Session audio volume (%)';const gain=document.createElement('input');gain.type='number';gain.min=0;gain.max=100;gain.step=1;gain.value=100;gain.id=prefix+'-volume';label.append(gain);panel.append(label);gain.onchange=()=>{const n=Number(gain.value);if(!Number.isFinite(n)||n<0||n>100){gain.value=Math.round(volume*100);return;}volume=n/100;if(context)sync(context);};
   const seekLabel=document.createElement('label');seekLabel.textContent='Narration position (seconds)';const position=document.createElement('input');position.id=prefix+'-seek';position.type='number';position.min=0;position.step=.1;position.value=0;seekLabel.append(position);panel.append(seekLabel);button('seek-apply','Seek narration',()=>seek(Number(position.value)));
-  const originalNotice=notice;notice=text=>{status.textContent=text;panel.hidden=!context?.audio||!active();if(text.includes('paused until')||failed)panel.open=true;originalNotice(text);};
+  const originalNotice=notice;notice=text=>{status.textContent=text;panel.hidden=!context?.audio||!active()||!nodes.size;if(text.includes('paused until')||failed)panel.open=true;originalNotice(text);};
   parent.append(panel);panel.hidden=true;return panel;
  }
  return {sync,enable,skip,restart,end,seek,hold,snapshot,dispose,mount};
