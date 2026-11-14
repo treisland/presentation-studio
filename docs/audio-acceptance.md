@@ -8,8 +8,8 @@ Record the exact commit, dirty flag, embedded development/release identity, HTML
 
 | Evidence | Result | Artifact/environment or link |
 | --- | --- | --- |
-| Full npm run check and package | Pending final integrated revision | Record revision and logs in the PR |
-| Synthetic WAV metadata/state/timing and exact-byte ZIP restore | Automated coverage; final run pending | tests/audio-core, audio-authoring, audio-player and audio-playback |
+| Full npm run check and package | Passed on clean runtime 3b7ed22; acceptance-test revision tracked in PR #259 | See audio-validation.md and PR logs |
+| Synthetic WAV metadata/state/timing and exact-byte ZIP restore | Automated checks passed on the validated runtime | tests/audio-core, audio-authoring, audio-player and audio-playback |
 | Actual audible narration/music and volume/mute | Pending | Tester, device, artifact and result required |
 | Chrome, Edge and Firefox activation and codecs | Pending | Exact versions/builds and real local files required |
 | Audience-only sound with two windows/displays | Pending | Actual setup and reconnect/close observations required |

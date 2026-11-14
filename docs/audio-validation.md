@@ -1,6 +1,22 @@
 # Audio development validation
 
-This is development evidence, not release or manual sign-off. The earlier baseline below is superseded by later authoring-status, audience-timeout recovery and public-export privacy fixes. Use the latest candidate receipt and PR validation for manual review. Published v0.16.0 remains unchanged. The maintainer approved guarded native v5 for audio-bearing projects on 2026-11-13; legacy/audio-free formats remain supported.
+This is development evidence, not release or manual sign-off. The validated candidate below includes the authoring-status, audience-timeout, public-export privacy and booth/video ownership fixes. Earlier baseline evidence is retained separately. Published v0.16.0 remains unchanged. The maintainer approved guarded native v5 for audio-bearing projects on 2026-11-13; legacy/audio-free formats remain supported.
+
+## Validated runtime candidate
+
+- Runtime: 3b7ed2210e976525b40ddee563a98f698e9561bd; embedded development channel, dirty=false, package version 0.16.0. No new release version is chosen.
+- Full npm run check and npm run package passed at that exact clean runtime revision, with git diff --check passing. Twelve authoring/playback browser checks and the controller suite passed.
+- Six additional acceptance cases pass against this runtime: overall/music continuity and session defaults, corrupt/missing/unsafe ZIP refusal, exact-byte persistent-profile recovery, video-ended/Media Focus precedence, booth timer precedence, and normal/booth shared-origin ownership handoff. The acceptance PR's full check/package and platform CI record its own test-only revision.
+- Environment: Windows 10.0.26300 x64, Node v26.13.0, Playwright Chromium 151.0.7922.34; headless file/loopback-origin tests.
+- Candidate is an ignored local review bundle, identified by receipt.json; it is not a published release.
+
+| Candidate output | SHA256 |
+| --- | --- |
+| presentation-studio-audio-development.html | 8cf6242f128e81f5fe4fbf5955f6cb45752141c9fec86f78df421af09bb7c239 |
+| presentation-studio-audio-blank.html | 1f575aa72660f28354483d3d7fcbcae77e5db94222ab3281ae334552e544190f |
+| presentation-studio-audio-development-3b7ed22.zip | 169a86c156df1b062b7138c9279a77f0f2ee6eae540e19845b0919b4064a5aa7 |
+
+Independent manual sound, real browser/codec/activation, displays, keyboard/screen-reader, themes/laptop layout and offline acceptance remain **pending**. Use [the manual checklist](audio-acceptance.md) and record the exact candidate/environment before claiming completion.
 
 ## Superseded development baseline
 
