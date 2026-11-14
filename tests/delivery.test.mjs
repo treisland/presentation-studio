@@ -1,3 +1,4 @@
+import { allowedRoute, validateEvent } from '../scripts/branch-policy.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { requiredChecks, validated, validPlan, validAssets, eligiblePR, protectedDelivery, createGitHubAPI, deliver } from '../scripts/delivery.mjs';
@@ -7,7 +8,7 @@ function lifecycle() {
     main: 'validated', tagged: null, release: null, runs: [], writes: [], requests: [], blockers: [], ancestry: 'ahead',
     plan: { publish: true, version: '0.1.4-alpha', notes: 'docs/releases/0.1.4-alpha.md' },
     checks: requiredChecks.map(name => ({ name, status: 'completed', conclusion: 'success' })),
-    taggedPlan: null, lookupError: false, prefixReleases: [],
+    prs: [], unresolved: false, runCalls: [], taggedPlan: null, lookupError: false, prefixReleases: [],
   };
   function api(path, method = 'GET', body) {
     state.requests.push(path);
@@ -19,7 +20,7 @@ function lifecycle() {
       return {};
     }
     if (path === '') return { allow_auto_merge: true };
-    if (path === 'branches/main/protection') return {
+    if (['branches/main/protection', 'branches/dev/protection'].includes(path)) return {
       enforce_admins: { enabled: true }, required_status_checks: { strict: true, checks: requiredChecks.map(context => ({ context, app_id: 15368 })) },
       required_pull_request_reviews: {}, required_conversation_resolution: { enabled: true },
     };
@@ -51,7 +52,12 @@ function lifecycle() {
     state.release = { id: 42, tag_name: 'v0.1.4-alpha', draft: true, assets: ['presentation-studio.html', 'presentation-studio-blank.html', 'presentation-studio-v0.1.4-alpha.zip', 'studio-demo-editable.zip'].map(name => ({ name, size: 10, state: 'uploaded', digest: 'sha256:' + 'a'.repeat(64) })) };
     state.runs = [{ id: 1, head_sha: state.tagged, head_branch: 'v0.1.4-alpha', event: 'push', status: 'completed', conclusion: 'success' }];
   }
-  return { state, draft, run: apply => deliver(apply, { api, run: () => '[]' }) };
+  return { state, draft, run: apply => deliver(apply, { api, run: (args) => {
+    state.runCalls.push(args);
+    if (args[0] === 'pr' && args[1] === 'list') return JSON.stringify(state.prs);
+    if (args[0] === 'api') return JSON.stringify({data:{repository:{pullRequest:{headRefOid:'head',reviewThreads:{nodes:[{isResolved:!state.unresolved}],pageInfo:{hasNextPage:false}}}}}});
+    return '';
+  } }) };
 }
 
 test('delivery lifecycle tags, waits, discovers paginated draft, publishes and is idempotent after main advances', () => {
@@ -143,7 +149,7 @@ test('GitHub API requests omit the repository-root slash and preserve nested req
 });
 
 test('drafts, held PRs, requested changes and unapproved contributors cannot queue', () => {
-  const pr = { labels: [], author: { login: 'treisland' }, isDraft: false };
+  const pr = { baseRefName: 'dev', headRefName: 'codex/feature', isCrossRepository: false, labels: [], author: { login: 'treisland' }, isDraft: false };
   assert(eligiblePR(pr));
   assert(!eligiblePR({ ...pr, isDraft: true }));
   assert(!eligiblePR({ ...pr, labels: [{ name: 'hold' }] }));
@@ -192,4 +198,32 @@ test('publication requires exactly four complete assets with digests', () => {
   assert(!validAssets(assets.slice(1), '0.2.0'));
   assert(!validAssets([{ ...assets[0], size: 0 }, ...assets.slice(1)], '0.2.0'));
   assert(!validAssets([{ ...assets[0], digest: null }, ...assets.slice(1)], '0.2.0'));
+});
+
+ test('branch routing rejects direct feature promotion and fork impersonation', () => {
+  assert(allowedRoute({baseRefName:'dev',headRefName:'codex/feature',isCrossRepository:true}));
+  assert(allowedRoute({baseRefName:'main',headRefName:'dev',isCrossRepository:false}));
+  for (const pr of [{baseRefName:'main',headRefName:'codex/feature',isCrossRepository:false},{baseRefName:'main',headRefName:'dev',isCrossRepository:true},{baseRefName:'other'},{}]) assert(!allowedRoute(pr));
+  const event = {pull_request:{base:{ref:'main',repo:{full_name:'owner/app'}},head:{ref:'dev',repo:{full_name:'fork/app'}}}};
+  assert.throws(()=>validateEvent('pull_request',event), /Feature PRs/);
+  event.pull_request.head.repo.full_name='owner/app';
+  assert.doesNotThrow(()=>validateEvent('pull_request',event));
+  assert.doesNotThrow(()=>validateEvent('push',{}));
+ });
+
+test('queue reviews are head-bound and dev integration never supplies release content', () => {
+  const f=lifecycle(); f.state.plan.publish=false;
+  const pr={number:1,baseRefName:'dev',headRefName:'codex/audio',headRefOid:'head',isCrossRepository:false,labels:[],author:{login:'treisland'},isDraft:false};
+  f.state.prs=[pr]; f.state.unresolved=true;
+  assert.deepEqual(f.run(true),[]);
+  assert(!f.state.runCalls.some(args=>args[1]==='merge'));
+  f.state.unresolved=false;
+  assert.match(f.run(true)[0],/Queue PR #1/);
+  assert(f.state.runCalls.some(args=>args.includes('--match-head-commit')&&args.includes('head')));
+  assert(f.state.requests.includes('commits/main'));
+  assert(!f.state.requests.some(path=>path.includes('ref=dev')||path==='commits/dev'));
+  f.state.prs=[{...pr,headRefOid:'changed'}];
+  assert.throws(()=>f.run(true),/expected head/);
+  f.state.prs=[{...pr,baseRefName:'main'}];
+  assert.deepEqual(f.run(true),[]);
 });

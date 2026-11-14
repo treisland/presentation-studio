@@ -52,7 +52,7 @@ state actual checks. The maintainer owns product claims, manual first-user/mobil
 screen-reader/image review and any public launch authorization. Keep those pending
 when unperformed. Implementation assignment does not grant DNS or service adoption.
 
-## Rollback and future publication
+## Rollback and separate publication
 
 Local rollback rebuilds a previous content commit against its recorded app artifact
 and image manifest. Verify content identity, links and output isolation; application

@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Introduce protected dev integration and reviewed dev-to-main promotion, with branch-routing CI and delivery review-thread checks; publication remains main-only.
+- Archive shipped milestones while retaining independent validation and known #241; begin Audio & narrated playback with its design contract.
+- Record the companion launch at docs.pres-studio.com and separate deployment ownership.
+
 ## 0.16.0 — 2026-11-13
 
 - Promote the verified v0.16.0-beta.1 runtime to the maintainer-authorized official release without feature changes. Retain known issue #241 for a patch and recommend window capture; companion public launch remains deferred.

@@ -2,10 +2,12 @@ import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { resolve } from 'node:path';
 
+import { allowedRoute } from './branch-policy.mjs';
+
 export const requiredChecks = ['validate (ubuntu-latest)', 'validate (windows-latest)'];
 export function eligiblePR(pr) {
   const labels = pr.labels.map(label => label.name);
-  return !pr.isDraft && !labels.includes('hold') && pr.reviewDecision !== 'CHANGES_REQUESTED' &&
+  return allowedRoute(pr) && !pr.isDraft && !labels.includes('hold') && pr.reviewDecision !== 'CHANGES_REQUESTED' &&
     (pr.author.login === 'treisland' || labels.includes('auto-merge')) && !pr.autoMergeRequest;
 }
 export function protectedDelivery(settings, protection) {
@@ -66,9 +68,22 @@ export function deliver(apply = false, { api = createGitHubAPI(), run = gh } = {
     if (!protectedDelivery(settings, protection))
       throw new Error('Automatic delivery blocked: approved repository auto-merge and main protection configuration must be enabled first');
   }
-  const prs = JSON.parse(run(['pr', 'list', '--repo', repository, '--base', 'main', '--state', 'open', '--limit', '100', '--json', 'number,isDraft,author,labels,headRefOid,isCrossRepository,reviewDecision,autoMergeRequest,mergeStateStatus']));
+  const prs = JSON.parse(run(['pr', 'list', '--repo', repository, '--state', 'open', '--limit', '100', '--json', 'number,baseRefName,headRefName,isDraft,author,labels,headRefOid,isCrossRepository,reviewDecision,autoMergeRequest,mergeStateStatus']));
   for (const pr of prs) {
     if (!eligiblePR(pr)) continue;
+    let cursor = null, unresolved = false;
+    do {
+      const query = 'query($owner:String!,$name:String!,$number:Int!,$cursor:String){repository(owner:$owner,name:$name){pullRequest(number:$number){headRefOid reviewThreads(first:100,after:$cursor){nodes{isResolved} pageInfo{hasNextPage endCursor}}}}}';
+      const response = JSON.parse(run(['api', 'graphql', '--input', '-'], { query, variables: { owner: 'treisland', name: 'presentation-studio', number: pr.number, cursor } }));
+      const reviewed = response.data?.repository?.pullRequest;
+      if (response.errors || !reviewed || reviewed.headRefOid !== pr.headRefOid) throw new Error('Cannot verify PR review threads at the expected head');
+      const threads = reviewed.reviewThreads;
+      if (!Array.isArray(threads?.nodes) || !threads.pageInfo) throw new Error('Incomplete PR review thread response');
+      unresolved ||= threads.nodes.some(thread => thread.isResolved !== true);
+      cursor = threads.pageInfo.hasNextPage ? threads.pageInfo.endCursor : null;
+      if (threads.pageInfo.hasNextPage && !cursor) throw new Error('Missing PR review pagination cursor');
+    } while (cursor && !unresolved);
+    if (unresolved) continue;
     changes.push(`Queue PR #${pr.number} at ${pr.headRefOid}`);
     if (apply) run(['pr', 'merge', String(pr.number), '--repo', repository, '--auto', '--merge', '--match-head-commit', pr.headRefOid]);
   }

@@ -1,5 +1,6 @@
 // Executed from the trusted deployment repository; never execute downloaded PR code.
 import {mkdir,writeFile} from 'node:fs/promises';
+import {allowedRoute} from './branch-policy.mjs';
 import {hash} from './site.mjs';
 const repository='treisland/presentation-studio';
 const [runId,sha]=process.argv.slice(2);
@@ -9,7 +10,7 @@ async function api(path,repo=repository){const r=await fetch('https://api.github
 const run=await api('actions/runs/'+runId);
 if(run.path!=='.github/workflows/validate.yml'||run.event!=='pull_request'||run.status!=='completed'||run.conclusion!=='success'||run.head_sha!==sha||run.head_repository?.full_name!==repository)throw Error('Preview needs successful same-repository PR validation at the supplied head.');
 const prs=await api('commits/'+sha+'/pulls?per_page=100');
-const pr=prs.find(pr=>pr.head.sha===sha&&pr.head.repo?.full_name===repository&&pr.user.login==='treisland'&&pr.base.ref==='main'&&pr.state==='open');
+const pr=prs.find(pr=>pr.head.sha===sha&&pr.head.repo?.full_name===repository&&pr.user.login==='treisland'&&allowedRoute({baseRefName:pr.base.ref,headRefName:pr.head.ref,isCrossRepository:pr.head.repo?.full_name!==pr.base.repo?.full_name})&&pr.state==='open');
 if(!pr)throw Error('Preview requires an open owner-authored PR at its verified head.');
 const reviews=await api('pulls/'+pr.number+'/reviews?per_page=100');const latest=new Map();for(const review of reviews)if(['APPROVED','CHANGES_REQUESTED','DISMISSED'].includes(review.state))latest.set(review.user.login,review.state);
 if([...latest.values()].includes('CHANGES_REQUESTED'))throw Error('A requested change blocks preview promotion.');
