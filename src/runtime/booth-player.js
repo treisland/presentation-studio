@@ -1,6 +1,6 @@
 // Serialized into booth exports: no dependency on authoring code or project history.
 const boothStandaloneStyles = `#booth-controls{position:fixed;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:500}#booth-controls button,dialog button{padding:9px 14px;border:1px solid #9db5db;border-radius:7px;background:#10213c;color:white;cursor:pointer}#booth-controls [hidden]{display:none}#booth-title{font:18px Arial}dialog{max-width:620px;width:90vw;padding:24px;border-radius:12px;border:1px solid #9db5db;background:white;color:#10213c;font:16px Arial}dialog::backdrop{background:#081426bb}dialog input{display:block;width:100%;font:18px Arial;margin:12px 0;padding:10px}#booth-question-list{max-height:60vh;overflow:auto;display:grid;gap:10px}#booth-slides .slide.active{opacity:1;visibility:visible;transform:none}#booth-slides .slide:not(.active){display:none}#booth-slides .ce-hidden{display:none}#booth-slides video{object-position:var(--media-pos)}.bp-focus{position:absolute;inset:0;background:#080e18;z-index:300;padding:30px 40px;display:flex;flex-direction:column;gap:15px}.bp-focus nav{display:flex;gap:12px;justify-content:flex-end;position:relative;z-index:5;flex:none;height:60px}.bp-focus button{font:22px Arial;padding:12px;background:#10213c;color:#fff;border:1px solid #97b4da;border-radius:8px}.bp-target{flex:1;min-height:0}.bp-focused.media-box{position:absolute!important;inset:auto;background:#071121;border:0;padding:0;z-index:2;display:flex!important}.bp-focused .media-asset{object-fit:contain!important;object-position:center!important;transform-origin:center}.bp-focused figcaption{background:#10213c;color:#fff}.bp-focused .mf-expand,.bp-focused .media-shade,.bp-focused:before{display:none!important}`;
-function boothStandalone(geometry, mediaLayout, backgroundFactory, wireNavigation, paintMask, customBackgroundFactory) {
+function boothStandalone(geometry, mediaLayout, backgroundFactory, wireNavigation, paintMask, customBackgroundFactory, audioFactory) {
   "use strict";
   geometry ||= () => {};
   mediaLayout ||= () => {};
@@ -26,6 +26,12 @@ function boothStandalone(geometry, mediaLayout, backgroundFactory, wireNavigatio
     idle = Date.now(),
     unlocked = false,
     focus = null;
+  const audio=audioFactory?.({resolve:path=>path,advance:id=>{if(current===id&&playing)next(1,true);}});
+  const audioProject=data.audioProject||'booth-audio',audioOwner='booth-'+Math.random().toString(36).slice(2);let audioChannel=null;
+  try{audioChannel=new BroadcastChannel('presentation-studio-audio-owner');audioChannel.onmessage=event=>{if(event.data?.project===audioProject&&event.data.owner!==audioOwner){playing=false;audio?.dispose();paint();}};}catch{}
+  function syncAudio(){audio?.sync({project:audioProject,id:current,audio:data.audio,playing:playing&&!focus,owner:true});}
+  if(audio&&data.audio){const panel=audio.mount(document.body,'booth-audio',()=>{audioChannel?.postMessage({owner:audioOwner,project:audioProject});playing=true;paint();});Object.assign(panel.style,{position:'fixed',right:'12px',top:'12px',zIndex:1500,background:'#fff',color:'#10203a',padding:'10px',maxHeight:'80vh',overflow:'auto'});}
+  addEventListener('beforeunload',()=>{audio?.dispose();audioChannel?.close();});
   document.body.classList.toggle(
     "presentation-dark",
     data.brand.presentationTheme === "dark",
@@ -91,7 +97,8 @@ function boothStandalone(geometry, mediaLayout, backgroundFactory, wireNavigatio
           !focus &&
           current === slide.id &&
           playing &&
-          cfg.advance === "ended"
+          cfg.advance === "ended" &&
+          !audio?.hold()
         )
           next(1, true);
       };
@@ -242,6 +249,7 @@ function boothStandalone(geometry, mediaLayout, backgroundFactory, wireNavigatio
     $('booth-vc-progress').firstElementChild.style.width=(data.loop.length>1?position/(data.loop.length-1)*100:100)+'%';
   }
   function paint() {
+    syncAudio();
     for (const [id, slide] of nodes) {
       slide.classList.toggle("active", id === current);
       geometry(slide);
@@ -276,9 +284,11 @@ function boothStandalone(geometry, mediaLayout, backgroundFactory, wireNavigatio
   function next(direction, automatic = false) {
     if (!automatic && !p.navigation && !unlocked) return;
     let i = data.loop.indexOf(current);
+    if(direction>0&&i===data.loop.length-1)audio?.restart();
     show(data.loop[(i + direction + data.loop.length) % data.loop.length]);
   }
   function home() {
+    audio?.restart();
     if (focus) closeFocus(true);
     document.querySelectorAll("dialog[open]").forEach((d) => d.close());
     playing = true;
@@ -545,6 +555,7 @@ function boothStandalone(geometry, mediaLayout, backgroundFactory, wireNavigatio
     if (p.navigation || unlocked) {
       playing = !playing;
       paint();
+      if(playing){audioChannel?.postMessage({owner:audioOwner,project:audioProject});audio?.enable();}
     }
   };
   $("booth-home").onclick = home;
@@ -687,9 +698,10 @@ function boothStandalone(geometry, mediaLayout, backgroundFactory, wireNavigatio
   function tick(now) {
     const dt = Math.min(250, now - last);
     last = now;
+    syncAudio();
     const activeVideos = [...nodes.get(current).querySelectorAll("video")];
     const watching = activeVideos.some((v) => !v.paused && !v.ended);
-    if (watching) idle = Date.now();
+    if (watching||audio?.snapshot().playing) idle = Date.now();
     if (
       p.idle &&
       Date.now() - idle >= p.idle * 1000 &&
@@ -700,6 +712,7 @@ function boothStandalone(geometry, mediaLayout, backgroundFactory, wireNavigatio
       cfg = data.media[current];
     if (
       playing &&
+      !audio?.hold() &&
       !focus &&
       data.loop.includes(current) &&
       !(cfg?.kind === "video" && ["manual", "ended"].includes(cfg.advance))

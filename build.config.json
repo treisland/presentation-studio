@@ -120,6 +120,7 @@
     "src/runtime/viewer-footer.js",
     "src/runtime/library-actions.js",
     "src/runtime/viewer-presets.js",
+    "src/runtime/audio-player.js",
     "src/runtime/audio-authoring.js",
     "src/runtime/presenter-session.js",
     "src/runtime/presenter-thumbnails.js",
@@ -130,6 +131,7 @@
     "src/runtime/library-navigation.js",
     "src/runtime/component-thumbnails.js",
     "src/runtime/audio-ui.js",
+    "src/runtime/audio-live.js",
     "src/runtime/boot.js"
   ],
   "vendor": "vendor/jszip-3.10.1.min.js"

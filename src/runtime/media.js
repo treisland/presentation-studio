@@ -224,6 +224,7 @@
       asset.addEventListener("ended", () => {
         if (
           slides[index] === slide &&
+          !auLive.hold() &&
           playing &&
           mediaGetAssignment(slide.dataset.mediaId)?.advance === "ended"
         )

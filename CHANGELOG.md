@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add explicit-gesture audience/booth audio playback, blocked-play recovery, session controls, narration-end padding arbitration and stale-event cancellation (#246). Keep private previews silent and independent audible acceptance pending.
+
 - Add local per-slide/overall narration and independent music authoring, guarded native v5, original asset recovery/ZIP preservation, bounded metadata and explicit preview controls (#245). Live playback and independent acceptance remain separate.
 
 - Record the Audio & narrated playback contract (#244) and maintainer-approved guarded native v5 design; runtime implementation and acceptance remain outstanding.
