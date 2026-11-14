@@ -14,7 +14,7 @@ function pvReceiveAudience(start){
   const bootstrap=window.__studioAudienceBootstrap;delete window.__studioAudienceBootstrap;pvOutput=true;
   document.body.classList.add('pv-output');if(bootstrap.kind!=='audience')document.body.classList.add('pv-static');
   let port=null,lastSeq=0,started=false,blackout=false,holding=false,resumePlaying=false,lastAudioLease=Date.now();
-  const audioLeaseTimer=setInterval(()=>{if(bootstrap.kind==='audience'&&started&&Date.now()-lastAudioLease>20000){auAudienceAlive=false;setPlaying(false);auLive.dispose();clearInterval(audioLeaseTimer);}},1000);
+  const audioLeaseTimer=setInterval(()=>{if(bootstrap.kind==='audience'&&started&&Date.now()-lastAudioLease>20000){auAudienceAlive=false;setPlaying(false);auLive.dispose();send('disconnected');port?.close();clearInterval(audioLeaseTimer);}},1000);
   addEventListener('beforeunload',()=>clearInterval(audioLeaseTimer));
   const project=bootstrap.project,nonce=bootstrap.nonce,parent=bootstrap.parent;
   function send(type,seq=lastSeq){port?.postMessage({type,nonce,project,seq,live:slides[index]?.dataset.mediaId||bootstrap.first,playing,blackout,holding,loop:deck,audio:!projectState.audio?'unavailable':auLive.snapshot().failed?'failed':auLive.snapshot().enabled?'enabled':'activation'});}
