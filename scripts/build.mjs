@@ -21,7 +21,7 @@ if (process.env.STUDIO_SOURCE_COMMIT !== undefined) {
   commit=supplied;tagged=false;dirty=true;
 }
 const buildInfo = {version, commit, channel: tagged && !dirty ? (version.match(/-(alpha|beta|rc)\./)?.[1] || 'stable') : 'development', dirty,
-  imports:{native:[2,3,4],legacy:[1],authoring:[1,2],library:[1]}};
+  imports:{native:[2,3,4,5],legacy:[1],authoring:[1,2],library:[1]}};
 const authoringFiles = {
   "AUTHORING.md": await read("docs/ai/AUTHORING.md"),
   "example.json": await read("docs/ai/example.json"),
