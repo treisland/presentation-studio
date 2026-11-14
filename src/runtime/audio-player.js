@@ -3,11 +3,12 @@ function studioAudioPlayer({resolve,advance,notice=()=>{},createMedia=()=>docume
  let context=null,armed=false,bypass=false,muted=false,volume=1,generation=0,padding=null,timer=null,failed='',ended=false,nodes=new Map(),lastNotice='';
  const emit=text=>{if(text!==lastNotice){lastNotice=text;notice(text);}};
  function clearTimer(freeze=false){if(timer!==null){cancel(timer);timer=null;if(freeze&&padding)padding.remaining=Math.max(0,padding.due-now());}}
- function drop(role){const item=nodes.get(role);if(!item)return;nodes.delete(role);item.disposed=true;item.node.pause();item.node.onended=item.node.onerror=item.node.onloadedmetadata=item.node.onseeked=null;item.node.removeAttribute('src');item.node.load();}
+ function pauseItem(item){if(item.pending||!item.node.paused){item.attempt++;item.pending=false;}item.node.pause();}
+ function drop(role){const item=nodes.get(role);if(!item)return;nodes.delete(role);item.disposed=true;item.attempt++;item.pending=false;item.node.pause();item.node.onended=item.node.onerror=item.node.onloadedmetadata=item.node.onseeked=null;item.node.removeAttribute('src');item.node.load();}
  function stop(){clearTimer();padding=null;generation++;for(const role of [...nodes.keys()])drop(role);}
  function active(){return !!context?.owner&&context.visible!==false;}
  function valid(item){return active()&&!item.disposed&&nodes.get(item.role)===item&&item.project===context.project&&(item.role!=='slide'||item.id===context.id);}
- function problem(text){failed=text;clearTimer(true);for(const item of nodes.values())item.node.pause();emit(text+' Retry audio or choose Continue without audio.');}
+ function problem(text){failed=text;clearTimer(true);for(const item of nodes.values())pauseItem(item);emit(text+' Retry audio or choose Continue without audio.');}
  function effective(){return active()&&context.playing&&armed&&!bypass&&!failed&&!ended;}
  function hold(){if(!active()||bypass||!nodes.size)return false;if(!armed||failed||ended)return true;return !!nodes.get('slide')?.track.advanceOnEnd;}
  function armPadding(item){
@@ -19,15 +20,15 @@ function studioAudioPlayer({resolve,advance,notice=()=>{},createMedia=()=>docume
  }
  function play(item){
   if(!valid(item)||item.pending||item.node.ended||!item.node.paused)return;
-  item.pending=true;const token=generation;
-  let promise;try{promise=item.node.play();}catch(error){item.pending=false;problem('Audio playback was blocked or failed.');return;}
-  Promise.resolve(promise).then(()=>{item.pending=false;if(token!==generation||!valid(item)||!effective())item.node.pause();}).catch(()=>{item.pending=false;if(valid(item)&&token===generation)problem('Audio playback was blocked or failed.');});
+  item.pending=true;const attempt=++item.attempt;
+  let promise;try{promise=item.node.play();}catch(error){item.pending=false;if(valid(item)&&effective())problem('Audio playback was blocked or failed.');return;}
+  Promise.resolve(promise).then(()=>{if(attempt!==item.attempt)return;item.pending=false;if(!valid(item)||!effective())pauseItem(item);}).catch(()=>{if(attempt!==item.attempt)return;item.pending=false;if(valid(item)&&effective())problem('Audio playback was blocked or failed.');});
  }
  function get(role,track){
   const old=nodes.get(role),key=JSON.stringify([context.project,role==='slide'?context.id:'',track.src,track.name,track.mime]);
   if(old?.key===key){old.track=track;old.node.volume=track.volume*volume;old.node.muted=muted;old.node.loop=role==='music'&&track.loop;return old;}
   if(role==='slide'){clearTimer();padding=null;generation++;}drop(role);
-  const node=createMedia(),item={role,track,node,key,id:context.id,project:context.project,disposed:false,pending:false,advanced:false};nodes.set(role,item);
+  const node=createMedia(),item={role,track,node,key,id:context.id,project:context.project,disposed:false,pending:false,attempt:0,advanced:false};nodes.set(role,item);
   node.preload='metadata';node.volume=track.volume*volume;node.muted=muted;node.loop=role==='music'&&track.loop;
   node.onloadedmetadata=()=>{if(valid(item)&&(!Number.isFinite(node.duration)||node.duration<=0))problem('Audio has no finite playable duration.');};
   node.onerror=()=>{if(valid(item))problem('Audio file is missing or unsupported in this browser.');};
@@ -46,20 +47,20 @@ function studioAudioPlayer({resolve,advance,notice=()=>{},createMedia=()=>docume
   for(const role of [...nodes.keys()])if(!wanted[role]){if(role==='slide'){clearTimer();padding=null;generation++;}drop(role);}
   for(const [role,track]of Object.entries(wanted))if(track)get(role,track);
   if(!nodes.size){emit('');return;}
-  if(!effective()){clearTimer(true);for(const item of nodes.values())item.node.pause();if(ended)emit('Presentation ended. Choose Restart audio to replay.');else if(!armed&&!bypass)emit('Audio is paused until you choose Enable audio and play.');return;}
+  if(!effective()){clearTimer(true);for(const item of nodes.values())pauseItem(item);if(ended)emit('Presentation ended. Choose Restart audio to replay.');else if(!armed&&!bypass)emit('Audio is paused until you choose Enable audio and play.');return;}
   for(const item of nodes.values())play(item);
   if(padding)armPadding(padding.item);else if(nodes.get('slide')?.node.ended)armPadding(nodes.get('slide'));
   emit('Audio enabled.');
  }
  function enable(){armed=true;bypass=false;failed='';if(context)sync(context);}
- function skip(){bypass=true;failed='';clearTimer();padding=null;for(const item of nodes.values())item.node.pause();emit('Continuing without audio on this slide.');}
- function end(){ended=true;clearTimer();padding=null;for(const item of nodes.values())item.node.pause();emit('Presentation ended. Choose Restart audio to replay.');}
- function restart(){ended=false;clearTimer();padding=null;generation++;failed='';bypass=false;for(const item of nodes.values()){item.advanced=false;try{item.node.currentTime=0;}catch{}}if(context)sync(context);}
+ function skip(){bypass=true;failed='';clearTimer();padding=null;for(const item of nodes.values())pauseItem(item);emit('Continuing without audio on this slide.');}
+ function end(){ended=true;clearTimer();padding=null;for(const item of nodes.values())pauseItem(item);emit('Presentation ended. Choose Restart audio to replay.');}
+ function restart(){ended=false;clearTimer();padding=null;generation++;failed='';bypass=false;for(const item of nodes.values()){pauseItem(item);item.advanced=false;try{item.node.currentTime=0;}catch{}}if(context)sync(context);}
  function seek(seconds){const item=nodes.get('slide')||nodes.get('overall');if(!item||!Number.isFinite(seconds)||!Number.isFinite(item.node.duration)||item.node.duration<=0)return;clearTimer();padding=null;generation++;item.advanced=false;item.node.currentTime=Math.max(0,Math.min(seconds,item.node.duration));}
  function snapshot(){const narration=nodes.get('slide')||nodes.get('overall');return {enabled:armed,bypassed:bypass,failed,ended,hasAudio:!!nodes.size,hold:hold(),time:narration?.node.currentTime||0,duration:Number.isFinite(narration?.node.duration)?narration.node.duration:0,playing:[...nodes.values()].some(item=>!item.node.paused&&!item.node.ended),muted,volume};}
  function dispose(){stop();armed=false;bypass=false;failed='';context=null;ended=false;emit('');}
  function mount(parent,prefix,onPlay=()=>{}){
-  const panel=document.createElement('details');panel.id=prefix;panel.className='au-live-controls';const summary=document.createElement('summary');summary.textContent='Audio';const status=document.createElement('p');status.id=prefix+'-status';status.setAttribute('role','status');status.setAttribute('aria-live','polite');panel.append(summary,status);
+  const panel=document.createElement('details');panel.id=prefix;panel.className='au-live-controls';panel.addEventListener('keydown',event=>{if(event.key!=='Escape'&&event.target.closest?.('input,textarea,select,button,summary,[contenteditable]'))event.stopPropagation();});const summary=document.createElement('summary');summary.textContent='Audio';const status=document.createElement('p');status.id=prefix+'-status';status.setAttribute('role','status');status.setAttribute('aria-live','polite');panel.append(summary,status);
   const button=(id,text,action)=>{const b=document.createElement('button');b.id=prefix+'-'+id;b.textContent=text;b.onclick=action;panel.append(b);return b;};
   button('enable','Enable audio and play',()=>{onPlay();enable();});button('retry','Retry audio',enable);button('skip','Continue without audio',skip);button('restart','Restart audio',()=>{onPlay();restart();enable();});
   const mute=button('mute','Mute audio',()=>{muted=!muted;mute.textContent=muted?'Unmute audio':'Mute audio';mute.setAttribute('aria-pressed',String(muted));if(context)sync(context);});mute.setAttribute('aria-pressed','false');
