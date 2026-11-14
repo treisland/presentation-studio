@@ -12,7 +12,7 @@ test('source-only builds stage a development site without Git or npm dependencie
   const root=await mkdtemp(join(tmpdir(),'studio-source-'));t.after(()=>rm(root,{recursive:true,force:true}));
   for(const path of ['package.json','build.config.json','LICENSE','THIRD_PARTY_NOTICES.md','src','templates','vendor','examples','docs/ai'])await cp(new URL('../'+path,import.meta.url),join(root,path),{recursive:true});
   await mkdir(join(root,'scripts'));
-  for(const file of ['build.mjs','site.mjs','delivery.mjs'])await cp(new URL('../scripts/'+file,import.meta.url),join(root,'scripts',file));
+  for(const file of ['build.mjs','site.mjs','delivery.mjs','branch-policy.mjs'])await cp(new URL('../scripts/'+file,import.meta.url),join(root,'scripts',file));
   const env={...process.env,STUDIO_SOURCE_COMMIT:'unknown'};
   execFileSync(process.execPath,['scripts/build.mjs'],{cwd:root,env});
   execFileSync(process.execPath,['scripts/site.mjs','local'],{cwd:root,env});
