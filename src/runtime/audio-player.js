@@ -36,8 +36,8 @@ function studioAudioPlayer({resolve,advance,notice=()=>{},createMedia=()=>docume
   const source=resolve(track.src);if(!source){problem('Audio source is missing.');return item;}node.src=source;node.load();return item;
  }
  function sync(next){
-  const projectChanged=context&&context.project!==next.project,idChanged=context&&context.id!==next.id,wasActive=active();
-  if(projectChanged){stop();armed=false;bypass=false;failed='';ended=false;}
+  const changedProject=context&&context.project!==next.project,idChanged=context&&context.id!==next.id,wasActive=active();
+  if(changedProject){stop();armed=false;bypass=false;failed='';ended=false;}
   if(idChanged){ended=false;clearTimer();padding=null;generation++;drop('slide');bypass=false;failed='';}
   context={...next};
   if(!active()){if(wasActive||nodes.size)stop();armed=false;failed='';emit('');return;}

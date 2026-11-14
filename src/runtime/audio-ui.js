@@ -29,7 +29,7 @@ async function auAttach(role,file){
 function auPreviewTrack(role){
  const track=auTrack(role);if(!track||auLocked(role))return;const key=JSON.stringify([projectMeta.id,projectSelected,role,track]);
  if(auPreviewIdentity===key&&auPreview){if(!auPreview.paused){auPreview.pause();auCards.get(role).preview.textContent='Resume preview';return;}const node=auPreview;node.play().then(()=>{if(node===auPreview)auCards.get(role).preview.textContent='Pause preview';}).catch(()=>auStatus('Preview was blocked. Activate Play preview again.'));return;}
- auStopPreview();if(!mediaBlobs.has(track.src)){auStatus('Audio asset is missing. Reopen the complete editable ZIP.');return;}
+ auStopPreview();if(!mediaSafePath(track.src)){auStatus('Audio asset path is invalid. Reopen the complete editable ZIP.');return;}
  const node=document.createElement('audio');node.src=mediaAssetURL(track.src);node.volume=track.volume;node.loop=false;auPreview=node;auPreviewIdentity=key;
  node.onended=()=>{if(node===auPreview)auStopPreview();};node.onerror=()=>{if(node===auPreview){auStopPreview();auStatus('This browser cannot play the audio. Replace it with MP3 or WAV.');}};
  node.play().then(()=>{if(node!==auPreview){node.pause();return;}auCards.get(role).preview.textContent='Pause preview';auStatus('Local editor preview only; slides do not advance.');}).catch(()=>{if(node===auPreview)auStatus('Audio preview was blocked. Activate Play preview again.');});
@@ -37,7 +37,7 @@ function auPreviewTrack(role){
 function auPaint(){
  if(!auUIReady||!projectReady)return;const audio=projectState.audio||audioCore.empty();$('au-mode').value=audio.mode;$('au-mode').disabled=auUIBusy||auLocked('mode');
  if(auPreview){let matching=false;for(const role of auCards.keys()){const track=auTrack(role);if(track&&JSON.stringify([projectMeta.id,projectSelected,role,track])===auPreviewIdentity)matching=true;}if(!matching)auStopPreview();}
- for(const [role,card]of auCards){const track=auTrack(role),locked=auUIBusy||auLocked(role);card.info.textContent=track?track.name+' · '+(track.durationMs/1000).toFixed(1)+' seconds · original retained'+(!mediaBlobs.has(track.src)?' · missing audio asset':''):'No audio attached';
+ for(const [role,card]of auCards){const track=auTrack(role),locked=auUIBusy||auLocked(role);card.info.textContent=track?track.name+' · '+(track.durationMs/1000).toFixed(1)+' seconds · original retained'+(!mediaBlobs.has(track.src)?' · ZIP asset; import complete ZIP before editing/exporting':''):'No audio attached';
   card.file.disabled=locked;card.preview.disabled=locked||!track;card.remove.disabled=locked||!track;card.stop.disabled=!auPreview;
   card.volume.value=track?Math.round(track.volume*100):100;card.volume.disabled=locked||!track;
   if(card.loop){card.loop.checked=track?.loop??true;card.loop.disabled=locked||!track;}

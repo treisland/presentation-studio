@@ -1,7 +1,7 @@
 const auDocumentKind=window.__studioAudienceBootstrap?.kind||'normal';
 let auAudienceAlive=true,auLiveReady=false,auLeaseChannel=null,auRemoteOwner=false;
 const auOwnerId=projectID('audio-owner');
-const auLive=studioAudioPlayer({resolve:path=>mediaBlobs.has(path)?mediaAssetURL(path):'',advance:id=>{if(slides[index]?.dataset.mediaId!==id||!playing)return;if(index===slides.length-1&&!projectIsLoop(deck)){setPlaying(false);auLive.end();return;}show(index+1);}});
+const auLive=studioAudioPlayer({resolve:path=>mediaBlobs.has(path)?mediaAssetURL(path):mediaSafePath(path)?path:'',advance:id=>{if(slides[index]?.dataset.mediaId!==id||!playing)return;if(index===slides.length-1&&!projectIsLoop(deck)){setPlaying(false);auLive.end();return;}show(index+1);}});
 function auCanOwn(){return auAudienceAlive&&(auDocumentKind==='audience'||auDocumentKind==='normal'&&!pvSession)&&!['live','preview','catalog','holding'].includes(auDocumentKind);}
 function auLiveOwner(){return auCanOwn()&&!auRemoteOwner;}
 function auLiveSync(){if(!projectReady)return;const masked=document.body.classList.contains('pv-blackout')||document.body.classList.contains('pv-holding'),editing=$('full-editor')?.open;
