@@ -57,8 +57,9 @@ test('Audio settings has scoped audible transport and volume controls without du
   assert.equal((await snapshot(page)).state.audio.music.volume,.01);assert.equal(await page.locator('#au-music-volume').inputValue(),'1');assert.equal(await page.locator('#au-music-seek').isDisabled(),true);
   await page.locator('#fe-undo').click();assert.equal((await snapshot(page)).state.audio.music.volume,0);await page.locator('#fe-undo').click();assert.equal((await snapshot(page)).state.audio.music.volume,1);
   await page.locator('#au-music-preview').click();await page.waitForFunction(()=>document.querySelector('#au-music-preview').textContent==='Pause preview');
+  await page.evaluate(()=>window.__uiPreview=window.__previewMedia.find(n=>!n.paused));
   await page.getByRole('tab',{name:'Branding',exact:true}).click();assert.equal(await page.locator('#fe-audio-panel').isVisible(),false);
-  assert.equal(await page.evaluate(()=>window.__previewMedia.every(n=>n.paused&&!n.getAttribute('src'))),true);
+  assert.equal(await page.evaluate(()=>!!window.__uiPreview&&window.__uiPreview.paused&&!window.__uiPreview.getAttribute('src')&&window.__previewMedia.every(n=>n.paused)),true);
   await page.locator('#we-settings-close').click();await reveal(page,'#cb-source');
   assert.equal(await page.locator('#ic-slide-fields > details > summary').filter({hasText:/^Background$/}).count(),1);
   assert.equal(await page.locator('#cb-inspector-background .bg-slide-settings > summary').textContent(),'Effects & motion');
