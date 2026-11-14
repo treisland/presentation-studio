@@ -23,7 +23,7 @@
     "build:companion": "node scripts/build-companion.mjs",
     "serve:companion": "node scripts/serve-companion.mjs",
     "test:companion": "node tests/companion-review.mjs",
-    "test:audio": "node --test tests/audio-authoring.test.mjs tests/audio-playback.test.mjs"
+    "test:audio": "node --test tests/audio-authoring.test.mjs tests/audio-playback.test.mjs tests/audio-acceptance.test.mjs"
   },
   "devDependencies": {
     "playwright": "1.62.1"
