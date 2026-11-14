@@ -40,3 +40,19 @@ Focused tests pass for actual overall narration/music continuity during rapid na
 ## Still pending
 
 Actual audible output/levels, real browser activation restrictions and codec coverage, supported Chrome/Edge/Firefox versions, real dual displays/windows, keyboard/screen-reader review, laptop/themes/forced-colors and independent offline use remain unperformed here. Use [the concrete manual checklist](audio-acceptance.md); record the tested artifact hashes and exact environment. CI cannot complete these rows. Keep #247 and milestone acceptance open until their required evidence is recorded. No release plan, publication, public companion deployment or #241 patch is authorized by this record.
+
+## Audio and Background UX refinement (#261 / PR #262)
+
+Runtime and regression source: `8b502ecdcb6cfd7be687d06520a7c13959c9c5b1`, based on protected dev `51cca37`. Package version remains 0.16.0 and output is a development candidate, not a published beta. Guide-only changes accompany this record.
+
+- Full `npm run check`: passed, 488 tests (48 unit/build, 158 browser, 171 component, 23 manipulation, 23 Inspector, 46 viewer and 19 audio).
+- `npm run package`: passed, including rebuilt normal/blank standalone HTML and portable archive.
+- `git diff --check`: passed.
+- Focused audio/background baseline: 44/44 passed. The final audio/numeric regression run passed 13/13, covering audible preview state, paused keyboard seeking without authored mutation, independent track Stop controls, paired volume/Undo, preview cleanup on settings navigation and one Background parent.
+- GitHub validation for the runtime commit: [Windows/Linux, container and branch-policy checks passed](https://github.com/treisland/presentation-studio/actions/runs/43566119788).
+- Initial full validation exposed a numeric-controls test accessing Effects without opening its new Background parent. The test now follows the disclosed navigation and retains its original staging/reset/Undo assertions; the full suite then passed.
+- Local authentic light/dark captures were reviewed at 1440 × 1080 with the original portfolio fixture, via ignored `test-results/review-audio.mjs`; screenshot outputs remain ignored local review artifacts. No POC image is represented as an authentic app capture or committed public screenshot.
+
+Affected guides are Audio, Inspector navigation, Custom backgrounds and Background effects. Companion editor-overview imagery is affected and its public refresh/human approval remains pending. Gallery, Media Focus, AI preview and finished-playback scene behavior is unchanged. No companion deployment or release plan was changed.
+
+Physical sound, real supported-browser codec/autoplay behavior, laptop/narrow/touch layouts, screen-reader review, dual displays and manual offline delivery remain pending under the existing acceptance checklist. Automatic ducking, fades/trimming and waveform editing remain proposals; this refinement preserves the current format and playback contract.
