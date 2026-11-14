@@ -3,6 +3,9 @@
 ## Unreleased
 
 - Record the Audio & narrated playback contract (#244) and maintainer-approved guarded native v5 design; runtime implementation and acceptance remain outstanding.
+- Introduce protected dev integration and reviewed dev-to-main promotion, with branch-routing CI and delivery review-thread checks; publication remains main-only.
+- Archive shipped milestones while retaining independent validation and known #241; begin Audio & narrated playback with its design contract.
+- Record the companion launch at docs.pres-studio.com and separate deployment ownership.
 
 ## 0.16.0 — 2026-11-13
 

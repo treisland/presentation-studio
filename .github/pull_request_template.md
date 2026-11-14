@@ -6,6 +6,7 @@ Closes #ISSUE
 
 Acceptance criteria addressed:
 
+- [ ] Feature/fix PR targets dev, or this is a reviewed same-repository dev-to-main promotion. No direct protected-branch commits.
 - [ ] Approved scope and acceptance criteria are satisfied.
 - [ ] Saved projects, recovery, and exports remain compatible, or an approved migration is documented.
 
