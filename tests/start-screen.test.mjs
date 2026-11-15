@@ -210,6 +210,23 @@ test('storage failure and recovery take precedence over automatic startup', asyn
     assert.equal(await noDatabase.evaluate(() => window.presentationStudioEditing.read().projectId), 'presentation-studio-demo-v1');
   } finally { await noDatabase.close(); }
 });
+test('blank creation from an already-open recovery editor clears the recovery banner and restores editing', async () => {
+  const { page, errors } = await open();
+  try {
+    const { id, saved } = await pendingRecovery(page);
+    await page.locator('#ss-current').click();
+    assert.equal(await page.locator('#fe-recovery').isVisible(), true);
+    await fileStart(page); await page.locator('#ss-blank').click();
+    await page.locator('#ss-screen').waitFor({ state: 'hidden' });
+    assert.equal(await page.locator('#fe-recovery').isVisible(), false);
+    for (const selector of ['.fe-work', '.fe-sidebar', '#we-inspector'])
+      assert.equal(await page.locator(selector).evaluate(element => element.inert), false);
+    await click(page, '#studio-gallery-open');
+    await page.locator('#studio-gallery').waitFor({ state: 'visible' });
+    assert.deepEqual(await storedDraft(page, id), saved);
+    assert.deepEqual(errors, []);
+  } finally { await page.close(); }
+});
 for (const action of ['blank', 'template', 'example', 'recent', 'file']) test(`pending recovery allows explicit ${action} and preserves its stored project and asset bytes`, async () => {
   const { page, errors } = await open();
   try {
