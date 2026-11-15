@@ -9,6 +9,9 @@
 - Refine Chart studio with named series/category color pickers and individual hex
   fields, inline add controls and targeted row/series removal. Preserve staged
   custom colors, remaining values, keyboard focus, Apply/Cancel and Undo (#271).
+- Fix Chart studio reopening during focus restoration after Cancel/Apply and
+  clearing its active session. Canvas focus/click selects; explicit double-click,
+  Enter or Inspector actions open the editor. Reopened editable HTML is covered (#271).
 
 - Refresh recovery controls after creating a blank project from an already-open
   recovery editor, restoring the editing panels immediately (#269).

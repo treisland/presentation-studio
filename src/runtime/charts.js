@@ -76,21 +76,24 @@ editingRegisterOperation('chart.update',(state,op)=>{
 });
 let chartDialog=null,chartSession=null;
 function chartOpen(data=chartSample(),blockId=''){
+  if(chartDialog?.open)return;
   vbEnd(false);projectFlush();
   const snapshot=studioEditing.read();chartSession={projectId:snapshot.projectId,revision:snapshot.revision,slideId:projectSelected,blockId,data:chartNormalize(data),colors:[...data.colors]};
   $('chart-color-pickers').dataset.signature='';
   $('chart-title').value=data.title;$('chart-kind').value=data.kind;$('chart-theme').checked=!data.colors.length;$('chart-paste').value=chartTSV(data);$('chart-error').textContent='';$('chart-apply').textContent=blockId?'Apply chart':'Insert chart';
   chartGrid();chartPreview();chartTab('data');chartDialog.showModal();
 }
-const chartInline=vbStart;
-vbStart=function(selection){
-  const node=projectModel(selection.slideID)?.tree[Number(selection.path?.split('.')[0])];
-  if(node?.attrs?.['data-studio-chart']){
-    if(weEditing()&&vbMode==='edit'&&!ceLocked()&&!spMeta(dbID(node)).locked)chartOpen(chartData(node),dbID(node));
-    return;
-  }
-  return chartInline(selection);
-};
+// Focus restoration after closing a dialog must select the chart, never reopen it.
+function chartEditFromCanvas(event){
+  const element=event.target.closest?.('.ps-chart');
+  if(!element||!weEditing()||vbMode!=='edit'||ceLocked())return;
+  if(event.type==='keydown'&&(event.key!=='Enter'||event.target!==element))return;
+  if(event.target.closest('button,input,summary,details'))return;
+  const blockId=dbID({attrs:{class:element.className}}),node=projectModel().tree.find(item=>dbID(item)===blockId);
+  if(!node||spMeta(blockId).locked)return;
+  event.preventDefault();event.stopImmediatePropagation();
+  dbSelected=blockId;spSelected=[blockId];wpKind='block';icDestination='';dbPanel();chartOpen(chartData(node),blockId);
+}
 function chartTab(name){for(const value of ['data','style']){$('chart-'+value+'-panel').hidden=value!==name;$('chart-tab-'+value).setAttribute('aria-pressed',String(value===name));}}
 function chartRead(validate=true){
   const data={...chartSession.data,title:$('chart-title').value,kind:$('chart-kind').value,colors:$('chart-theme').checked?[]:[...chartSession.colors]};
@@ -124,6 +127,7 @@ function chartColorsPaint(){
   });
 }
 function chartPreview(){
+  if(!chartSession)return null;
   const raw=chartRead(false);chartColorsPaint();
   $('chart-add-row').disabled=raw.labels.length>=12;$('chart-add-series').disabled=raw.series.length>=4||raw.kind==='donut';
   for(const button of $('chart-grid').querySelectorAll('[data-chart-remove-row]')){button.disabled=raw.labels.length<=1;button.setAttribute('aria-label','Remove category '+raw.labels[Number(button.dataset.chartRemoveRow)]);button.title=button.getAttribute('aria-label');}
@@ -181,6 +185,9 @@ componentList=function(...args){
 const chartInit=projectInit;
 projectInit=function(...args){
   const result=chartInit(...args);
+  if(chartDialog?.isConnected)return result;
+  $('fe-preview').addEventListener('dblclick',chartEditFromCanvas,true);
+  $('fe-preview').addEventListener('keydown',chartEditFromCanvas,true);
   const tab=componentButton('Charts & Graphs',()=>{$('component-category').value='Charts';componentList();});tab.setAttribute('role','tab');tab.setAttribute('aria-controls','component-items');tab.dataset.category='Charts';$('component-tabs').append(tab);$('component-category').add(new Option('Charts & Graphs','Charts'));
   const panel=document.createElement('section');panel.id='chart-inspector';panel.dataset.wpPart='content';panel.innerHTML='<h3>Chart</h3><p id="chart-inspector-summary"></p><button id="chart-edit" type="button">Edit chart data & style</button>';$('wp-fields').prepend(panel);
   $('chart-edit').onclick=()=>{const context=icSelection(),entry=context.selected[0];if(!context.locked&&entry?.node)chartOpen(chartData(entry.node),entry.key);};
@@ -201,6 +208,6 @@ projectInit=function(...args){
     const applied=componentRun(op);if(!applied.ok){$('chart-error').textContent=applied.message;return;}
     chartDialog.close();if($('component-add').open)$('component-add').close();wpKind='block';icDestination='';wePanels.inspector.open=true;wePanelView();dbPanel();icPaint();
   };
-  chartDialog.addEventListener('close',()=>{chartSession=null;if($('component-add').open)$('component-tabs').querySelector('[data-category="Charts"]').focus();else $('chart-edit')?.focus();});
+  chartDialog.addEventListener('close',()=>{if(chartDialog.open)return;chartSession=null;if($('component-add').open)$('component-tabs').querySelector('[data-category="Charts"]').focus();else $('chart-edit')?.focus();});
   chartInspector();return result;
 };

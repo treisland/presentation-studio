@@ -26,7 +26,8 @@ manual acceptance is pending.
    theme colors on and off preserves your staged custom choices until Apply.
 5. Choose **Insert chart**. Select the chart on the canvas or in Layers, then use
    Inspector **Content → Edit chart data & style** to reopen the same editor.
-   Double-clicking a chart also opens Chart studio. **Apply chart** makes one
+   A single click or focus selects the chart. Double-click it, or press Enter on
+   the focused chart, to open Chart studio. **Apply chart** makes one
    undoable change; **Cancel** or Escape discards staged changes.
 
 Charts are ordinary movable/resizable free objects. Use the existing Arrange,

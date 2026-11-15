@@ -112,3 +112,25 @@ test('donut category pickers follow category deletion and theme reset without lo
     assert.equal(JSON.parse(charts(await snapshot(page))[0].attrs['data-studio-chart']).colors[0],'#c867af');assert.deepEqual(errors,[]);
   }finally{await page.close();}
 });
+test('charts reopened from the actual editable HTML can Cancel and Apply repeatedly',async()=>{
+  const {page,errors}=await openExample(browser,'portfolio-demo');
+  const zipVM={setImmediate,clearImmediate,setTimeout,clearTimeout,Uint8Array,ArrayBuffer,TextEncoder,TextDecoder};vm.runInNewContext(await readFile('vendor/jszip-3.10.1.min.js','utf8'),zipVM);
+  try{
+    await openCharts(page);await page.getByRole('button',{name:'Customize Column chart',exact:true}).click();await page.locator('#chart-apply').click();
+    const zip=await zipVM.JSZip.loadAsync(new Uint8Array(await exportZip(page))),folder=resolve('test-results/charts-editable-reopen');
+    for(const [name,entry]of Object.entries(zip.files)){if(entry.dir)continue;const path=archivePath(folder,name);await mkdir(dirname(path),{recursive:true});await writeFile(path,await entry.async('uint8array'));}
+    const reopened=await browser.newPage({viewport:{width:1366,height:768}});reopened.setDefaultTimeout(5000);reopened.on('pageerror',error=>errors.push(error.message));
+    try{
+      await reopened.goto('file://'+resolve(folder,'index.html'));await reopened.locator('#open-full-editor').click();
+      await reopened.locator('#fe-preview .ps-chart').click();assert.equal(await reopened.locator('#chart-editor').isVisible(),false);
+      for(let index=0;index<2;index++){
+        await reopened.locator('#fe-preview .ps-chart').dblclick();await reopened.locator('#chart-editor').waitFor({state:'visible'});await reopened.locator('#chart-title').fill('Discard me');await reopened.locator('#chart-cancel').click();await reopened.locator('#chart-editor').waitFor({state:'hidden'});
+        await reopened.locator('#fe-preview .ps-chart').dblclick();await reopened.locator('#chart-title').fill('Reopened '+index);await reopened.locator('#chart-apply').click();await reopened.locator('#chart-editor').waitFor({state:'hidden'});
+        assert.equal(JSON.parse(charts(await snapshot(reopened))[0].attrs['data-studio-chart']).title,'Reopened '+index);
+      }
+      assert.equal(await reopened.locator('#chart-editor').count(),1);
+      await reopened.locator('#fe-preview .ps-chart').focus();await reopened.locator('#fe-preview .ps-chart').press('Enter');await reopened.locator('#chart-editor').waitFor({state:'visible'});await reopened.locator('#chart-title').press('Escape');await reopened.locator('#chart-editor').waitFor({state:'hidden'});
+    }finally{await reopened.close();}
+    assert.deepEqual(errors,[]);
+  }finally{await page.close();}
+});
