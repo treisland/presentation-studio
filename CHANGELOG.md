@@ -13,8 +13,11 @@
   clearing its active session. Canvas focus/click selects; explicit double-click,
   Enter or Inspector actions open the editor. Reopened editable HTML is covered (#271).
 
+## 0.18.0-beta.1 — 2026-11-15
+
 - Refresh recovery controls after creating a blank project from an already-open
   recovery editor, restoring the editing panels immediately (#269).
+
 
 - Keep start-screen Open project, Blank presentation, template/example and Recent
   project actions available when a recovery draft exists. Preserve that draft
@@ -23,14 +26,13 @@
 - Add the milestone 27 start screen with recent browser projects, Open project,
   empty-canvas creation, existing template/example entry points and browser-local
   startup preferences. Preserve recovery priority, guarded switching and direct
-  reopening of portable exports. Local alpha acceptance is pending (#269).
+  reopening of portable exports. Maintainer manual acceptance and beta sign-off are recorded (#269).
 
 - Remove the automatic slide-edge/footer warning banner and its layout-gallery hint; retain on-demand Check readiness overflow findings.
 
 - Add Help shortcuts to the published Presentation Studio marketing/documentation site and presentation gallery, opening separately from the editor.
 
-- Add the local 0.18 alpha Windows-inspired File/Edit/View/Insert/Format/Arrange/Slide/Help menu bar, shared command destinations, grouped contextual actions and keyboard/narrow-screen navigation (milestone #26). Keep detailed values in the Inspector and retain existing transactions, recovery and portable formats.
-- Prepare 0.18.0-alpha.1 for local maintainer review from v0.17.0-beta.2; publication and manual acceptance remain disabled.
+- Add the Windows-inspired File/Edit/View/Insert/Format/Arrange/Slide/Help menu bar, shared command destinations, grouped contextual actions and keyboard/narrow-screen navigation (milestone #26). Keep detailed values in the Inspector and retain existing transactions, recovery and portable formats.
 
 ## 0.17.0-beta.2 — 2026-11-14
 
