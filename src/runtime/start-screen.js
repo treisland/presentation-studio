@@ -68,6 +68,7 @@ function ssCreateBlank() {
   const state = studioBlankState('Untitled presentation');
   state.slides[0].tree = []; state.slides[0].templateBase = [];
   state.startingState = projectCopy(state);
+  projectDraftPending = null;
   projectAcceptPack({ schemaVersion: 2, kind: 'presentation-studio-project', playbackOnly: false,
     meta: { id: projectID('project'), name: state.projectName, updatedAt: new Date().toISOString() },
     state, history: { past: [], future: [] }, checkpoints: [] });
@@ -102,7 +103,7 @@ async function ssBoot() {
   if (params.get('start') === 'editor') { projectOpen(); return; }
   // Do not steal focus after the user has already entered a workflow during recovery lookup.
   if (document.querySelector('dialog[open]')) return;
-  if (projectDraftPending) { await ssOpen('A recovery draft is available. Review it before starting or opening another project.'); return; }
+  if (projectDraftPending) { await ssOpen('A recovery draft is available. You can review it or leave it safely in Recent projects while you open or create another presentation.'); return; }
   const preference = ssRead(ssPreferenceKey);
   if (preference === 'blank') {
     try { await hubDatabase(); ssCreateBlank(); }
@@ -148,11 +149,11 @@ projectInit = function(...args) {
   $('ss-current').onclick = () => { ssClose(); if (!$('full-editor').open) projectOpen(); };
   screen.addEventListener('cancel', event => { event.preventDefault(); $('ss-current').click(); });
   screen.addEventListener('keydown', event => event.stopPropagation());
-  $('ss-open').onclick = () => { if (projectDraftPending) { ssMessage('Review draft recovery before opening another project.'); $('ss-current').focus(); } else $('hub-file').click(); };
+  $('ss-open').onclick = () => $('hub-file').click();
   $('ss-manage').onclick = () => hubOpenPicker();
   $('ss-blank').onclick = () => ssRun(() => hubGuard(ssCreateBlank));
-  $('ss-template').onclick = () => { if (projectDraftPending) { ssMessage('Review draft recovery before choosing a template.'); return; } lcOpenExamples(); };
-  $('ss-example').onclick = () => { if (projectDraftPending) { ssMessage('Review draft recovery before trying an example.'); return; } lcOpenExamples(); lcSelectExample('studio', 'demo'); };
+  $('ss-template').onclick = () => lcOpenExamples();
+  $('ss-example').onclick = () => { lcOpenExamples(); if ($('lc-examples').open) lcSelectExample('studio', 'demo'); };
   $('ss-startup').onchange = event => {
     const saved = ssWrite(ssPreferenceKey, event.target.value);
     ssMessage(saved ? 'Startup preference saved for this browser.' : 'Your browser could not save this preference. It applies only while this screen is open.');

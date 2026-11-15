@@ -17,6 +17,33 @@ async function open(width = 1366) {
   return { page, errors };
 }
 async function fileStart(page) { await click(page, '#ss-menu'); await page.locator('#ss-screen').waitFor({ state: 'visible' }); }
+async function storedDraft(page, id) {
+  return page.evaluate(async id => {
+    const db = await new Promise((resolve, reject) => { const request = indexedDB.open('presentation-studio-editor-v1', 1); request.onsuccess = () => resolve(request.result); request.onerror = () => reject(request.error); });
+    try {
+      const tx = db.transaction(['projects', 'assets'], 'readonly');
+      const read = request => new Promise((resolve, reject) => { request.onsuccess = () => resolve(request.result); request.onerror = () => reject(request.error); });
+      const [record, keys, blobs] = await Promise.all([read(tx.objectStore('projects').get(id)), read(tx.objectStore('assets').getAllKeys()), read(tx.objectStore('assets').getAll())]);
+      const assets = await Promise.all(keys.flatMap((key, index) => String(key).startsWith(id + '|') ? [(async () => [key, Array.from(new Uint8Array(await blobs[index].arrayBuffer()))])()] : []));
+      return { record, assets };
+    } finally { db.close(); }
+  }, id);
+}
+async function pendingRecovery(page) {
+  await page.locator('#ss-current').click();
+  const id = await page.evaluate(() => {
+    const api = window.presentationStudioEditing, s = api.read();
+    const result = api.apply({ apiVersion: 1, projectId: s.projectId, expectedRevision: s.revision, operations: [{ type: 'slide.update', slideId: s.state.slides[0].id, changes: { title: 'Recovery must survive this switch' } }] });
+    if (!result.ok) throw Error(JSON.stringify(result));
+    return s.projectId;
+  });
+  await page.waitForFunction(() => document.getElementById('fe-status').dataset.saveState === 'saved');
+  const saved = await storedDraft(page, id);
+  await fileStart(page); await page.locator('#ss-startup').selectOption('blank');
+  await page.reload(); await page.locator('#ss-screen').waitFor({ state: 'visible' });
+  await page.waitForFunction(() => document.getElementById('ss-current').textContent.includes('recovery'));
+  return { id, saved };
+}
 test('first visit, empty state, navigation, theme and narrow layout preserve project identity and history', async () => {
   const { page, errors } = await open();
   try {
@@ -164,8 +191,6 @@ test('storage failure and recovery take precedence over automatic startup', asyn
     await fileStart(page); await page.locator('#ss-startup').selectOption('blank');
     await page.reload(); await page.locator('#ss-screen').waitFor({ state: 'visible' });
     await page.waitForFunction(() => document.getElementById('ss-current').textContent.includes('recovery'));
-    await page.locator('#ss-blank').click();
-    assert.equal(await page.locator('#ss-screen').isVisible(), true);
     await page.locator('#ss-current').click();
     assert.equal(await page.locator('#fe-recovery').isVisible(), true);
     assert.deepEqual(errors, []);
@@ -184,4 +209,80 @@ test('storage failure and recovery take precedence over automatic startup', asyn
     await noDatabase.waitForFunction(() => document.getElementById('ss-message').textContent.includes('automatic draft'));
     assert.equal(await noDatabase.evaluate(() => window.presentationStudioEditing.read().projectId), 'presentation-studio-demo-v1');
   } finally { await noDatabase.close(); }
+});
+for (const action of ['blank', 'template', 'example', 'recent', 'file']) test(`pending recovery allows explicit ${action} and preserves its stored project and asset bytes`, async () => {
+  const { page, errors } = await open();
+  try {
+    const { id, saved } = await pendingRecovery(page);
+    assert(saved.assets.length > 0, 'Fixture includes real recovery media');
+    if (action === 'blank') await page.locator('#ss-blank').click();
+    if (action === 'template' || action === 'example') {
+      await page.locator(action === 'template' ? '#ss-template' : '#ss-example').click();
+      await page.locator('#lc-examples').waitFor({ state: 'visible' });
+      if (action === 'template') await page.locator('[data-example="portfolio"] button').click();
+      await page.locator(action === 'template' ? '#lc-use-starter' : '#lc-use-demo').click();
+      await page.locator('#nx-wizard').waitFor({ state: 'visible' });
+      await page.locator('#nx-wizard-defaults').click();
+    }
+    if (action === 'recent') await page.locator('.ss-recent[data-project-id="' + id + '"]').click();
+    if (action === 'file') {
+      const pack = JSON.parse(await readFile('templates/blank/presentation.json', 'utf8'));
+      pack.meta.id = 'recovery-independent-import';
+      const chooser = page.waitForEvent('filechooser'); await page.locator('#ss-open').click();
+      await (await chooser).setFiles({ name: 'other.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(pack)) });
+    }
+    await page.locator('#ss-screen').waitFor({ state: 'hidden' });
+    await page.locator('#full-editor').waitFor({ state: 'visible' });
+    assert.equal(await page.locator('#fe-recovery').isVisible(), false);
+    const current = await page.evaluate(() => window.presentationStudioEditing.read());
+    if (action === 'recent') {
+      assert.equal(current.projectId, id);
+      assert.equal(current.state.slides[0].title, 'Recovery must survive this switch');
+    } else assert.notEqual(current.projectId, id);
+    assert.deepEqual(await storedDraft(page, id), saved);
+    await fileStart(page);
+    await page.locator('.ss-recent[data-project-id="' + id + '"]').waitFor();
+    assert.deepEqual(errors, []);
+  } finally { await page.close(); }
+});
+test('cancelled setup and invalid file leave pending recovery available without changing stored bytes', async () => {
+  const { page, errors } = await open();
+  try {
+    const { id, saved } = await pendingRecovery(page);
+    await page.locator('#ss-template').click(); await page.locator('#lc-examples-close').click();
+    await page.locator('#ss-example').click(); await page.locator('#lc-use-demo').click();
+    await page.locator('#nx-wizard-close').click();
+    await page.locator('#hub-file').setInputFiles({ name: 'bad.json', mimeType: 'application/json', buffer: Buffer.from('{}') });
+    await page.waitForFunction(() => document.getElementById('ss-message').textContent !== '' && !document.getElementById('ss-message').textContent.includes('recovery draft is available'));
+    assert.equal(await page.locator('#ss-screen').isVisible(), true);
+    assert.deepEqual(await storedDraft(page, id), saved);
+    await page.locator('#ss-current').click();
+    assert.equal(await page.locator('#fe-recovery').isVisible(), true);
+    await page.locator('#fe-recover').click();
+    await page.locator('#fe-recovery').waitFor({ state: 'hidden' });
+    assert.equal(await page.evaluate(() => window.presentationStudioEditing.read().state.slides[0].title), 'Recovery must survive this switch');
+    assert.deepEqual(errors, []);
+  } finally { await page.close(); }
+});
+test('opening a same-ID file with pending recovery keeps the recovery content and media as a previous local version', async () => {
+  const { page, errors } = await open();
+  try {
+    const { id, saved } = await pendingRecovery(page);
+    const incoming = structuredClone(saved.record.pack);
+    incoming.state.slides[0].title = 'Explicitly opened file content';
+    await page.locator('#hub-file').setInputFiles({ name: 'same-id.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(incoming)) });
+    await page.locator('#ss-screen').waitFor({ state: 'hidden' });
+    assert.equal(await page.evaluate(() => window.presentationStudioEditing.read().state.slides[0].title), 'Explicitly opened file content');
+    await fileStart(page);
+    const previous = page.locator('.ss-recent').filter({ hasText: '(previous local version)' });
+    await previous.waitFor();
+    const backupID = await previous.getAttribute('data-project-id');
+    assert.notEqual(backupID, id);
+    const backup = await storedDraft(page, backupID);
+    assert.deepEqual(backup.record.pack.state.slides, saved.record.pack.state.slides);
+    assert.deepEqual(backup.record.pack.history, saved.record.pack.history);
+    assert.deepEqual(backup.record.pack.checkpoints, saved.record.pack.checkpoints);
+    assert.deepEqual(backup.assets.map(([key, bytes]) => [key.slice(backupID.length), bytes]), saved.assets.map(([key, bytes]) => [key.slice(id.length), bytes]));
+    assert.deepEqual(errors, []);
+  } finally { await page.close(); }
 });

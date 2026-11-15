@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Keep start-screen Open project, Blank presentation, template/example and Recent
+  project actions available when a recovery draft exists. Preserve that draft
+  and its media instead of requiring recovery or discard first (#269).
+
 - Add the milestone 27 start screen with recent browser projects, Open project,
   empty-canvas creation, existing template/example entry points and browser-local
   startup preferences. Preserve recovery priority, guarded switching and direct

@@ -18,7 +18,13 @@ the start screen with Open project focused and an explanation. Preferences and
 last-project identity do not travel in presentation exports.
 
 Recovery for the initial project takes precedence over automatic creation or
-resume. Unreadable/missing drafts or unavailable storage fall back to the start
+resume. It does not block explicit start-screen actions: you may create a blank
+presentation, use a template/example, open a file, or choose a recent project.
+The untouched launch document is not saved over its pending recovery copy. That
+copy and its media remain in Recent projects; choosing it opens its saved content.
+Cancelling setup or a picker leaves recovery available for review. Opening a
+different file with the same ID uses the existing previous-local-version backup.
+Unreadable/missing drafts or unavailable storage fall back to the start
 screen without deleting records. Explicit exported projects, playback exports,
 presenter/audience and booth routes bypass generic startup behavior. Explicit
 `?start=present` opens the bundled presentation directly; `?start=editor` opens

@@ -13,23 +13,31 @@ integration until maintainer review. No companion deployment is included.
 
 ## Automated and visual evidence
 
-- Focused startup workflows: seven browser tests passed, covering first visit,
+- Focused startup workflows: fourteen browser tests passed, covering first visit,
   theme/narrow layout, navigation without identity/history changes, blank creation,
   recents/save-before-switch cancellation, ZIP opening and invalid import,
   offline editable reopening, all preferences, missing last draft, recovery
   precedence and unavailable storage/database.
+- Recovery follow-up: explicit blank/template/example/recent/file actions work
+  without recovering or discarding first. Tests compare the original stored
+  project, history and media bytes, verify cancellation/invalid import preserves
+  recovery, and check same-ID imports keep a previous-local-version copy.
 - Existing example setup and legacy/demo regression checks passed separately.
 - Existing browser fixtures now explicitly request `?start=present` when their
   initial surface is presentation playback; new startup tests use the default URL.
 - Local screenshot candidates under ignored `test-results/start-screen-*.png`
   were inspected by the implementation agent in light, dark and narrow layouts.
   These are development review captures, not accepted companion imagery.
-- `npm run check`: passed all 504 tests (48 unit/build, 165 browser,
+- Initial alpha `npm run check`: passed all 504 tests (48 unit/build, 165 browser,
   173 component, 23 manipulation, 30 Inspector/menu, 46 viewer/presenter,
   19 audio). Windows with Playwright Chromium 151.0.7922.34.
 - `npm run package`: passed; the packaged guide is present and the packaged
   editable demo reopens directly offline despite a blank-start preference.
-- Final focused startup/presenter-browser regression: 12 tests passed.
+- Initial alpha startup/presenter-browser regression: 12 tests passed.
+- Recovery-fix `npm run check`: all 511 tests passed (including 172 browser
+  tests). Its 14 focused startup tests, packaging, packaged offline demo smoke
+  check and diff check passed. Maintainer retest and updated protected CI remain
+  pending; no new release authorization is implied.
 - `git diff --check`: passed. Linux CI and maintainer manual review remain pending.
 
 ## Local test path

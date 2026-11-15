@@ -13,7 +13,8 @@ backups when moving between browsers or computers.
 Use **On startup** to show this screen, resume your last project, create a blank
 presentation, or start at the file-opening prompt. The browser requires a click
 on **Open project** to display its file picker. Return through **File → Start
-screen**. Recovery takes priority over automatic startup, and exported projects
+screen**. Recovery takes priority over automatic startup, but you can still use
+the start-screen buttons; the recovery copy stays in Recent projects. Exported projects
 open directly. See [startup behavior and alpha review](start-screen.md).
 
 ## Check readiness before presenting
