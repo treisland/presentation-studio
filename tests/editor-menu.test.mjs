@@ -67,6 +67,18 @@ test('Help opens published website/docs and gallery separately without changing 
  }finally{await page.close();}
 });
 
+test('keyboard help contains Escape, undo shortcuts and native cancel without closing or changing the editor',async()=>{
+ const {page,errors}=await open();try{
+  await shape(page);const before=await snapshot(page),previewCount=await page.locator('#fe-preview .slide').count();assert(previewCount>0);
+  const openHelp=async()=>{const panel=await menu(page,'Help');await panel.getByRole('menuitem',{name:'Keyboard & menu help…',exact:true}).click();await page.locator('#em-help-dialog').waitFor({state:'visible'});};
+  await openHelp();await page.keyboard.press('Control+z');assert.deepEqual(await snapshot(page),before);
+  await page.keyboard.press('Escape');await page.locator('#em-help-dialog').waitFor({state:'hidden'});
+  assert.equal(await page.locator('#full-editor').evaluate(node=>node.open),true);assert.equal(await page.locator('#fe-preview .slide').count(),previewCount);assert.equal(await page.locator('#em-help > summary').evaluate(node=>node===document.activeElement),true);
+  await openHelp();await page.locator('#em-help-close').click();assert.equal(await page.locator('#full-editor').evaluate(node=>node.open),true);
+  await openHelp();await page.locator('#em-help-dialog').evaluate(node=>node.dispatchEvent(new Event('cancel',{bubbles:true,cancelable:true})));await page.locator('#em-help-dialog').waitFor({state:'hidden'});
+  assert.equal(await page.locator('#full-editor').evaluate(node=>node.open),true);assert.deepEqual(await snapshot(page),before);assert.deepEqual(errors,[]);
+ }finally{await page.close();}
+});
 test('locked and mixed selections retain a stable menu inventory and guarded actions',async()=>{
  const {page,errors}=await open();try{
   const {slideId,key}=await shape(page);let panel=await menu(page,'Arrange');const labels=await panel.locator(':scope > button').allTextContents();await page.keyboard.press('Escape');

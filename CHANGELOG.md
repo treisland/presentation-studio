@@ -18,6 +18,9 @@
 
 ## 0.18.0-beta.1 — 2026-11-15
 
+- Keep keyboard-help Escape, undo shortcuts and native cancellation inside its
+  dialog, preserving the open editor, preview, history and focus (#275).
+
 - Refresh recovery controls after creating a blank project from an already-open
   recovery editor, restoring the editing panels immediately (#269).
 

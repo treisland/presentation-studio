@@ -7,6 +7,10 @@ included in 0.18.0-beta.1 after acceptance of runtime `4c25100` on 2026-11-15
 
 ## Command ownership
 
+**Help → Keyboard & menu help** is modal. Escape or Back to editor dismisses
+only help and returns focus to the Help menu. Keys in help do not invoke editor
+Undo/Redo or close its preview.
+
 Milestone 27 adds **File → Start screen** to return to recent projects, Open
 project, creation choices and browser-local startup preferences. Opening this
 screen does not change the project or Undo history; existing switch/recovery
@@ -67,8 +71,8 @@ Review these workflows before acceptance:
 5. Export an editable ZIP with media/audio, reopen in a clean profile, and check
    legacy projects, recovery, reusable components and offline playback/booth.
 
-Command search, ribbons and customizable menus remain deferred. This local alpha
-does not authorize a PR, hosted deployment, tag or release publication.
+Command search, ribbons and customizable menus remain deferred. Beta publication
+uses the approved release plan; hosted deployment remains separately authorized.
 
 ## Companion documentation and images
 
