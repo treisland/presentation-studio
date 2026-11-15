@@ -1,9 +1,10 @@
 {
-  "version": "0.19.0-rc.1",
+  "version": "0.19.0",
   "publish": true,
-  "notes": "docs/releases/0.19.0-rc.1.md",
+  "notes": "docs/releases/0.19.0.md",
   "manualGatesPassed": true,
   "evidence": [
+    "docs/releases/0.19.0-validation.md",
     "docs/releases/0.19.0-rc.1-validation.md",
     "docs/releases/0.19.0-beta.1-validation.md",
     "docs/releases/0.18.0-beta.1-validation.md",
@@ -17,7 +18,7 @@
       "pages"
     ],
     "channels": [
-      "beta"
+      "stable"
     ]
   }
 }
