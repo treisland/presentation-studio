@@ -10,11 +10,11 @@
 .chart-data-disclosure summary{cursor:pointer;width:max-content;max-width:100%}
 .chart-data-disclosure[open]{background:var(--project-surface,#fff);color:var(--project-ink,#20283b);max-height:200px;overflow:auto;box-shadow:0 4px 14px #0003}
 .chart-data-disclosure table{font-size:13px;width:100%;border-collapse:collapse}.chart-data-disclosure th,.chart-data-disclosure td{padding:5px;border:1px solid currentColor;text-align:left}
-#component-add #component-items.chart-library-results{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+#component-add #component-items.chart-library-results{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
 .chart-library-intro{grid-column:1/-1}.chart-library-intro h3{font-size:24px;margin:0 0 6px}.chart-library-intro p{margin:0}
 .chart-library-card{border:1px solid var(--wb-line,#cdd4e1);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px;min-width:0}
 .chart-library-card>h3{margin:0}.chart-library-card>button{align-self:flex-start}.chart-card-preview{background:#fff;color:#20283b;border-radius:8px;padding:12px;pointer-events:none;--project-ink:#20283b;--project-accent:#8450df;--project-accent2:#159d99}
-.chart-card-preview .chart-heading{font-size:14px}.chart-card-preview .chart-legend{font-size:11px}
+.chart-card-preview{height:150px;display:flex;flex-direction:column}.chart-card-preview .chart-heading{display:none}.chart-card-preview .chart-plot{flex:1;min-height:0;max-height:none}.chart-card-preview .chart-legend{font-size:11px}
 #chart-editor{width:min(1120px,94vw);max-width:94vw;max-height:92vh;box-sizing:border-box;padding:24px;border:1px solid var(--wb-line,#ccd2df);border-radius:16px;background:var(--wb-surface,#fff);color:var(--wb-ink,#20283b);overflow:auto}
 #chart-editor::backdrop{background:#10152b88}#chart-editor .chart-editor-header,#chart-editor .chart-editor-footer{display:flex;align-items:center;justify-content:space-between;gap:16px}#chart-editor h2{margin:0;font:700 24px/1.2 var(--wb-font);letter-spacing:normal}#chart-editor .chart-editor-header p{margin:5px 0 16px}
 .chart-editor-layout{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:24px}.chart-preview-column,.chart-controls{min-width:0}

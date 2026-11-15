@@ -123,7 +123,7 @@ componentList=function(...args){
   const query=$('component-search').value.toLowerCase().trim();let count=0;
   for(const [kind,name]of Object.entries(chartKinds)){
     if(![name,kind,'chart graph'].join(' ').toLowerCase().includes(query))continue;count++;
-    const card=document.createElement('article'),preview=document.createElement('div'),heading=document.createElement('h3');card.className='chart-library-card';preview.className='chart-card-preview';heading.textContent=name;chartDraw(preview,chartSample(kind),true);card.append(preview,heading,componentButton('Customize '+name,()=>chartOpen(chartSample(kind))));list.append(card);
+    const card=document.createElement('article'),preview=document.createElement('div'),heading=document.createElement('h3');card.className='chart-library-card';preview.className='chart-card-preview';heading.textContent=name;chartDraw(preview,chartSample(kind),true);card.append(heading,preview,componentButton('Customize '+name,()=>chartOpen(chartSample(kind))));list.append(card);
   }
   if(!count){const empty=document.createElement('p');empty.textContent='No charts match your search.';list.append(empty);}
   for(const tab of $('component-tabs').children){const selected=tab.dataset.category==='Charts';tab.setAttribute('aria-selected',String(selected));tab.tabIndex=selected?0:-1;}
