@@ -77,8 +77,9 @@ editingRegisterOperation('chart.update',(state,op)=>{
 let chartDialog=null,chartSession=null;
 function chartOpen(data=chartSample(),blockId=''){
   vbEnd(false);projectFlush();
-  const snapshot=studioEditing.read();chartSession={projectId:snapshot.projectId,revision:snapshot.revision,slideId:projectSelected,blockId,data:chartNormalize(data)};
-  $('chart-title').value=data.title;$('chart-kind').value=data.kind;$('chart-theme').checked=!data.colors.length;$('chart-colors').value=data.colors.join(', ');$('chart-paste').value=chartTSV(data);$('chart-error').textContent='';$('chart-apply').textContent=blockId?'Apply chart':'Insert chart';
+  const snapshot=studioEditing.read();chartSession={projectId:snapshot.projectId,revision:snapshot.revision,slideId:projectSelected,blockId,data:chartNormalize(data),colors:[...data.colors]};
+  $('chart-color-pickers').dataset.signature='';
+  $('chart-title').value=data.title;$('chart-kind').value=data.kind;$('chart-theme').checked=!data.colors.length;$('chart-paste').value=chartTSV(data);$('chart-error').textContent='';$('chart-apply').textContent=blockId?'Apply chart':'Insert chart';
   chartGrid();chartPreview();chartTab('data');chartDialog.showModal();
 }
 const chartInline=vbStart;
@@ -91,22 +92,71 @@ vbStart=function(selection){
   return chartInline(selection);
 };
 function chartTab(name){for(const value of ['data','style']){$('chart-'+value+'-panel').hidden=value!==name;$('chart-tab-'+value).setAttribute('aria-pressed',String(value===name));}}
-function chartRead(){
-  const data={...chartSession.data,title:$('chart-title').value,kind:$('chart-kind').value,colors:$('chart-theme').checked?[]:$('chart-colors').value.split(',').map(value=>value.trim()).filter(Boolean)};
-  if(!$('chart-theme').checked&&!data.colors.length)throw Error('Enter at least one custom hex color or use the presentation theme.');
+function chartRead(validate=true){
+  const data={...chartSession.data,title:$('chart-title').value,kind:$('chart-kind').value,colors:$('chart-theme').checked?[]:[...chartSession.colors]};
   data.labels=[...$('chart-grid').querySelectorAll('[data-chart-label]')].map(input=>input.value);
-  data.series=data.series.map((item,s)=>({name:$('chart-grid').querySelector('[data-chart-series="'+s+'"]').value,values:data.labels.map((_,r)=>{const value=$('chart-grid').querySelector('[data-chart-cell="'+r+'-'+s+'"]').value;if(!value.trim())throw Error('Every data cell needs a number.');return Number(value);})}));
-  return chartNormalize(data);
+  data.series=data.series.map((item,s)=>({name:$('chart-grid').querySelector('[data-chart-series="'+s+'"]').value,values:data.labels.map((_,r)=>{const value=$('chart-grid').querySelector('[data-chart-cell="'+r+'-'+s+'"]').value;return value.trim()?Number(value):NaN;})}));
+  return validate?chartNormalize(data):data;
 }
-function chartPreview(){try{const data=chartRead();$('chart-live-preview').replaceChildren();chartDraw($('chart-live-preview'),data);$('chart-error').textContent='';$('chart-apply').disabled=false;$('chart-colors').disabled=$('chart-theme').checked;for(const [id,disabled]of [['add-row',data.labels.length>=12],['remove-row',data.labels.length<=1],['add-series',data.series.length>=4||data.kind==='donut'],['remove-series',data.series.length<=1]])$('chart-'+id).disabled=disabled;return data;}catch(error){$('chart-error').textContent=error.message;$('chart-apply').disabled=true;return null;}}
+function chartThemeColor(index){
+  const palette=['var(--project-accent, #8450df)','var(--project-secondary, #159d99)','color-mix(in srgb, var(--project-accent, #8450df) 60%, var(--project-ink, #20283b))','color-mix(in srgb, var(--project-secondary, #159d99) 60%, var(--project-ink, #20283b))','#6080c7','#789545','#ae6c36','#7a6cb0','#3c8e9b','#ad748c','#73858f','#9d854d'];
+  const sample=document.createElement('span');sample.style.color=palette[index%palette.length];$('chart-live-preview').append(sample);
+  const canvas=document.createElement('canvas');canvas.width=canvas.height=1;const context=canvas.getContext('2d');context.fillStyle=getComputedStyle(sample).color;context.fillRect(0,0,1,1);sample.remove();
+  return '#'+[...context.getImageData(0,0,1,1).data].slice(0,3).map(value=>value.toString(16).padStart(2,'0')).join('');
+}
+function chartEnsureColors(count){
+  const current=chartSession.colors;
+  chartSession.colors=Array.from({length:Math.max(count,current.length)},(_,index)=>current.length?current[index%current.length]:chartThemeColor(index));
+}
+function chartColorsPaint(){
+  const data=chartRead(false),names=data.kind==='donut'?data.labels:data.series.map(item=>item.name),theme=$('chart-theme').checked,panel=$('chart-color-pickers');
+  const signature=JSON.stringify([names,theme,data.kind]);if(panel.dataset.signature===signature)return;panel.dataset.signature=signature;panel.replaceChildren();
+  $('chart-color-heading').textContent=data.kind==='donut'?'Category colors':'Series colors';
+  names.forEach((name,index)=>{
+    const row=document.createElement('div'),label=document.createElement('span'),picker=document.createElement('input'),hex=document.createElement('input');row.className='chart-color-row';label.textContent=name||'Unnamed '+(index+1);
+    const value=theme?chartThemeColor(index):chartSession.colors[index%chartSession.colors.length]||chartThemeColor(index);
+    picker.type='color';picker.value=/^#[\da-f]{6}$/i.test(value)?value:'#000000';picker.setAttribute('aria-label','Color for '+(name||'item '+(index+1)));picker.disabled=theme;
+    hex.value=value;hex.maxLength=7;hex.spellcheck=false;hex.setAttribute('aria-label','Hex color for '+(name||'item '+(index+1)));hex.disabled=theme;
+    const update=value=>{chartEnsureColors(names.length);chartSession.colors[index]=value;chartPreview();};
+    picker.oninput=()=>{hex.value=picker.value;update(picker.value);};
+    hex.oninput=()=>{if(/^#[\da-f]{6}$/i.test(hex.value))picker.value=hex.value;update(hex.value);};
+    row.append(label,picker,hex);panel.append(row);
+  });
+}
+function chartPreview(){
+  const raw=chartRead(false);chartColorsPaint();
+  $('chart-add-row').disabled=raw.labels.length>=12;$('chart-add-series').disabled=raw.series.length>=4||raw.kind==='donut';
+  for(const button of $('chart-grid').querySelectorAll('[data-chart-remove-row]')){button.disabled=raw.labels.length<=1;button.setAttribute('aria-label','Remove category '+raw.labels[Number(button.dataset.chartRemoveRow)]);button.title=button.getAttribute('aria-label');}
+  for(const button of $('chart-grid').querySelectorAll('[data-chart-remove-series]')){button.disabled=raw.series.length<=1;button.setAttribute('aria-label','Remove series '+raw.series[Number(button.dataset.chartRemoveSeries)].name);button.title=button.getAttribute('aria-label');}
+  try{const data=chartNormalize(raw);$('chart-live-preview').replaceChildren();chartDraw($('chart-live-preview'),data);$('chart-error').textContent='';$('chart-apply').disabled=false;return data;}
+  catch(error){$('chart-error').textContent=error.message;$('chart-apply').disabled=true;return null;}
+}
 function chartGrid(){
   const data=chartSession.data,table=$('chart-grid');table.replaceChildren();
-  const input=(value,attrs)=>{const el=document.createElement('input');el.value=value;for(const [name,content]of Object.entries(attrs))el.setAttribute(name,content);el.addEventListener('input',chartPreview);return el;};
-  const header=document.createElement('tr'),corner=document.createElement('th');corner.textContent='Category';header.append(corner);
-  data.series.forEach((series,s)=>{const cell=document.createElement('th');cell.append(input(series.name,{'aria-label':'Series '+(s+1)+' name','data-chart-series':s,maxlength:80}));header.append(cell);});table.append(header);
-  data.labels.forEach((label,r)=>{const row=document.createElement('tr'),cell=document.createElement('th');cell.append(input(label,{'aria-label':'Category '+(r+1),'data-chart-label':r,maxlength:80}));row.append(cell);data.series.forEach((series,s)=>{const td=document.createElement('td');td.append(input(series.values[r],{'aria-label':'Row '+(r+1)+' series '+(s+1),type:'number',step:'any','data-chart-cell':r+'-'+s}));row.append(td);});table.append(row);});
+  const input=(value,attrs)=>{const el=document.createElement('input');el.value=Number.isNaN(value)?'':value;for(const [name,content]of Object.entries(attrs))el.setAttribute(name,content);el.addEventListener('input',chartPreview);return el;};
+  const remove=(axis,index,name)=>{const button=componentButton('×',()=>chartStructure(axis,-1,index));button.className='chart-remove';button.dataset[axis==='row'?'chartRemoveRow':'chartRemoveSeries']=index;button.setAttribute('aria-label','Remove '+(axis==='row'?'category ':'series ')+name);button.title=button.getAttribute('aria-label');return button;};
+  const head=document.createElement('thead'),header=document.createElement('tr'),corner=document.createElement('th');corner.scope='col';corner.textContent='Category';header.append(corner);
+  data.series.forEach((series,s)=>{const cell=document.createElement('th'),tools=document.createElement('div');cell.scope='col';tools.className='chart-cell-tools';tools.append(input(series.name,{'aria-label':'Series '+(s+1)+' name','data-chart-series':s,maxlength:80}),remove('series',s,series.name));cell.append(tools);header.append(cell);});
+  const addCell=document.createElement('th'),addSeries=componentButton('+ Series',()=>chartStructure('series',1));addSeries.id='chart-add-series';addSeries.setAttribute('aria-label','Add series');addCell.append(addSeries);header.append(addCell);head.append(header);table.append(head);
+  const body=document.createElement('tbody');
+  data.labels.forEach((label,r)=>{const row=document.createElement('tr'),cell=document.createElement('th');cell.scope='row';cell.append(input(label,{'aria-label':'Category '+(r+1),'data-chart-label':r,maxlength:80}));row.append(cell);data.series.forEach((series,s)=>{const td=document.createElement('td');td.append(input(series.values[r],{'aria-label':'Row '+(r+1)+' series '+(s+1),type:'number',step:'any','data-chart-cell':r+'-'+s}));row.append(td);});const action=document.createElement('td');action.append(remove('row',r,label));row.append(action);body.append(row);});table.append(body);
+  const foot=document.createElement('tfoot'),row=document.createElement('tr'),cell=document.createElement('td'),addRow=componentButton('+ Category',()=>chartStructure('row',1));cell.colSpan=data.series.length+2;addRow.id='chart-add-row';addRow.setAttribute('aria-label','Add category');cell.append(addRow);row.append(cell);foot.append(row);table.append(foot);
 }
-function chartResize(axis,delta){const data=chartPreview();if(!data)return;try{if(axis==='row'){if(delta>0){let i=data.labels.length+1;while(data.labels.includes('Category '+i))i++;data.labels.push('Category '+i);data.series.forEach(item=>item.values.push(0));}else{data.labels.pop();data.series.forEach(item=>item.values.pop());}}else{if(delta>0){let i=data.series.length+1;while(data.series.some(item=>item.name==='Series '+i))i++;data.series.push({name:'Series '+i,values:data.labels.map(()=>0)});}else data.series.pop();}chartSession.data=chartNormalize(data);chartGrid();chartPreview();}catch(error){$('chart-error').textContent=error.message;}}
+function chartStructure(axis,delta,index){
+  const data=chartRead(false),count=axis==='row'?data.labels.length:data.series.length;
+  if(delta>0&&(count>=(axis==='row'?12:4)||axis==='series'&&data.kind==='donut')||delta<0&&count<=1)return;
+  const colorAxis=data.kind==='donut'?'row':'series',colorCount=data.kind==='donut'?data.labels.length:data.series.length;
+  if(axis===colorAxis)chartEnsureColors(colorCount);
+  if(axis==='row'){
+    if(delta>0){let i=data.labels.length+1;while(data.labels.includes('Category '+i))i++;data.labels.push('Category '+i);data.series.forEach(item=>item.values.push(0));}
+    else{data.labels.splice(index,1);data.series.forEach(item=>item.values.splice(index,1));}
+  }else if(delta>0){let i=data.series.length+1;while(data.series.some(item=>item.name==='Series '+i))i++;data.series.push({name:'Series '+i,values:data.labels.map(()=>0)});}
+  else data.series.splice(index,1);
+  if(axis===colorAxis){if(delta<0)chartSession.colors.splice(index,1);else chartEnsureColors(colorCount+1);}
+  chartSession.data=data;chartGrid();chartPreview();
+  const target=delta>0?(axis==='row'?'[data-chart-label="'+(data.labels.length-1)+'"]':'[data-chart-series="'+(data.series.length-1)+'"]'):(axis==='row'?'[data-chart-label="'+Math.min(index,data.labels.length-1)+'"]':'[data-chart-series="'+Math.min(index,data.series.length-1)+'"]');
+  $('chart-grid').querySelector(target)?.focus();
+}
 function chartInspector(){
   const panel=$('chart-inspector');if(!panel||!projectReady)return;const context=icSelection(),entry=context.selected.length===1&&context.selected[0],data=entry?.node&&chartData(entry.node);
   panel.hidden=!data;panel.dataset.icVisible=String(!!data);if(!data)return;
@@ -135,14 +185,13 @@ projectInit=function(...args){
   const panel=document.createElement('section');panel.id='chart-inspector';panel.dataset.wpPart='content';panel.innerHTML='<h3>Chart</h3><p id="chart-inspector-summary"></p><button id="chart-edit" type="button">Edit chart data & style</button>';$('wp-fields').prepend(panel);
   $('chart-edit').onclick=()=>{const context=icSelection(),entry=context.selected[0];if(!context.locked&&entry?.node)chartOpen(chartData(entry.node),entry.key);};
   chartDialog=document.createElement('dialog');chartDialog.id='chart-editor';chartDialog.setAttribute('aria-labelledby','chart-editor-heading');
-  chartDialog.innerHTML='<div class="chart-editor-header"><div><h2 id="chart-editor-heading">Chart studio</h2><p>Preview your data in your presentation theme.</p></div><button id="chart-cancel" type="button">Cancel</button></div><div class="chart-editor-layout"><section class="chart-preview-column"><label>Chart title<input id="chart-title" maxlength="80"></label><div id="chart-live-preview"></div></section><section class="chart-controls"><label>Chart type<select id="chart-kind"></select></label><div class="chart-editor-tabs" role="group" aria-label="Chart settings"><button id="chart-tab-data" type="button">Data</button><button id="chart-tab-style" type="button">Style</button></div><div id="chart-data-panel"><p>1–12 categories · 1–4 series. Donuts use one nonnegative series.</p><div class="chart-grid-scroll"><table id="chart-grid" aria-label="Editable chart data"></table></div><div class="chart-grid-actions"><button id="chart-add-row">Add category</button><button id="chart-remove-row">Remove last category</button><button id="chart-add-series">Add series</button><button id="chart-remove-series">Remove last series</button></div><details><summary>Paste spreadsheet data</summary><p>Include a header row. Use tabs or simple commas, plain numbers and no quoted cells.</p><label>Tabular data<textarea id="chart-paste" rows="6" maxlength="16000" spellcheck="false"></textarea></label><button id="chart-paste-apply" type="button">Use pasted data</button></details></div><div id="chart-style-panel" hidden><label><input id="chart-theme" type="checkbox" checked> Use presentation theme</label><label>Custom series colors<input id="chart-colors" placeholder="#8450df, #159d99"></label><p>Comma-separated hex colors; donut colors follow category order. Labels and the data table remain available.</p></div><p id="chart-error" role="status" aria-live="polite"></p></section></div><div class="chart-editor-footer"><p>Changes apply together and can be undone.</p><button id="chart-apply" type="button">Insert chart</button></div>';
+  chartDialog.innerHTML='<div class="chart-editor-header"><div><h2 id="chart-editor-heading">Chart studio</h2><p>Preview your data in your presentation theme.</p></div><button id="chart-cancel" type="button">Cancel</button></div><div class="chart-editor-layout"><section class="chart-preview-column"><label>Chart title<input id="chart-title" maxlength="80"></label><div id="chart-live-preview"></div></section><section class="chart-controls"><label>Chart type<select id="chart-kind"></select></label><div class="chart-editor-tabs" role="group" aria-label="Chart settings"><button id="chart-tab-data" type="button">Data</button><button id="chart-tab-style" type="button">Style</button></div><div id="chart-data-panel"><p>1–12 categories · 1–4 series. Donuts use one nonnegative series.</p><div class="chart-grid-scroll"><table id="chart-grid" aria-label="Editable chart data"></table></div><details><summary>Paste spreadsheet data</summary><p>Include a header row. Use tabs or simple commas, plain numbers and no quoted cells.</p><label>Tabular data<textarea id="chart-paste" rows="6" maxlength="16000" spellcheck="false"></textarea></label><button id="chart-paste-apply" type="button">Use pasted data</button></details></div><div id="chart-style-panel" hidden><label><input id="chart-theme" type="checkbox" checked> Use presentation theme</label><h3 id="chart-color-heading">Series colors</h3><div id="chart-color-pickers"></div><p>Turn off presentation theme to customize each color. Donut colors follow categories. Use a swatch or enter a hex color.</p></div><p id="chart-error" role="status" aria-live="polite"></p></section></div><div class="chart-editor-footer"><p>Changes apply together and can be undone.</p><button id="chart-apply" type="button">Insert chart</button></div>';
   document.body.append(chartDialog);
   for(const [kind,name]of Object.entries(chartKinds))$('chart-kind').add(new Option(name,kind));
   $('chart-cancel').onclick=()=>chartDialog.close();
-  $('chart-theme').addEventListener('input',()=>{if(!$('chart-theme').checked&&!$('chart-colors').value.trim())$('chart-colors').value='#8450df, #159d99, #d88b10, #cb527c';});
-  for(const id of ['chart-title','chart-kind','chart-theme','chart-colors'])$(id).addEventListener('input',chartPreview);
+  $('chart-theme').addEventListener('input',()=>{if(!$('chart-theme').checked){const data=chartRead(false);chartEnsureColors(data.kind==='donut'?data.labels.length:data.series.length);}});
+  for(const id of ['chart-title','chart-kind','chart-theme'])$(id).addEventListener('input',chartPreview);
   for(const name of ['data','style'])$('chart-tab-'+name).onclick=()=>chartTab(name);
-  for(const [id,axis,delta]of [['add-row','row',1],['remove-row','row',-1],['add-series','series',1],['remove-series','series',-1]])$('chart-'+id).onclick=()=>chartResize(axis,delta);
   $('chart-paste-apply').onclick=()=>{try{const current={...chartSession.data,kind:$('chart-kind').value,title:$('chart-title').value};chartSession.data=chartParse($('chart-paste').value,current);chartGrid();chartPreview();}catch(error){$('chart-error').textContent=error.message;}};
   $('chart-apply').onclick=()=>{
     const data=chartPreview();if(!data)return;

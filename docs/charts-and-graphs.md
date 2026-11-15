@@ -10,13 +10,20 @@ manual acceptance is pending.
 1. Open **Insert / Library → Charts & Graphs**. Choose **Customize** under a
    column, horizontal bar, line or donut preview. Search filters this category.
 2. In **Chart studio**, name the chart and edit category names, series names and
-   values in **Data**. Add/remove the last category or series using the buttons.
+   values in **Data**. Choose **+ Series** at the end of the header or **+ Category**
+   below the rows. New entries focus their name field. Remove any category with
+   its row's × button, or any series with × beside its header. Hover/focus labels
+   identify each target; the remaining values and custom colors stay together.
+   The last category and last series cannot be removed. You can remove a row
+   containing invalid data without first repairing that row.
    The preview updates as you type; edits stay staged until you apply them.
 3. To paste spreadsheet values, expand **Paste spreadsheet data**. Copy the header
    row and data rows, paste them in the field and choose **Use pasted data**.
-4. Choose **Style** to use the presentation theme or enter custom six-digit hex
-   colors separated by commas. Custom colors repeat when there are more series
-   than colors; donut colors follow category order.
+4. Choose **Style**. Leave **Use presentation theme** enabled for linked colors,
+   or turn it off to customize each named series with its swatch/color picker
+   and individual six-digit hex field. Donuts show a color for each category.
+   Renaming or removing an item keeps its remaining colors aligned. Turning
+   theme colors on and off preserves your staged custom choices until Apply.
 5. Choose **Insert chart**. Select the chart on the canvas or in Layers, then use
    Inspector **Content → Edit chart data & style** to reopen the same editor.
    Double-clicking a chart also opens Chart studio. **Apply chart** makes one
@@ -91,7 +98,9 @@ version.
   and Style controls. Check desktop/laptop layouts, 390px width, zoom and light/
   dark editor and presentation themes. Review screen-reader names and data tables.
 - Paste valid, negative, zero, empty, malformed and maximum-size data. Change the
-  chart type, colors and theme; test Cancel, Undo/Redo and switching objects.
+  chart type, native color pickers, individual hex fields and theme; test Cancel,
+  Undo/Redo and switching objects. Add categories/series, remove a middle or first
+  item and verify data/color associations, new-name focus and minimum/maximum limits.
 - Move, resize, duplicate, group, hide and lock charts. Save/recover the browser
   project. Export/import a library in a clean profile and verify independent copies.
 - Export and reopen editable, playback and booth ZIPs offline. Verify chart

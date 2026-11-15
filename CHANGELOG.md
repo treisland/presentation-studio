@@ -6,6 +6,9 @@
   staged data/style editing, spreadsheet paste, theme/custom colors and contextual
   Inspector editing. Preserve chart data in reusable components, recovery and
   offline editable/playback/booth exports. Manual acceptance is pending (#271).
+- Refine Chart studio with named series/category color pickers and individual hex
+  fields, inline add controls and targeted row/series removal. Preserve staged
+  custom colors, remaining values, keyboard focus, Apply/Cancel and Undo (#271).
 
 - Keep start-screen Open project, Blank presentation, template/example and Recent
   project actions available when a recovery draft exists. Preserve that draft

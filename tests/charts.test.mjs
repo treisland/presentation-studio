@@ -51,7 +51,7 @@ test('saved chart components copy independently and both playback exports render
   const zipVM={setImmediate,clearImmediate,setTimeout,clearTimeout,Uint8Array,ArrayBuffer,TextEncoder,TextDecoder};vm.runInNewContext(await readFile('vendor/jszip-3.10.1.min.js','utf8'),zipVM);
   try{
     await openCharts(page);await page.getByRole('button',{name:'Customize Donut chart',exact:true}).click();
-    await page.locator('#chart-tab-style').click();await page.locator('#chart-theme').uncheck();await page.locator('#chart-colors').fill('#8450df, #159d99, #d88b10, #cb527c');await page.locator('#chart-apply').click();
+    await page.locator('#chart-tab-style').click();await page.locator('#chart-theme').uncheck();for(const [index,color]of ['#8450df','#159d99','#d88b10','#cb527c'].entries())await page.getByLabel('Hex color for Q'+(index+1),{exact:true}).fill(color);await page.locator('#chart-apply').click();
     const original=charts(await snapshot(page))[0];
     await page.locator('#component-open').click();await page.locator('#component-save-panel').evaluate(el=>el.open=true);await page.locator('#component-name').fill('Quarterly donut');await page.locator('#component-save').click();
     const event=page.waitForEvent('download');await page.locator('#component-export').click();const libraryBytes=await readFile(await(await event).path());
@@ -78,5 +78,37 @@ test('chart studio stays within narrow viewports and prevents stale apply',async
     const before=await snapshot(page);assert.equal((await operations(page,[{type:'slide.update',slideId:before.state.slides[0].id,changes:{notes:'Concurrent update'}}])).ok,true);
     await page.locator('#chart-apply').click();assert.match(await page.locator('#chart-error').textContent(),/project changed/);assert.equal(charts(await snapshot(page)).length,0);
     await page.locator('#chart-cancel').click();assert.deepEqual(errors,[]);
+  }finally{await page.close();}
+});
+test('inline category/series controls preserve values, color identity, staged edits and focus',async()=>{
+  const {page,errors}=await openExample(browser,'portfolio-demo');
+  try{
+    await openCharts(page);await page.getByRole('button',{name:'Customize Column chart',exact:true}).click();
+    const before=await snapshot(page);
+    await page.locator('#chart-tab-style').click();await page.locator('#chart-theme').uncheck();
+    await page.getByLabel('Color for Product',{exact:true}).fill('#e94560');await page.getByLabel('Color for Services',{exact:true}).fill('#08a080');
+    assert.equal(await page.getByLabel('Hex color for Product',{exact:true}).inputValue(),'#e94560');
+    await page.locator('#chart-tab-data').click();await page.getByRole('button',{name:'Remove series Product',exact:true}).click();
+    assert.equal(await page.getByLabel('Series 1 name',{exact:true}).inputValue(),'Services');assert.equal(await page.getByLabel('Row 1 series 1',{exact:true}).inputValue(),'80');
+    await page.getByRole('button',{name:'Add series',exact:true}).click();assert.equal(await page.getByLabel('Series 2 name',{exact:true}).evaluate(el=>el===document.activeElement),true);await page.getByLabel('Series 2 name',{exact:true}).fill('Forecast');
+    await page.getByRole('button',{name:'Remove category Q2',exact:true}).click();assert.equal(await page.getByLabel('Row 2 series 1',{exact:true}).inputValue(),'130');
+    await page.getByRole('button',{name:'Add category',exact:true}).click();assert.equal(await page.getByLabel('Category 4',{exact:true}).evaluate(el=>el===document.activeElement),true);await page.getByLabel('Category 4',{exact:true}).fill('Launch');await page.getByLabel('Row 4 series 1',{exact:true}).fill('77');
+    await page.getByLabel('Row 2 series 1',{exact:true}).fill('');assert.equal(await page.locator('#chart-apply').isDisabled(),true);await page.getByRole('button',{name:'Remove category Q3',exact:true}).click();assert.equal(await page.locator('#chart-apply').isEnabled(),true);
+    await page.getByRole('button',{name:'Remove series Forecast',exact:true}).click();await page.locator('#chart-tab-style').click();assert.equal(await page.getByLabel('Hex color for Services',{exact:true}).inputValue(),'#08a080');
+    assert.deepEqual((await snapshot(page)).state,before.state);await page.locator('#chart-apply').click();
+    const data=JSON.parse(charts(await snapshot(page))[0].attrs['data-studio-chart']);assert.deepEqual(data.labels,['Q1','Q4','Launch']);assert.deepEqual(data.series,[{name:'Services',values:[80,160,77]}]);assert.deepEqual(data.colors,['#08a080']);
+    await page.locator('#chart-edit').click();await page.getByRole('button',{name:'Remove category Q1',exact:true}).click();await page.getByRole('button',{name:'Remove category Q4',exact:true}).click();assert.equal(await page.getByRole('button',{name:'Remove category Launch',exact:true}).isDisabled(),true);assert.equal(await page.getByRole('button',{name:'Remove series Services',exact:true}).isDisabled(),true);
+    await page.locator('#chart-cancel').click();await page.locator('#fe-undo').click();assert.equal(charts(await snapshot(page)).length,0);assert.deepEqual(errors,[]);
+  }finally{await page.close();}
+});
+test('donut category pickers follow category deletion and theme reset without losing drafts',async()=>{
+  const {page,errors}=await openExample(browser,'portfolio-demo',true);
+  try{
+    await openCharts(page);await page.getByRole('button',{name:'Customize Donut chart',exact:true}).click();
+    await page.locator('#chart-tab-style').click();assert.equal(await page.getByLabel('Color for Q2',{exact:true}).isDisabled(),true);await page.locator('#chart-theme').uncheck();await page.getByLabel('Hex color for Q2',{exact:true}).fill('#c867af');
+    await page.locator('#chart-tab-data').click();await page.getByRole('button',{name:'Remove category Q1',exact:true}).click();await page.locator('#chart-tab-style').click();assert.equal(await page.getByLabel('Color for Q2',{exact:true}).inputValue(),'#c867af');
+    await page.locator('#chart-theme').check();await page.locator('#chart-theme').uncheck();assert.equal(await page.getByLabel('Hex color for Q2',{exact:true}).inputValue(),'#c867af');
+    await page.getByLabel('Hex color for Q2',{exact:true}).fill('#bad');assert.equal(await page.locator('#chart-apply').isDisabled(),true);await page.getByLabel('Hex color for Q2',{exact:true}).fill('#c867af');await page.locator('#chart-apply').click();
+    assert.equal(JSON.parse(charts(await snapshot(page))[0].attrs['data-studio-chart']).colors[0],'#c867af');assert.deepEqual(errors,[]);
   }finally{await page.close();}
 });
