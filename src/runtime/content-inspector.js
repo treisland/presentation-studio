@@ -6,7 +6,7 @@ function ciDetails(id, title) {
 }
 function ciFieldChoices(context) {
   const entry = context.selected.length === 1 && context.selected[0];
-  if (!entry?.node || ['component-widget','db-code','terminal'].some(type=>mgHas(entry.node,type))) return [];
+  if (!entry?.node || ['component-widget','db-code','terminal','ps-chart'].some(type=>mgHas(entry.node,type))) return [];
   const model = projectModel(), root = String(model.tree.indexOf(entry.node));
   const inside = path => path === root || path.startsWith(root+'.');
   const fields = projectFields(model,{includeTitle:true}).filter(field=>inside(field.path));

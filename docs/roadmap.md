@@ -1,5 +1,7 @@
 # Roadmap
 
+**Accepted — Charts & Graphs, milestone 24:** the maintainer confirmed completion and authorized canonical beta promotion on 2026-11-15. PR #273 delivers native charts and portable AI authoring; [#277](https://github.com/treisland/presentation-studio/issues/277) prepares 0.19.0-beta.1 through protected dev/main, exact-main/tag/artifact gates. See [release authority](releases/0.19.0-beta.1-validation.md). The separately authorized 0.18 beta finishes first; no stable or downstream/companion promotion is implied.
+
 **Next alpha — [Start screen & startup preferences](https://github.com/treisland/presentation-studio/milestone/27):**
 the maintainer accepted `codex/v018-menu-bar-alpha` and completed milestone 26,
 then assigned #269 for an alpha pushed to a feature branch for local testing.

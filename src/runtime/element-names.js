@@ -2,6 +2,7 @@
 function enType(entry) {
   if(entry.media)return entry.media.kind==='video'?'Video':'Image';
   const node=entry.node;
+  if(node?.attrs?.['data-studio-chart'])return'Chart';
   for(const [token,type]of [['db-step','Step'],['db-arrow','Arrow'],['db-pointer','Arrow'],['component-quote','Quote'],['component-metric','Metric'],['component-callout','Callout'],['db-circle','Circle'],['db-rectangle','Rectangle']])if(mgHas(node,token))return type;
   if(icContains(node,item=>item.tag==='table'))return'Table';
   if(icContains(node,item=>mgHas(item,'terminal')))return'Code';

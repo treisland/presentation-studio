@@ -1,0 +1,27 @@
+{
+  "format": "presentation-studio-authoring",
+  "version": 1,
+  "title": "Chart Library examples — illustrative data",
+  "slides": [
+    {
+      "title": "Compare quarterly results", "layout": "chart",
+      "notes": "Synthetic example data, not actual financial results. Values are in thousands. Edit through Inspector Content after import.",
+      "blocks": [{"type":"chart","kind":"column","title":"Revenue by quarter (thousands)","labels":["Q1","Q2","Q3","Q4"],"series":[{"name":"Product","values":[120,140,180,210]},{"name":"Services","values":[80,100,130,160]}]}]
+    },
+    {
+      "title": "Compare categories", "layout": "auto",
+      "notes": "Synthetic example counts. Use horizontal bars when category names need more room.",
+      "blocks": [{"type":"chart","kind":"bar","title":"Responses by topic","labels":["Design","Documentation","Reliability"],"series":[{"name":"Responses","values":[42,28,56]}],"colors":["#8450df"]}]
+    },
+    {
+      "title": "Show a trend", "layout": "chart",
+      "notes": "Synthetic changes from baseline; line, bar and column charts support negative values.",
+      "blocks": [{"type":"chart","kind":"line","title":"Change from baseline","labels":["Week 1","Week 2","Week 3","Week 4"],"series":[{"name":"Change","values":[-4,2,6,9]}],"colors":[]}]
+    },
+    {
+      "title": "Show proportions", "layout": "chart",
+      "notes": "Synthetic task distribution. Donuts use one nonnegative series with a positive total. Colors follow category order.",
+      "blocks": [{"type":"chart","kind":"donut","title":"Tasks by status","labels":["Complete","In progress","Planned"],"series":[{"name":"Tasks","values":[60,25,15]}],"colors":["#159d99","#8450df","#d88b10"]}]
+    }
+  ]
+}

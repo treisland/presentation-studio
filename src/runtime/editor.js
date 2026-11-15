@@ -107,6 +107,7 @@
     const attrs = {};
     for (const a of node.attributes) {
       if (a.name === "class") attrs.class = a.value;
+      if (a.name === "data-studio-chart") attrs[a.name] = JSON.stringify(chartNormalize(JSON.parse(a.value)));
       if (a.name === "style") {
         const style = projectSafeStyle(a.value);
         if (style) attrs.style = style;
@@ -149,6 +150,10 @@
           attrs.class = String(v)
             .replace(/[^\w\s-]/g, "")
             .slice(0, 500);
+        else if (k === "data-studio-chart") {
+          if (typeof v !== "string" || v.length > 16000) throw Error("Invalid chart configuration.");
+          attrs[k] = JSON.stringify(chartNormalize(JSON.parse(v)));
+        }
         else if (k === "style") attrs.style = projectSafeStyle(v);
         else if (k === "href" && /^https?:\/\//i.test(v))
           attrs.href = String(v);
