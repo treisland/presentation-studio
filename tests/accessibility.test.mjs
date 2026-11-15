@@ -7,6 +7,11 @@ import { readFile } from 'node:fs/promises';
 const browser = await chromium.launch({ headless: true, executablePath: process.env.CHROMIUM_EXECUTABLE_PATH, args: ['--no-sandbox'] });
 test.after(() => browser.close());
 async function reach(page, selector) {
+  const inMenu=await page.locator(selector).evaluate(node=>!!node.closest('#em-menubar .hub-menu-items'));
+  if(inMenu){
+    const scope=page.locator(selector),open=await scope.evaluate(node=>node.checkVisibility());
+    if(open){for(let step=0;step<60;step++){if(await scope.evaluate(node=>document.activeElement===node))return;await page.keyboard.press('ArrowDown');}}
+  }
   for (let step = 0; step < 180; step++) {
     if (await page.locator(selector).evaluate(element => document.activeElement === element)) return;
     await page.keyboard.press('Tab');
@@ -16,7 +21,8 @@ async function reach(page, selector) {
 async function openExport(page) {
   for (const id of ['hub-project-menu', 'hub-export-menu']) {
     if (await page.locator('#' + id).getAttribute('open') === null) {
-      await reach(page, '#' + id + '>summary');
+      if(id==='hub-project-menu')await page.keyboard.press('Alt+Shift+m');
+      else await reach(page, '#' + id + '>summary');
       await page.keyboard.press('Enter');
     }
   }

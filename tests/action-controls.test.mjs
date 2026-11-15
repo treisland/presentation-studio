@@ -29,11 +29,29 @@ test('touch actions retain readable modes and larger targets without requiring h
   try{
     await page.goto('file://'+resolve('dist/presentation-studio.html'));await page.locator('#open-full-editor').click();
     const before=await snapshot(page);
-    for(const id of ['fe-undo','fe-redo','wp-duplicate','vb-edit-mode','vb-preview-mode']){
+    for(const id of ['fe-undo','fe-redo','cm-selection','vb-edit-mode','vb-preview-mode']){
       const bounds=await page.locator('#'+id).boundingBox();assert(bounds&&bounds.width>=44&&bounds.height>=44,id);
     }
     assert.equal(await page.locator('#vb-edit-mode .ac-label').isVisible(),true);assert.deepEqual(await snapshot(page),before);
   }finally{await context.close();}
+});
+
+test('Undo activation dismisses stale hints so Slides remains clickable after Undo becomes disabled',async()=>{
+  const page=await browser.newPage({viewport:{width:1366,height:900}}),errors=[];page.on('pageerror',error=>errors.push(error.message));
+  try{
+    await page.goto('file://'+resolve('dist/presentation-studio.html'));await page.locator('#open-full-editor').click();
+    const before=await snapshot(page);await page.locator('#ld-reveal-layers').click();
+    const key=await page.locator('.sp-layer-row[data-key]').first().getAttribute('data-key'),slideId=before.state.slides[0].id;
+    assert.equal((await operations(page,[{type:'visibility.element',slideId,keys:[key],visible:false}])).ok,true);
+    await page.locator('#fe-undo').hover();await tip(page,/^Undo$/);await page.locator('#fe-undo').click();
+    await page.waitForFunction(()=>document.querySelector('#fe-undo').disabled);
+    await page.waitForTimeout(180); // Exceed the tooltip's delayed pointer-leave reconciliation.
+    assert.equal(await page.locator('#ac-tooltip').evaluate(node=>node.matches(':popover-open')),false);
+    await page.locator('#ld-tab-slides').click();assert.equal(await page.locator('#ld-tab-slides').getAttribute('aria-selected'),'true');
+    await page.locator('#wb-brand').hover();await page.locator('#fe-undo').hover();await tip(page,/Undo — Nothing to undo/);
+    await page.locator('#wb-brand').hover();await page.waitForFunction(()=>!document.querySelector('#ac-tooltip').matches(':popover-open'));
+    assert.deepEqual((await snapshot(page)).state,before.state);assert.deepEqual(errors,[]);
+  }finally{await page.close();}
 });
 
 test('icon activation preserves duplicate/delete and one-step Undo while Edit/Preview stay labeled',async()=>{

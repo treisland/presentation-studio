@@ -79,7 +79,7 @@ test('legacy projects, mixed media grid focus and recovery survive offline edita
  await drop(p,0,'diagram.svg');await choose(p,1);await upload(p,'pattern.webm',await readFile('tests/fixtures/media/pattern.webm'),'video/webm');
  const added=await read(p),slide=model(added.state),ids=root(added.state).children.map(cellID);
  assert.deepEqual(added.state.slides.filter(s=>s.id!==slide.id).map(s=>s.id),original.state.slides.map(s=>s.id));
- await choose(p,0);await p.locator('#wp-delete').click();await p.locator('#fe-confirm-accept').click();await p.locator('#fe-undo').click();assert.deepEqual((await read(p)).state,added.state);
+ await choose(p,0);await click(p,'#wp-delete');await p.locator('#fe-confirm-accept').click();await p.locator('#fe-undo').click();assert.deepEqual((await read(p)).state,added.state);
  await p.locator('#vb-preview-mode').click();await p.locator('#fe-preview .mf-expand').nth(1).press('Enter');await p.waitForSelector('#media-focus video');await p.keyboard.press('Escape');await p.waitForSelector('#media-focus',{state:'detached'});await p.locator('#vb-edit-mode').click();
  for(const selector of ['#fe-export','#fe-playback']){
   const d=p.waitForEvent('download');await click(p,selector);const bytes=await readFile(await(await d).path());

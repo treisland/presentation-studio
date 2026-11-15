@@ -6,6 +6,7 @@ function wbToolbarLayout() {
   const focused = document.activeElement;
   const optional = ['component-arrange-trigger', 'component-text-trigger', 'component-media-trigger', 'wb-customize', 'component-colors-trigger'];
   for (const id of optional) if ($(id).parentElement !== toolbar) view.before($(id));
+  if(toolbar.clientWidth<600){for(const id of optional)more.append($(id));}
   for (const id of optional) {
     if (toolbar.scrollWidth <= toolbar.clientWidth + 1) break;
     const control = $(id);

@@ -12,6 +12,10 @@
 
 A portable HTML presentation player and editor. Start with a short, generic demo or a blank presentation, then add your own content, branding, questions, and media. No application server or database is required.
 
+## Local 0.18 alpha review
+
+The local 0.18.0-alpha.1 build starts from v0.17.0-beta.2 and adds a Windows-inspired editor menu bar. See [menu commands and local testing](docs/editor-menu.md). Run `npm run build` and `npm run serve`, then open http://127.0.0.1:4173/. This development alpha has not been published or manually accepted.
+
 ## Start here
 
 Download and unzip a release or a successful **Validate and build** Actions artifact.
@@ -80,7 +84,7 @@ For a localhost preview, run `npm run serve`, then open `http://127.0.0.1:4173`.
 
 [Quick start](docs/quick-start.md) · [Architecture](docs/architecture.md) · [Contributing](CONTRIBUTING.md) · [Content and branding](docs/content-and-branding.md) · [Open-source release](docs/open-source-release.md) · [Roadmap](docs/roadmap.md) · [Troubleshooting](docs/troubleshooting.md)
 
-Version 0.17.0-beta.2. Audio and narrated playback beta: local narration/music, explicit audience activation and portable original assets. See the [release notes](docs/releases/0.17.0-beta.2.md), [validation record](docs/releases/0.17.0-beta.2-validation.md) and [known issues](docs/known-issues.md). Released under the [Apache License 2.0](LICENSE).
+Version 0.18.0-alpha.1. Audio and narrated playback beta: local narration/music, explicit audience activation and portable original assets. See the [release notes](docs/releases/0.17.0-beta.2.md), [validation record](docs/releases/0.17.0-beta.2-validation.md) and [known issues](docs/known-issues.md). Released under the [Apache License 2.0](LICENSE).
 
 ## Development process
 

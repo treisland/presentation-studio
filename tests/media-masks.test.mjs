@@ -149,7 +149,7 @@ test('Library frame controls save directly, keep one Undo per gesture and retain
     assert.equal((await snapshot(page)).state.design.slides[slideId].objects[key].frame.zoom,175);
     await page.locator('#fe-undo').click();assert.equal((await snapshot(page)).state.design.slides[slideId].objects[key].frame.x,50);await page.locator('#fe-undo').click();assert.equal((await snapshot(page)).state.design.slides[slideId].objects[key].frame.zoom,100);
     const previous=page.locator('#fe-preview .mask-frame');
-    await page.locator('#mask-shape').selectOption('circle');await page.locator('#fe-preview .media-box[data-object-id="primary"]').click();
+    await page.locator('#mask-shape').selectOption('circle');await page.locator('#ld-reveal-layers').click();await page.getByRole('button',{name:'Select Grid cell 1',exact:true}).click();
     assert.match(await previous.locator('.media-viewport').evaluate(element=>element.style.clipPath),/circle/);await previous.click();await page.locator('#fe-undo').click();assert.equal((await snapshot(page)).state.design.slides[slideId].objects[key].frame.shape,'rounded');await selectElement(page,key);
     await page.locator('#component-open').click();await page.locator('#component-name').fill('Reusable mask');await page.locator('#component-save').click();
     await page.getByRole('tab',{name:'My components',exact:true}).click();await page.getByRole('button',{name:'Insert Reusable mask',exact:true}).click();

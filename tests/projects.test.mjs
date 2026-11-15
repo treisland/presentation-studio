@@ -103,10 +103,14 @@ test("compact controls and recent drafts support safe switching, duplication, ba
     await page.goto("file://" + resolve(root, "dist/presentation-studio.html"));
     assert.equal(await page.locator("#controls .vf-center > button:visible").count(), 3);
     await page.locator("#open-full-editor").click();
-    assert.equal(
-      await page.locator(".fe-top-actions>button:visible").count(),
-      7,
-    );
+    for(const id of ['we-settings-open','wb-export','fe-show','fe-close'])
+      assert.equal(await page.locator('.fe-top-actions > #'+id).isVisible(),true,id);
+    for(const id of ['fe-undo','fe-redo']) {
+      const action=page.locator('#component-toolbar > #'+id);
+      assert.equal(await action.isVisible(),true,id);
+      assert.equal(await action.getAttribute('aria-label'),id==='fe-undo'?'Undo':'Redo');
+    }
+    assert.equal(await page.getByRole('menubar',{name:'Editor commands'}).isVisible(),true);
     assert.equal(await page.getByRole("button", { name: "Check readiness", exact: true }).isVisible(), true);
     await tab(page, "Branding");
     await page.locator("#fe-project-name").fill("Customer A");

@@ -1,5 +1,7 @@
 # Library and object actions
 
+In the local 0.18 alpha, action groups have separators and the [editor menu bar](editor-menu.md) provides stable command discovery. Both entry points reuse the existing controls and guards.
+
 Issue #190 adds contextual shortcuts for v0.15.0 on the Inspector/navigation foundation (#188) and consolidated media controls (#189). It adds no object capabilities, saved fields or services. Release preparation and manual release acceptance remain separate.
 
 ## Entry points and navigation
