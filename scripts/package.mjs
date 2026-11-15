@@ -15,6 +15,7 @@ zip.file('docs/context-menus.md', new Uint8Array(await readFile(resolve(root, 'd
 zip.file('docs/editor-menu.md', new Uint8Array(await readFile(resolve(root, 'docs/editor-menu.md'))), {date:new Date('2026-01-01T00:00:00Z')});
 zip.file('docs/start-screen.md', new Uint8Array(await readFile(resolve(root, 'docs/start-screen.md'))), {date:new Date('2026-01-01T00:00:00Z')});
 zip.file('docs/m27-alpha-validation.md', new Uint8Array(await readFile(resolve(root, 'docs/m27-alpha-validation.md'))), {date:new Date('2026-01-01T00:00:00Z')});
+zip.file('docs/known-issues.md', new Uint8Array(await readFile(resolve(root, 'docs/known-issues.md'))), {date:new Date('2026-01-01T00:00:00Z')});
 zip.file('docs/layers-style-workflow.md', new Uint8Array(await readFile(resolve(root, 'docs/layers-style-workflow.md'))), {date:new Date('2026-01-01T00:00:00Z')});
 zip.file('docs/editor-workbench.md', new Uint8Array(await readFile(resolve(root, 'docs/editor-workbench.md'))), {date:new Date('2026-01-01T00:00:00Z')});
   zip.file('docs/canvas-manipulation.md', new Uint8Array(await readFile(resolve(root, 'docs/canvas-manipulation.md'))), {date:new Date('2026-01-01T00:00:00Z')});
