@@ -150,6 +150,10 @@ projectInit=function(...args){
   // Retire only header duplication: Edit, Slide and the shared actions menu have parity.
   $('wp-selection-header').classList.add('em-selection-header');
   const help=document.createElement('dialog');help.id='em-help-dialog';help.setAttribute('aria-labelledby','em-help-title');help.innerHTML='<h2 id="em-help-title">Keyboard & menu help</h2><p>Press Alt+Shift+M to focus the editor menu bar. Left/Right moves between menus; Up/Down, Home/End move through commands. Enter or Space activates. Right opens a submenu; Left or Back returns. Escape closes and returns focus. Tab closes the menu and exits the menu bar in the chosen direction.</p><p>Ctrl/Cmd+Z undoes; Ctrl/Cmd+Shift+Z redoes. Native browser and text-editing shortcuts stay available. Shift+F10 opens actions for a focused object or Library card.</p><p>Commands with an ellipsis open existing controls. Inspector Content, Arrange and Style hold detailed values. File → Export → Editable ZIP is the complete portable backup.</p><button id="em-help-close">Back to editor</button>';$('full-editor').append(help);$('em-help-close').onclick=()=>help.close();help.addEventListener('close',()=>$('em-help').querySelector('summary').focus());
+  // This dialog is nested in full-editor: keep its keys/cancel from reaching
+  // the editor's history and Escape handlers.
+  help.addEventListener('keydown',event=>{event.stopPropagation();if(event.key==='Escape'){event.preventDefault();help.close();}});
+  help.addEventListener('cancel',event=>{event.preventDefault();event.stopPropagation();help.close();});
   document.addEventListener('pointerdown',event=>{if(emActive&&!bar.contains(event.target))emClose();},true);
   window.addEventListener('keydown',event=>{
     if(event.altKey&&event.shiftKey&&event.key.toLowerCase()==='m'&&$('full-editor').open&&!document.querySelector('dialog[open]:not(#full-editor)')){event.preventDefault();emHeadFocus(bar.querySelector('summary'));return;}
