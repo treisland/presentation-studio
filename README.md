@@ -84,7 +84,7 @@ For a localhost preview, run `npm run serve`, then open `http://127.0.0.1:4173`.
 
 [Quick start](docs/quick-start.md) · [Architecture](docs/architecture.md) · [Contributing](CONTRIBUTING.md) · [Content and branding](docs/content-and-branding.md) · [Open-source release](docs/open-source-release.md) · [Roadmap](docs/roadmap.md) · [Troubleshooting](docs/troubleshooting.md)
 
-Version 0.19.0. Native editable charts, color/data controls and matching portable AI authoring, retaining the accepted editor, start-screen and recovery workflows. See the [release notes](docs/releases/0.19.0.md), [validation record](docs/releases/0.19.0-validation.md) and [known issues](docs/known-issues.md). Released under the [Apache License 2.0](LICENSE).
+Version 0.19.0. Native editable charts, color/data controls and matching portable AI authoring, retaining the accepted editor, start-screen and recovery workflows. See the [release notes](docs/releases/0.19.0.md), [validation record](docs/releases/0.19.0-beta.1-validation.md) and [known issues](docs/known-issues.md). Released under the [Apache License 2.0](LICENSE).
 
 ## Development process
 
