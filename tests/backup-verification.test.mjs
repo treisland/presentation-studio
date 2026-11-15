@@ -12,7 +12,7 @@ const browser = await chromium.launch({ headless: true, executablePath: process.
 test.after(() => browser.close());
 async function setup() {
   const page = await browser.newPage({ viewport: { width: 1280, height: 720 }, acceptDownloads: true });
-  await page.goto('file://' + resolve('dist/presentation-studio.html'));
+  await page.goto(('file://' + resolve('dist/presentation-studio.html')) + '?start=present');
   await page.locator('#open-full-editor').click();
   await page.locator('#fe-slide-title').fill('Active project must remain unchanged');
   await page.locator('#fe-slide-title').press('Tab');
@@ -85,7 +85,7 @@ test('verification preserves active project, undo, local drafts and backup statu
     assert.deepEqual(JSON.parse(await download(page, '#fe-export-json')), before);
     const restored = await browser.newPage({ acceptDownloads: true });
     try {
-      await restored.goto('file://' + resolve('dist/presentation-studio-blank.html'));
+      await restored.goto(('file://' + resolve('dist/presentation-studio-blank.html')) + '?start=present');
       await click(restored,'#hub-presentations');
       await restored.locator('#hub-file').setInputFiles({ name: 'restore.zip', mimeType: 'application/zip', buffer: Buffer.from(bytes) });
       await restored.waitForFunction(() => document.querySelector('#fe-status').dataset.saveState === 'saved' && document.querySelector('#fe-title').textContent === 'From idea to presentation');

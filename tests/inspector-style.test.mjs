@@ -10,7 +10,7 @@ const read=page=>page.evaluate(()=>window.presentationStudioEditing.read());
 async function open(){
   const page=await browser.newPage({viewport:{width:1440,height:900}}),errors=[];
   page.on('pageerror',error=>errors.push(error.message));
-  await page.goto('file://'+resolve('dist/presentation-studio.html'));
+  await page.goto(('file://'+resolve('dist/presentation-studio.html')) + '?start=present');
   await page.locator('#open-full-editor').click();await addSlide(page,'blank');
   return {page,errors};
 }

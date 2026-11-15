@@ -5,7 +5,7 @@ import {chromium} from 'playwright';
 import {click} from './ui.mjs';
 import {snapshot,exportZip,importZip} from './collection-ui.mjs';
 const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH,args:['--no-sandbox']});test.after(()=>browser.close());
-async function setup(blank=false){const p=await browser.newPage({viewport:{width:1366,height:768},acceptDownloads:true}),errors=[];p.setDefaultTimeout(10000);p.on('pageerror',e=>errors.push(e.message));await p.goto('file://'+resolve('dist/presentation-studio'+(blank?'-blank':'')+'.html'));await p.locator('#open-full-editor').click();return{p,errors};}
+async function setup(blank=false){const p=await browser.newPage({viewport:{width:1366,height:768},acceptDownloads:true}),errors=[];p.setDefaultTimeout(10000);p.on('pageerror',e=>errors.push(e.message));await p.goto('file://'+resolve('dist/presentation-studio'+(blank?'-blank':'')+'.html')+'?start=present');await p.locator('#open-full-editor').click();return{p,errors};}
 
 test('New presentation offers one example entry and continues the selected example through naming/theme setup',async()=>{
  const{p,errors}=await setup();try{const before=await snapshot(p);await click(p,'#studio-new-open');assert.deepEqual(await p.locator('[name=nx-start]').evaluateAll(nodes=>nodes.map(n=>n.value)),['blank','import']);assert.equal(await p.locator('#lc-examples-wizard').count(),1);await p.screenshot({path:'test-results/new-presentation-simple.png'});

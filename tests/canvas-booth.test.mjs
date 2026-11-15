@@ -40,7 +40,7 @@ async function setup() {
     errors = [];
   p.on("pageerror", (e) => errors.push(e.message));
   await p.emulateMedia({ reducedMotion: "reduce" });
-  await p.goto("file://" + resolve("dist/presentation-studio.html"));
+  await p.goto(("file://" + resolve("dist/presentation-studio.html")) + '?start=present');
   await p.locator("#open-full-editor").click();
   return { p, context, errors };
 }

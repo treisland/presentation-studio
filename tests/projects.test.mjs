@@ -100,7 +100,7 @@ test("compact controls and recent drafts support safe switching, duplication, ba
     errors = [];
   page.on("pageerror", (e) => errors.push(e.message));
   try {
-    await page.goto("file://" + resolve(root, "dist/presentation-studio.html"));
+    await page.goto(("file://" + resolve(root, "dist/presentation-studio.html")) + '?start=present');
     assert.equal(await page.locator("#controls .vf-center > button:visible").count(), 3);
     await page.locator("#open-full-editor").click();
     for(const id of ['we-settings-open','wb-export','fe-show','fe-close'])
@@ -208,7 +208,7 @@ test("failed local writes and incomplete draft media do not replace the active p
     errors = [];
   page.on("pageerror", (e) => errors.push(e.message));
   try {
-    await page.goto("file://" + resolve(root, "dist/presentation-studio.html"));
+    await page.goto(("file://" + resolve(root, "dist/presentation-studio.html")) + '?start=present');
     await page.locator("#open-full-editor").click();
     await tab(page, "Branding");
     await page.locator("#fe-project-name").fill("Safe original");
@@ -306,7 +306,7 @@ test("recent drafts and media survive closing and reopening the browser profile"
   let context = await chromium.launchPersistentContext(profile, options);
   let page = await context.newPage();
   try {
-    await page.goto("file://" + resolve(root, "dist/presentation-studio.html"));
+    await page.goto(("file://" + resolve(root, "dist/presentation-studio.html")) + '?start=present');
     await page.locator("#open-full-editor").click();
     await tab(page, "Branding");
     await page.locator("#fe-project-name").fill("Persistent workshop");
@@ -317,7 +317,7 @@ test("recent drafts and media survive closing and reopening the browser profile"
     await context.close();
     context = await chromium.launchPersistentContext(profile, options);
     page = await context.newPage();
-    await page.goto("file://" + resolve(root, "dist/presentation-studio.html"));
+    await page.goto(("file://" + resolve(root, "dist/presentation-studio.html")) + '?start=present');
     await page.locator("#open-full-editor").click();
     await page.locator("#fe-recovery").waitFor({ state: "visible" });
     await page.locator("#fe-recover").click();

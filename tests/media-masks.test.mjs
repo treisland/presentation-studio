@@ -24,7 +24,7 @@ test('booth image focus resets frame zoom with focus zoom enabled or disabled an
     restored.on('pageerror',error=>errors.push(error.message));await restored.context().setOffline(true);
     try{for(const zoom of [true,false]){
       const data=JSON.parse(match[1]);data.presentation.mediaFocus={...data.presentation.mediaFocus,zoom};const target=resolve(folder,'focus-'+zoom+'.html');await writeFile(target,html.replace(match[1],JSON.stringify(data).replace(/</g,'\\u003c')));
-      await restored.goto('file://'+target);await restored.waitForFunction(()=>document.querySelector('.mask-frame img')?.naturalWidth>0);
+      await restored.goto(('file://'+target) + '?start=present');await restored.waitForFunction(()=>document.querySelector('.mask-frame img')?.naturalWidth>0);
       assert.equal(await restored.locator('.mask-frame img').evaluate(element=>element.style.transform),'scale(2.5)');
       await restored.locator('.mask-frame .mf-expand').press('Enter');assert.equal(await restored.locator('.bp-focus img').evaluate(element=>element.style.transform),'none');
       if(zoom){await restored.locator('.bp-focus button').filter({hasText:'+'}).click();assert.match(await restored.locator('.bp-focus img').evaluate(element=>element.style.transform),/scale\(1.25\)/);}
@@ -202,7 +202,7 @@ test('standalone booth keeps masks and keyboard slide links offline and honors n
       assert.equal(await restored.locator('.mask-content').first().evaluate(element=>element.style.inset),'10%');
       const button=restored.locator('.slide.active .nav-button');await button.focus();await button.press('Enter');assert.equal(await restored.locator('.slide.active').getAttribute('id'),target);
       const html=(await readFile(resolve(folder,'index.html'),'utf8')).replace('"navigation":true','"navigation":false');await writeFile(resolve(folder,'restricted.html'),html);
-      await restored.goto('file://'+resolve(folder,'restricted.html'));await restored.locator('.slide.active .nav-button').press('Enter');assert.equal(await restored.locator('.slide.active').getAttribute('id'),slideId);
+      await restored.goto(('file://'+resolve(folder,'restricted.html')) + '?start=present');await restored.locator('.slide.active .nav-button').press('Enter');assert.equal(await restored.locator('.slide.active').getAttribute('id'),slideId);
     }finally{await restored.close();}
     assert.deepEqual(errors,[]);
   }finally{await page.close();}

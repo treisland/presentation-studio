@@ -7,7 +7,7 @@ import {snapshot,operations} from './collection-ui.mjs';
 import {selectElement,reveal} from './ui.mjs';
 const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH,args:['--no-sandbox']});
 test.after(()=>browser.close());
-async function open(width=1440){const page=await browser.newPage({viewport:{width,height:900},acceptDownloads:true});page.setDefaultTimeout(10000);const errors=[];page.on('pageerror',e=>errors.push(e.message));await page.goto('file://'+resolve('dist/presentation-studio.html'));await page.locator('#open-full-editor').click();return{page,errors};}
+async function open(width=1440){const page=await browser.newPage({viewport:{width,height:900},acceptDownloads:true});page.setDefaultTimeout(10000);const errors=[];page.on('pageerror',e=>errors.push(e.message));await page.goto(('file://'+resolve('dist/presentation-studio.html')) + '?start=present');await page.locator('#open-full-editor').click();return{page,errors};}
 async function menu(page,name){const host=page.locator(name==='File'?'#hub-project-menu':'#em-'+name.toLowerCase());await host.locator(':scope > summary').click();return host.locator(':scope > .hub-menu-items');}
 async function shape(page){const slideId=(await snapshot(page)).state.slides[0].id,result=await operations(page,[{type:'block.create',slideId,kind:'rectangle'}]);assert.equal(result.ok,true);await selectElement(page,result.created[0]);return{slideId,key:result.created[0]};}
 

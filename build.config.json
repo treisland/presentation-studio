@@ -45,7 +45,8 @@
     "src/styles/presenter-holding.css",
     "src/styles/presenter-workspace.css",
     "src/styles/audio.css",
-    "src/styles/editor-menu.css"
+    "src/styles/editor-menu.css",
+    "src/styles/start-screen.css"
   ],
   "scripts": [
     "src/runtime/prelude.js",
@@ -134,6 +135,7 @@
     "src/runtime/audio-ui.js",
     "src/runtime/audio-live.js",
     "src/runtime/editor-menu.js",
+    "src/runtime/start-screen.js",
     "src/runtime/boot.js"
   ],
   "vendor": "vendor/jszip-3.10.1.min.js"

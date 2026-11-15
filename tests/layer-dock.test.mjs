@@ -10,7 +10,7 @@ async function open(width = 1440) {
   const page = await browser.newPage({viewport:{width,height:900}}), errors = [];
   page.setDefaultTimeout(10000);
   page.on('pageerror', error => errors.push(error.message));
-  await page.goto('file://' + resolve('dist/presentation-studio.html'));
+  await page.goto(('file://' + resolve('dist/presentation-studio.html')) + '?start=present');
   await page.locator('#open-full-editor').click();
   return {page,errors};
 }

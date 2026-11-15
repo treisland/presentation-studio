@@ -3,6 +3,19 @@
 New to Studio? Follow [Your first presentation](first-presentation.md) for the short
 create, editable-backup, restore and offline-delivery path.
 
+## Start screen
+
+The app opens with **Recent projects**, **Open project**, **Blank presentation**,
+**Choose a template**, and **Try an example**. Recent projects are drafts saved in
+this browser; Open project browses for an editable ZIP or project JSON. Keep ZIP
+backups when moving between browsers or computers.
+
+Use **On startup** to show this screen, resume your last project, create a blank
+presentation, or start at the file-opening prompt. The browser requires a click
+on **Open project** to display its file picker. Return through **File → Start
+screen**. Recovery takes priority over automatic startup, and exported projects
+open directly. See [startup behavior and alpha review](start-screen.md).
+
 ## Check readiness before presenting
 
 In the editor, choose **Check readiness**. Choose all visible slides or a named playback loop, then review the findings. Missing active/recovery media or logos and content reaching the slide edge/footer are blockers. Hidden slides, slides outside the selected loop, backup freshness and video capability are advisories; these can be intentional or require manual verification.

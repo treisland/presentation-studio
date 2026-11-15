@@ -7,6 +7,11 @@ The maintainer requested local testing before a PR. Publication is disabled.
 
 ## Command ownership
 
+Milestone 27 adds **File → Start screen** to return to recent projects, Open
+project, creation choices and browser-local startup preferences. Opening this
+screen does not change the project or Undo history; existing switch/recovery
+guards still apply. See [start-screen behavior](start-screen.md).
+
 The horizontal menu bar follows the conversation POC: a stable row of commands,
 a compact toolbar, prominent Present/Export, and selection-driven Inspector
 controls. The generated POC is design guidance, not an authentic application

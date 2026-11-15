@@ -14,7 +14,7 @@ async function setup(file) {
   const errors = [];
   page.on('pageerror', e => errors.push(e.message));
   await page.emulateMedia({ reducedMotion: 'reduce' });
-  await page.goto('file://' + (file === 'synthetic-legacy.html' ? await legacyHTML(path) : path + 'dist/' + file));
+  await page.goto('file://' + (file === 'synthetic-legacy.html' ? await legacyHTML(path) : path + 'dist/' + file) + '?start=present');
   return { page, errors };
 }
 test.after(() => browser.close());

@@ -27,7 +27,7 @@ test('action icons keep contextual names and focus tooltips are hoverable, dismi
 test('touch actions retain readable modes and larger targets without requiring hover',async()=>{
   const context=await browser.newContext({hasTouch:true,viewport:{width:1366,height:900}}),page=await context.newPage();
   try{
-    await page.goto('file://'+resolve('dist/presentation-studio.html'));await page.locator('#open-full-editor').click();
+    await page.goto(('file://'+resolve('dist/presentation-studio.html')) + '?start=present');await page.locator('#open-full-editor').click();
     const before=await snapshot(page);
     for(const id of ['fe-undo','fe-redo','cm-selection','vb-edit-mode','vb-preview-mode']){
       const bounds=await page.locator('#'+id).boundingBox();assert(bounds&&bounds.width>=44&&bounds.height>=44,id);
@@ -39,7 +39,7 @@ test('touch actions retain readable modes and larger targets without requiring h
 test('Undo activation dismisses stale hints so Slides remains clickable after Undo becomes disabled',async()=>{
   const page=await browser.newPage({viewport:{width:1366,height:900}}),errors=[];page.on('pageerror',error=>errors.push(error.message));
   try{
-    await page.goto('file://'+resolve('dist/presentation-studio.html'));await page.locator('#open-full-editor').click();
+    await page.goto(('file://'+resolve('dist/presentation-studio.html')) + '?start=present');await page.locator('#open-full-editor').click();
     const before=await snapshot(page);await page.locator('#ld-reveal-layers').click();
     const key=await page.locator('.sp-layer-row[data-key]').first().getAttribute('data-key'),slideId=before.state.slides[0].id;
     assert.equal((await operations(page,[{type:'visibility.element',slideId,keys:[key],visible:false}])).ok,true);

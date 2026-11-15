@@ -40,9 +40,9 @@ test('standalone booth activates keyboard slide links offline and honors navigat
     const folder=resolve('test-results/navigation-booth'),index=await exportInteractiveBooth(page,folder),restored=await browser.newPage();
     restored.on('pageerror',error=>errors.push(error.message));await restored.context().setOffline(true);
     try{
-      await restored.goto('file://'+index);await restored.locator('.slide.active .nav-button').press('Enter');assert.equal(await restored.locator('.slide.active').getAttribute('id'),target);
+      await restored.goto(('file://'+index) + '?start=present');await restored.locator('.slide.active .nav-button').press('Enter');assert.equal(await restored.locator('.slide.active').getAttribute('id'),target);
       await writeFile(resolve(folder,'restricted.html'),(await readFile(index,'utf8')).replace('"navigation":true','"navigation":false'));
-      await restored.goto('file://'+resolve(folder,'restricted.html'));await restored.locator('.slide.active .nav-button').press('Enter');assert.equal(await restored.locator('.slide.active').getAttribute('id'),slideId);
+      await restored.goto(('file://'+resolve(folder,'restricted.html')) + '?start=present');await restored.locator('.slide.active .nav-button').press('Enter');assert.equal(await restored.locator('.slide.active').getAttribute('id'),slideId);
     }finally{await restored.close();}
     assert.deepEqual(errors,[]);
   }finally{await page.close();}

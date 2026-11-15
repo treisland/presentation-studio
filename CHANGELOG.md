@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Add the milestone 27 start screen with recent browser projects, Open project,
+  empty-canvas creation, existing template/example entry points and browser-local
+  startup preferences. Preserve recovery priority, guarded switching and direct
+  reopening of portable exports. Local alpha acceptance is pending (#269).
+
 - Remove the automatic slide-edge/footer warning banner and its layout-gallery hint; retain on-demand Check readiness overflow findings.
 
 - Add Help shortcuts to the published Presentation Studio marketing/documentation site and presentation gallery, opening separately from the editor.

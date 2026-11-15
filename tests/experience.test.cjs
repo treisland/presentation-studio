@@ -32,7 +32,7 @@ const { chromium } = require("playwright"),
     await (await d).saveAs(path.join(downloads, name));
     return JSON.parse(fs.readFileSync(path.join(downloads, name)));
   };
-  await p.goto("file://" + root + "dist/presentation-studio.html");
+  await p.goto(("file://" + root + "dist/presentation-studio.html") + '?start=present');
   await p.locator("#open-full-editor").click();
   await click(p,"#studio-new-open");
   if(await p.locator("#hub-switch").isVisible()) await p.locator("#hub-save-switch").click();

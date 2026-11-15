@@ -1,6 +1,15 @@
 # Roadmap
 
-Audio milestone 22 is the next maintainer-assigned workstream after v0.16.0. Start with [the approved audio contract](audio-contract.md) in #244; #245/#246 use the maintainer-approved guarded v5 design, followed by #247 independent acceptance. Known #241 remains outside this milestone.
+**Next alpha — [Start screen & startup preferences](https://github.com/treisland/presentation-studio/milestone/27):**
+the maintainer accepted `codex/v018-menu-bar-alpha` and completed milestone 26,
+then assigned #269 for an alpha pushed to a feature branch for local testing.
+The start screen follows the conversation POC and reuses existing project,
+recent-draft, template and example workflows. Startup preferences remain local;
+recovery, IDs, formats and offline reopening remain protected. See the
+[behavior contract and review plan](start-screen.md). A draft dev PR tracks
+delivery; beta preparation/publication remain separate.
+
+The earlier audio milestone 22 workstream after v0.16.0 uses [the approved audio contract](audio-contract.md) in #244; #245/#246 use the maintainer-approved guarded v5 design, followed by #247 independent acceptance. Known #241 remains outside that milestone. The milestone 27 assignment above is the current next-alpha direction.
 
 The maintainer also approved the action-control concept within 0.12.0 / PR #161: shared outline icons for repetitive editor actions, contextual hover/focus tooltips, labeled Edit blocks/Preview modes, accessible names, safe destructive-action emphasis and touch/forced-color support. Existing handlers, saved formats and release gates remain authoritative. The broader illustrative mockup layout is outside this refinement. See [action behavior](editor-workbench.md). The maintainer confirmed all manual gates passed for final runtime build `2354557` and approved beta release; protected delivery remains required.
 

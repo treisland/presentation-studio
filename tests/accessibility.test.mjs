@@ -39,7 +39,7 @@ test('keyboard authoring edits, reorders, undoes, exports, verifies backups and 
   testContext.diagnostic(`${process.platform}/${process.arch}; browser ${browser.version()}; keyboard workflow; file URLs`);
   const page = await browser.newPage({ viewport: { width: 1280, height: 720 }, acceptDownloads: true });
   try {
-    await page.goto('file://' + resolve('dist/presentation-studio.html'));
+    await page.goto(('file://' + resolve('dist/presentation-studio.html')) + '?start=present');
     await page.keyboard.press('j');
     await page.waitForFunction(() => document.querySelector('#full-editor').open);
     // Canvas focus now follows selection; explicitly choose slide settings before editing its title.
@@ -98,7 +98,7 @@ test('keyboard slide creation and clean-profile ZIP import retain editable conte
   const page = await browser.newPage({ acceptDownloads: true });
   const imported = await browser.newPage({ acceptDownloads: true });
   try {
-    await page.goto('file://' + resolve('dist/presentation-studio-blank.html'));
+    await page.goto(('file://' + resolve('dist/presentation-studio-blank.html')) + '?start=present');
     await page.keyboard.press('j');
     await reach(page, '#studio-gallery-open');
     await page.keyboard.press('Enter');
@@ -108,7 +108,7 @@ test('keyboard slide creation and clean-profile ZIP import retain editable conte
     await page.keyboard.press('Enter');
     assert.equal(await page.locator('.fe-slide-button').count(), 2);
     const bytes = await keyboardDownload(page, '#fe-export');
-    await imported.goto('file://' + resolve('dist/presentation-studio-blank.html'));
+    await imported.goto(('file://' + resolve('dist/presentation-studio-blank.html')) + '?start=present');
     await imported.keyboard.press('p');
     await reach(imported, '#hub-open-file');
     // Verify keyboard activation in the DOM, then supply the OS-selected bytes.

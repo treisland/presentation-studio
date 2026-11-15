@@ -8,7 +8,7 @@ import {archivePath} from './archive-path.mjs';
 import {addSlide,click,selectTab} from './ui.mjs';
 const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH,args:['--no-sandbox']});
 test.after(()=>browser.close());
-async function setup(){const p=await browser.newPage({viewport:{width:1366,height:768},acceptDownloads:true}),errors=[];p.setDefaultTimeout(10000);p.on('pageerror',e=>errors.push(e.message));await p.goto('file://'+resolve('dist/presentation-studio.html'));await p.locator('#open-full-editor').click();return{p,errors};}
+async function setup(){const p=await browser.newPage({viewport:{width:1366,height:768},acceptDownloads:true}),errors=[];p.setDefaultTimeout(10000);p.on('pageerror',e=>errors.push(e.message));await p.goto(('file://'+resolve('dist/presentation-studio.html')) + '?start=present');await p.locator('#open-full-editor').click();return{p,errors};}
 const read=p=>p.evaluate(()=>window.presentationStudioEditing.read());
 const apply=(p,operations)=>p.evaluate(operations=>{const api=window.presentationStudioEditing,s=api.read();return api.apply({apiVersion:1,projectId:s.projectId,expectedRevision:s.revision,operations});},operations);
 async function pack(p){const download=p.waitForEvent('download');await click(p,'#fe-export-json');return JSON.parse(await readFile(await(await download).path(),'utf8'));}

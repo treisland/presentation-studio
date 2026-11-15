@@ -22,7 +22,7 @@ test('Media Focus action is named, hidden until keyboard focus and returns focus
  await p.locator('#vb-edit-mode').click();await p.locator('#fe-preview img.media-asset').click({force:true});assert.equal(await p.locator('#media-focus').count(),0);
  assert.deepEqual(errors,[]);
  }finally{await p.close();}});
-async function setup(){const p=await browser.newPage({viewport:{width:1366,height:768}});const errors=[];p.on('pageerror',e=>errors.push(e.message));await p.goto('file://'+resolve('dist/presentation-studio.html'));await p.locator('#play').click();await p.locator('#open-full-editor').click();await p.locator('.fe-slide-button').filter({hasText:'Bring your content to life'}).click();return {p,errors};}
+async function setup(){const p=await browser.newPage({viewport:{width:1366,height:768}});const errors=[];p.on('pageerror',e=>errors.push(e.message));await p.goto(('file://'+resolve('dist/presentation-studio.html')) + '?start=present');await p.locator('#play').click();await p.locator('#open-full-editor').click();await p.locator('.fe-slide-button').filter({hasText:'Bring your content to life'}).click();return {p,errors};}
 async function opened(p){await p.waitForFunction(()=>document.querySelector('#media-focus')?.querySelector('#mf-zoom-in')?.disabled===false,{timeout:5000});}
 test('Focus pauses advancement, preserves image identity, zooms, and returns in Preview',async()=>{const {p,errors}=await setup();try{
  await p.locator('#vb-preview-mode').click();await p.locator('#fe-preview img.media-asset').evaluate(el=>window.savedMedia=el);

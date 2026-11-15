@@ -11,7 +11,7 @@ const pairs=['portfolio','comic','editorial'];
 const text=nodes=>nodes.map(n=>n.text||text(n.children||[])).join('');
 test('imported artwork with a library filename cannot replace an immutable example or lose the prior draft asset',async()=>{
  const p=await browser.newPage({acceptDownloads:true});p.setDefaultTimeout(10000);try{
-  await p.goto('file://'+resolve('dist/presentation-studio.html'));await p.locator('#open-full-editor').click();
+  await p.goto(('file://'+resolve('dist/presentation-studio.html')) + '?start=present');await p.locator('#open-full-editor').click();
   const raw=JSON.parse(await readFile('templates/blank/presentation.json','utf8')),path='assets/portfolio-library.svg',marker='<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80"><title>SYNTHETIC_USER_ART</title><rect width="80" height="80" fill="magenta"/></svg>';
   raw.meta.id='example-collision-fixture';raw.state.projectName='Synthetic artwork collision';raw.state.media[raw.state.slides[0].id]={kind:'image',src:path,name:'Synthetic user artwork',alt:'A synthetic magenta square.'};delete raw.state.startingState;raw.state.startingState=structuredClone(raw.state);
   const bytes=await p.evaluate(async({raw,path,marker})=>{const z=new JSZip();z.file('presentation.json',JSON.stringify(raw));z.file(path,marker);return [...await z.generateAsync({type:'uint8array'})];},{raw,path,marker});await p.locator('#fe-import-file').setInputFiles({name:'collision.zip',mimeType:'application/zip',buffer:Buffer.from(bytes)});await p.waitForFunction(id=>window.presentationStudioEditing.read().projectId===id,raw.meta.id);

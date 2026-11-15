@@ -28,7 +28,7 @@ for (const name of ['pattern.mp4', 'pattern.webm']) {
     const context = await browser.newContext({ acceptDownloads: true });
     const page = await context.newPage();
     try {
-      await page.goto('file://' + resolve('dist/presentation-studio.html'));
+      await page.goto(('file://' + resolve('dist/presentation-studio.html')) + '?start=present');
       await page.locator('#open-full-editor').click();
       await page.locator('.fe-slide-button[data-slide-id="studio-media"]').click();
       await page.locator('#fe-preview .media-box').click();
@@ -77,7 +77,7 @@ for (const name of ['pattern.mp4', 'pattern.webm']) {
           await writeFile(archive, bytes);
           const imported = await browser.newPage();
           try {
-            await imported.goto('file://' + resolve('dist/presentation-studio-blank.html'));
+            await imported.goto(('file://' + resolve('dist/presentation-studio-blank.html')) + '?start=present');
             await click(imported,'#hub-presentations');
             await imported.locator('#hub-file').setInputFiles(archive);
             await imported.waitForFunction(() => document.querySelector('#fe-status').dataset.saveState === 'saved' && document.querySelector('#fe-title').textContent === 'From idea to presentation');

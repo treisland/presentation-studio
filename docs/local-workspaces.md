@@ -4,6 +4,11 @@ Approved revised scope: #119, milestone 0.7.0, merged PR #118. Initial #115/#116
 
 ## Supported workflow
 
+The generic app now starts at a project screen. **Open project** uses the existing
+ZIP/JSON import path; **Recent projects** lists browser-local recovery copies,
+not file links. **On startup** is a browser preference and is excluded from
+portable exports. See [start screen and recovery precedence](start-screen.md).
+
 1. Open **Project → AI presentations → Create / import**. Download the generic instruction pack: instructions, generated schema, capability catalog and examples. No user presentation is included.
 2. Give the pack to an LLM of your choice. Generate a complete authoring JSON document. No provider connection, API key or MCP server is needed.
 3. Select an individual JSON/editable ZIP file or paste JSON. Validate it, review the inert slide previews, native elements, layouts, placeholders and fit warnings. Use copyable repair instructions for invalid output. Validation does not establish factual accuracy, licensing or readability.

@@ -31,6 +31,6 @@ test('playback exports retain embedded identity but never show authoring version
   const html=await page.evaluate(async bytes=>{const zip=await JSZip.loadAsync(new Uint8Array(bytes));return zip.file('index.html').async('string');},[...zip]);
   assert(html.includes('id="studio-build-info"'));
   const folder=resolve('test-results/app-info');await mkdir(folder,{recursive:true});await writeFile(resolve(folder,'playback.html'),html);
-  const playback=await browser.newPage();try{await playback.goto('file://'+resolve(folder,'playback.html'));assert.equal(await playback.locator('.app-version:visible').count(),0);assert.equal(await playback.locator('#app-about').count(),0);}finally{await playback.close();}
+  const playback=await browser.newPage();try{await playback.goto(('file://'+resolve(folder,'playback.html')) + '?start=present');assert.equal(await playback.locator('.app-version:visible').count(),0);assert.equal(await playback.locator('#app-about').count(),0);}finally{await playback.close();}
  }finally{await page.close();}
 });

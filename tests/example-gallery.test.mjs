@@ -6,7 +6,7 @@ import {resolve} from 'node:path';
 import {snapshot,operations} from './collection-ui.mjs';
 import {click} from './ui.mjs';
 const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH,args:['--no-sandbox']});test.after(()=>browser.close());
-async function setup(file='dist/presentation-studio.html'){const p=await browser.newPage({acceptDownloads:true,viewport:{width:1366,height:768}}),errors=[];p.setDefaultTimeout(10000);p.on('pageerror',e=>errors.push(e.message));await p.goto('file://'+resolve(file));await p.locator('#open-full-editor').click();return{p,errors};}
+async function setup(file='dist/presentation-studio.html'){const p=await browser.newPage({acceptDownloads:true,viewport:{width:1366,height:768}}),errors=[];p.setDefaultTimeout(10000);p.on('pageerror',e=>errors.push(e.message));await p.goto(('file://'+resolve(file)) + '?start=present');await p.locator('#open-full-editor').click();return{p,errors};}
 test('example browsing filters, complete previews, readable descriptions and Escape remain view-only',async()=>{const{p,errors}=await setup();try{
  const before=await snapshot(p);await click(p,'#lc-examples-open');assert.equal(await p.locator('.lc-example-card').count(),6);assert.match(await p.locator('.lc-example-badge').first().textContent(),/16:9 slides/);
  for(let i=0;i<3;i++)await p.locator('#lc-preview-next').click();assert.equal(await p.locator('#lc-example-preview .lc-library-visual img').count(),4);await p.waitForFunction(()=>Array.from(document.querySelectorAll('#lc-example-preview img')).every(n=>n.complete&&n.naturalWidth>0));

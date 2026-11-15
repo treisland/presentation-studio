@@ -2059,6 +2059,7 @@
       };
     });
   }
+  let projectRecoveryReady = Promise.resolve();
   function projectInit() {
     const openedMedia = projectCopy(mediaConfig.slides);
     projectBuiltIn = projectCaptureBuiltIn();
@@ -2102,10 +2103,10 @@
     projectSetTabEvents();
     new ResizeObserver(projectResizePreview).observe($("fe-preview"));
     if (!projectPlayback)
-      projectOpenDB()
+      projectRecoveryReady = projectOpenDB()
         .then((db) => {
           projectDB = db;
-          projectFindDraft();
+          return projectFindDraft();
         })
         .catch((e) => {
           $("fe-draft-status").textContent =

@@ -7,7 +7,7 @@ import {readFile} from 'node:fs/promises';
 import {click,addSlide,reveal} from './ui.mjs';
 const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH,args:['--no-sandbox']});
 test.after(()=>browser.close());
-async function setup(width=1280){const p=await browser.newPage({viewport:{width,height:720},acceptDownloads:true});const errors=[];p.on('pageerror',e=>errors.push(e.message));await p.goto('file://'+resolve('dist/presentation-studio.html'));await p.locator('#open-full-editor').click();return{p,errors};}
+async function setup(width=1280){const p=await browser.newPage({viewport:{width,height:720},acceptDownloads:true});const errors=[];p.on('pageerror',e=>errors.push(e.message));await p.goto(('file://'+resolve('dist/presentation-studio.html')) + '?start=present');await p.locator('#open-full-editor').click();return{p,errors};}
 async function pack(p){const d=p.waitForEvent('download');await click(p,'#fe-export-json');return JSON.parse(await readFile(await(await d).path(),'utf8'));}
 const read=p=>p.evaluate(()=>window.presentationStudioEditing.read().state);
 
