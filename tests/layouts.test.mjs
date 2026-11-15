@@ -8,7 +8,7 @@ import {archivePath} from './archive-path.mjs';
 import {addSlide,click,selectTab} from './ui.mjs';
 const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH,args:['--no-sandbox']});
 test.after(()=>browser.close());
-async function setup(){const p=await browser.newPage({viewport:{width:1366,height:768},acceptDownloads:true}),errors=[];p.setDefaultTimeout(10000);p.on('pageerror',e=>errors.push(e.message));await p.goto('file://'+resolve('dist/presentation-studio.html'));await p.locator('#open-full-editor').click();return{p,errors};}
+async function setup(){const p=await browser.newPage({viewport:{width:1366,height:768},acceptDownloads:true}),errors=[];p.setDefaultTimeout(10000);p.on('pageerror',e=>errors.push(e.message));await p.goto(('file://'+resolve('dist/presentation-studio.html')) + '?start=present');await p.locator('#open-full-editor').click();return{p,errors};}
 const read=p=>p.evaluate(()=>window.presentationStudioEditing.read());
 const apply=(p,operations)=>p.evaluate(operations=>{const api=window.presentationStudioEditing,s=api.read();return api.apply({apiVersion:1,projectId:s.projectId,expectedRevision:s.revision,operations});},operations);
 async function pack(p){const download=p.waitForEvent('download');await click(p,'#fe-export-json');return JSON.parse(await readFile(await(await download).path(),'utf8'));}
@@ -44,13 +44,13 @@ test('finished example keeps an offline described image; repeated starts have fr
  await example(p,'portfolio-starter');const second=await read(p);assert.notEqual(first.projectId,second.projectId);assert.notEqual(slide.id,second.state.slides[0].id);assert.equal(Object.keys(second.state.media).length,0);assert.match(JSON.stringify(second.state.slides[0].tree),/What problem/);assert.deepEqual(errors,[]);
 }finally{await p.close();}});
 
-test('Portfolio preview and finished slide fit laptop canvas; long title is flagged without text shrinking',async()=>{const{p,errors}=await setup();try{
+test('Portfolio preview and finished slide fit laptop canvas; long title stays editable without edge banners or shrinking',async()=>{const{p,errors}=await setup();try{
  await example(p,'portfolio-demo');await mkdir('test-results',{recursive:true});await p.screenshot({path:'test-results/portfolio-case.png'});
  assert.equal(await p.locator('#fe-layout-warning').isVisible(),false);
  const size=await p.locator('#fe-preview .lc-slot-title').evaluate(el=>getComputedStyle(el).fontSize);
  const before=await read(p),slide=before.state.slides[0];assert.equal((await apply(p,[{type:'slide.update',slideId:slide.id,changes:{title:'Very long project title '.repeat(15)}}])).ok,true);
  assert.equal(await p.locator('#fe-preview .lc-slot-title').evaluate(el=>getComputedStyle(el).fontSize),size);
- assert.equal(await p.locator('#fe-layout-warning').isVisible(),true);
+ assert.equal(await p.locator('#fe-layout-warning').count(),0);
  await p.locator('#fe-slide-template').selectOption('portfolio-case');await p.locator('#studio-gallery').waitFor();assert.deepEqual(errors,[]);assert.match(await p.locator('#lc-mapping-status').textContent(),/Long content/);
 }finally{await p.close();}});
 

@@ -12,7 +12,7 @@ const browser = await chromium.launch({ headless: true, executablePath: process.
 test.after(() => browser.close());
 async function setup() {
   const page = await browser.newPage({ acceptDownloads: true });
-  await page.goto('file://' + resolve('dist/presentation-studio.html'));
+  await page.goto(('file://' + resolve('dist/presentation-studio.html')) + '?start=present');
   await page.locator('#open-full-editor').click();
   return page;
 }
@@ -194,7 +194,7 @@ test('commit interruption rolls back state/history/checkpoints and legacy slides
     assert.equal(failed.code, 'COMMIT_FAILED');
     await page.evaluate(() => delete document.querySelector('#fe-status').textContent);
     assert.deepEqual(await pack(page), before);
-    await page.goto('file://' + await legacyHTML(resolve('.')));
+    await page.goto(('file://' + await legacyHTML(resolve('.'))) + '?start=present');
     await page.locator('#open-full-editor').click();
     const legacy = await read(page), ids = legacy.state.slides.map(s => s.id);
     assert.equal((await apply(page, [{ type: 'slide.update', slideId: ids[0], changes: { title: 'Legacy API edit' } }])).ok, true);

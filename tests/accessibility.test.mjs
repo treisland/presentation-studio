@@ -7,6 +7,11 @@ import { readFile } from 'node:fs/promises';
 const browser = await chromium.launch({ headless: true, executablePath: process.env.CHROMIUM_EXECUTABLE_PATH, args: ['--no-sandbox'] });
 test.after(() => browser.close());
 async function reach(page, selector) {
+  const inMenu=await page.locator(selector).evaluate(node=>!!node.closest('#em-menubar .hub-menu-items'));
+  if(inMenu){
+    const scope=page.locator(selector),open=await scope.evaluate(node=>node.checkVisibility());
+    if(open){for(let step=0;step<60;step++){if(await scope.evaluate(node=>document.activeElement===node))return;await page.keyboard.press('ArrowDown');}}
+  }
   for (let step = 0; step < 180; step++) {
     if (await page.locator(selector).evaluate(element => document.activeElement === element)) return;
     await page.keyboard.press('Tab');
@@ -16,7 +21,8 @@ async function reach(page, selector) {
 async function openExport(page) {
   for (const id of ['hub-project-menu', 'hub-export-menu']) {
     if (await page.locator('#' + id).getAttribute('open') === null) {
-      await reach(page, '#' + id + '>summary');
+      if(id==='hub-project-menu')await page.keyboard.press('Alt+Shift+m');
+      else await reach(page, '#' + id + '>summary');
       await page.keyboard.press('Enter');
     }
   }
@@ -33,7 +39,7 @@ test('keyboard authoring edits, reorders, undoes, exports, verifies backups and 
   testContext.diagnostic(`${process.platform}/${process.arch}; browser ${browser.version()}; keyboard workflow; file URLs`);
   const page = await browser.newPage({ viewport: { width: 1280, height: 720 }, acceptDownloads: true });
   try {
-    await page.goto('file://' + resolve('dist/presentation-studio.html'));
+    await page.goto(('file://' + resolve('dist/presentation-studio.html')) + '?start=present');
     await page.keyboard.press('j');
     await page.waitForFunction(() => document.querySelector('#full-editor').open);
     // Canvas focus now follows selection; explicitly choose slide settings before editing its title.
@@ -92,7 +98,7 @@ test('keyboard slide creation and clean-profile ZIP import retain editable conte
   const page = await browser.newPage({ acceptDownloads: true });
   const imported = await browser.newPage({ acceptDownloads: true });
   try {
-    await page.goto('file://' + resolve('dist/presentation-studio-blank.html'));
+    await page.goto(('file://' + resolve('dist/presentation-studio-blank.html')) + '?start=present');
     await page.keyboard.press('j');
     await reach(page, '#studio-gallery-open');
     await page.keyboard.press('Enter');
@@ -102,7 +108,7 @@ test('keyboard slide creation and clean-profile ZIP import retain editable conte
     await page.keyboard.press('Enter');
     assert.equal(await page.locator('.fe-slide-button').count(), 2);
     const bytes = await keyboardDownload(page, '#fe-export');
-    await imported.goto('file://' + resolve('dist/presentation-studio-blank.html'));
+    await imported.goto(('file://' + resolve('dist/presentation-studio-blank.html')) + '?start=present');
     await imported.keyboard.press('p');
     await reach(imported, '#hub-open-file');
     // Verify keyboard activation in the DOM, then supply the OS-selected bytes.

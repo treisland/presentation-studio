@@ -1,5 +1,7 @@
 # 0.8.0 — Editor workbench and direct manipulation
 
+The local 0.18 alpha adds [horizontal editor menus](editor-menu.md) and moves Undo/Redo into the compact toolbar. Detailed settings keep their existing Inspector home.
+
 Implemented through [#124](https://github.com/treisland/presentation-studio/issues/124) / PR #125. The maintainer accepted the integrated workbench and Inspector build on 2026-11-10 and authorized 0.9.0-beta.1 with confirmed manual gates. See the [beta validation record](releases/0.9.0-beta.1-validation.md). The design follows the approved concept: calm light/dark surfaces, a larger canvas, blue selection and primary actions, compact controls and clear positioning affordances.
 
 ## Editing workspace

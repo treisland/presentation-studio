@@ -54,7 +54,7 @@ test("generic demo is offline, fits both viewports, and exports its bundled imag
     if (/^https?:/.test(r.url())) network.push(r.url());
   });
   try {
-    await page.goto("file://" + resolve(root, "dist/presentation-studio.html"));
+    await page.goto(("file://" + resolve(root, "dist/presentation-studio.html")) + '?start=present');
     await page.locator("#play").click();
     assert.equal(await page.locator(".dot").count(), 7);
     assert(!(await page.locator("#stage").innerText()).includes("legacy"));
@@ -166,9 +166,8 @@ test("existing legacy schema-v2 ZIP opens in generic studio and keeps its reset 
     errors = [];
   page.on("pageerror", (e) => errors.push(e.message));
   try {
-    await archive.goto(
-      "file://" + await legacyHTML(root),
-    );
+    await archive.goto((
+      "file://" + await legacyHTML(root)) + '?start=present');
     await archive.locator("#open-full-editor").click();
     const file = await download(
       archive,
@@ -176,7 +175,7 @@ test("existing legacy schema-v2 ZIP opens in generic studio and keeps its reset 
       "legacy-legacy-editable.zip",
     );
     await archive.close();
-    await page.goto("file://" + resolve(root, "dist/presentation-studio.html"));
+    await page.goto(("file://" + resolve(root, "dist/presentation-studio.html")) + '?start=present');
     await click(page,'#hub-presentations');
     await page.locator("#hub-file").setInputFiles(file);
     await page.locator("#hub-picker").waitFor({ state: "hidden" });

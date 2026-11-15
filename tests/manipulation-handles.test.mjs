@@ -27,7 +27,7 @@ async function drag(page, key, direction, dx, dy, cancel = false) {
 }
 async function setup() {
   const page = await browser.newPage({ acceptDownloads: true, viewport: { width: 1366, height: 768 } });
-  await page.goto('file://' + resolve('dist/presentation-studio.html'));
+  await page.goto(('file://' + resolve('dist/presentation-studio.html')) + '?start=present');
   await page.locator('#open-full-editor').click();
   const id = (await snapshot(page)).state.slides[0].id;
   const result = await operations(page, [{ type: 'block.create', slideId: id, kind: 'text', placement: initial }]);

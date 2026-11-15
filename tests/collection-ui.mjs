@@ -6,7 +6,7 @@ export const snapshot=page=>page.evaluate(()=>window.presentationStudioEditing.r
 export const operations=(page,ops)=>page.evaluate(operations=>{const api=window.presentationStudioEditing,s=api.read();return api.apply({apiVersion:1,projectId:s.projectId,expectedRevision:s.revision,operations});},ops);
 export async function openExample(browser,choice,dark=false){
  const page=await browser.newPage({acceptDownloads:true,viewport:{width:1366,height:768}}),errors=[];page.setDefaultTimeout(10000);page.on('pageerror',e=>errors.push(e.message));
- await page.goto('file://'+resolve('dist/presentation-studio.html'));await page.locator('#open-full-editor').click();await chooseExample(page,choice,dark);return{page,errors};
+ await page.goto(('file://'+resolve('dist/presentation-studio.html')) + '?start=present');await page.locator('#open-full-editor').click();await chooseExample(page,choice,dark);return{page,errors};
 }
 export async function chooseExample(page,choice,dark=false){
  await click(page,'#studio-new-open');if(await page.locator('#hub-switch').evaluate(d=>d.open))await page.locator('#hub-save-switch').click();await page.locator('#nx-wizard').waitFor({state:'visible'});await selectStartingExample(page,choice);
@@ -15,7 +15,7 @@ export async function chooseExample(page,choice,dark=false){
 }
 export async function exportZip(page,selector='#fe-export'){const event=page.waitForEvent('download');await click(page,selector);return readFile(await(await event).path());}
 export async function importZip(browser,bytes,projectId){
- const page=await browser.newPage();page.setDefaultTimeout(10000);await page.context().setOffline(true);await page.goto('file://'+resolve('dist/presentation-studio.html'));await page.locator('#open-full-editor').click();await page.locator('#fe-import-file').setInputFiles({name:'collection.zip',mimeType:'application/zip',buffer:bytes});await page.waitForFunction(id=>window.presentationStudioEditing.read().projectId===id,projectId);return page;
+ const page=await browser.newPage();page.setDefaultTimeout(10000);await page.context().setOffline(true);await page.goto(('file://'+resolve('dist/presentation-studio.html')) + '?start=present');await page.locator('#open-full-editor').click();await page.locator('#fe-import-file').setInputFiles({name:'collection.zip',mimeType:'application/zip',buffer:bytes});await page.waitForFunction(id=>window.presentationStudioEditing.read().projectId===id,projectId);return page;
 }
 export async function dropDiagram(page,index=0){
  const before=(await snapshot(page)).revision;

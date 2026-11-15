@@ -301,9 +301,15 @@ function hubSetWorking(value) {
   ])
     $(id).disabled = value;
 }
+function hubCanParkRecovery() {
+  // The untouched launch document must never overwrite its stored recovery copy.
+  // Explicit start-screen choices may leave that copy in Recent projects.
+  return !!projectDraftPending && !!$("ss-screen")?.open && !mediaDirty;
+}
 async function hubGuard(action) {
   projectFlush();
   if (projectDraftPending) {
+    if (hubCanParkRecovery()) return hubRunSwitch(action, false, true);
     hubMessage(
       "Recover or discard the current recovery draft before switching projects.",
     );
@@ -322,9 +328,11 @@ async function hubGuard(action) {
   }
   await hubRunSwitch(action, false);
 }
-async function hubRunSwitch(action, exportFirst) {
+async function hubRunSwitch(action, exportFirst, preserveRecovery = false) {
   if (hubWorking) return;
   hubSetWorking(true);
+  const recovery = preserveRecovery ? projectDraftPending : null,
+    originalState = projectState;
   try {
     if (exportFirst) {
       await hubExportPack(projectPack(), new Map(mediaBlobs));
@@ -332,7 +340,7 @@ async function hubRunSwitch(action, exportFirst) {
       mediaSaved = projectCopy(projectState.media);
       projectStatus();
     }
-    if (!(await projectSaveDraft()))
+    if (!preserveRecovery && !(await projectSaveDraft()))
       throw new Error(
         "The current project could not be saved locally. It remains open. Check the save status, or export a backup.",
       );
@@ -341,6 +349,10 @@ async function hubRunSwitch(action, exportFirst) {
     await action();
     hubClosePicker();
   } catch (e) {
+    if (recovery && projectState === originalState) {
+      projectDraftPending = recovery;
+      projectRecoveryBanner();
+    }
     if ($("hub-switch").open) $("hub-switch-message").textContent = e.message;
     else hubError(e);
   } finally {

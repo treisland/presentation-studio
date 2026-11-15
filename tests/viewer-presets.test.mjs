@@ -9,7 +9,7 @@ import {selectTab} from './ui.mjs';
 const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH,args:['--no-sandbox']});test.after(()=>browser.close());
 const defaults={footerStyle:'modern',version:1,preset:'presentation',autoHide:false,showNotes:true,showProgress:false,showCount:false,showTimer:true,showTimeBar:true};
 const zipContext={setImmediate,clearImmediate,setTimeout,clearTimeout,Uint8Array,ArrayBuffer,TextEncoder,TextDecoder};vm.runInNewContext(await readFile('vendor/jszip-3.10.1.min.js','utf8'),zipContext);
-async function viewer(){const page=await browser.newPage({viewport:{width:1366,height:768}}),errors=[];page.on('pageerror',e=>errors.push(e.message));await page.goto('file://'+resolve('dist/presentation-studio.html'));return{page,errors};}
+async function viewer(){const page=await browser.newPage({viewport:{width:1366,height:768}}),errors=[];page.on('pageerror',e=>errors.push(e.message));await page.goto(('file://'+resolve('dist/presentation-studio.html')) + '?start=present');return{page,errors};}
 test('Presentation preset changes controls without changing automatic playback or project data',async()=>{
  const {page,errors}=await viewer();try{
   const before=await snapshot(page),paused=await page.locator('body').evaluate(n=>n.classList.contains('paused'));

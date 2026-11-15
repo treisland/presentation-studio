@@ -17,7 +17,7 @@ window.__paTest={build:paBuild,measure:paMeasureFit,validate:paValidate,pack:()=
 async function setup(){
   const page=await browser.newPage({acceptDownloads:true,viewport:{width:1366,height:900}}),errors=[],requests=[];
   page.setDefaultTimeout(15000);page.on('pageerror',e=>errors.push(e.message));page.on('request',request=>{if(/^https?:/.test(request.url()))requests.push(request.url());});
-  await page.goto('file://'+resolve('test-results/authoring-layouts-fixture.html'));await page.locator('#open-full-editor').click();
+  await page.goto(('file://'+resolve('test-results/authoring-layouts-fixture.html')) + '?start=present');await page.locator('#open-full-editor').click();
   return{page,errors,requests};
 }
 async function stage(page,document){

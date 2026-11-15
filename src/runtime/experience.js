@@ -722,7 +722,7 @@ async function nxFinishWizard(defaults = false) {
       $("nx-wizard-next").disabled = true;
       $("nx-wizard-defaults").disabled = true;
       projectFlush();
-      await projectSaveDraft();
+      if (!hubCanParkRecovery()) await projectSaveDraft();
       const name = $("nx-wizard-name").value.trim() || "Untitled presentation";
       let state =
         lcExampleState(choice, name) || (choice === "template"
@@ -825,7 +825,7 @@ async function nxFinishWizard(defaults = false) {
       $("nx-wizard-defaults").disabled = false;
     }
   };
-  if (mediaDirty || projectDraftPending)
+  if (mediaDirty || (projectDraftPending && !hubCanParkRecovery()))
     projectConfirm(
       "Create a separate presentation?",
       "The current project will be saved to its local recovery draft when available. Export an editable ZIP first if you need a portable backup.",

@@ -14,7 +14,7 @@ const blocks = state => state.slides.flatMap(s => s.tree.filter(n => /\bdb-block
 const idOf = node => node.attrs.class.match(/\bblock-[\w-]+\b/)[0];
 async function setup(legacy = false) {
   const p = await browser.newPage({ acceptDownloads: true, viewport: { width: 1366, height: 768 } });
-  await p.goto('file://' + (legacy ? await legacyHTML(resolve('.')) : resolve('dist/presentation-studio.html')));
+  await p.goto('file://' + (legacy ? await legacyHTML(resolve('.')) : resolve('dist/presentation-studio.html')) + '?start=present');
   await p.locator('#open-full-editor').click(); return p;
 }
 async function add(p, kind) {

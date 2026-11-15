@@ -36,7 +36,7 @@ test('distributions have no external runtime scripts or stylesheets', async () =
   const page = await browser.newPage();
   try {
     for (const file of ['presentation-studio.html', 'presentation-studio-blank.html']) {
-      await page.goto('file://' + resolve(root, 'dist', file));
+      await page.goto(('file://' + resolve(root, 'dist', file)) + '?start=present');
       assert.equal(await page.locator('script[src], link[rel~="stylesheet"]').count(), 0, file);
     }
     await page.setContent('<SCRIPT SRC = "data:text/javascript,"></SCRIPT><LINK REL="alternate StyleSheet" href="data:text/css,">');
@@ -55,7 +55,7 @@ test('path-like text saves and script delimiters survive editable and playback e
   pack.state.slides[0].notes = 'assets/notes.txt';
   pack.state.slides[0].tree = [{ tag: 'p', children: [{ text: 'assets/example.png' }, { text: payload }] }];
   try {
-    await page.goto('file://' + resolve(root, 'dist/presentation-studio-blank.html'));
+    await page.goto(('file://' + resolve(root, 'dist/presentation-studio-blank.html')) + '?start=present');
     await click(page,'#hub-presentations');
     await page.locator('#hub-file').setInputFiles({ name: 'text-only.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(pack)) });
     await page.waitForFunction(() => document.getElementById('fe-status').dataset.saveState === 'saved');
@@ -114,7 +114,7 @@ test("theme logos, brand presets, and transition overrides survive editable and 
     return path;
   };
   try {
-    await page.goto("file://" + resolve(root, "dist/presentation-studio.html"));
+    await page.goto(("file://" + resolve(root, "dist/presentation-studio.html")) + '?start=present');
     await page.locator("#open-full-editor").click();
     await page
       .locator("#fe-import-file")

@@ -9,7 +9,7 @@ const browser = await chromium.launch({ headless: true, executablePath: process.
 test.after(() => browser.close());
 async function setup() {
   const page = await browser.newPage({ viewport: { width: 1280, height: 720 }, acceptDownloads: true });
-  await page.goto('file://' + resolve('dist/presentation-studio.html'));
+  await page.goto(('file://' + resolve('dist/presentation-studio.html')) + '?start=present');
   await page.locator('#open-full-editor').click();
   return page;
 }
