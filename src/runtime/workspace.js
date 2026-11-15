@@ -87,7 +87,6 @@ function weView() {
   $("we-view-status").textContent = wePanning
     ? "Panning canvas"
     : "View only · Space + drag to pan";
-  projectCheckLayout();
 }
 function weSetZoom(value, anchor = null) {
   if (!weEditing() || mfState) return;

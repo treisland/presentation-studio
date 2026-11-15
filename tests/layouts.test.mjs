@@ -44,13 +44,13 @@ test('finished example keeps an offline described image; repeated starts have fr
  await example(p,'portfolio-starter');const second=await read(p);assert.notEqual(first.projectId,second.projectId);assert.notEqual(slide.id,second.state.slides[0].id);assert.equal(Object.keys(second.state.media).length,0);assert.match(JSON.stringify(second.state.slides[0].tree),/What problem/);assert.deepEqual(errors,[]);
 }finally{await p.close();}});
 
-test('Portfolio preview and finished slide fit laptop canvas; long title is flagged without text shrinking',async()=>{const{p,errors}=await setup();try{
+test('Portfolio preview and finished slide fit laptop canvas; long title stays editable without edge banners or shrinking',async()=>{const{p,errors}=await setup();try{
  await example(p,'portfolio-demo');await mkdir('test-results',{recursive:true});await p.screenshot({path:'test-results/portfolio-case.png'});
  assert.equal(await p.locator('#fe-layout-warning').isVisible(),false);
  const size=await p.locator('#fe-preview .lc-slot-title').evaluate(el=>getComputedStyle(el).fontSize);
  const before=await read(p),slide=before.state.slides[0];assert.equal((await apply(p,[{type:'slide.update',slideId:slide.id,changes:{title:'Very long project title '.repeat(15)}}])).ok,true);
  assert.equal(await p.locator('#fe-preview .lc-slot-title').evaluate(el=>getComputedStyle(el).fontSize),size);
- assert.equal(await p.locator('#fe-layout-warning').isVisible(),true);
+ assert.equal(await p.locator('#fe-layout-warning').count(),0);
  await p.locator('#fe-slide-template').selectOption('portfolio-case');await p.locator('#studio-gallery').waitFor();assert.deepEqual(errors,[]);assert.match(await p.locator('#lc-mapping-status').textContent(),/Long content/);
 }finally{await p.close();}});
 

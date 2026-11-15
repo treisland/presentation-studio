@@ -1211,7 +1211,6 @@
     if (projectPreviewNode) {
       projectPreviewNode.style.transform =
         "scale(" + $("fe-preview").clientWidth / 1920 + ")";
-      projectCheckLayout();
     }
   }
   function projectLayoutOverflow(root) {
@@ -1231,14 +1230,6 @@
         (x.bottom > f.top - 2 || x.top < r.top - 1 || x.left < r.left - 1 || x.right > r.right + 1)
       );
     });
-  }
-  function projectCheckLayout() {
-    if (!$("full-editor").open || !projectPreviewNode) return;
-    const overflow = projectLayoutOverflow(projectPreviewNode);
-    $("fe-layout-warning").hidden = !overflow;
-    $("fe-layout-warning").textContent = overflow
-      ? "Some content reaches the slide edge or footer. Shorten the text, reduce table rows, or choose another layout."
-      : "";
   }
   function projectTrapDialogTab(event, dialog) {
     if (event.key !== "Tab") return;
