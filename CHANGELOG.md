@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Preserve significant nonzero fractional values in chart totals, legends and
+  axis ticks, using scientific notation for very small magnitudes (#271).
 - Add editable charts to portable AI authoring v1/v2, with a shared schema/catalog,
   native import and reflow, four-type example and packaged instructions. Document
   supported Library elements versus manual-only items for agents (#271).

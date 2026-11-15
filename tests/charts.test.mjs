@@ -134,3 +134,25 @@ test('charts reopened from the actual editable HTML can Cancel and Apply repeate
     assert.deepEqual(errors,[]);
   }finally{await page.close();}
 });
+test('fractional chart totals, legend values and axis ticks retain nonzero precision offline',async()=>{
+  const {page,errors}=await openExample(browser,'portfolio-demo');
+  try{
+    const initial=await snapshot(page),slideId=initial.state.slides[0].id;
+    for(const [kind,values]of [['donut',[.001,.002]],['column',[.001,.002]],['line',[-.0000001,.0000002]]]){
+      const result=await operations(page,[{type:'chart.insert',slideId,chart:{version:1,kind,title:'Small values',labels:['A','B'],series:[{name:'Series',values}],colors:[]}}]);assert.equal(result.ok,true);
+    }
+    const plots=page.locator('#fe-preview .ps-chart svg');
+    assert.match(await plots.nth(0).textContent(),/0\.003/);assert.match(await plots.nth(0).textContent(),/A · 0\.001/);assert.match(await plots.nth(0).textContent(),/B · 0\.002/);
+    for(const index of [1,2]){const ticks=await plots.nth(index).locator('text').allTextContents();assert.equal(new Set(ticks.slice(0,5)).size,5);}
+    const expected=await snapshot(page),restored=await importZip(browser,await exportZip(page),expected.projectId);
+    try{assert.match(await restored.locator('#fe-preview .ps-chart svg').first().textContent(),/0\.003/);assert.deepEqual((await snapshot(restored)).state,expected.state);}finally{await restored.close();}
+    const zipVM={setImmediate,clearImmediate,setTimeout,clearTimeout,Uint8Array,ArrayBuffer,TextEncoder,TextDecoder};vm.runInNewContext(await readFile('vendor/jszip-3.10.1.min.js','utf8'),zipVM);
+    for(const mode of ['playback','booth']){
+      if(mode==='booth'){await selectTab(page,'Presentation settings');await click(page,'#booth-open');await page.locator('#booth-password').fill('chart-test-passphrase');await page.locator('#booth-confirm').fill('chart-test-passphrase');}
+      const zip=await zipVM.JSZip.loadAsync(new Uint8Array(await exportZip(page,mode==='booth'?'#booth-export':'#fe-playback'))),folder=resolve('test-results/chart-fractions-'+mode);
+      for(const [name,entry]of Object.entries(zip.files)){if(entry.dir)continue;const path=archivePath(folder,name);await mkdir(dirname(path),{recursive:true});await writeFile(path,await entry.async('uint8array'));}
+      const reopened=await browser.newPage();reopened.on('pageerror',error=>errors.push(error.message));try{await reopened.context().setOffline(true);await reopened.goto('file://'+resolve(folder,'index.html'));await reopened.locator('#stage .ps-chart svg').first().waitFor({state:'attached'});assert.match(await reopened.locator('#stage .ps-chart svg').first().textContent(),/0\.003/);}finally{await reopened.close();}
+    }
+    assert.deepEqual(errors,[]);
+  }finally{await page.close();}
+});
