@@ -1,7 +1,7 @@
 # Start screen and startup behavior
 
 Milestone 27 / #269. The conversation mockup is the visual reference, not a
-capture of the application. This alpha awaits maintainer local acceptance.
+capture of the application. The maintainer confirmed manual testing passed on runtime `4c25100` and authorized beta release on 2026-11-15 (America/Denver).
 
 ## Behavior contract
 
