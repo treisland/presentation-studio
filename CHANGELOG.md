@@ -4,6 +4,10 @@
 
 ## 0.18.0-beta.1 — 2026-11-15
 
+- Refresh recovery controls after creating a blank project from an already-open
+  recovery editor, restoring the editing panels immediately (#269).
+
+
 - Keep start-screen Open project, Blank presentation, template/example and Recent
   project actions available when a recovery draft exists. Preserve that draft
   and its media instead of requiring recovery or discard first (#269).

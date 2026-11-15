@@ -73,6 +73,7 @@ function ssCreateBlank() {
     meta: { id: projectID('project'), name: state.projectName, updatedAt: new Date().toISOString() },
     state, history: { past: [], future: [] }, checkpoints: [] });
   projectModified();
+  projectRecoveryBanner();
   if (!$('full-editor').open) projectOpen();
 }
 // Existing guarded import/recent workflows own project switching and asset checks.
