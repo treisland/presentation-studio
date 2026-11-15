@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 0.19.0-rc.1 — 2026-11-15
+
+- Promote the accepted chart beta runtime unchanged to an RC, with explicit beta Pages hosting authorization ahead of production 0.19.0 (#282).
+
 ## 0.19.0-beta.1 — 2026-11-15
 
 - Preserve significant nonzero fractional values in chart totals, legends and
