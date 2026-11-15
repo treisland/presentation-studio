@@ -9,6 +9,7 @@ import {operations,snapshot,exportZip,importZip} from './collection-ui.mjs';
 const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH,args:['--no-sandbox']});
 test.after(()=>browser.close());
 const examples=await Promise.all(['example','project-update','technical-walkthrough'].map(async name=>JSON.parse(await readFile(`docs/ai/${name}.json`,'utf8'))));
+const chartExample=JSON.parse(await readFile('docs/ai/charts.json','utf8'));
 await mkdir('test-results',{recursive:true});
 await writeFile('test-results/authoring-layouts-fixture.html',(await readFile('dist/presentation-studio.html','utf8')).replace('  projectInit();',`
 window.__paTest={build:paBuild,measure:paMeasureFit,validate:paValidate,pack:()=>projectPack(),catalog:paCatalog,
@@ -32,6 +33,48 @@ async function accept(page){
   await page.locator('#lw-panel').waitFor({state:'hidden'});
 }
 const blockID=node=>node.attrs.class.match(/\bblock-[\w-]+/)?.[0];
+
+test('AI chart example imports through native Library operations, edits, reflows and reopens offline',async()=>{
+  const {page,errors,requests}=await setup();try{
+    const before=await snapshot(page);await stage(page,chartExample);
+    assert.deepEqual(await page.evaluate(example=>__paTest.measure(__paTest.build(example).pack),chartExample),[[],[],[],[]]);
+    assert.equal(await page.locator('.pa-review-viewport .ps-chart svg').count(),1);assert.deepEqual((await snapshot(page)).state,before.state);
+    await accept(page);const imported=await snapshot(page);
+    assert.deepEqual(imported.state.slides.map(slide=>JSON.parse(slide.tree.find(node=>node.attrs?.['data-studio-chart']).attrs['data-studio-chart']).kind),['column','bar','line','donut']);
+    await page.locator('#fe-preview .ps-chart').click();await page.locator('#chart-edit').click();await page.getByLabel('Row 1 series 1',{exact:true}).fill('500');await page.locator('#chart-apply').click();
+    const edited=await snapshot(page),slide=edited.state.slides[0],chart=slide.tree.find(node=>node.attrs?.['data-studio-chart']);assert.equal(JSON.parse(chart.attrs['data-studio-chart']).series[0].values[0],500);
+    assert.equal((await operations(page,[{type:'authoring.layout',slideId:slide.id,layout:'flexible'}])).ok,true);
+    const reflowed=await snapshot(page);assert.deepEqual(reflowed.state.slides[0].tree.map(blockID),slide.tree.map(blockID));assert.equal(reflowed.state.slides[0].tree.find(node=>node.attrs?.['data-studio-chart']).attrs['data-studio-chart'],chart.attrs['data-studio-chart']);
+    await page.locator('#fe-undo').click();assert.deepEqual((await snapshot(page)).state,edited.state);
+    const restored=await importZip(browser,await exportZip(page),edited.projectId);try{assert.deepEqual((await snapshot(restored)).state,edited.state);assert.equal(await restored.locator('#stage .ps-chart svg').count(),4);}finally{await restored.close();}
+    assert.deepEqual(errors,[]);assert.deepEqual(requests,[]);
+  }finally{await page.close();}
+});
+
+test('downloaded agent pack covers all registered Library types and validates chart semantics for both authoring versions',async()=>{
+  const {page,errors}=await setup();try{
+    const catalog=JSON.parse(await readFile('dist/ai-authoring/capabilities.json','utf8')),guide=await readFile('dist/ai-authoring/CAPABILITIES.md','utf8');
+    const fields=await page.evaluate(()=>__paTest.fields());
+    for(const type of Object.keys(fields))assert(type in catalog.libraryCoverage.native||type in catalog.libraryCoverage.manualOnly,'Unclassified Library item: '+type);
+    for(const kind of ['column','bar','line','donut'])assert(kind in catalog.elements.chart.kinds);
+    assert.match(guide,/Library items requiring Studio/);assert.match(guide,/charts.json/);
+    const background=JSON.parse(await readFile('docs/ai/custom-backgrounds-v2.json','utf8')).backdrop;
+    const result=await page.evaluate(({example,background})=>{
+      const before=JSON.stringify(__paTest.pack()),failures=[];
+      for(const mutate of [block=>block.series[0].values.pop(),block=>block.labels[1]=block.labels[0],block=>block.series[0].values[0]='120',block=>block.series[0].values[0]=Infinity,block=>block.series[0].values[0]=1e12+1,block=>block.colors=['url(evil)'],block=>{block.kind='donut';},block=>{block.kind='donut';block.series=[{name:'Only',values:[0,0,0,0]}];},block=>block.src='https://example.com/data']){
+        const invalid=structuredClone(example);mutate(invalid.slides[0].blocks[0]);try{__paTest.validate(invalid);failures.push(null);}catch(error){failures.push(error.message);}
+      }
+      const v2=__paTest.build({...example,version:2,backdrop:background});
+      return{failures,same:before===JSON.stringify(__paTest.pack()),v2:v2.pack.schemaVersion};
+    },{example:chartExample,background});
+    assert(result.failures.every(message=>message&&message.includes('presentation.slides[0].blocks[0]')),JSON.stringify(result.failures));assert.equal(result.same,true);assert.equal(result.v2,4);
+    // The downloadable pack is what agents actually receive, not only loose build output.
+    await click(page,'#lw-open');await page.locator('#lw-tab-create').click();const event=page.waitForEvent('download');await page.locator('#lw-pack').click();
+    const bytes=await readFile(await(await event).path());
+    const contents=await page.evaluate(async bytes=>{const zip=await JSZip.loadAsync(new Uint8Array(bytes));return{names:Object.keys(zip.files),example:JSON.parse(await zip.file('charts.json').async('string')),schema:JSON.parse(await zip.file('presentation.schema.json').async('string'))};},[...bytes]);
+    assert.deepEqual(contents.example,chartExample);assert(contents.names.includes('presentation-v2.schema.json'));assert(contents.names.includes('custom-backgrounds-v2.json'));assert(contents.schema.properties.slides.items.properties.blocks.items.oneOf.some(rule=>rule.properties.type.const==='chart'));assert.deepEqual(errors,[]);
+  }finally{await page.close();}
+});
 
 test('all bundled examples and old v1 use native Library definitions without mutating the active project',async()=>{
   const {page,errors}=await setup();try{

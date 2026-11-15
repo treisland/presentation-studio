@@ -1,6 +1,6 @@
 // Portable authoring v1: declarative data only. Shared limits drive validation and schema.
 const paLimits = { slides: 100, blocks: 30, text: 10000, notes: 20000, bytes: 2000000 };
-const paBlockTypes = ["heading", "paragraph", "list", "table", "code", "image-placeholder", ...Object.keys(paWidgetCatalog)];
+const paBlockTypes = ["heading", "paragraph", "list", "table", "code", "chart", "image-placeholder", ...Object.keys(paWidgetCatalog)];
 function paSchema(version=1) {
   if(![1,2].includes(version))throw Error('Unsupported portable authoring version.');
   const text = { type: "string", maxLength: paLimits.text };
@@ -27,6 +27,7 @@ function paSchema(version=1) {
             if (type === "heading") properties.level = { type: "integer", minimum: 1, maximum: 3 };
             if (type === "code") properties.language = { type: "string", maxLength: 80 };
             if (type === "list") { properties.items = { type: "array", minItems: 1, maxItems: 20, items: text }; required.push("items"); }
+            if (type === "chart") {Object.assign(properties,chartAuthoringProperties());required.push('kind','title','labels','series');}
             if (type === "table") { properties.headers = { type: "array", minItems: 1, maxItems: 10, items: text };
               properties.rows = { type: "array", maxItems: 30, items: { type: "array", minItems: 1, maxItems: 10, items: text } }; required.push("headers", "rows"); }
             const widget = paWidgetCatalog[type];
@@ -84,6 +85,7 @@ function paValidate(raw) {
   raw.slides.forEach((slide, i) => slide.blocks.forEach((block, j) => {
     if (block.type === "table" && block.rows.some(row => row.length !== block.headers.length))
       errors.push(`presentation.slides[${i}].blocks[${j}]: table rows must match header width`);
+    if(block.type==='chart')try{chartNormalize({...block,version:1});}catch(error){errors.push(`presentation.slides[${i}].blocks[${j}]: ${error.message}`);}
   }));
   if (errors.length) throw new Error(errors.slice(0, 20).join("\n"));
   if(raw.version===2){if(!raw.backdrop&&!raw.slides.some(s=>s.backdrop))throw Error('Portable authoring version 2 is reserved for background-aware documents.');if(raw.backdrop)cbEngine.clean(raw.backdrop);for(const slide of raw.slides)if(slide.backdrop)cbEngine.clean(slide.backdrop);}

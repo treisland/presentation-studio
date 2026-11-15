@@ -46,7 +46,8 @@
     "src/styles/presenter-workspace.css",
     "src/styles/audio.css",
     "src/styles/editor-menu.css",
-    "src/styles/start-screen.css"
+    "src/styles/start-screen.css",
+    "src/styles/charts.css"
   ],
   "scripts": [
     "src/runtime/prelude.js",
@@ -84,6 +85,7 @@
     "src/runtime/background-effects-core.js",
     "src/runtime/custom-background-core.js",
     "src/runtime/audio-core.js",
+    "src/runtime/charts-core.js",
     "src/runtime/authoring-definitions.js",
     "src/runtime/components.js",
     "src/runtime/code-library.js",
@@ -136,6 +138,7 @@
     "src/runtime/audio-live.js",
     "src/runtime/editor-menu.js",
     "src/runtime/start-screen.js",
+    "src/runtime/charts.js",
     "src/runtime/boot.js"
   ],
   "vendor": "vendor/jszip-3.10.1.min.js"

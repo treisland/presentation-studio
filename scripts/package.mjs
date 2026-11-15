@@ -9,6 +9,7 @@ vm.runInNewContext(await readFile(resolve(root, 'vendor/jszip-3.10.1.min.js'), '
 const zip = new sandbox.JSZip();
 for (const file of ['docs/audio.md','docs/audio-acceptance.md','docs/audio-contract.md','docs/viewer-controls.md','docs/custom-backgrounds.md','docs/deployment.md','docs/import-compatibility.md','docs/navigation.md','docs/interactive-elements.md','docs/0.13.0-manual-test-plan.md','docs/library-actions.md','docs/viewer-defaults-contract.md','docs/presenter-view.md']) zip.file(file,new Uint8Array(await readFile(resolve(root,file))),{date:new Date('2026-01-01T00:00:00Z')});
 zip.file('docs/content-inspector.md', new Uint8Array(await readFile(resolve(root, 'docs/content-inspector.md'))), {date:new Date('2026-01-01T00:00:00Z')});
+zip.file('docs/charts-and-graphs.md', new Uint8Array(await readFile(resolve(root, 'docs/charts-and-graphs.md'))), {date:new Date('2026-01-01T00:00:00Z')});
 zip.file('docs/inspector-navigation.md', new Uint8Array(await readFile(resolve(root, 'docs/inspector-navigation.md'))), {date:new Date('2026-01-01T00:00:00Z')});
 zip.file('docs/media-inspector.md', new Uint8Array(await readFile(resolve(root, 'docs/media-inspector.md'))), {date:new Date('2026-01-01T00:00:00Z')});
 zip.file('docs/context-menus.md', new Uint8Array(await readFile(resolve(root, 'docs/context-menus.md'))), {date:new Date('2026-01-01T00:00:00Z')});
@@ -19,7 +20,7 @@ zip.file('docs/known-issues.md', new Uint8Array(await readFile(resolve(root, 'do
 zip.file('docs/layers-style-workflow.md', new Uint8Array(await readFile(resolve(root, 'docs/layers-style-workflow.md'))), {date:new Date('2026-01-01T00:00:00Z')});
 zip.file('docs/editor-workbench.md', new Uint8Array(await readFile(resolve(root, 'docs/editor-workbench.md'))), {date:new Date('2026-01-01T00:00:00Z')});
   zip.file('docs/canvas-manipulation.md', new Uint8Array(await readFile(resolve(root, 'docs/canvas-manipulation.md'))), {date:new Date('2026-01-01T00:00:00Z')});
-for (const name of ['AUTHORING.md', 'example.json', 'project-update.json', 'technical-walkthrough.json', 'background-effects.json', 'presentation.schema.json', 'capabilities.json', 'CAPABILITIES.md'])
+for (const name of ['AUTHORING.md', 'example.json', 'project-update.json', 'technical-walkthrough.json', 'charts.json', 'background-effects.json', 'custom-backgrounds-v2.json', 'presentation.schema.json', 'presentation-v2.schema.json', 'capabilities.json', 'CAPABILITIES.md'])
   zip.file('ai-authoring/' + name, new Uint8Array(await readFile(resolve(root, 'dist/ai-authoring', name))), {date:new Date('2026-01-01T00:00:00Z')});
 zip.file('docs/local-workspaces.md', new Uint8Array(await readFile(resolve(root, 'docs/local-workspaces.md'))), {date:new Date('2026-01-01T00:00:00Z')});
 zip.file('docs/ai-layouts-and-elements.md', new Uint8Array(await readFile(resolve(root, 'docs/ai-layouts-and-elements.md'))), {date:new Date('2026-01-01T00:00:00Z')});

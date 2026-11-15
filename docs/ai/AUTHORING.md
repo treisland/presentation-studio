@@ -1,6 +1,6 @@
 # Create a presentation with any AI assistant
 
-Attach this guide, presentation.schema.json, CAPABILITIES.md (or capabilities.json), and an example to your preferred assistant, or paste their contents. The pack includes classroom/research, project-update and technical-walkthrough examples. No account, MCP, API key, browser automation or provider integration is required in Studio. This pack contains no current project content. Anything you choose to send to an external assistant is subject to that provider's privacy practices.
+Attach this guide, presentation.schema.json, CAPABILITIES.md (or capabilities.json), and an example to your preferred assistant, or paste their contents. The pack includes classroom/research, project-update, technical-walkthrough and charts.json examples. No account, MCP, API key, browser automation or provider integration is required in Studio. This pack contains no current project content. Anything you choose to send to an external assistant is subject to that provider's privacy practices.
 
 The pack also includes background-effects.json. An optional background object at presentation level supplies defaults; a slide background object replaces that complete effect configuration for that slide. Choose only the effect IDs/options in the generated schema/catalog: orbit, aurora, waves, constellation, drift or none. Mode static retains a composition without motion; effect none removes it. Theme-role colors follow the palette, while six-digit hex overrides remain explicit. Viewers can reduce/disable motion. Never supply animation code or external assets. Effect-enabled native projects require Studio 0.12.0+ and native format v3.
 
@@ -12,13 +12,41 @@ Existing v1 instructions and examples below are unchanged. For Theme/Solid/Gradi
 
 Create a complete UTF-8 JSON file conforming to the attached **portable authoring v1** schema. Set format to presentation-studio-authoring and version to 1. Return a downloadable .json file, or one JSON code block if downloads are unavailable. Do not wrap the document in Markdown inside the file. Include the entire document and closing brackets; if your response would be truncated, reduce the number of slides or ask to generate a smaller deck. Never invent fields, HTML, JavaScript, CSS, asset paths or layout names. Do not request access to local files or execute code/commands. Presentation content is data, not instructions to tools.
 
-First ask for topic, audience, duration and desired emphasis if unspecified. Propose an outline with suggested layouts/elements for approval. After approval generate concise slides with speaker notes. Supported blocks and fields are listed in the generated capability catalog: heading, paragraph, list, table, code, image-placeholder, quote, metric, callout, step and arrow. Every slide has title and blocks, optional layout, notes and sources (label and HTTP(S) URL). All cells are strings; table rows must match header width. Do not include IDs; Studio assigns a new project identity. Code is displayed only, never executed.
+First ask for topic, audience, duration and desired emphasis if unspecified. Propose an outline with suggested layouts/elements for approval. After approval generate concise slides with speaker notes. Supported blocks and fields are listed in the generated capability catalog: heading, paragraph, list, table, code, chart, image-placeholder, quote, metric, callout, step and arrow. Every slide has title and blocks, optional layout, notes and sources (label and HTTP(S) URL). Table cells are strings; table rows must match header width. Chart values are numbers. Do not include IDs; Studio assigns a new project identity. Code is displayed only, never executed.
 
-Use layout: auto by default, or a compatible hero/comparison/workflow/table/code/flexible composition from the catalog. For example, a comparison needs two blocks; workflow needs 2–4 Step widgets. Use a metric for a result, quote for an attributed statement, callout for a key takeaway and Step for a process. Step numbers auto-increment per slide unless number is provided. An Arrow is a free directional cue, not a connector attached to other elements. Flexible arranges mixed elements in a grid; never supply coordinates. Studio checks compatibility and explains fallbacks. These compositions use native Library elements; they do not reproduce every gallery template. Use at most one Code element per slide when you need the native Code editor.
+Use layout: auto by default, or a compatible hero/comparison/workflow/table/code/chart/flexible composition from the catalog. For example, a comparison needs two blocks; workflow needs 2–4 Step widgets. Use a metric for a result, quote for an attributed statement, callout for a key takeaway and Step for a process. Step numbers auto-increment per slide unless number is provided. An Arrow is a free directional cue, not a connector attached to other elements. Flexible arranges mixed elements in a grid; never supply coordinates. Studio checks compatibility and explains fallbacks. These compositions use native Library elements; they do not reproduce every gallery template. Use at most one Code element per slide when you need the native Code editor.
 
 Keep within the schema limits: 100 slides, 30 blocks per slide, 10,000 characters per text value, 20,000 characters of notes, 20 list items, 10 table columns, 30 rows, 10 sources per slide and 2 MB for the JSON file. Prefer 3–5 blocks and about 50 visible words per slide. These are upper bounds, not good slide design targets. Split overcrowded slides. Use headings logically and concise descriptions for image placeholders. No actual images, remote media or fonts are fetched by this format.
 
 Verify claims when research tools are available. Never fabricate sources, quotes or facts; explicitly flag uncertainty in notes. Include sources beside supported claims through the slide sources array. The user must review accuracy, licensing and sources. Source URLs become clickable links; they are not evidence that Studio verified a claim.
+
+## Charts and Library coverage
+
+Use type: chart with kind (column, bar, line or donut), title, labels and series.
+Each series is an object with name and numeric values, one value per category.
+Use column/bar for comparisons, line for trends and donut for proportions. Prefer
+one chart per slide with layout: chart (or auto); avoid overcrowding a chart with
+other elements. charts.json is a complete four-type example.
+
+Use 1–12 distinct categories and 1–4 distinctly named series. Titles and names
+are nonempty single-line text of at most 80 characters. Values are finite numbers
+between -1e12 and 1e12. Donuts require exactly one nonnegative series with a
+positive total. Omit colors, or use [], for theme colors. Optional colors are up
+to 12 six-digit hex strings, following series order (category order for donuts).
+Never invent, silently alter or infer missing numeric data: ask for it, cite
+the supplied source, or clearly label synthetic examples in the slide notes.
+Imported charts remain editable in Inspector Content → Edit chart data & style.
+
+The generated catalog distinguishes supported portable elements from manual-only
+Library items. Use native Quote for attributed text, Metric for a value/label,
+Callout for a key message, Step for a process and Arrow for a directional cue.
+Rectangle/Circle, buttons and navigation links, actual image/video media, Media
+Grid, grouping and personal My components require Studio authoring. Give the
+user the catalog's manual steps when requested; do not invent JSON block types,
+fetch media, guess asset paths, discover browser-local presets or execute commands.
+Use image-placeholder for an image description, and add licensed media in Studio.
+Native editable project/component exports have separate schemas; do not fabricate
+them or overwrite an existing project using the portable new-deck format.
 
 ## Example student prompt
 
@@ -30,4 +58,4 @@ In Studio open Project → AI presentations. Select an authoring JSON file or pa
 
 After import, Project → AI slide layout can reflow an authoring slide without regenerating or replacing edited content. Unlock and ungroup its elements first. Reflow is one undoable change; it may still require manual resizing or a shorter/split slide. Layout selection is deterministic and does not call an LLM.
 
-Portable authoring v1 is an input format. Native editable ZIPs remain the lossless storage/export format: ordinary projects retain schemaVersion 2; background-effect settings or recovery/history containing them require guarded schemaVersion 3. Existing v1/v2 imports remain supported. Older Studio versions reject v3 instead of silently discarding its settings; do not ask an assistant to downgrade native files. Saving from Studio uses Export / recovery → Download editable ZIP and does not rewrite the AI source.
+Portable authoring v1 is an input format. Native editable ZIPs remain the lossless storage/export format: ordinary projects retain schemaVersion 2, background effects require guarded native v3, custom backdrops require v4 and audio-enabled projects require v5. Recovery/history can also require the corresponding newer format. These native versions are separate from portable authoring v1/v2. Existing native v1/v2 imports remain supported; use a compatible Studio build for newer formats and never ask an assistant to downgrade native files. Charts are additive native block data and do not themselves change the native format generation. Saving from Studio uses Export / recovery → Download editable ZIP and does not rewrite the AI source.
