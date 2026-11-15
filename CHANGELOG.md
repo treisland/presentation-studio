@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 0.19.0 — 2026-11-15
+
+- Promote the accepted chart runtime unchanged to production after maintainer sign-off, with explicit stable Pages authorization (#282).
+
 ## 0.19.0-beta.1 — 2026-11-15
 
 - Preserve significant nonzero fractional values in chart totals, legends and
