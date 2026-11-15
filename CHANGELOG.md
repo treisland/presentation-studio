@@ -17,7 +17,7 @@
 
 - Add Help shortcuts to the published Presentation Studio marketing/documentation site and presentation gallery, opening separately from the editor.
 
-- Add the local 0.18 alpha Windows-inspired File/Edit/View/Insert/Format/Arrange/Slide/Help menu bar, shared command destinations, grouped contextual actions and keyboard/narrow-screen navigation (milestone #26). Keep detailed values in the Inspector and retain existing transactions, recovery and portable formats.
+- Add the Windows-inspired File/Edit/View/Insert/Format/Arrange/Slide/Help menu bar, shared command destinations, grouped contextual actions and keyboard/narrow-screen navigation (milestone #26). Keep detailed values in the Inspector and retain existing transactions, recovery and portable formats.
 
 ## 0.17.0-beta.2 — 2026-11-14
 
