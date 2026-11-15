@@ -54,6 +54,19 @@ test('selection commands reuse Undo, finish pending fields and reject stale targ
  }finally{await page.close();}
 });
 
+test('Help opens published website/docs and gallery separately without changing the project',async()=>{
+ const {page,errors}=await open();try{
+  const before=await snapshot(page);
+  for(const [label,url]of [['Website & documentation ↗','https://docs.pres-studio.com/'],['Presentation gallery ↗','https://gallery.pres-studio.com/']]){
+   await page.context().route(url,route=>route.fulfill({contentType:'text/html',body:'<!doctype html><title>Help destination fixture</title>'}));
+   const panel=await menu(page,'Help'),opened=page.context().waitForEvent('page');await panel.getByRole('menuitem',{name:label,exact:true}).click();
+   const external=await opened;await external.waitForLoadState();assert.equal(external.url(),url);assert.equal(await external.evaluate(()=>window.opener),null);await external.close();
+   assert.equal(await page.locator('#full-editor').evaluate(node=>node.open),true);assert.equal(await page.locator('#em-help').evaluate(node=>node.open),false);assert.deepEqual(await snapshot(page),before);
+  }
+  assert.deepEqual(errors,[]);
+ }finally{await page.close();}
+});
+
 test('locked and mixed selections retain a stable menu inventory and guarded actions',async()=>{
  const {page,errors}=await open();try{
   const {slideId,key}=await shape(page);let panel=await menu(page,'Arrange');const labels=await panel.locator(':scope > button').allTextContents();await page.keyboard.press('Escape');

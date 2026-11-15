@@ -56,7 +56,10 @@ function emRows(name){
     {label:'Background…',action:()=>emSlide('cb-source')},{label:'Sound / narration…',action:()=>emSlide('au-slide-file')},
     {label:'Presenter notes…',action:()=>emSlide('fe-notes-text')},null,
     {label:'Sections…',action:()=>weOpenSettings('sections')},{label:'Transitions…',action:()=>weOpenSettings('settings')},{label:'Kiosk loops…',action:()=>weOpenSettings('loops')}];
-  if(name==='Help')return [emButton('Editor walkthrough…','lc-walkthrough-open'),emButton('About Presentation Studio…','app-menu-about'),null,
+  if(name==='Help')return [
+    {label:'Website & documentation ↗',action:()=>window.open('https://docs.pres-studio.com/','_blank','noopener,noreferrer')},
+    {label:'Presentation gallery ↗',action:()=>window.open('https://gallery.pres-studio.com/','_blank','noopener,noreferrer')},null,
+    emButton('Editor walkthrough…','lc-walkthrough-open'),emButton('About Presentation Studio…','app-menu-about'),null,
     {label:'Keyboard & menu help…',action:()=>{$('em-help-dialog').showModal();$('em-help-close').focus();}}];
   return [];
 }

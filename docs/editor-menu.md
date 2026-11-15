@@ -21,7 +21,14 @@ screenshot. Its example shortcuts and incidental artwork are not requirements.
 | Format | Content/appearance/media destinations and presentation theme/background |
 | Arrange | Ordering, alignment/distribution, grouping, locks/visibility and geometry |
 | Slide | Slide operations, layout, background, narration, notes and presentation navigation settings |
-| Help | Existing walkthrough/About and menu keyboard help |
+| Help | Website/documentation, public presentation gallery, walkthrough/About and menu keyboard help |
+
+Help → **Website & documentation ↗** opens <https://docs.pres-studio.com/>;
+**Presentation gallery ↗** opens <https://gallery.pres-studio.com/>. Both open
+in a separate tab with no access to the editor window. These online resources
+require a connection; the walkthrough and keyboard help remain available offline.
+The editor overview companion screenshot scene needs review when Help is shown;
+no public companion asset or deployment is changed by these shortcuts.
 
 Only existing capabilities are exposed. Values remain in Inspector Content,
 Arrange and Style: position/size, typography, colors, crop/frame, media settings,
