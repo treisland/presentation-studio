@@ -1,0 +1,115 @@
+# Charts & Graphs
+
+Development feature for milestone [24](https://github.com/treisland/presentation-studio/milestone/24),
+implementation [#271](https://github.com/treisland/presentation-studio/issues/271).
+This guide describes the feature branch, not a published release. Maintainer
+manual acceptance is pending.
+
+## Add and edit a chart
+
+1. Open **Insert / Library → Charts & Graphs**. Choose **Customize** under a
+   column, horizontal bar, line or donut preview. Search filters this category.
+2. In **Chart studio**, name the chart and edit category names, series names and
+   values in **Data**. Add/remove the last category or series using the buttons.
+   The preview updates as you type; edits stay staged until you apply them.
+3. To paste spreadsheet values, expand **Paste spreadsheet data**. Copy the header
+   row and data rows, paste them in the field and choose **Use pasted data**.
+4. Choose **Style** to use the presentation theme or enter custom six-digit hex
+   colors separated by commas. Custom colors repeat when there are more series
+   than colors; donut colors follow category order.
+5. Choose **Insert chart**. Select the chart on the canvas or in Layers, then use
+   Inspector **Content → Edit chart data & style** to reopen the same editor.
+   Double-clicking a chart also opens Chart studio. **Apply chart** makes one
+   undoable change; **Cancel** or Escape discards staged changes.
+
+Charts are ordinary movable/resizable free objects. Use the existing Arrange,
+duplicate, group, visibility and lock controls. Unlock the presentation, slide
+and selected object before editing. If the project changes while Chart studio
+is open, cancel and reopen it before applying.
+
+## Data and limits
+
+Use 1–12 categories and 1–4 named series. Each series needs exactly one finite
+number per category, between −1 trillion and 1 trillion. Labels and titles are
+nonempty single-line text of at most 80 characters; category and series names
+must each be distinct. Zero and negative values work in column, bar and line
+charts. An all-zero chart uses a 0–1 scale. Donuts need one series with
+nonnegative values and a positive total. Remove extra series before switching
+to a donut, or paste a single-series dataset after choosing that type.
+
+Paste up to 16,000 characters of tab-separated data (recommended) or simple
+comma-separated data. The first column contains categories; the remaining
+header cells name series. Every row needs the same number of cells. Use plain
+numbers, optionally with decimal points, minus signs or scientific notation.
+Quoted CSV cells, thousands separators, currency symbols, percentages and blank
+numeric cells are unsupported. Invalid paste keeps the current grid; invalid
+grid input disables Apply until corrected. The preview retains its last valid
+render while an error is visible.
+
+Example (tabs between columns):
+
+```text
+Category	Product	Services
+Q1	120	80
+Q2	140	100
+Q3	180	130
+Q4	210	160
+```
+
+Long axis labels are abbreviated in the graphic. **View chart data** exposes
+the complete labels and exact values in a semantic table in previews and
+playback. Line series also use distinct dash patterns. Review chart size and
+contrast in the actual presentation; small chart objects can be hard to read.
+
+## Saving, reuse and portability
+
+Save a selected chart using the existing **Save selection as component** flow.
+Inserted copies receive independent object IDs and data. Export/import the
+component library to transfer it to another browser profile. Theme-linked charts
+use the destination presentation colors; custom colors remain fixed.
+
+Editable project ZIPs and browser recovery retain chart data and editing.
+Playback and booth ZIPs render charts and their data tables offline. There are
+no external assets, chart dependencies, accounts or data connections.
+
+The native project and component-library format generations stay unchanged.
+Chart configuration is an additive, bounded, validated `data-studio-chart`
+attribute on a free block. Imports regenerate canonical fallback content and
+native SVG from validated data; arbitrary SVG or scripts are not imported.
+Existing projects without charts are unchanged. Older builds that do not support
+charts may retain the fallback title/data table but cannot promise editable chart
+round trips; keep an original backup and reopen with this feature's build.
+
+Area, scatter, waterfall and KPI charts, live spreadsheet links and external
+data services remain outside this milestone. The planning POC guides the chart
+cards and preview/data/style flow, not the app's overall navigation or release
+version.
+
+## Manual review
+
+- Insert each chart type and use keyboard navigation through title, grid, paste
+  and Style controls. Check desktop/laptop layouts, 390px width, zoom and light/
+  dark editor and presentation themes. Review screen-reader names and data tables.
+- Paste valid, negative, zero, empty, malformed and maximum-size data. Change the
+  chart type, colors and theme; test Cancel, Undo/Redo and switching objects.
+- Move, resize, duplicate, group, hide and lock charts. Save/recover the browser
+  project. Export/import a library in a clean profile and verify independent copies.
+- Export and reopen editable, playback and booth ZIPs offline. Verify chart
+  graphics, exact data, theme colors, original IDs and unrelated legacy content.
+
+Automated tests cover authoring, validation, locks, Undo, stale apply, responsive
+overflow, component transfer and real offline exports. These do not replace
+maintainer screen-reader, visual or first-user acceptance.
+
+## Companion content and screenshot review
+
+Canonical affected guide: [Blocks and components](blocks-components.md), linking
+to this development guide. No public deployment or public image replacement is
+part of this feature. Per [website process](website-process.md), the **editor
+overview** scene is affected by the new Library category/Inspector entry;
+authentic development captures are local review candidates only and public
+refresh is pending maintainer acceptance with a recorded version/SHA/digest.
+The examples gallery, Media Focus, AI import preview and finished playback scenes
+do not contain charts or show changed controls; no replacement is proposed for
+those existing fixtures. Release-wide imagery review remains pending. The POC
+image is an illustration, not a public screenshot or evidence of shipped UI.

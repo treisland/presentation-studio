@@ -36,10 +36,12 @@ function icSelection() {
   } else if (wpKind === 'grid') { kind = 'grid'; title = wpSelection().title; detail = wpSelection().detail; }
   else if (wpKind === 'media') { kind = 'media'; title = ceConfig() ? ceConfig().kind === 'video' ? 'Video' : 'Image' : 'Media'; detail = ceConfig()?.name || 'Choose or upload media for this slide.'; }
   else if (icContains(node, item => mgHas(item,'terminal'))) kind = 'code';
+  else if (node?.attrs?.['data-studio-chart']) kind = 'chart';
   else if (icContains(node, item => item.tag === 'table')) kind = 'table';
   else if (icContains(node, item => mgHas(item,'component-widget'))) kind = 'widget';
   else if (node && wpKind !== 'slide') kind = 'text';
 
+  if (kind === 'chart') { title = 'Chart'; detail = 'Edit data, chart type and theme colors in Chart studio.'; }
   if (kind === 'code') { title = 'Code / Commands'; detail = 'Snippet, labels, variants and initial choice'; }
   if (kind === 'table') {
     title = 'Table'; detail = 'Edit cells on the canvas or use the table fields below.';
@@ -106,7 +108,7 @@ function icPaint() {
     icVisible('ce-panel',kind === 'media' || kind === 'grid');
     $('ce-panel').hidden = !['media','grid'].includes(kind);
     icVisible('mg-panel',kind === 'grid');
-    icVisible('db-arrange',['text','widget','table','code'].includes(kind) && !!dbNode());
+    icVisible('db-arrange',['text','widget','table','code','chart'].includes(kind) && !!dbNode());
     icVisible('sp-clear',kind === 'slide');
     if ($('visibility-panel')) for (const child of $('visibility-panel').children) {
       const selectedControl = child.contains($('visibility-hide')) || child.contains($('visibility-show-hidden')) || child.tagName === 'H3';
@@ -142,7 +144,7 @@ function icPaint() {
       for (const id of ['wp-delete','wp-duplicate','db-remove','db-duplicate','vb-delete','vb-duplicate']) icVisible(id,false);
     } else for (const id of ['wp-delete','wp-duplicate','db-remove','db-duplicate','vb-delete','vb-duplicate']) icVisible(id,true);
     const button=context.selected.length===1&&mgHas(context.selected[0].node,'nav-button');
-    const primary=button&&$('nav-panel')?'nav-panel':{text:'fe-content-panel',widget:'component-widget-fields',code:'code-panel',table:'fe-table-panel',media:$('mi-content')?'mi-content':'ce-panel',grid:$('mi-content')?'mi-content':'mg-panel',multiple:'ic-member-field',notes:'fe-notes-panel'}[kind];
+    const primary=button&&$('nav-panel')?'nav-panel':{chart:'chart-inspector',text:'fe-content-panel',widget:'component-widget-fields',code:'code-panel',table:'fe-table-panel',media:$('mi-content')?'mi-content':'ce-panel',grid:$('mi-content')?'mi-content':'mg-panel',multiple:'ic-member-field',notes:'fe-notes-panel'}[kind];
     const fields=$('wp-fields'),panel=primary&&$(primary),guide=$('sg-guide');
     if(panel?.parentElement===fields){
       if(guide?.parentElement===fields){if(guide.nextElementSibling!==panel)guide.after(panel);}

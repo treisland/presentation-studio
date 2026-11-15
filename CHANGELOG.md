@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Add the Charts & Graphs Library with native column/bar, line and donut previews,
+  staged data/style editing, spreadsheet paste, theme/custom colors and contextual
+  Inspector editing. Preserve chart data in reusable components, recovery and
+  offline editable/playback/booth exports. Manual acceptance is pending (#271).
+
 - Keep start-screen Open project, Blank presentation, template/example and Recent
   project actions available when a recovery draft exists. Preserve that draft
   and its media instead of requiring recovery or discard first (#269).
