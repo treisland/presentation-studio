@@ -80,6 +80,10 @@ Editable project ZIPs and browser recovery retain chart data and editing.
 Playback and booth ZIPs render charts and their data tables offline. There are
 no external assets, chart dependencies, accounts or data connections.
 
+Standalone exported HTML bundles its app runtime. To use an updated chart-editor
+fix with an existing export, import its editable ZIP into the updated application
+and export it again. Reopening the old `index.html` alone still runs its older code.
+
 The native project and component-library format generations stay unchanged.
 Chart configuration is an additive, bounded, validated `data-studio-chart`
 attribute on a free block. Imports regenerate canonical fallback content and
