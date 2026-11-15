@@ -2,13 +2,15 @@
 
 ## Unreleased
 
+## 0.19.0-beta.1 — 2026-11-15
+
 - Add editable charts to portable AI authoring v1/v2, with a shared schema/catalog,
   native import and reflow, four-type example and packaged instructions. Document
   supported Library elements versus manual-only items for agents (#271).
 - Add the Charts & Graphs Library with native column/bar, line and donut previews,
   staged data/style editing, spreadsheet paste, theme/custom colors and contextual
   Inspector editing. Preserve chart data in reusable components, recovery and
-  offline editable/playback/booth exports. Manual acceptance is pending (#271).
+  offline editable/playback/booth exports. Maintainer acceptance and beta sign-off are recorded (#271/#277).
 - Refine Chart studio with named series/category color pickers and individual hex
   fields, inline add controls and targeted row/series removal. Preserve staged
   custom colors, remaining values, keyboard focus, Apply/Cancel and Undo (#271).

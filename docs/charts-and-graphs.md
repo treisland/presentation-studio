@@ -2,8 +2,9 @@
 
 Development feature for milestone [24](https://github.com/treisland/presentation-studio/milestone/24),
 implementation [#271](https://github.com/treisland/presentation-studio/issues/271).
-This guide describes the feature branch, not a published release. Maintainer
-manual acceptance is pending.
+The maintainer accepted the milestone and authorized 0.19.0-beta.1 promotion on
+2026-11-15. See [release authority](releases/0.19.0-beta.1-validation.md); publication
+still requires protected integration and final artifact gates.
 
 ## Add and edit a chart
 

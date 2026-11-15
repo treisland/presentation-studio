@@ -12,9 +12,9 @@
 
 A portable HTML presentation player and editor. Start with a short, generic demo or a blank presentation, then add your own content, branding, questions, and media. No application server or database is required.
 
-## 0.18 beta
+## 0.19 beta
 
-The maintainer-accepted beta adds the editor menu bar, a start screen with recent projects and file opening, browser-local startup preferences, and recovery-safe explicit choices. See [start-screen behavior](docs/start-screen.md), [menu commands](docs/editor-menu.md), and [release validation](docs/releases/0.18.0-beta.1-validation.md).
+The maintainer-accepted beta adds editable charts, per-series/category color pickers and inline data controls, plus matching native AI authoring schemas, examples and Library capability guidance. It retains the accepted menu/start-screen, recovery and portable workflows. See [Charts & Graphs](docs/charts-and-graphs.md) and [release validation](docs/releases/0.19.0-beta.1-validation.md).
 
 ## Start here
 
@@ -30,7 +30,7 @@ Use the start screen to open or create a presentation. Exported projects open di
 
 The revised 0.7.0 implementation adds **Project → AI presentations**: download provider-independent instructions, validate generated JSON, review layouts and native elements, then import and export portable editable ZIPs. Browser recovery remains independent of downloadable backups. Live folder access, linked saves/reloads and folder snapshots are deferred outside this milestone (#117). See [the portable workflow and manual checklist](docs/local-workspaces.md). PR #118 is merged with maintainer sign-off. The published RC is accepted; stable 0.7.0 promotion is tracked in the [validation record](docs/releases/0.7.0-validation.md).
 
-AI authoring also supports Auto/explicit layouts, native Library widgets and safe slide previews with fit warnings and layout overrides. Downloaded instructions include a generated capability catalog and three complete examples. See [the native authoring plan](docs/ai-layouts-and-elements.md).
+AI authoring also supports Auto/explicit layouts, native Library widgets and safe slide previews with fit warnings and layout overrides. Downloaded instructions include a generated capability catalog and complete examples including four chart types. See [the native authoring plan](docs/ai-layouts-and-elements.md).
 
 ![Generic Studio demo](docs/images/studio-demo.png)
 
@@ -84,7 +84,7 @@ For a localhost preview, run `npm run serve`, then open `http://127.0.0.1:4173`.
 
 [Quick start](docs/quick-start.md) · [Architecture](docs/architecture.md) · [Contributing](CONTRIBUTING.md) · [Content and branding](docs/content-and-branding.md) · [Open-source release](docs/open-source-release.md) · [Roadmap](docs/roadmap.md) · [Troubleshooting](docs/troubleshooting.md)
 
-Version 0.18.0-beta.1. Editor menu bar, start screen, startup preferences and recovery-safe project choices. See the [release notes](docs/releases/0.18.0-beta.1.md), [validation record](docs/releases/0.18.0-beta.1-validation.md) and [known issues](docs/known-issues.md). Released under the [Apache License 2.0](LICENSE).
+Version 0.19.0-beta.1. Native editable charts, color/data controls and matching portable AI authoring, retaining the accepted editor, start-screen and recovery workflows. See the [release notes](docs/releases/0.19.0-beta.1.md), [validation record](docs/releases/0.19.0-beta.1-validation.md) and [known issues](docs/known-issues.md). Released under the [Apache License 2.0](LICENSE).
 
 ## Development process
 
