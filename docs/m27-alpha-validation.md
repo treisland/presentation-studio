@@ -6,10 +6,15 @@ runtime `e3173c0`). The previous milestone acceptance does not stand in for new
 start-screen acceptance. The original checkout's pending beta preparation was
 left untouched in a separate worktree.
 
-This is a development alpha for local testing, not a published release. The
-existing package version is retained; identify this review build by its Git SHA.
-`release-plan.json` still has `publish: false`. A draft dev-targeting PR holds
-integration until maintainer review. No companion deployment is included.
+This record describes the development alpha reviewed before beta. Its existing
+package version was retained; the review runtime is identified by Git SHA.
+During alpha review `release-plan.json` had `publish: false` and PR #270 was
+held for maintainer testing. The separate beta authorization now records that
+acceptance. No companion deployment is included.
+
+## Maintainer acceptance
+
+On 2026-11-15 (America/Denver), the maintainer reported: “My manual testing passed. This is ready for beta release.” The accepted runtime is `4c25100`, including recovery-safe start-screen actions. This supersedes the local-acceptance hold below; protected integration and release checks remain required. No new environment versions, recordings or artifact hashes were supplied or invented. See [beta validation](releases/0.18.0-beta.1-validation.md).
 
 ## Automated and visual evidence
 

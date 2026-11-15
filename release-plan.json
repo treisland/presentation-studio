@@ -1,9 +1,14 @@
 {
-  "version": "0.18.0-alpha.1",
-  "publish": false,
-  "notes": "docs/releases/0.18.0-alpha.1.md",
-  "manualGatesPassed": false,
+  "version": "0.18.0-beta.1",
+  "publish": true,
+  "notes": "docs/releases/0.18.0-beta.1.md",
+  "manualGatesPassed": true,
   "evidence": [
-    "docs/releases/0.18.0-alpha.1-validation.md"
+    "docs/releases/0.18.0-beta.1-validation.md",
+    "docs/m27-alpha-validation.md",
+    "docs/releases/0.18.0-alpha.1-validation.md",
+    "docs/releases/0.17.0-beta.2-validation.md",
+    "docs/releases/0.17.0-beta.1-validation.md",
+    "docs/known-issues.md"
   ]
 }

@@ -1,9 +1,9 @@
-# Editor menu bar — local 0.18 alpha
+# Editor menu bar
 
 Milestone [#26](https://github.com/treisland/presentation-studio/milestone/26)
-is explicitly assigned for local implementation. This build starts at the
-published `v0.17.0-beta.2` tag and identifies as `0.18.0-alpha.1`.
-The maintainer requested local testing before a PR. Publication is disabled.
+was maintainer-tested and accepted before the start-screen work. Both are
+included in 0.18.0-beta.1 after acceptance of runtime `4c25100` on 2026-11-15
+(America/Denver). Publication follows the separate protected release plan.
 
 ## Command ownership
 
