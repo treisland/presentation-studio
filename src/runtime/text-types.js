@@ -40,7 +40,7 @@ function ttChange(tag){
   if(!vbSelected)return;const selected={...vbSelected},saved=ttSelection(selected.el);vbEnd(false);projectFlush();
   const snapshot=studioEditing.read(),result=studioEditing.apply({apiVersion:1,projectId:snapshot.projectId,expectedRevision:snapshot.revision,operations:[{type:'text.type',slideId:selected.slideID,path:selected.path,tag}]});
   if(!result.ok)projectMessage(result.message);
-  vbFocusPath(selected.path,'text');ttRestore(vbSelected?.el,saved);weInspect('text');wpChooseTab('content');ttPaint();$('tt-type').focus();projectCheckLayout();
+  vbFocusPath(selected.path,'text');ttRestore(vbSelected?.el,saved);weInspect('text');wpChooseTab('content');ttPaint();$('tt-type').focus();
 }
 const ttToolbar=vbToolbar;
 vbToolbar=function(...args){const result=ttToolbar(...args);ttPaint();return result;};

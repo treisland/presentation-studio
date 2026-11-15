@@ -100,13 +100,17 @@ test("compact controls and recent drafts support safe switching, duplication, ba
     errors = [];
   page.on("pageerror", (e) => errors.push(e.message));
   try {
-    await page.goto("file://" + resolve(root, "dist/presentation-studio.html"));
+    await page.goto(("file://" + resolve(root, "dist/presentation-studio.html")) + '?start=present');
     assert.equal(await page.locator("#controls .vf-center > button:visible").count(), 3);
     await page.locator("#open-full-editor").click();
-    assert.equal(
-      await page.locator(".fe-top-actions>button:visible").count(),
-      7,
-    );
+    for(const id of ['we-settings-open','wb-export','fe-show','fe-close'])
+      assert.equal(await page.locator('.fe-top-actions > #'+id).isVisible(),true,id);
+    for(const id of ['fe-undo','fe-redo']) {
+      const action=page.locator('#component-toolbar > #'+id);
+      assert.equal(await action.isVisible(),true,id);
+      assert.equal(await action.getAttribute('aria-label'),id==='fe-undo'?'Undo':'Redo');
+    }
+    assert.equal(await page.getByRole('menubar',{name:'Editor commands'}).isVisible(),true);
     assert.equal(await page.getByRole("button", { name: "Check readiness", exact: true }).isVisible(), true);
     await tab(page, "Branding");
     await page.locator("#fe-project-name").fill("Customer A");
@@ -204,7 +208,7 @@ test("failed local writes and incomplete draft media do not replace the active p
     errors = [];
   page.on("pageerror", (e) => errors.push(e.message));
   try {
-    await page.goto("file://" + resolve(root, "dist/presentation-studio.html"));
+    await page.goto(("file://" + resolve(root, "dist/presentation-studio.html")) + '?start=present');
     await page.locator("#open-full-editor").click();
     await tab(page, "Branding");
     await page.locator("#fe-project-name").fill("Safe original");
@@ -302,7 +306,7 @@ test("recent drafts and media survive closing and reopening the browser profile"
   let context = await chromium.launchPersistentContext(profile, options);
   let page = await context.newPage();
   try {
-    await page.goto("file://" + resolve(root, "dist/presentation-studio.html"));
+    await page.goto(("file://" + resolve(root, "dist/presentation-studio.html")) + '?start=present');
     await page.locator("#open-full-editor").click();
     await tab(page, "Branding");
     await page.locator("#fe-project-name").fill("Persistent workshop");
@@ -313,7 +317,7 @@ test("recent drafts and media survive closing and reopening the browser profile"
     await context.close();
     context = await chromium.launchPersistentContext(profile, options);
     page = await context.newPage();
-    await page.goto("file://" + resolve(root, "dist/presentation-studio.html"));
+    await page.goto(("file://" + resolve(root, "dist/presentation-studio.html")) + '?start=present');
     await page.locator("#open-full-editor").click();
     await page.locator("#fe-recovery").waitFor({ state: "visible" });
     await page.locator("#fe-recover").click();

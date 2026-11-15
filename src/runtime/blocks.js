@@ -239,7 +239,6 @@ function vbWrite() {
     }
   });
   vbSyncPanel();
-  projectCheckLayout();
 }
 function vbEnd(rebuild = true, syncPanel = true) {
   if (vbClosing) return;

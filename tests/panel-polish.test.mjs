@@ -7,7 +7,7 @@ import {readFile} from 'node:fs/promises';
 import {click,addSlide,reveal} from './ui.mjs';
 const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH,args:['--no-sandbox']});
 test.after(()=>browser.close());
-async function setup(width=1280){const p=await browser.newPage({viewport:{width,height:720},acceptDownloads:true});const errors=[];p.on('pageerror',e=>errors.push(e.message));await p.goto('file://'+resolve('dist/presentation-studio.html'));await p.locator('#open-full-editor').click();return{p,errors};}
+async function setup(width=1280){const p=await browser.newPage({viewport:{width,height:720},acceptDownloads:true});const errors=[];p.on('pageerror',e=>errors.push(e.message));await p.goto(('file://'+resolve('dist/presentation-studio.html')) + '?start=present');await p.locator('#open-full-editor').click();return{p,errors};}
 async function pack(p){const d=p.waitForEvent('download');await click(p,'#fe-export-json');return JSON.parse(await readFile(await(await d).path(),'utf8'));}
 const read=p=>p.evaluate(()=>window.presentationStudioEditing.read().state);
 
@@ -20,7 +20,7 @@ test('Layers selection targets the matching Grid cell for removal and Undo',asyn
  await p.locator('#ld-reveal-layers').click();await p.getByRole('button',{name:'Select Grid cell 2',exact:true}).click();
  assert.equal(await p.locator('#wp-selection-title').textContent(),'Grid cell 2');assert.equal(await p.locator('#wp-selection-detail').textContent(),'cell-1.svg');
  assert.match(await p.locator('#mg-cell option:checked').textContent(),/^Cell 2:/);
- await p.locator('#wp-delete').click();assert.match(await p.locator('#fe-confirm').innerText(),/Remove cell-1\.svg from this cell/);await p.locator('#fe-confirm-accept').click();
+ await click(p,'#wp-delete');assert.match(await p.locator('#fe-confirm').innerText(),/Remove cell-1\.svg from this cell/);await p.locator('#fe-confirm-accept').click();
  const after=await read(p);assert.deepEqual(after.mediaObjects[slide.id],[objects[0]]);
  await p.locator('#fe-undo').click();assert.deepEqual(await read(p),before);assert.deepEqual(errors,[]);
  }finally{await p.close();}});

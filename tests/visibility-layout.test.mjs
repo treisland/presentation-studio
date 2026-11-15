@@ -101,7 +101,7 @@ test('hidden primary media retains layout enums, root IDs and offline text geome
         assert(!html.includes(filename));assert(!html.includes(hiddenPath));
         const boothFile=resolve(folder,'booth.html');await writeFile(boothFile,html);
         const booth=await browser.newPage();booth.on('pageerror',error=>errors.push(error.message));try{
-          await booth.context().setOffline(true);await booth.goto('file://'+boothFile);
+          await booth.context().setOffline(true);await booth.goto(('file://'+boothFile) + '?start=present');
           unchanged(text,await textBounds(booth,'#stage .slide.active'));
           assert.equal(await booth.locator('.slide.active .media-original').count(),1);assert.equal(await booth.locator('.slide.active .media-box').count(),0);
         }finally{await booth.close();}

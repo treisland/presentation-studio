@@ -24,7 +24,7 @@ test('booth image focus resets frame zoom with focus zoom enabled or disabled an
     restored.on('pageerror',error=>errors.push(error.message));await restored.context().setOffline(true);
     try{for(const zoom of [true,false]){
       const data=JSON.parse(match[1]);data.presentation.mediaFocus={...data.presentation.mediaFocus,zoom};const target=resolve(folder,'focus-'+zoom+'.html');await writeFile(target,html.replace(match[1],JSON.stringify(data).replace(/</g,'\\u003c')));
-      await restored.goto('file://'+target);await restored.waitForFunction(()=>document.querySelector('.mask-frame img')?.naturalWidth>0);
+      await restored.goto(('file://'+target) + '?start=present');await restored.waitForFunction(()=>document.querySelector('.mask-frame img')?.naturalWidth>0);
       assert.equal(await restored.locator('.mask-frame img').evaluate(element=>element.style.transform),'scale(2.5)');
       await restored.locator('.mask-frame .mf-expand').press('Enter');assert.equal(await restored.locator('.bp-focus img').evaluate(element=>element.style.transform),'none');
       if(zoom){await restored.locator('.bp-focus button').filter({hasText:'+'}).click();assert.match(await restored.locator('.bp-focus img').evaluate(element=>element.style.transform),/scale\(1.25\)/);}
@@ -149,7 +149,7 @@ test('Library frame controls save directly, keep one Undo per gesture and retain
     assert.equal((await snapshot(page)).state.design.slides[slideId].objects[key].frame.zoom,175);
     await page.locator('#fe-undo').click();assert.equal((await snapshot(page)).state.design.slides[slideId].objects[key].frame.x,50);await page.locator('#fe-undo').click();assert.equal((await snapshot(page)).state.design.slides[slideId].objects[key].frame.zoom,100);
     const previous=page.locator('#fe-preview .mask-frame');
-    await page.locator('#mask-shape').selectOption('circle');await page.locator('#fe-preview .media-box[data-object-id="primary"]').click();
+    await page.locator('#mask-shape').selectOption('circle');await page.locator('#ld-reveal-layers').click();await page.getByRole('button',{name:'Select Grid cell 1',exact:true}).click();
     assert.match(await previous.locator('.media-viewport').evaluate(element=>element.style.clipPath),/circle/);await previous.click();await page.locator('#fe-undo').click();assert.equal((await snapshot(page)).state.design.slides[slideId].objects[key].frame.shape,'rounded');await selectElement(page,key);
     await page.locator('#component-open').click();await page.locator('#component-name').fill('Reusable mask');await page.locator('#component-save').click();
     await page.getByRole('tab',{name:'My components',exact:true}).click();await page.getByRole('button',{name:'Insert Reusable mask',exact:true}).click();
@@ -202,7 +202,7 @@ test('standalone booth keeps masks and keyboard slide links offline and honors n
       assert.equal(await restored.locator('.mask-content').first().evaluate(element=>element.style.inset),'10%');
       const button=restored.locator('.slide.active .nav-button');await button.focus();await button.press('Enter');assert.equal(await restored.locator('.slide.active').getAttribute('id'),target);
       const html=(await readFile(resolve(folder,'index.html'),'utf8')).replace('"navigation":true','"navigation":false');await writeFile(resolve(folder,'restricted.html'),html);
-      await restored.goto('file://'+resolve(folder,'restricted.html'));await restored.locator('.slide.active .nav-button').press('Enter');assert.equal(await restored.locator('.slide.active').getAttribute('id'),slideId);
+      await restored.goto(('file://'+resolve(folder,'restricted.html')) + '?start=present');await restored.locator('.slide.active .nav-button').press('Enter');assert.equal(await restored.locator('.slide.active').getAttribute('id'),slideId);
     }finally{await restored.close();}
     assert.deepEqual(errors,[]);
   }finally{await page.close();}

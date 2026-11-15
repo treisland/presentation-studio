@@ -1,5 +1,7 @@
 # Inspector navigation and contextual actions
 
+The local 0.18 alpha adds a [horizontal editor menu bar](editor-menu.md). Detailed values retain their Inspector home; menu shortcuts reveal the same sections. Slide/media duplicate/delete buttons leave the Inspector header and remain available through Edit, Slide and selected-item actions. Existing text/free-block contextual shortcuts are retained.
+
 Milestone [v0.15.0](https://github.com/treisland/presentation-studio/milestone/16) is authorized for implementation. Initial disclosure work is #188; media parity is #189 and context menus are #190. Release preparation and manual acceptance remain separate.
 
 ## Navigation contract and control inventory

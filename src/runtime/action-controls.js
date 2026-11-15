@@ -100,7 +100,12 @@ function acInstall() {
       event.preventDefault();event.stopPropagation();acHide();
     }
   },true);
-  document.addEventListener('click',()=>acHide(),true);
+  document.addEventListener('click',()=>{
+    // Activation dismisses the hint until a fresh hover/focus interaction.
+    // A button becoming disabled may suppress pointerout, so retaining these
+    // references can reopen a stale top-layer tooltip over the next control.
+    acHover=null;acFocus=null;acHide();
+  },true);
   document.addEventListener('scroll',()=>{
     // Focus can itself scroll a control into view after focusin. Keep that tooltip attached.
     if(acFocus===acOwner && document.activeElement===acFocus)acPosition();else acHide();

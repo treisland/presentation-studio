@@ -12,17 +12,21 @@
 
 A portable HTML presentation player and editor. Start with a short, generic demo or a blank presentation, then add your own content, branding, questions, and media. No application server or database is required.
 
+## 0.18 beta
+
+The maintainer-accepted beta adds the editor menu bar, a start screen with recent projects and file opening, browser-local startup preferences, and recovery-safe explicit choices. See [start-screen behavior](docs/start-screen.md), [menu commands](docs/editor-menu.md), and [release validation](docs/releases/0.18.0-beta.1-validation.md).
+
 ## Start here
 
 Download and unzip a release or a successful **Validate and build** Actions artifact.
 
 | File | Starting experience |
 | --- | --- |
-| `presentation-studio.html` | **From idea to presentation** — an eight-slide, editable Studio demo |
-| `presentation-studio-blank.html` | One neutral starter slide and section |
+| `presentation-studio.html` | Start screen with recent projects, Open project, blank and example/template choices |
+| `presentation-studio-blank.html` | Start screen with a neutral starting presentation |
 | `studio-demo-editable.zip` | Portable Studio demo project, including its sample image |
 
-Click **Edit** or press **J**. Use **Project → New presentation** for **Blank**, **Start from an example**, or **Import**. **Project → Start from an example** opens the filtered preview gallery; see [the example guide](docs/examples.md). **Presentations** (or **P**) opens recent browser drafts and project ZIP/JSON files. Export an editable ZIP to save a complete portable copy; playback ZIPs are for delivery.
+Use the start screen to open or create a presentation. Exported projects open directly. From playback, click **Edit** or press **J**. Use **File → New presentation** for **Blank**, **Start from an example**, or **Import**. **File → Start from an example** opens the filtered preview gallery; see [the example guide](docs/examples.md). **Presentations** (or **P**) opens recent browser drafts and project ZIP/JSON files. Export an editable ZIP to save a complete portable copy; playback ZIPs are for delivery.
 
 The revised 0.7.0 implementation adds **Project → AI presentations**: download provider-independent instructions, validate generated JSON, review layouts and native elements, then import and export portable editable ZIPs. Browser recovery remains independent of downloadable backups. Live folder access, linked saves/reloads and folder snapshots are deferred outside this milestone (#117). See [the portable workflow and manual checklist](docs/local-workspaces.md). PR #118 is merged with maintainer sign-off. The published RC is accepted; stable 0.7.0 promotion is tracked in the [validation record](docs/releases/0.7.0-validation.md).
 
@@ -80,7 +84,7 @@ For a localhost preview, run `npm run serve`, then open `http://127.0.0.1:4173`.
 
 [Quick start](docs/quick-start.md) · [Architecture](docs/architecture.md) · [Contributing](CONTRIBUTING.md) · [Content and branding](docs/content-and-branding.md) · [Open-source release](docs/open-source-release.md) · [Roadmap](docs/roadmap.md) · [Troubleshooting](docs/troubleshooting.md)
 
-Version 0.17.0-beta.2. Audio and narrated playback beta: local narration/music, explicit audience activation and portable original assets. See the [release notes](docs/releases/0.17.0-beta.2.md), [validation record](docs/releases/0.17.0-beta.2-validation.md) and [known issues](docs/known-issues.md). Released under the [Apache License 2.0](LICENSE).
+Version 0.18.0-beta.1. Editor menu bar, start screen, startup preferences and recovery-safe project choices. See the [release notes](docs/releases/0.18.0-beta.1.md), [validation record](docs/releases/0.18.0-beta.1-validation.md) and [known issues](docs/known-issues.md). Released under the [Apache License 2.0](LICENSE).
 
 ## Development process
 

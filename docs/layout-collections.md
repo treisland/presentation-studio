@@ -38,7 +38,7 @@ This is newsletter-style 16:9 slide output, not email-client HTML, sending, subs
 
 **Editorial starter / finished example** offers newspaper cover, blog lead, two-column story, image/pull-quote feature and closing note. The fictional Community Notebook uses original bundled diagrams with captions and credits. A masthead is editable text, the two columns read as complete left then right groups, and pull quotes remain editable paragraphs. Project typography and palette continue to apply.
 
-Columns have an explicit content boundary above the visual/credits area. Long articles or headlines produce overflow guidance without shrinking or auto-paginating; continue a story on another slide when needed. These are 16:9 newspaper/blog-style slides, not scrolling articles, a website or a publishing service. Draft/manual review is still required for the expanded set.
+Columns have an explicit content boundary above the visual/credits area. The editor does not display an automatic slide-edge/footer warning banner. Use Check readiness for on-demand overflow findings. Long articles or headlines retain their size without shrinking or auto-paginating; continue a story on another slide when needed. These are 16:9 newspaper/blog-style slides, not scrolling articles, a website or a publishing service. Draft/manual review is still required for the expanded set.
 
 ### Comic collection
 

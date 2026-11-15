@@ -78,7 +78,7 @@ function lcExampleCards(){
   $('lc-example-status').textContent='Change the filters to browse available examples.';
 }
 function lcOpenExamples(){
-  if(!projectReady||projectPlayback||boothActive||projectDraftPending){projectMessage('Open an editable project and resolve recovery before starting an example.');return;}
+  if(!projectReady||projectPlayback||boothActive||(projectDraftPending&&!hubCanParkRecovery())){projectMessage('Open an editable project and resolve recovery before starting an example.');return;}
   const opener=document.activeElement;vbEnd(false);projectFlush();setPlaying(false);mediaPauseAll();lcGalleryReturn=opener;lcGalleryUsing=false;
   $('lc-example-purpose').value='all';$('lc-example-images').value='all';lcGalleryCurrent=null;$('lc-examples').showModal();lcExampleCards();
 }

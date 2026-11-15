@@ -16,7 +16,7 @@ const model=s=>s.slides.find(slide=>slide.tree.some(n=>n.attrs?.class?.startsWit
 const root=s=>model(s).tree.find(n=>n.attrs?.class?.startsWith('mg-grid '));
 const cellID=c=>c.attrs.class.match(/\bcell-[\w-]+/)[0];
 const objectID=c=>c.attrs.class.match(/\bmg-media-(object-[\w-]+)/)?.[1];
-async function setup(legacy=false){const p=await browser.newPage({viewport:{width:1366,height:768},acceptDownloads:true});const errors=[];p.on('pageerror',e=>errors.push(e.message));await p.emulateMedia({reducedMotion:'reduce'});await p.goto('file://'+(legacy?await legacyHTML(resolve('.')):resolve('dist/presentation-studio.html')));await p.locator('#open-full-editor').click();const original=await read(p);await addSlide(p,'media-grid');return{p,errors,original};}
+async function setup(legacy=false){const p=await browser.newPage({viewport:{width:1366,height:768},acceptDownloads:true});const errors=[];p.on('pageerror',e=>errors.push(e.message));await p.emulateMedia({reducedMotion:'reduce'});await p.goto('file://'+(legacy?await legacyHTML(resolve('.')):resolve('dist/presentation-studio.html')) + '?start=present');await p.locator('#open-full-editor').click();const original=await read(p);await addSlide(p,'media-grid');return{p,errors,original};}
 async function drop(p,index,name='cell.svg'){await p.locator('#fe-preview .mg-cell-action').nth(index).evaluate((el,{svg,name})=>{const dataTransfer=new DataTransfer();dataTransfer.items.add(new File([svg],name,{type:'image/svg+xml'}));el.dispatchEvent(new DragEvent('drop',{bubbles:true,dataTransfer}));},{svg,name});}
 async function choose(p,index){await reveal(p,'#mg-cell');await p.locator('#mg-cell').selectOption({index});}
 async function upload(p,name='new.svg',buffer=Buffer.from(svg),mimeType='image/svg+xml'){const event=p.waitForEvent('filechooser');await reveal(p,'#mi-add-cell');await p.locator('#mi-add-cell').click();await(await event).setFiles({name,mimeType,buffer});}
@@ -79,7 +79,7 @@ test('legacy projects, mixed media grid focus and recovery survive offline edita
  await drop(p,0,'diagram.svg');await choose(p,1);await upload(p,'pattern.webm',await readFile('tests/fixtures/media/pattern.webm'),'video/webm');
  const added=await read(p),slide=model(added.state),ids=root(added.state).children.map(cellID);
  assert.deepEqual(added.state.slides.filter(s=>s.id!==slide.id).map(s=>s.id),original.state.slides.map(s=>s.id));
- await choose(p,0);await p.locator('#wp-delete').click();await p.locator('#fe-confirm-accept').click();await p.locator('#fe-undo').click();assert.deepEqual((await read(p)).state,added.state);
+ await choose(p,0);await click(p,'#wp-delete');await p.locator('#fe-confirm-accept').click();await p.locator('#fe-undo').click();assert.deepEqual((await read(p)).state,added.state);
  await p.locator('#vb-preview-mode').click();await p.locator('#fe-preview .mf-expand').nth(1).press('Enter');await p.waitForSelector('#media-focus video');await p.keyboard.press('Escape');await p.waitForSelector('#media-focus',{state:'detached'});await p.locator('#vb-edit-mode').click();
  for(const selector of ['#fe-export','#fe-playback']){
   const d=p.waitForEvent('download');await click(p,selector);const bytes=await readFile(await(await d).path());

@@ -33,7 +33,7 @@ async function open({nativeAvailable=false} = {}) {
       return original(name,...args);
     };
   },nativeAvailable);
-  await page.goto('file://'+resolve('test-results/workspace-fixture.html'));
+  await page.goto(('file://'+resolve('test-results/workspace-fixture.html')) + '?start=present');
   await page.locator('#open-full-editor').click();await click(page,'#lw-open');
   return {page,errors};
 }

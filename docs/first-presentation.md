@@ -3,6 +3,10 @@
 Create → export → reopen. Start with the stable Studio app or its downloaded HTML.
 This short path uses the existing example and ZIP menus; it needs no account.
 
+In the milestone 27 alpha, the new start screen offers **Try an example** and
+**Open project** directly. **Choose a template** opens the existing starter/example
+gallery. The instructions below also apply to the earlier stable interface.
+
 ## 1. Start from an example
 
 Open Studio and choose **Edit**. Choose **Project → New presentation**, then

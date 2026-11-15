@@ -44,6 +44,11 @@ export async function openColorEditor(page, slot, tab='theme') {
   await page.locator('#is-tab-'+tab).click();
 }
 export async function click(page, selector) {
+  if(['#wp-delete','#wp-duplicate'].includes(selector)&&await page.locator('#em-menubar').count()){
+    if(!await page.locator('#we-inspector').isVisible())await page.locator('#we-toggle-inspector').click();
+    await page.locator('#cm-selection').click();
+    await page.locator('#cm-menu').getByRole('menuitem',{name:selector==='#wp-delete'?/^(Delete|Remove media)/:/^Duplicate/}).click();return;
+  }
   if(await page.locator('#ci-notes').count()&&['#we-context-media','#we-context-slide'].includes(selector)){await inspectContent(page,selector.endsWith('media')?'Media':'Slide');return;}
   await reveal(page, selector);
   await page.locator(selector).click();

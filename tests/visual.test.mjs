@@ -55,7 +55,7 @@ async function setup(file = "presentation-studio-blank.html") {
     }),
     errors = [];
   p.on("pageerror", (e) => errors.push(e.message));
-  await p.goto("file://" + (file === "synthetic-legacy.html" ? await legacyHTML(root) : resolve(root, "dist", file)));
+  await p.goto("file://" + (file === "synthetic-legacy.html" ? await legacyHTML(root) : resolve(root, "dist", file)) + '?start=present');
   await p.locator("#open-full-editor").click();
   return { p, errors };
 }

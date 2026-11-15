@@ -90,14 +90,17 @@ function cmRender(rows,title,back=null){
   cmMenu.replaceChildren();cmMenu.setAttribute('aria-label',title+' actions');
   const heading=document.createElement('p');heading.className='cm-heading';heading.textContent=title;heading.setAttribute('role','presentation');cmMenu.append(heading);
   if(back)rows=[{label:'Back',action:back,back:true},...rows];
+  let previousGroup='';
   for(const row of rows){
+    const group=/^(Delete|Remove media)/.test(row.label)?'delete':/^(Duplicate|Arrange|Group|Ungroup|Edit group|Finish editing)/.test(row.label)?'arrange':/^(Show|Hide|Lock|Unlock|Rename|Save as|Export library)/.test(row.label)?'organize':'edit';
+    if(previousGroup&&previousGroup!==group){const separator=document.createElement('hr');separator.setAttribute('role','separator');cmMenu.append(separator);}previousGroup=group;
     const button=document.createElement('button');button.type='button';button.setAttribute('role','menuitem');button.tabIndex=-1;button.textContent=row.label;button.disabled=!!row.disabled;
     if(row.danger)button.classList.add('cm-danger');
     if(row.children){button.textContent+=' ›';button.setAttribute('aria-haspopup','menu');button.setAttribute('aria-expanded','false');}
     button.onclick=event=>{
       event.stopPropagation();const state=cmState;if(!state)return;
       if(cmStamp()!==state.stamp||state.card&&!state.card.isConnected){cmClose();const message='The selection or project changed. Open the actions again.';if(state.card)$('component-status').textContent=message;else projectMessage(message);return;}
-      if(row.children){state.back=()=>{state.back=null;cmRender(rows,title,back);[...cmMenu.querySelectorAll('button')].find(button=>button.textContent===row.label+' ›')?.focus();};cmRender(row.children,row.label,state.back);cmPosition(state.x,state.y);return;}
+      if(row.children){state.back=()=>{state.back=null;cmRender(rows,title,back);cmPosition(state.x,state.y);[...cmMenu.querySelectorAll('button')].find(button=>button.textContent===row.label+' ›')?.focus();};cmRender(row.children,row.label,state.back);cmPosition(state.x,state.y);return;}
       if(row.back){row.action();return;}
       cmClose(false);
       try{Promise.resolve(row.action?.()).catch(error=>projectMessage(error.message));}catch(error){projectMessage(error.message);}
