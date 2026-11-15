@@ -72,7 +72,7 @@ test('downloaded agent pack covers all registered Library types and validates ch
     await click(page,'#lw-open');await page.locator('#lw-tab-create').click();const event=page.waitForEvent('download');await page.locator('#lw-pack').click();
     const bytes=await readFile(await(await event).path());
     const contents=await page.evaluate(async bytes=>{const zip=await JSZip.loadAsync(new Uint8Array(bytes));return{names:Object.keys(zip.files),example:JSON.parse(await zip.file('charts.json').async('string')),schema:JSON.parse(await zip.file('presentation.schema.json').async('string'))};},[...bytes]);
-    assert.deepEqual(contents.example,chartExample);assert(contents.schema.properties.slides.items.properties.blocks.items.oneOf.some(rule=>rule.properties.type.const==='chart'));assert.deepEqual(errors,[]);
+    assert.deepEqual(contents.example,chartExample);assert(contents.names.includes('presentation-v2.schema.json'));assert(contents.names.includes('custom-backgrounds-v2.json'));assert(contents.schema.properties.slides.items.properties.blocks.items.oneOf.some(rule=>rule.properties.type.const==='chart'));assert.deepEqual(errors,[]);
   }finally{await page.close();}
 });
 
