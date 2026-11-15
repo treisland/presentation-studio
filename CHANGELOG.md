@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 0.19.0 — 2026-11-15
+
+- Promote the accepted chart runtime unchanged to production after maintainer sign-off, with explicit stable Pages authorization (#282).
+
 ## 0.19.0-rc.1 — 2026-11-15
 
 - Promote the accepted chart beta runtime unchanged to an RC, with explicit beta Pages hosting authorization ahead of production 0.19.0 (#282).
