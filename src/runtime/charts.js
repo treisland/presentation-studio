@@ -29,7 +29,7 @@ function chartDraw(root,data,mini=false){
   const add=(tag,attrs,text)=>{const el=document.createElementNS(svg.namespaceURI,tag);for(const [key,value]of Object.entries(attrs))el.setAttribute(key,String(value));if(text!==undefined)el.textContent=text;svg.append(el);return el;};
   const palette=['var(--project-accent, #8450df)','var(--project-secondary, #159d99)','color-mix(in srgb, var(--project-accent, #8450df) 60%, var(--project-ink, #20283b))','color-mix(in srgb, var(--project-secondary, #159d99) 60%, var(--project-ink, #20283b))','#6080c7','#789545','#ae6c36','#7a6cb0','#3c8e9b','#ad748c','#73858f','#9d854d'];
   const color=index=>data.colors.length?data.colors[index%data.colors.length]:palette[index%palette.length];
-  const format=value=>new Intl.NumberFormat('en',{notation:Math.abs(value)>=10000?'compact':'standard',maximumFractionDigits:2}).format(value);
+  const format=value=>{const magnitude=Math.abs(value);return new Intl.NumberFormat('en',{notation:magnitude>0&&magnitude<.0001?'scientific':magnitude>=10000?'compact':'standard',maximumSignificantDigits:4}).format(value);};
   if(data.kind==='donut'){
     const values=data.series[0].values,total=values.reduce((sum,value)=>sum+value,0);let angle=-Math.PI/2;
     values.forEach((value,index)=>{if(!value)return;const end=angle+value/total*Math.PI*2,x=a=>210+105*Math.cos(a),y=a=>150+105*Math.sin(a);
