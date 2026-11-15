@@ -37,3 +37,9 @@ Manual review remains required for theme contrast, laptop/narrow-panel layouts, 
 ## Text Inspector simplification (#200)
 
 Text fields appear directly inside a single Text disclosure; there is no nested Edit in panel step. Edit on canvas retains the existing inline workflow. Replacing text in the panel removes inline formatting, as the short adjacent note states. Selection blockers remain before the controls, while keyboard/positioning help follows notes. Controls, notes and help share the main Inspector content scroller; the selection header and tabs remain above it. Disclosure preferences are session-only and preserve existing pending edit and Undo behavior.
+
+## Audio and background homes (#261)
+
+Project Settings → Audio owns narration mode, presentation-wide narration and the presentation soundtrack. Inspector → Sound owns the current slide narration, with explicit scope, local audible preview/seek, paired volume controls and narration-end advancement. Existing selected-video controls retain ownership of video audio.
+
+The slide Inspector has one **Background** disclosure containing **Fill & image** and **Effects & motion**. These retain their separate staged previews, Apply/reset actions and presentation-default/slide-override behavior. Project Settings → Background retains the presentation defaults. Moving the original controls preserves handlers and saved settings; the navigation refinement does not merge independent fill and decoration data.

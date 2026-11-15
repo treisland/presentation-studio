@@ -83,3 +83,19 @@ test('Library and Inspector navigation remain readable across themes and narrow 
     assert.deepEqual(errors,[]);
   } finally {await page.close();}
 });
+
+
+test('editor expands past 1920px and resizes its canvas without mutating the project',async()=>{
+ const {page,errors}=await open();try{
+  const before=await snapshot(page);let previous=0;
+  for(const [width,height] of [[2560,1440],[3840,2160]]){
+   await page.setViewportSize({width,height});
+   await page.waitForFunction(({width,height})=>{const r=document.querySelector('#full-editor').getBoundingClientRect();return Math.abs(r.width-(width-16))<2&&Math.abs(r.height-(height-16))<2;},{width,height});
+   const editor=await page.locator('#full-editor').boundingBox(),canvas=await page.locator('#we-viewport').boundingBox();
+   assert(Math.abs(editor.x-8)<2);assert(Math.abs(editor.y-8)<2);assert(canvas.width>previous);assert(canvas.x+canvas.width<=editor.x+editor.width);previous=canvas.width;
+  }
+  await page.setViewportSize({width:1366,height:768});
+  await page.waitForFunction(()=>Math.abs(document.querySelector('#full-editor').getBoundingClientRect().width-1350)<2);
+  assert.deepEqual((await snapshot(page)).state,before.state);assert.equal((await snapshot(page)).revision,before.revision);assert.deepEqual(errors,[]);
+ }finally{await page.close();}
+});

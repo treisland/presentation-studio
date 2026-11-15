@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+## 0.17.0-beta.2 — 2026-11-14
+
+- Release the current dev audio/background UX corrections from PR #262: readable audio settings and transport controls, one Background parent, and a full-window editor without the old width cap.
+- Authorize deployment of this published beta to beta.pres-studio.com; retain immutable beta.1 and the existing stable release.
+
+- Refine audio authoring with a dedicated Project Settings Audio tab, scoped Inspector Sound controls, audible preview seeking, and paired volume sliders/precise percentages. Consolidate slide Background navigation into Fill & image and Effects & motion while preserving existing settings and staged Apply behavior (#261).
+
+- Let the editor use the available browser width on ultrawide displays instead of stopping at 1920 pixels.
+
 ## 0.17.0-beta.1 — 2026-11-13
 
 - Prepare the maintainer-authorized Audio & narrated playback beta; retain known issue #241 and original asset compatibility.
