@@ -30,4 +30,5 @@
 #chart-grid .chart-remove:hover:not(:disabled){border-color:var(--wb-danger,#b02d42);background:var(--wb-hover,#e9eef5)}#chart-grid #chart-add-series{padding:7px 5px;white-space:nowrap;font-size:13px}
 #chart-editor #chart-color-heading{font:700 16px/1.3 var(--wb-font);margin:14px 0 10px}
 .chart-color-row{display:grid;grid-template-columns:minmax(0,1fr) 44px 100px;gap:10px;align-items:center;margin:8px 0}.chart-color-row>span{overflow-wrap:anywhere;font-size:14px}
+.pa-slide > .pa-element.ps-chart{align-items:stretch}.pa-slide .pa-element.ps-chart .chart-heading{font-size:34px}.pa-slide .ps-chart .chart-legend{font-size:22px}
 #chart-editor .chart-color-row input[type=color]{width:44px;height:36px;padding:3px;cursor:pointer}#chart-editor .chart-color-row input:not([type=color]){font-family:ui-monospace,monospace;padding:8px}

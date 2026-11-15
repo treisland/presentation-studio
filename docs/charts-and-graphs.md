@@ -71,6 +71,15 @@ contrast in the actual presentation; small chart objects can be hard to read.
 
 ## Saving, reuse and portability
 
+AI authoring supports a native `chart` block in portable v1 and v2. Download a
+fresh AI instruction pack from AI presentations and attach its instructions,
+matching schema, capability catalog and `charts.json` example to your assistant.
+The four chart kinds use the same data limits and editable native operations as
+the Library. Choose `layout: chart` or `auto`, preferably one chart per slide.
+Import previews and schema/semantic errors appear before acceptance. The catalog
+also explains which other Library items require manual Studio steps; personal
+components and actual media are not automatically available to an assistant.
+
 Save a selected chart using the existing **Save selection as component** flow.
 Inserted copies receive independent object IDs and data. Export/import the
 component library to transfer it to another browser profile. Theme-linked charts
@@ -123,7 +132,8 @@ part of this feature. Per [website process](website-process.md), the **editor
 overview** scene is affected by the new Library category/Inspector entry;
 authentic development captures are local review candidates only and public
 refresh is pending maintainer acceptance with a recorded version/SHA/digest.
-The examples gallery, Media Focus, AI import preview and finished playback scenes
-do not contain charts or show changed controls; no replacement is proposed for
-those existing fixtures. Release-wide imagery review remains pending. The POC
+The AI import preview scene is also affected by chart layout/preview support;
+public refresh and maintainer review are pending. Existing examples gallery,
+Media Focus and finished playback fixtures do not contain charts; no replacement
+is proposed for those fixtures. Release-wide imagery review remains pending. The POC
 image is an illustration, not a public screenshot or evidence of shipped UI.

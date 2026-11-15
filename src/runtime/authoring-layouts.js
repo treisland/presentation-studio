@@ -11,6 +11,7 @@ function paChooseLayout(slide, index) {
     ? { requested, selected: requested, notices: [] }
     : { requested, selected: "flexible", notices: [`${paLayoutCatalog[requested].name} is incompatible with these elements; Flexible preserves all content.`] };
   const selected = blocks.length >= 2 && blocks.every(block => block.type === "step") && blocks.length <= 4 ? "workflow"
+    : blocks.some(block => block.type === "chart") ? "chart"
     : blocks.some(block => block.type === "table") ? "table"
     : blocks.some(block => block.type === "code") ? "code"
     : blocks.length === 2 && index > 0 ? "comparison"
@@ -20,7 +21,7 @@ function paChooseLayout(slide, index) {
 function paPlacements(blocks, layout, sources) {
   if (!blocks.length) return [];
   const area = { x: .055, y: .265, w: .89, h: sources ? .49 : .59 }, gap = .025;
-  if (["table", "code"].includes(layout) && blocks.length > 1) {
+  if (["table", "code", "chart"].includes(layout) && blocks.length > 1) {
     const featured = blocks.findIndex(block => block.type === layout), rest = blocks.filter((_, i) => i !== featured);
     const other = paPlacements(rest, "flexible", sources).map(rect => ({ x: .66 + (rect.x - area.x) * .32, y: rect.y, w: rect.w * .32, h: rect.h }));
     let index = 0;
@@ -41,7 +42,10 @@ function paNativeOperation(state, operation) {
 function paNativeElement(state, slide, block, placement, notices, codeUsed) {
   const op = { slideId: slide.id }, text = (tag, value, cls = "") => projectNode(tag, cls, [value]);
   let key, node;
-  if (block.type === "table") {
+  if(block.type==='chart'){
+    key=paNativeOperation(state,{...op,type:'chart.insert',chart:chartNormalize({...block,version:1}),placement});
+    node=slide.tree.find(item=>dbID(item)===key);
+  } else if (block.type === "table") {
     key = paNativeOperation(state, { ...op, type: "table.insert", rows: Math.max(1, block.rows.length), columns: block.headers.length, header: true });
     node = slide.tree.find(item => dbID(item) === key);
     projectWriteTable(projectFind({ tree: [node] }, item => item.tag === "table")[0].node, block.headers, block.rows);
@@ -112,6 +116,7 @@ function paBuild(raw, identity) {
   return { pack, report };
 }
 function paNodeType(node) {
+  if(node.attrs?.['data-studio-chart'])return'chart';
   const recorded = paBlockTypes.find(type => mgHas(node, "pa-" + type));
   if (recorded) return recorded;
   const widget = Object.keys(paWidgetCatalog).find(type => mgHas(node, "component-" + type) || mgHas(node, "db-" + type));

@@ -160,7 +160,7 @@ async function lwStage(file, options = {}) {
     lwMessage("Validated. Review the summary before opening; no current project has changed.");
   } catch (error) {
     if (epoch !== lwEpoch) return;
-    $("lw-repair").value = "Repair my presentation JSON using its original documented format. Use portable authoring v1 only for presentation-studio-authoring input. Error: " + error.message +
+    $("lw-repair").value = "Repair my presentation JSON using its original documented format. For presentation-studio-authoring input preserve its version and use the matching downloaded schema and capability catalog (including charts.json). Error: " + error.message +
       ". Return only a complete corrected JSON document. Do not downgrade native project versions or convert away unsupported fields; request a compatible Studio version instead. Preserve intended content; do not add scripts or external assets.";
     throw error;
   }

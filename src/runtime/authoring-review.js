@@ -20,7 +20,8 @@ function paMeasureFit(pack) {
       const overflowing = [];
       for (const block of stage.querySelectorAll(".db-block")) {
         const bounds = block.getBoundingClientRect();
-        const children = [...block.querySelectorAll("h1,h2,h3,p,ul,pre,table,.data-content")];
+        // Closed disclosures are accessible on demand, not visible slide content.
+        const children = [...block.querySelectorAll("h1,h2,h3,p,ul,pre,table,.data-content")].filter(child=>!child.closest('details:not([open])'));
         const overflow = block.scrollHeight > block.clientHeight + 3 || block.scrollWidth > block.clientWidth + 3 || children.some(child => {
           const rect = child.getBoundingClientRect();
           return rect.bottom > bounds.bottom + 3 || rect.right > bounds.right + 3 || child.scrollWidth > child.clientWidth + 3 || child.scrollHeight > child.clientHeight + 3;

@@ -29,10 +29,12 @@ const authoringFiles = {
   "technical-walkthrough.json": await read("docs/ai/technical-walkthrough.json"),
   "custom-backgrounds-v2.json": await read("docs/ai/custom-backgrounds-v2.json"),
   "background-effects.json": await read("docs/ai/background-effects.json"),
+  "charts.json": await read("docs/ai/charts.json"),
 };
 const authoringContext = vm.createContext({ URL });
 vm.runInContext(await read("src/runtime/background-effects-core.js"), authoringContext);
 vm.runInContext(await read("src/runtime/custom-background-core.js"), authoringContext);
+vm.runInContext(await read("src/runtime/charts-core.js"), authoringContext);
 vm.runInContext(await read("src/runtime/authoring-definitions.js"), authoringContext);
 vm.runInContext(await read("src/runtime/authoring-contract.js"), authoringContext);
 const authoringSchema = vm.runInContext("JSON.stringify(paSchema(), null, 2)", authoringContext);

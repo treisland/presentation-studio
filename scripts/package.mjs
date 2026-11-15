@@ -20,7 +20,7 @@ zip.file('docs/known-issues.md', new Uint8Array(await readFile(resolve(root, 'do
 zip.file('docs/layers-style-workflow.md', new Uint8Array(await readFile(resolve(root, 'docs/layers-style-workflow.md'))), {date:new Date('2026-01-01T00:00:00Z')});
 zip.file('docs/editor-workbench.md', new Uint8Array(await readFile(resolve(root, 'docs/editor-workbench.md'))), {date:new Date('2026-01-01T00:00:00Z')});
   zip.file('docs/canvas-manipulation.md', new Uint8Array(await readFile(resolve(root, 'docs/canvas-manipulation.md'))), {date:new Date('2026-01-01T00:00:00Z')});
-for (const name of ['AUTHORING.md', 'example.json', 'project-update.json', 'technical-walkthrough.json', 'background-effects.json', 'presentation.schema.json', 'capabilities.json', 'CAPABILITIES.md'])
+for (const name of ['AUTHORING.md', 'example.json', 'project-update.json', 'technical-walkthrough.json', 'charts.json', 'background-effects.json', 'presentation.schema.json', 'capabilities.json', 'CAPABILITIES.md'])
   zip.file('ai-authoring/' + name, new Uint8Array(await readFile(resolve(root, 'dist/ai-authoring', name))), {date:new Date('2026-01-01T00:00:00Z')});
 zip.file('docs/local-workspaces.md', new Uint8Array(await readFile(resolve(root, 'docs/local-workspaces.md'))), {date:new Date('2026-01-01T00:00:00Z')});
 zip.file('docs/ai-layouts-and-elements.md', new Uint8Array(await readFile(resolve(root, 'docs/ai-layouts-and-elements.md'))), {date:new Date('2026-01-01T00:00:00Z')});
