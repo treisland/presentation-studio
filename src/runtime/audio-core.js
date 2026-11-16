@@ -21,12 +21,20 @@ const audioCore=(()=>{
     return result;
   }
   function settings(raw,ids){
-    plain(raw,['version','mode','slides','overall','music'],'audio settings');
+    plain(raw,['version','mode','slides','overall','music','advancement'],'audio settings');
     if(raw.version!==1||!['none','slide','overall'].includes(raw.mode))throw Error('Unsupported audio settings.');
     if(!raw.slides||typeof raw.slides!=='object'||Array.isArray(raw.slides))throw Error('Invalid slide narration map.');
     const slides=Object.create(null);
     for(const [id,value]of Object.entries(raw.slides)){if(!/^[\w-]+$/.test(id)||ids&&!ids.has(id))throw Error('Narration references an unknown slide.');slides[id]=track(value,'slide');if(!slides[id])throw Error('Empty slide narration.');}
-    return {version:1,mode:raw.mode,slides,overall:track(raw.overall,'overall'),music:track(raw.music,'music')};
+    const result={version:1,mode:raw.mode,slides,overall:track(raw.overall,'overall'),music:track(raw.music,'music')};if(raw.advancement!==undefined)result.advancement=advancement(raw.advancement,ids);return result;
+  }
+  function advancement(raw,ids){
+    plain(raw,['mode','seconds','paddingMs','overrides'],'advancement');
+    if(!['manual','auto'].includes(raw.mode))throw Error('Invalid default advancement.');
+    const result={mode:raw.mode,seconds:number(raw.seconds,3,600,'slide time'),paddingMs:number(raw.paddingMs,0,maxPaddingMs,'padding',true),overrides:Object.create(null)};
+    plain(raw.overrides,Object.keys(raw.overrides||{}),'advancement overrides');
+    for(const [id,value]of Object.entries(raw.overrides)){if(!/^[\w-]+$/.test(id)||ids&&!ids.has(id))throw Error('Advancement references an unknown slide.');plain(value,['mode','seconds','paddingMs'],'slide advancement');if(!['manual','narration','timed','legacy'].includes(value.mode))throw Error('Invalid slide advancement.');result.overrides[id]={mode:value.mode,seconds:number(value.seconds,3,600,'slide time'),paddingMs:number(value.paddingMs,0,maxPaddingMs,'padding',true)};}
+    return result;
   }
   function empty(){return {version:1,mode:'none',slides:Object.create(null),overall:null,music:null};}
   function tracks(state){return state?.audio?[...Object.values(state.audio.slides||{}),state.audio.overall,state.audio.music].filter(Boolean):[];}
@@ -45,5 +53,5 @@ const audioCore=(()=>{
       node.onerror=()=>{clearTimeout(timer);reject(Error('This browser cannot decode the audio file. Try MP3 or WAV.'));};node.src=url;node.load();
     });}finally{node.pause();node.removeAttribute('src');node.load();URL.revokeObjectURL(url);}
   }
-  return {track,settings,empty,tracks,mime,probe,maxBytes,maxDurationMs,maxPaddingMs};
+  return {track,settings,advancement,empty,tracks,mime,probe,maxBytes,maxDurationMs,maxPaddingMs};
 })();

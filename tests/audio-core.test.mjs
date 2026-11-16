@@ -17,3 +17,5 @@ test('audio roles retain original references with bounded authored metadata',()=
 });
 
 test('build identity advertises guarded native v6 without changing authoring/component generations',()=>{const source=readFileSync(new URL('../scripts/build.mjs',import.meta.url),'utf8');assert.match(source,/native:\[2,3,4,5,6\]/);assert.match(source,/authoring:\[1,2\],library:\[1\]/);});
+
+test('optional advancement policies are bounded, slide-scoped and preserve legacy absence',()=>{const raw={...core.empty(),advancement:{mode:'auto',seconds:8,paddingMs:500,overrides:{one:{mode:'narration',seconds:12,paddingMs:700}}}};assert.equal(core.settings(raw,new Set(['one'])).advancement.overrides.one.paddingMs,700);assert.equal(core.settings(core.empty()).advancement,undefined);for(const changes of [{mode:'invalid'},{seconds:0},{paddingMs:-1},{overrides:{unknown:{mode:'manual',seconds:8,paddingMs:500}}}])assert.throws(()=>core.settings({...raw,advancement:{...raw.advancement,...changes}},new Set(['one'])));});

@@ -11,7 +11,7 @@ function auClaimAudio(){auRemoteOwner=false;auLeaseChannel?.postMessage({owner:a
 const auPlaying=setPlaying;setPlaying=function(...args){const result=auPlaying(...args);auLiveSync();return result;};
 const auLiveRender=render;render=function(...args){const result=auLiveRender(...args);auLiveSync();return result;};
 const auLiveTick=tick;tick=function(...args){auLiveSync();return auLiveTick(...args);};
-const auMediaHold=mediaHoldSlide;mediaHoldSlide=function(){return auLive.hold()||auMediaHold();};
+const auMediaHold=mediaHoldSlide;mediaHoldSlide=function(){return auLive.hold()||(auLive.rule(projectState.audio,slides[index]?.dataset.mediaId).mode==='legacy'&&auMediaHold());};
 const auLiveAccept=projectAcceptPack;projectAcceptPack=function(...args){auLive.dispose();auRemoteOwner=false;return auLiveAccept(...args);};
 const auLiveEnd=pvEnd;pvEnd=function(...args){const result=auLiveEnd(...args);setPlaying(false);auLive.dispose();return result;};
 const auLaunch=pvLaunch;pvLaunch=function(...args){auStopPreview();auLive.dispose();return auLaunch(...args);};

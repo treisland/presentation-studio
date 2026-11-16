@@ -8,7 +8,7 @@ projectValidatePack=function(raw){
   if(raw?.schemaVersion===5){const pack=auValidatePack({...raw,schemaVersion:cbHasSettings(raw)?4:bgHasSettings(raw)?3:2});pack.schemaVersion=5;return pack;}
   return auValidatePack(raw);
 };
-function auPublicSettings(raw,ids){const audio=audioCore.settings(raw);audio.slides=audio.mode==='slide'?Object.fromEntries(Object.entries(audio.slides).filter(([id])=>ids.has(id))):{};if(audio.mode!=='overall')audio.overall=null;return audioCore.tracks({audio}).length?audio:null;}
+function auPublicSettings(raw,ids){const audio=audioCore.settings(raw);audio.slides=audio.mode==='slide'?Object.fromEntries(Object.entries(audio.slides).filter(([id])=>ids.has(id))):{};if(audio.mode!=='overall')audio.overall=null;if(audio.advancement)audio.advancement.overrides=Object.fromEntries(Object.entries(audio.advancement.overrides).filter(([id])=>ids.has(id)));return audioCore.tracks({audio}).length||audio.advancement?audio:null;}
 const auPack=projectPack;
 projectPack=function(playback=false){const pack=auPack(playback);if(playback&&pack.state.audio){const audio=auPublicSettings(pack.state.audio,new Set(pack.state.slides.map(s=>s.id)));if(audio)pack.state.audio=audio;else delete pack.state.audio;}if(auHas(pack))pack.schemaVersion=5;return pack;};
 const auLoad=lwLoad;
@@ -27,15 +27,16 @@ lwLoad=async function(file,options={}){
 };
 editingRegisterOperation('audio.settings',(state,op)=>{
  editingSlide(state,op.slideId);
- if(!['slide','overall','music','mode'].includes(op.role))editingFail('INVALID','Choose an audio role.');
+ if(!['slide','overall','music','mode','advancement'].includes(op.role))editingFail('INVALID','Choose an audio role.');
  if(op.role!=='slide'&&state.slides.some(s=>s.editLocked))editingFail('LOCKED','Unlock every slide before changing presentation audio.');
  const audio=state.audio?audioCore.settings(state.audio):audioCore.empty();
- if(op.role==='mode'){if(!['none','slide','overall'].includes(op.mode))editingFail('INVALID','Choose a narration mode.');audio.mode=op.mode;}
+ if(op.role==='advancement'){audio.advancement=audioCore.advancement(op.advancement,new Set([...state.slides,...state.trash,...(state.sectionTrash||[]).flatMap(s=>s.slides)].map(s=>s.id)));}
+ else if(op.role==='mode'){if(!['none','slide','overall'].includes(op.mode))editingFail('INVALID','Choose a narration mode.');audio.mode=op.mode;}
  else if(op.role==='slide'){if(op.track===null)delete audio.slides[op.slideId];else audio.slides[op.slideId]=audioCore.track(op.track,'slide');}
  else audio[op.role]=audioCore.track(op.track,op.role);
- if(audio.mode==='none'&&!Object.keys(audio.slides).length&&!audio.overall&&!audio.music)delete state.audio;else state.audio=audio;
+ if(audio.mode==='none'&&!Object.keys(audio.slides).length&&!audio.overall&&!audio.music&&!audio.advancement)delete state.audio;else state.audio=audio;
 });
 const auBooth=boothExportData;
 boothExportData=function(...args){const data=auBooth(...args);if(projectState.audio){const audio=auPublicSettings(projectState.audio,new Set(data.slides.map(s=>s.id)));if(audio){data.audioProject=projectMeta.id;data.audio=audio;}}return data;};
 const auComponentSave=componentSave;
-componentSave=function(...args){if(projectState.audio?.slides?.[projectSelected]){projectMessage('Slide narration is not supported by the current component format. Save the complete editable ZIP to retain audio.');return;}return auComponentSave(...args);};
+componentSave=function(...args){if(projectState.audio?.slides?.[projectSelected]||projectState.audio?.advancement?.overrides?.[projectSelected]){projectMessage('Slide narration or advancement overrides are not supported by the current component format. Save the complete editable ZIP to retain audio.');return;}return auComponentSave(...args);};

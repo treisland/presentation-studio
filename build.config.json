@@ -146,6 +146,7 @@
     "src/runtime/media-recording.js",
     "src/runtime/canvas-recording.js",
     "src/runtime/media-management.js",
+    "src/runtime/slide-advancement.js",
     "src/runtime/boot.js"
   ],
   "vendor": "vendor/jszip-3.10.1.min.js"

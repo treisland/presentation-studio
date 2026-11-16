@@ -224,7 +224,7 @@
       asset.addEventListener("ended", () => {
         if (
           slides[index] === slide &&
-          !auLive.hold() &&
+          !auLive.hold() && auLive.rule(projectState.audio,slide.dataset.mediaId).mode==='legacy' &&
           playing &&
           mediaGetAssignment(slide.dataset.mediaId)?.advance === "ended"
         )

@@ -43,3 +43,5 @@ view. Bulk assignment removal is undoable; permanent original deletion has a sep
 review with a consequence-labeled confirmation, protects active/Trash assignments and never
 deletes across projects. Identical-file consolidation and copying originals into the
 current project are described in the [media guide](media-authoring.md).
+
+The canvas narration strip and Sound section now show narration presence/duration and an Advance slide dropdown. Project settings → Audio (after Background) owns inherited narration defaults and override review; Presentation settings owns the automatic silent-slide timer. See the media guide for compatibility and override behavior.

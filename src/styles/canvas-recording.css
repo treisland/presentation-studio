@@ -5,3 +5,13 @@
 /* At small Fit scales, resize hit areas can overlap editable text. Keep pointer
    typing uninterrupted; Escape finishes text editing before pointer resizing. */
 #full-editor #we-viewport .db-block:has(.vb-editing)>.db-handle[data-db-direction]:not(:focus){pointer-events:none}
+
+.ad-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px;padding-top:8px;border-top:1px solid var(--wb-line,#bac8db)}.ad-controls label{display:grid;gap:4px;min-width:0}.ad-controls select{max-width:100%;min-width:0}.ad-controls input{width:85px;max-width:100%}.ad-controls small{flex:1 1 180px}.ad-controls strong{flex:1 1 140px}#ad-defaults,#ad-timing{margin:12px 0;padding:14px;border:1px solid var(--wb-line,#bac8db);border-radius:8px}#ad-defaults label,#ad-timing label{display:block;max-width:460px;margin:8px 0}#ad-defaults button,#ad-timing button{margin:4px}#ad-overrides{display:grid;gap:6px;margin-top:8px}#ad-inspector{display:grid}#rc-strip .ad-controls input,#rc-strip .ad-controls select{background:var(--wb-surface,#fff);color:var(--wb-ink,#17253b);border:1px solid var(--wb-line,#bac8db);border-radius:5px;padding:6px}#ad-defaults[hidden],.ad-controls[hidden],.ad-controls [hidden]{display:none!important}
+
+#rc-strip .ad-controls strong{flex:0 1 110px}#rc-strip .ad-controls>label{flex:1 1 160px}#rc-strip .ad-controls>small{flex-basis:100%;order:5}#rc-strip .ad-controls>button{align-self:center}#rc-strip .ad-controls{gap:6px 10px}
+
+.pm-narration-badge[data-missing=true]{color:#b66b00}body.editor-dark .pm-narration-badge[data-missing=true]{color:#ffd26c}
+
+#rc-strip #ad-canvas{flex:1 1 290px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:3px 8px;border:0;padding:0;margin:0}#rc-strip #ad-canvas>strong{display:none}#rc-strip #ad-canvas>label{display:flex;align-items:center;gap:6px;font-size:11px}#rc-strip #ad-canvas select{flex:1;width:150px;padding:5px}#rc-strip #ad-canvas>small{grid-column:1/-1;order:5;font-size:10px}#rc-strip #ad-canvas>button{font-size:10px;padding:4px 6px;min-height:28px}#rc-strip #ad-canvas input{width:60px;padding:4px}#rc-strip:has(#ad-canvas:not([hidden])) .rc-description{flex:1 1 100px}#rc-strip #ad-message:empty{display:none}
+
+#rc-strip #ad-canvas label,#rc-strip #ad-canvas small,#rc-strip #ad-canvas select{margin:0}#rc-strip #ad-canvas select{height:30px;min-height:30px;box-sizing:border-box}#rc-strip #ad-canvas small{line-height:14px}#rc-strip #ad-canvas label{line-height:14px}

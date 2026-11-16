@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add visible narration status and slide advancement controls, project narration defaults and override review/reset, linked silent-slide timing, and Audio immediately after Background. New blank projects start Manual; existing timing and original media remain preserved.
+
 - Drain final recorder chunks before releasing microphone tracks; validate recorded duration from decoded audio and retain incomplete takes for download without replacing narration.
 - Simplify permanent media deletion to a row Delete action and one labeled confirmation, including explicit history-clearing consequences, without acknowledgement checkboxes.
 - Add current/all-local project media scopes, bulk selection/download/removal, unused/recovery review, size sorting, exact-byte duplicate consolidation and cross-project original reuse. Add separately acknowledged current-project deletion with transactional rollback, backup review and concurrent-edit protection; other projects and exports remain unchanged.

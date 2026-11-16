@@ -305,7 +305,7 @@ const showcase = [...document.querySelectorAll("#stage > .slide")],
   function progress() {
     let p = Math.min(
       100,
-      (elapsed / (Number(slides[index].dataset.time) * 1000)) * 100,
+      (elapsed / (auLive.rule(projectState.audio,slides[index].dataset.mediaId,Number(slides[index].dataset.time)).seconds * 1000)) * 100,
     );
     const cfg = mediaGetAssignment(slides[index]?.dataset.mediaId),
       v = slides[index]?.querySelector("video.media-asset");
@@ -327,7 +327,7 @@ const showcase = [...document.querySelectorAll("#stage > .slide")],
     if (playing) {
       if (!mediaHoldSlide()) {
         elapsed += delta;
-        if (elapsed >= Number(slides[index].dataset.time) * 1000)
+        if (elapsed >= auLive.rule(projectState.audio,slides[index].dataset.mediaId,Number(slides[index].dataset.time)).seconds * 1000)
           show(index + 1);
       }
       progress();
