@@ -4,6 +4,8 @@
 
 ## 0.20.0-alpha.1 — 2026-11-16
 
+- Accept decodable WebM audio classified as video/webm by the browser, including downloaded narration reattachment and exact-original repair; keep canonical audio MIME and original bytes.
+
 - Preserve pending media names and audio previews when background inventory refresh leaves the selected original unchanged.
 
 - Allow Continue without audio to release narration-driven advancement holds while preserving intentionally Manual slides.

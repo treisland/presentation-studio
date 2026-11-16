@@ -13,6 +13,11 @@ test('audio roles retain original references with bounded authored metadata',()=
  assert.throws(()=>core.track({...track,advanceOnEnd:true,paddingMs:-1},'slide'));
  assert.throws(()=>core.track({...track,loop:'yes'},'music'));
  assert.equal(core.mime('recording.MP3',''),'audio/mpeg');
+ assert.equal(core.mime('take.webm','video/webm'),'audio/webm');
+ assert.equal(core.mime('take.WEBM','VIDEO/WEBM; codecs=opus'),'audio/webm');
+ assert.equal(core.mime('take.webm','audio/webm;codecs=opus'),'audio/webm');
+ assert.throws(()=>core.mime('take.webm','video/mp4'));
+ assert.throws(()=>core.mime('take.mp3','video/webm'));
  assert.throws(()=>core.mime('recording.mp3','audio/ogg'));
 });
 

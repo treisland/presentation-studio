@@ -6,6 +6,8 @@ const audioCore=(()=>{
   function number(value,min,max,label,integer=false){if(!Number.isFinite(value)||value<min||value>max||(integer&&!Number.isSafeInteger(value)))throw Error('Invalid audio '+label+'.');return value;}
   function mime(name,type=''){
     const ext=String(name).split('.').pop().toLowerCase(),allowed=types[ext];
+    // Browsers commonly infer video/webm from the container extension, even for microphone-only takes.
+    if(ext==='webm'&&['audio/webm','video/webm'].includes(type.toLowerCase().split(';')[0].trim()))type='audio/webm';
     if(!allowed||type&&!allowed.includes(type.toLowerCase()))throw Error('Choose a supported local MP3, WAV, M4A/AAC, Ogg or audio WebM audio file.');
     return type.toLowerCase()||allowed[0];
   }
@@ -44,8 +46,8 @@ const audioCore=(()=>{
     try{return await new Promise((resolve,reject)=>{
       const timer=setTimeout(()=>reject(Error('Audio metadata timed out. Choose a supported, complete file.')),15000);
       node.onloadedmetadata=async()=>{try{let duration=node.duration;
-        // Measure duration-less recorder WebM without re-encoding the original.
-        if(decodeDuration||!Number.isFinite(duration)&&kind==='audio/webm'){
+        // Decode WebM audio to verify playability and measure duration without re-encoding.
+        if(decodeDuration||kind==='audio/webm'){
           const Context=window.AudioContext||window.webkitAudioContext;if(!Context)throw Error('Recording duration is unavailable in this browser.');
           const context=new Context();try{duration=(await context.decodeAudioData(await blob.arrayBuffer())).duration;}finally{await context.close();}
         }
