@@ -2,6 +2,27 @@
 
 ## Unreleased
 
+## 0.20.0-alpha.1 — 2026-11-16
+
+- Accept decodable WebM audio classified as video/webm by the browser, including downloaded narration reattachment and exact-original repair; keep canonical audio MIME and original bytes.
+
+- Preserve pending media names and audio previews when background inventory refresh leaves the selected original unchanged.
+
+- Allow Continue without audio to release narration-driven advancement holds while preserving intentionally Manual slides.
+
+- Show measured audio duration before playback in Project media, with consistent elapsed/total, seeking and volume controls in both media scopes; measure older originals in the background without changing their bytes.
+
+- Keep the canvas Advance slide dropdown compact on wide displays while retaining responsive laptop/narrow sizing.
+
+- Add visible narration status and slide advancement controls, project narration defaults and override review/reset, linked silent-slide timing, and Audio immediately after Background. New blank projects start Manual; existing timing and original media remain preserved.
+
+- Drain final recorder chunks before releasing microphone tracks; validate recorded duration from decoded audio and retain incomplete takes for download without replacing narration.
+- Simplify permanent media deletion to a row Delete action and one labeled confirmation, including explicit history-clearing consequences, without acknowledgement checkboxes.
+- Add current/all-local project media scopes, bulk selection/download/removal, unused/recovery review, size sorting, exact-byte duplicate consolidation and cross-project original reuse. Add separately acknowledged current-project deletion with transactional rollback, backup review and concurrent-edit protection; other projects and exports remain unchanged.
+- Add canvas-adjacent narration controls with ready/record/review states, measured waveforms, preview seeking, device settings and explicit take acceptance. Stop capture on slide/mode changes and retain original-target takes for review/download.
+- Add Project media with original previews, usage/health, rename, reviewed shared replacement, repair and original-media ZIP downloads; retain library originals in guarded native v6 projects.
+- Add local per-slide microphone recording with device/level/timer controls, preview, explicit acceptance, portable-budget limits and Undo.
+
 ## 0.19.0 — 2026-11-15
 
 - Promote the accepted chart runtime unchanged to production after maintainer sign-off, with explicit stable Pages authorization (#282).

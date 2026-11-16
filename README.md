@@ -12,6 +12,10 @@
 
 A portable HTML presentation player and editor. Start with a short, generic demo or a blank presentation, then add your own content, branding, questions, and media. No application server or database is required.
 
+## 0.20.0-alpha.1 — media authoring preview
+
+This alpha adds local slide narration recording, visible advancement defaults/overrides and a Project media workspace with original downloads, reviewed replacement, recovery retention and guarded native v6 editable storage. Maintainer local manual acceptance was reported on 2026-11-16. Broader browser/codec and accessibility coverage remains scoped in the [validation record](docs/releases/0.20.0-alpha.1-validation.md). See [Project media](docs/media-authoring.md).
+
 ## 0.19 production release
 
 The maintainer-accepted release adds editable charts, per-series/category color pickers and inline data controls, plus matching native AI authoring schemas, examples and Library capability guidance. It retains the accepted menu/start-screen, recovery and portable workflows. See [Charts & Graphs](docs/charts-and-graphs.md) and [release validation](docs/releases/0.19.0-validation.md).
@@ -84,7 +88,7 @@ For a localhost preview, run `npm run serve`, then open `http://127.0.0.1:4173`.
 
 [Quick start](docs/quick-start.md) · [Architecture](docs/architecture.md) · [Contributing](CONTRIBUTING.md) · [Content and branding](docs/content-and-branding.md) · [Open-source release](docs/open-source-release.md) · [Roadmap](docs/roadmap.md) · [Troubleshooting](docs/troubleshooting.md)
 
-Version 0.19.0. Native editable charts, color/data controls and matching portable AI authoring, retaining the accepted editor, start-screen and recovery workflows. See the [release notes](docs/releases/0.19.0.md), [validation record](docs/releases/0.19.0-beta.1-validation.md) and [known issues](docs/known-issues.md). Released under the [Apache License 2.0](LICENSE).
+Version 0.20.0-alpha.1. Local slide recording and original-media management preview. See the [release notes](docs/releases/0.20.0-alpha.1.md), [validation record](docs/releases/0.20.0-alpha.1-validation.md) and [known issues](docs/known-issues.md). Released under the [Apache License 2.0](LICENSE).
 
 ## Development process
 

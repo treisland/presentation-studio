@@ -72,6 +72,7 @@ test('blank creation, recents and resume retain content and editable export reop
   const { page, errors } = await open();
   try {
     await page.locator('#ss-blank').click(); await page.locator('#full-editor').waitFor({ state: 'visible' });
+    assert.equal((await page.evaluate(()=>window.presentationStudioEditing.read())).state.audio.advancement.mode,'manual');
     const created = await page.evaluate(() => window.presentationStudioEditing.read());
     assert.equal(created.state.slides[0].tree.length, 0);
     assert.notEqual(created.projectId, 'presentation-studio-demo-v1');

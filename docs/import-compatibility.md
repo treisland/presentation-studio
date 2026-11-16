@@ -4,7 +4,7 @@ Compatibility is defined by format generation, not the number of application rel
 
 | Input | Accepted format | Contract |
 | --- | --- | --- |
-| Native editable project JSON/ZIP | schema v2, v3 and v4 | Preserve IDs, media, history, recovery and offline behavior; effect settings require v3; custom backgrounds require v4 |
+| Native editable project JSON/ZIP | schema v2–v6 | Preserve IDs, media, history, recovery and offline behavior; effect settings require v3; custom backgrounds require v4; audio requires v5; retained original-media catalogs require v6 |
 | Existing legacy import | schema v1 | Retain current legacy importer and validation; not a promise to accept arbitrary JSON |
 | Portable AI authoring JSON | presentation-studio-authoring v1 and v2 | Validated input creates a native project; does not replace lossless editable ZIP storage |
 | Component library JSON | presentation-studio-components v1 | Independent presets with bundled media, browser-local import/export |
@@ -18,3 +18,5 @@ The maintainer approved native v4 and portable authoring v2 for v0.16.0 custom b
 Validate before replacing active work. Reject unknown future formats and unsupported fields safely; do not silently discard content or ask an LLM to downgrade native schemas. Migration/opening must not overwrite the original file. Export upgraded copies explicitly and explain any limitations when opening them in older editors. All supported legacy inputs still pass current security, size and path validation.
 
 About lists the loaded application's accepted inputs, separately from its app version. Browser recovery, editable projects, component libraries and portable authoring are distinct contracts. See [deployment and recovery](deployment.md).
+
+The media-authoring alpha adds guarded native v6 only when original-library metadata is present in current/recoverable state. Existing native v1–v5 inputs remain supported. Playback strips the author catalog, inactive narration and recovery originals. Older readers reject v6; keep your existing files and use the media-capable alpha for upgraded editable copies. See [the media contract](media-authoring.md).

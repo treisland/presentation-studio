@@ -778,9 +778,9 @@
           ? studioBlankState(name)
           : projectCopy(studioDefaultTemplate);
       state.projectName = name;
-      if (choice === "blank") state.startingState = projectCopy(state);
+      if (choice === "blank") {state.audio={...audioCore.empty(),advancement:{mode:"manual",seconds:8,paddingMs:500,overrides:{}}};state.startingState = projectCopy(state);}
       const pack = {
-        schemaVersion: 2,
+        schemaVersion: state.audio ? 5 : 2,
         kind: "presentation-studio-project",
         meta: {
           id: projectID("project"),

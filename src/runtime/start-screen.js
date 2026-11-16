@@ -66,10 +66,11 @@ async function ssRun(action) {
 }
 function ssCreateBlank() {
   const state = studioBlankState('Untitled presentation');
+  state.audio={...audioCore.empty(),advancement:{mode:"manual",seconds:8,paddingMs:500,overrides:{}}};
   state.slides[0].tree = []; state.slides[0].templateBase = [];
   state.startingState = projectCopy(state);
   projectDraftPending = null;
-  projectAcceptPack({ schemaVersion: 2, kind: 'presentation-studio-project', playbackOnly: false,
+  projectAcceptPack({ schemaVersion: state.audio ? 5 : 2, kind: 'presentation-studio-project', playbackOnly: false,
     meta: { id: projectID('project'), name: state.projectName, updatedAt: new Date().toISOString() },
     state, history: { past: [], future: [] }, checkpoints: [] });
   projectModified();

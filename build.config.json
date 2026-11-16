@@ -47,7 +47,10 @@
     "src/styles/audio.css",
     "src/styles/editor-menu.css",
     "src/styles/start-screen.css",
-    "src/styles/charts.css"
+    "src/styles/charts.css",
+    "src/styles/project-media.css",
+    "src/styles/canvas-recording.css",
+    "src/styles/media-management.css"
   ],
   "scripts": [
     "src/runtime/prelude.js",
@@ -139,6 +142,11 @@
     "src/runtime/editor-menu.js",
     "src/runtime/start-screen.js",
     "src/runtime/charts.js",
+    "src/runtime/project-media.js",
+    "src/runtime/media-recording.js",
+    "src/runtime/canvas-recording.js",
+    "src/runtime/media-management.js",
+    "src/runtime/slide-advancement.js",
     "src/runtime/boot.js"
   ],
   "vendor": "vendor/jszip-3.10.1.min.js"

@@ -102,7 +102,7 @@ function boothStandalone(geometry, mediaLayout, backgroundFactory, wireNavigatio
           current === slide.id &&
           playing &&
           cfg.advance === "ended" &&
-          !audio?.hold()
+          !audio?.hold() && (!audio||audio.rule(data.audio,current).mode==='legacy')
         )
           next(1, true);
       };
@@ -719,10 +719,10 @@ function boothStandalone(geometry, mediaLayout, backgroundFactory, wireNavigatio
       !audio?.hold() &&
       !focus &&
       data.loop.includes(current) &&
-      !(cfg?.kind === "video" && ["manual", "ended"].includes(cfg.advance))
+      !(audio?.rule(data.audio,current).mode==='legacy' && cfg?.kind === "video" && ["manual", "ended"].includes(cfg.advance))
     ) {
       elapsed += dt;
-      if (elapsed >= model.duration * 1000) next(1, true);
+      if (elapsed >= (audio?.rule(data.audio,current,model.duration).seconds??model.duration) * 1000) next(1, true);
     }
     requestAnimationFrame(tick);
   }

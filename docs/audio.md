@@ -38,3 +38,12 @@ Public playback, Presenter snapshots and booth exports include only active narra
 Project Settings has a dedicated **Audio** tab; Branding no longer contains audio properties. Choose the narration mode, manage the presentation-wide narration track, and attach a presentation soundtrack with independent volume and looping. Soundtrack start/stop behavior is fixed by presentation playback; its helper text describes that behavior. Slide narration remains under Inspector → Sound, including advance-on-end and padding. Video mute/loop/playback stays with the selected video. Switching settings tabs, closing settings/editor, changing slide/project or changing an assignment stops the local preview. Preview seeking never changes slides or saved track positions.
 
 The design concepts include possible future ducking, fades/trimming and waveform editing. Those capabilities are not implemented by this UI refinement, and no nonfunctional controls are shown. Project formats and playback policy remain unchanged.
+
+## Record and manage originals
+
+The editor also provides immediate narration controls below the canvas: Record,
+Stop/Cancel, then Play/Retake/Discard/Use take. The gear menu contains microphone and
+Audio settings. Existing narration is replaced only after Use take; a take captured
+on one slide cannot be applied to another slide.
+
+Use **Inspector → Sound → Record narration** for a local, reviewable microphone take. Choose **Use take** to replace narration; preview/discard never changes the slide. **Insert → Project media** shows originals, usage and repair/download actions. See [Project media and recording](media-authoring.md) for limits, codecs, compatibility and local review.

@@ -13,7 +13,7 @@ async function cbValidateImage(blob){
 const cbLoad=lwLoad;
 lwLoad=async function(file,options={}){
   const result=await cbLoad(file,options);if(!result.pack)return result;
-  for(const path of cbImagePaths(result.pack)){if(options.cancelled?.())throw Error('Import cancelled.');const blob=result.assets.get(path);if(!blob)throw Error('Missing background image: '+path+'. Open the complete editable ZIP.');await cbValidateImage(blob);}
+  for(const path of cbImagePaths(result.pack)){if(options.cancelled?.())throw Error('Import cancelled.');const blob=result.assets.get(path);if(!blob&&options.allowMissingAssets&&/\.json$/i.test(file.name))continue;if(!blob)throw Error('Missing background image: '+path+'. Open the complete editable ZIP.');await cbValidateImage(blob);}
   return result;
 };
 function cbHasSettings(pack){if(!pack||typeof pack!=='object')return false;const pending=bgStates(pack),seen=new Set();while(pending.length){const state=pending.pop();if(!state||seen.has(state))continue;seen.add(state);if(Object.hasOwn(state,'backgrounds'))return true;if(state.startingState)pending.push(state.startingState);}return false;}
