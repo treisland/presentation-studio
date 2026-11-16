@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Allow Continue without audio to release narration-driven advancement holds while preserving intentionally Manual slides.
+
 - Show measured audio duration before playback in Project media, with consistent elapsed/total, seeking and volume controls in both media scopes; measure older originals in the background without changing their bytes.
 
 - Keep the canvas Advance slide dropdown compact on wide displays while retaining responsive laptop/narrow sizing.

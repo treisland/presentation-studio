@@ -17,7 +17,7 @@ function studioAudioPlayer({resolve,advance,notice=()=>{},createMedia=()=>docume
   if(mode==='narration'&&!track)mode='manual';
   return {mode,seconds:override?.seconds??cfg.seconds,track:track?{...track,advanceOnEnd:mode==='narration',paddingMs:override?.paddingMs??cfg.paddingMs}:null};
  }
- function hold(){if(active()&&['manual','narration'].includes(rule(context.audio,context.id).mode))return true;if(!active()||bypass||!nodes.size)return false;if(!armed||failed||ended)return true;return !!nodes.get('slide')?.track.advanceOnEnd;}
+ function hold(){const mode=rule(context?.audio,context?.id).mode;if(active()&&(mode==='manual'||mode==='narration'&&!bypass))return true;if(!active()||bypass||!nodes.size)return false;if(!armed||failed||ended)return true;return !!nodes.get('slide')?.track.advanceOnEnd;}
  function duration(item){const value=item?.node.duration;return Number.isFinite(value)&&value>0?value:item?.track.mime==='audio/webm'&&Number.isFinite(item.track.durationMs)?item.track.durationMs/1000:0;}
  function armPadding(item){
   if(!valid(item)||item.advanced||!item.track.advanceOnEnd||!effective()||!duration(item))return;

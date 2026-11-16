@@ -201,3 +201,5 @@ The optional authored audio.advancement object stores mode (manual/auto), second
 The canvas Advance slide dropdown stays compact on wide displays and shrinks with the available space on smaller screens.
 
 Project media audio previews show elapsed/total time before playback using the original’s measured duration, in both Current project and All local projects. Play/Pause, seek, mute and volume are local preview controls. Older originals without saved duration are measured in the background and cached for the current session; selection changes and closing the dialog discard stale display updates. Browser metadata changes also refresh the preview. Originals are not re-encoded, and previewing does not alter project settings or another project’s stored data. Unsupported files remain downloadable even if duration cannot be measured.
+
+During playback, Continue without audio releases a narration-driven hold and resumes the slide timer; intentionally Manual advancement stays manual. Navigating to another slide clears that one-slide bypass.
