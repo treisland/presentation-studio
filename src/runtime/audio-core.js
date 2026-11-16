@@ -1,12 +1,12 @@
 // Audio metadata is authored data; playback/activation state never belongs here.
 const audioCore=(()=>{
-  const types={mp3:['audio/mpeg'],wav:['audio/wav','audio/x-wav'],m4a:['audio/mp4'],aac:['audio/aac'],ogg:['audio/ogg']};
+  const types={mp3:['audio/mpeg'],wav:['audio/wav','audio/x-wav'],m4a:['audio/mp4'],aac:['audio/aac'],ogg:['audio/ogg'],webm:['audio/webm']};
   const maxBytes=250*1024*1024,maxDurationMs=86400000,maxPaddingMs=600000;
   function plain(value,keys,label){if(!value||typeof value!=='object'||Array.isArray(value)||Object.keys(value).some(key=>!keys.includes(key)))throw Error('Invalid '+label+' metadata.');}
   function number(value,min,max,label,integer=false){if(!Number.isFinite(value)||value<min||value>max||(integer&&!Number.isSafeInteger(value)))throw Error('Invalid audio '+label+'.');return value;}
   function mime(name,type=''){
     const ext=String(name).split('.').pop().toLowerCase(),allowed=types[ext];
-    if(!allowed||type&&!allowed.includes(type.toLowerCase()))throw Error('Choose a supported local MP3, WAV, M4A/AAC or Ogg audio file.');
+    if(!allowed||type&&!allowed.includes(type.toLowerCase()))throw Error('Choose a supported local MP3, WAV, M4A/AAC, Ogg or audio WebM audio file.');
     return type.toLowerCase()||allowed[0];
   }
   function track(raw,role){
@@ -35,7 +35,13 @@ const audioCore=(()=>{
     const node=document.createElement('audio'),url=URL.createObjectURL(blob);node.preload='metadata';
     try{return await new Promise((resolve,reject)=>{
       const timer=setTimeout(()=>reject(Error('Audio metadata timed out. Choose a supported, complete file.')),15000);
-      node.onloadedmetadata=()=>{clearTimeout(timer);try{const durationMs=Math.round(node.duration*1000);number(durationMs,1,maxDurationMs,'duration',true);resolve({mime:kind,durationMs});}catch(error){reject(error);}};
+      node.onloadedmetadata=async()=>{try{let duration=node.duration;
+        // Measure duration-less recorder WebM without re-encoding the original.
+        if(!Number.isFinite(duration)&&kind==='audio/webm'){
+          const Context=window.AudioContext||window.webkitAudioContext;if(!Context)throw Error('Recording duration is unavailable in this browser.');
+          const context=new Context();try{duration=(await context.decodeAudioData(await blob.arrayBuffer())).duration;}finally{await context.close();}
+        }
+        const durationMs=Math.round(duration*1000);number(durationMs,1,maxDurationMs,'duration',true);clearTimeout(timer);resolve({mime:kind,durationMs});}catch(error){clearTimeout(timer);reject(error);}};
       node.onerror=()=>{clearTimeout(timer);reject(Error('This browser cannot decode the audio file. Try MP3 or WAV.'));};node.src=url;node.load();
     });}finally{node.pause();node.removeAttribute('src');node.load();URL.revokeObjectURL(url);}
   }

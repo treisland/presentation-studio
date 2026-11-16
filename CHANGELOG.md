@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Add Project media with original previews, usage/health, rename, reviewed shared replacement, repair and original-media ZIP downloads; retain library originals in guarded native v6 projects.
+- Add local per-slide microphone recording with device/level/timer controls, preview, explicit acceptance, portable-budget limits and Undo.
+
 ## 0.19.0 — 2026-11-15
 
 - Promote the accepted chart runtime unchanged to production after maintainer sign-off, with explicit stable Pages authorization (#282).

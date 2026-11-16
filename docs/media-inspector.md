@@ -33,3 +33,7 @@ Manual checks remain: laptop/narrow and light/dark layouts, keyboard and screen-
 ### Crop shortcuts and preview lifetime
 
 Double-clicking unmasked media reveals the numeric crop controls without enabling frame-only drag mode. Framed media retains direct in-frame cropping. A clip preview belongs to the selected project, slide, object and grid cell: switching any of these stops it, restores its previous mute state and resets the preview button, including when the new grid cell is empty.
+
+## Project-wide originals
+
+Open **Insert → Project media** to search originals, inspect usage, rename display names, download original bytes, or review replacement of one/all current uses. Removing an assignment retains shared and recovery originals. See [Project media](media-authoring.md).

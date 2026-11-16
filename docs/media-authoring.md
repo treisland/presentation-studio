@@ -1,0 +1,92 @@
+# Project media and local recording
+
+Milestone 28 / #289. Development alpha; manual browser and audible acceptance pending.
+
+Project media uses the supplied concept: budget header, search/type filters, asset
+table, selected preview and usage/actions pane. Open it from Insert → Project media
+or Inspector → Sound. Downloads are author tools, not audience permissions.
+
+## Try the alpha
+
+1. Open a presentation in the editor and choose **Insert → Project media**. Search
+   or filter the list, select an original, preview it and inspect its assignments.
+2. Choose **Record slide narration**, or **Inspector → Sound → Record narration**.
+   Select a microphone, record, stop and preview. **Use take** accepts the take;
+   **Record / retake** and **Discard take** leave prior narration unchanged.
+3. Choose Per-slide narration in Project settings → Audio to use the accepted take.
+   Existing narration volume and end behavior are preserved. Undo restores it.
+4. In Project media, expand **Replace or locate original**, choose a file and review
+   replacement of the selected assignment or all current uses. For missing media,
+   check browser recovery first. Folder results are candidates until reviewed.
+5. Download an original or choose a media ZIP scope. The ZIP manifest reports
+   missing files and original identities. Keep a complete editable ZIP as your
+   portable project backup; the media-only ZIP is not a complete presentation.
+
+Save an editable backup from your existing stable build before testing the alpha.
+Opening existing files does not rewrite them. Once library metadata is saved, keep
+the v6 copy for this alpha and retain the older backup for older Studio builds.
+
+## Storage contract
+
+Existing native v1–v5 projects remain readable. A project with an asset library uses
+guarded native v6: `state.assetLibrary={version:1,entries:{[safeAssetPath]:metadata}}`.
+Older readers reject v6 rather than dropping retained originals. Existing files are
+not migrated until an author stores media-library metadata or accepts a recording.
+Metadata contains a bounded display name, kind, origin, actual byte count, optional
+SHA-256 and measured duration/dimensions; no filesystem paths or permissions.
+Paths remain stable asset identities. Replacement allocates a new identity and
+rewrites explicitly selected references; Undo restores the original references.
+Renaming changes display metadata only. Originals never change in place.
+
+Editable packs, browser recovery, Undo and checkpoints retain catalog assets,
+including unassigned originals. Playback packs remove the catalog and use existing
+eligible-reference filtering. Missing originals and unsupported decoding are
+separate states. Recovery assets are never deleted by these tools.
+
+The conservative portable budget is 95 MiB for project JSON plus unique retained
+originals, leaving headroom under the existing 100 MiB input cap. Existing oversized
+projects remain readable; additions/replacements cannot increase them past this
+budget. Archive entry and JSON limits still apply. No automatic transcoding.
+
+## Recording contract
+
+Recording is per-slide and local using MediaRecorder in a secure context (including
+browser-dependent file URLs). Detect API/codec support before requesting permission.
+Prefer supported audio WebM/Opus, Ogg/Opus or MP4; retain the actual container and
+extension. Imported audio WebM is supported without treating it as video.
+Each take stops at ten minutes or the available byte budget, with periodic chunks,
+an early warning and a reviewable take. A final oversized chunk can make a take
+unacceptable; retain it for download rather than silently truncating bytes.
+Preview, discard/retake and Use take are explicit. Acceptance is one undoable edit,
+preserves narration settings and validates project/slide/revision and locks again.
+Changing target, closing the editor/dialog, interruption and page hiding stop tracks
+promptly. A stale take can be downloaded/discarded but cannot replace narration.
+Permission denial, unavailable devices and unsupported recording produce actionable
+messages. Real device/codec behavior requires maintainer testing in Chrome, Edge
+and Firefox; Safari and insecure HTTP are not claimed supported.
+
+## Repair and downloads
+
+Usage distinguishes active assignments, inactive attachments, recovery-only and
+unused catalog assets. Inspect available recovery bytes before locating originals.
+File/folder selection is explicit; no background disk scanning. SHA-256 proves an
+exact byte match where a known digest exists. Names and sizes suggest candidates
+only; select and review a candidate before replacing one assignment or all current
+uses. History remains unchanged. Preview failure does not imply missing bytes.
+
+Bulk downloads choose used or all available assets, preserve extensions, allocate
+collision-safe names and include a usage/provenance manifest. Missing files are
+listed and require acknowledgement before an incomplete download. Downloads and
+preview never remove retained originals. Shared replacements respect slide/object
+locks and preserve crop, volume and playback settings.
+
+## Local review
+
+Test microphone permission denial/device removal, actual level feedback and sound,
+ten-minute/byte auto-stop, interruption, stale targets, retake/discard/accept/Undo;
+duplicate filenames, shared replacements, missing/corrupt files, original hashes,
+clean-profile editable restore and offline playback/booth. Review keyboard, screen
+reader, light/dark and narrow layouts. Companion scenes: editor overview pending
+review; examples gallery, Media Focus, AI import and finished playback have no
+intentional UI changes. New Project media/recording screenshots are candidates only;
+no public image acceptance or companion deployment is implied.

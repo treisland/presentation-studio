@@ -47,7 +47,8 @@
     "src/styles/audio.css",
     "src/styles/editor-menu.css",
     "src/styles/start-screen.css",
-    "src/styles/charts.css"
+    "src/styles/charts.css",
+    "src/styles/project-media.css"
   ],
   "scripts": [
     "src/runtime/prelude.js",
@@ -139,6 +140,8 @@
     "src/runtime/editor-menu.js",
     "src/runtime/start-screen.js",
     "src/runtime/charts.js",
+    "src/runtime/project-media.js",
+    "src/runtime/media-recording.js",
     "src/runtime/boot.js"
   ],
   "vendor": "vendor/jszip-3.10.1.min.js"

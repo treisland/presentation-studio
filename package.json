@@ -1,6 +1,6 @@
 {
   "name": "@se-appsec-sandbox/presentation-studio",
-  "version": "0.19.0",
+  "version": "0.20.0-alpha.1",
   "private": true,
   "description": "Portable, independent HTML presentation player and editor",
   "type": "module",
@@ -23,7 +23,7 @@
     "build:companion": "node scripts/build-companion.mjs",
     "serve:companion": "node scripts/serve-companion.mjs",
     "test:companion": "node tests/companion-review.mjs",
-    "test:audio": "node --test tests/audio-authoring.test.mjs tests/audio-playback.test.mjs tests/audio-acceptance.test.mjs"
+    "test:audio": "node --test tests/audio-authoring.test.mjs tests/audio-playback.test.mjs tests/audio-acceptance.test.mjs tests/project-media.test.mjs"
   },
   "devDependencies": {
     "playwright": "1.62.1"

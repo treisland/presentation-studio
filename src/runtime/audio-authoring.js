@@ -16,6 +16,7 @@ lwLoad=async function(file,options={}){
  const result=await auLoad(file,options);if(!result.pack)return result;const checked=new Map();
  for(const state of auStates(result.pack))for(const track of audioCore.tracks(state)){
   if(options.cancelled?.())throw Error('Import cancelled.');const blob=result.assets.get(track.src);
+  if(!blob&&options.allowMissingAssets&&/\.json$/i.test(file.name))continue;
   if(!blob)throw Error('Missing audio asset: '+track.name+'. Open the complete editable ZIP.');
   if(blob.size!==track.bytes)throw Error('Audio asset size does not match: '+track.name);
   const key=JSON.stringify([track.src,track.name,track.mime]);let info=checked.get(key);
