@@ -33,3 +33,17 @@ Manual checks remain: laptop/narrow and light/dark layouts, keyboard and screen-
 ### Crop shortcuts and preview lifetime
 
 Double-clicking unmasked media reveals the numeric crop controls without enabling frame-only drag mode. Framed media retains direct in-frame cropping. A clip preview belongs to the selected project, slide, object and grid cell: switching any of these stops it, restores its previous mute state and resets the preview button, including when the new grid cell is empty.
+
+## Project-wide originals
+
+Open **Insert → Project media** to search originals, inspect usage, rename display names, download original bytes, or review replacement of one/all current uses. Removing an assignment retains shared and recovery originals. See [Project media](media-authoring.md).
+
+Project media now defaults to Current project, with an All local projects storage
+view. Bulk assignment removal is undoable; permanent original deletion has a separate
+review with a consequence-labeled confirmation, protects active/Trash assignments and never
+deletes across projects. Identical-file consolidation and copying originals into the
+current project are described in the [media guide](media-authoring.md).
+
+The canvas narration strip and Sound section now show narration presence/duration and an Advance slide dropdown. Project settings → Audio (after Background) owns inherited narration defaults and override review; Presentation settings owns the automatic silent-slide timer. See the media guide for compatibility and override behavior.
+
+Project media audio previews display measured elapsed/total time before Play, including recordings whose WebM container reports no duration. Older files are measured locally when needed. Preview seeking, mute and volume do not change authored audio settings.

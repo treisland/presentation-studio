@@ -101,6 +101,7 @@ test("compact controls and recent drafts support safe switching, duplication, ba
   page.on("pageerror", (e) => errors.push(e.message));
   try {
     await page.goto(("file://" + resolve(root, "dist/presentation-studio.html")) + '?start=present');
+    await page.locator("#controls .vf-center > button:visible").nth(2).waitFor({state:"visible"});
     assert.equal(await page.locator("#controls .vf-center > button:visible").count(), 3);
     await page.locator("#open-full-editor").click();
     for(const id of ['we-settings-open','wb-export','fe-show','fe-close'])

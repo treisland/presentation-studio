@@ -728,6 +728,7 @@ async function nxFinishWizard(defaults = false) {
         lcExampleState(choice, name) || (choice === "template"
           ? projectCopy(studioDefaultTemplate)
           : studioBlankState(name));
+      if(choice === "blank")state.audio={...audioCore.empty(),advancement:{mode:"manual",seconds:8,paddingMs:500,overrides:{}}};
       state.projectName = name;
       if (lcExampleInfo(choice) || choice === 'template') lcMaterializeExample(state);
       if (!defaults) {
@@ -789,7 +790,7 @@ async function nxFinishWizard(defaults = false) {
       state.startingState = projectCopy(state);
       projectDraftPending = null;
       projectAcceptPack({
-        schemaVersion: 2,
+        schemaVersion: state.audio ? 5 : 2,
         kind: "presentation-studio-project",
         meta: {
           id: projectID("project"),

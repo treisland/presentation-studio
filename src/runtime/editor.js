@@ -1784,7 +1784,7 @@
                 ? value.map(rename)
                 : value && typeof value === "object"
                   ? Object.fromEntries(
-                      Object.entries(value).map(([k, v]) => [k, rename(v)]),
+                      Object.entries(value).map(([k, v]) => [remap.get(k) || k, rename(v)]),
                     )
                   : value;
           const recovery = rename(beforeImport);
@@ -2080,7 +2080,7 @@
     let initial = null;
     try {
       const raw = JSON.parse($("project-config").textContent);
-      if ([2,3,4,5].includes(raw?.schemaVersion)) initial = projectValidatePack(raw);
+      if ([2,3,4,5,6].includes(raw?.schemaVersion)) initial = projectValidatePack(raw);
     } catch (e) {
       console.warn("Project content could not be loaded:", e.message);
     }

@@ -13,7 +13,7 @@ test('About reports loaded build offline, provides private-data-free diagnostics
   await page.locator('#app-editor-version').click();
   assert.equal(await page.locator('#app-about-version').textContent(),'v'+expected.version);
   assert.equal(await page.locator('#app-about-channel').textContent(),expected.channel);
-  await page.locator('#app-about summary').click();assert.match(await page.locator('#app-about').textContent(),/Native editable projects: format v2/);
+  await page.locator('#app-about summary').click();assert.match(await page.locator('#app-about').textContent(),/Native editable projects: formats v2/);
   await page.evaluate(()=>Object.defineProperty(navigator,'clipboard',{value:undefined,configurable:true}));
   await page.locator('#app-copy-diagnostics').click();const data=JSON.parse(await page.locator('#app-diagnostics').inputValue());
   assert.equal(data.commit,expected.commit);assert.deepEqual(Object.keys(data).sort(),['application','browser','channel','commit','dirty','imports','version']);
