@@ -1,5 +1,5 @@
 // Cleanup is project-scoped. All-local inventory never deletes another project's bytes.
-let mcReady=false,mcSnapshot=null,mcIndexBusy=false,mcMutationBusy=false,mcPreviewURL='',mcReview=null;
+let mcReady=false,mcSnapshot=null,mcIndexBusy=false,mcMutationBusy=false,mcPreviewURL='',mcReview=null,mcKeepDetail='';
 const mcSelected=new Set(),mcDigests=new WeakMap();let mcDuplicates=[],mcDuplicateEpoch='';
 const mcPreviousBusy=editingGestureBusy;editingGestureBusy=function(){return mcMutationBusy||mcPreviousBusy();};
 function mcCurrent(){return !$('mc-scope')||$('mc-scope').value==='current';}
@@ -35,7 +35,7 @@ function mcInventory(){
  return {rows,unreadable,projects:ids.size};
 }
 async function mcRefresh(){
- if(mcIndexBusy)return;mcIndexBusy=true;pmMessage('Reading media in saved local projects…');const epoch=pmEpoch;try{const snapshot=await mcReadSnapshot();if(epoch!==pmEpoch||!$('pm-dialog').open)return;mcSnapshot=snapshot;mcDuplicates=[];mcDuplicateEpoch='';pmPaint();pmMessage('Local inventory refreshed. Other projects and downloaded files are unchanged.');}finally{mcIndexBusy=false;}
+ if(mcIndexBusy)return;mcIndexBusy=true;pmMessage('Reading media in saved local projects…');const epoch=pmEpoch;try{const snapshot=await mcReadSnapshot();if(epoch!==pmEpoch||!$('pm-dialog').open)return;mcKeepDetail=mcDetailSignature(pmRows.find(row=>row.key===mcDetailKey()));mcSnapshot=snapshot;mcDuplicates=[];mcDuplicateEpoch='';try{pmPaint();}finally{mcKeepDetail='';}pmMessage('Local inventory refreshed. Other projects and downloaded files are unchanged.');}finally{mcIndexBusy=false;}
 }
 function mcVisible(rows){const query=$('pm-search').value.toLowerCase(),type=$('pm-filter').value,usage=$('mc-usage').value,owner=$('mc-project').value;
  return rows.filter(r=>(!query||(r.name+' '+r.path+' '+r.projectName+' '+r.status).toLowerCase().includes(query))&&(type==='all'||(type==='attention'?!r.blob||pmHealth.has(r.path):r.kind===type))&&(usage==='all'||usage==='unused'&&r.status==='Unused'||usage==='retained'&&r.status==='Retained for recovery'||usage==='unassigned'&&!r.uses.length||usage==='assigned'&&!!r.uses.length||usage==='duplicates'&&mcDuplicates.some(group=>group.some(item=>item.key===r.key)))&&(mcCurrent()||owner==='all'||owner===r.ownerId)).sort((a,b)=>$('mc-sort').value==='size'?(b.blob?.size||b.meta?.bytes||0)-(a.blob?.size||a.meta?.bytes||0):a.name.localeCompare(b.name));
@@ -51,8 +51,10 @@ pmPaint=function(){
  for(const row of visible){const tr=document.createElement('tr');tr.dataset.assetKey=row.key;tr.classList.toggle('pm-selected',row.key===mcDetailKey());const cell=pmText('td','',tr),check=document.createElement('input');check.type='checkbox';check.checked=mcSelected.has(row.key);check.setAttribute('aria-label','Select '+row.name+' in '+row.projectName);check.onchange=()=>{if(check.checked)mcSelected.add(row.key);else mcSelected.delete(row.key);mcSummary();};cell.append(check);
   const name=pmText('td','',tr),button=componentButton(row.name,()=>{pmSelected=row.path;$('pm-dialog').dataset.mcOwner=row.ownerId;pmPaint();});button.setAttribute('aria-pressed',String(row.key===mcDetailKey()));name.append(button);if(mcCurrent()&&!row.uses.length){const remove=componentButton('Delete',()=>pmRun(()=>mcReviewDelete([row.path])));remove.className='mc-row-delete';remove.setAttribute('aria-label','Delete '+row.name);name.append(remove);}if(!mcCurrent())pmText('small',row.projectName,name);pmText('td',row.kind,tr);pmText('td',row.blob?mediaBytes(row.blob.size):'—',tr);pmText('td',row.blob?row.status:'Missing',tr);body.append(tr);
  }
- $('pm-empty').hidden=!!visible.length;const row=pmRows.find(r=>r.key===mcDetailKey())||visible[0];if(row){pmSelected=row.path;$('pm-dialog').dataset.mcOwner=row.ownerId;}pmDetail(row);mcSummary();
+ $('pm-empty').hidden=!!visible.length;const row=pmRows.find(r=>r.key===mcDetailKey())||visible[0];if(row){pmSelected=row.path;$('pm-dialog').dataset.mcOwner=row.ownerId;}if(!mcKeepDetail||mcKeepDetail!==mcDetailSignature(row))pmDetail(row);mcSummary();
 };
+// Read-only inventory refresh must not discard edits or restart unchanged previews.
+function mcDetailSignature(row){return row?JSON.stringify([row.key,row.name,row.projectName,row.kind,row.status,row.meta,row.durationMs,row.reasons,row.uses,row.blob?.size,row.blob?.type,mcDuplicateEpoch]):'';}
 function mcDetailKey(){return ($('pm-dialog').dataset.mcOwner||projectMeta.id)+'|'+pmSelected;}
 const mcOldDetail=pmDetail;
 pmDetail=function(row){
