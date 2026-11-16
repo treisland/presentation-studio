@@ -40,6 +40,6 @@ Open **Insert → Project media** to search originals, inspect usage, rename dis
 
 Project media now defaults to Current project, with an All local projects storage
 view. Bulk assignment removal is undoable; permanent original deletion has a separate
-review and acknowledgement, protects assignments/recovery dependencies and never
+review with a consequence-labeled confirmation, protects active/Trash assignments and never
 deletes across projects. Identical-file consolidation and copying originals into the
 current project are described in the [media guide](media-authoring.md).

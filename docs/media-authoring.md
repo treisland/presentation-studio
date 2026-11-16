@@ -141,12 +141,14 @@ each saved project's browser media keys are independent.
   or manage Trash through project recovery tools first.
 - A genuinely unused original can be deleted without clearing history when no Undo,
   Redo, checkpoint or reset baseline references it.
-- To delete a recovery-only original, explicitly choose to clear this project's
+- To delete a recovery-only original, confirm **Delete and clear history** to clear this project's
   Undo/Redo and checkpoints and replace old presentation/Inspector restore baselines
   with the current state.
   Other originals and all active/Trash assignments remain protected.
-- Review the named originals, dependencies and eligible payload size. Download an
-  editable backup first, then acknowledge that deletion cannot be undone. The backup
+- Unassigned rows have a **Delete** button: click it, review the named originals,
+  dependencies and eligible payload size, then confirm the labeled action. There are
+  no acknowledgement checkboxes. Multi-selection still supports one batch review.
+  Download an editable backup first if needed. The backup
   includes browser-only unused originals in a native-v6 catalog; if it exceeds the
   portable budget, download originals in smaller media selections instead.
 
@@ -183,3 +185,5 @@ reader, light/dark and narrow layouts. Companion scenes: editor overview pending
 review; examples gallery, Media Focus, AI import and finished playback have no
 intentional UI changes. New Project media/recording screenshots are candidates only;
 no public image acceptance or companion deployment is implied.
+
+Recording finalization waits for the final encoder data before releasing microphone tracks. Recorded originals use decoded audio duration rather than container headers. A take substantially shorter than its capture timer cannot replace narration; the available bytes remain downloadable.

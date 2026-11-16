@@ -20,7 +20,7 @@ lwLoad=async function(file,options={}){
   if(!blob)throw Error('Missing audio asset: '+track.name+'. Open the complete editable ZIP.');
   if(blob.size!==track.bytes)throw Error('Audio asset size does not match: '+track.name);
   const key=JSON.stringify([track.src,track.name,track.mime]);let info=checked.get(key);
-  if(!info){info=await audioCore.probe(blob,track.name,track.mime);checked.set(key,info);}
+  if(!info){const recorded=track.src.startsWith('assets/recording-')||state.assetLibrary?.entries?.[track.src]?.origin==='recorded';info=await audioCore.probe(blob,track.name,track.mime,{decodeDuration:recorded});checked.set(key,info);}
   if(Math.abs(info.durationMs-track.durationMs)>100)throw Error('Audio duration does not match: '+track.name);
  }
  return result;

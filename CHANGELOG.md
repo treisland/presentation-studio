@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Drain final recorder chunks before releasing microphone tracks; validate recorded duration from decoded audio and retain incomplete takes for download without replacing narration.
+- Simplify permanent media deletion to a row Delete action and one labeled confirmation, including explicit history-clearing consequences, without acknowledgement checkboxes.
 - Add current/all-local project media scopes, bulk selection/download/removal, unused/recovery review, size sorting, exact-byte duplicate consolidation and cross-project original reuse. Add separately acknowledged current-project deletion with transactional rollback, backup review and concurrent-edit protection; other projects and exports remain unchanged.
 - Add canvas-adjacent narration controls with ready/record/review states, measured waveforms, preview seeking, device settings and explicit take acceptance. Stop capture on slide/mode changes and retain original-target takes for review/download.
 - Add Project media with original previews, usage/health, rename, reviewed shared replacement, repair and original-media ZIP downloads; retain library originals in guarded native v6 projects.

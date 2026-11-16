@@ -13,7 +13,7 @@ function rcPreview(){
  });
 }
 function rcTick(){cancelAnimationFrame(rcFrame);const node=rcNode();if(!node||node.paused)return;rcPosition();rcFrame=requestAnimationFrame(rcTick);}
-function rcPosition(){const node=rcNode(),duration=Number.isFinite(node?.duration)?node.duration:(recTake?rcDuration:(auTrack('slide')?.durationMs||0)/1000);$('rc-seek').disabled=!node||!duration;$('rc-seek').max=duration||0;$('rc-seek').value=node?.currentTime||0;$('rc-time').textContent=auTime(node?.currentTime||0)+' / '+(duration?auTime(Math.ceil(duration)):'—');}
+function rcPosition(){const node=rcNode(),measured=recTake?(rcDuration||(recTake.durationMs||0)/1000):(auTrack('slide')?.durationMs||0)/1000,duration=measured||(Number.isFinite(node?.duration)?node.duration:0);$('rc-seek').disabled=!node||!duration;$('rc-seek').max=duration||0;$('rc-seek').value=node?.currentTime||0;$('rc-time').textContent=auTime(node?.currentTime||0)+' / '+(duration?auTime(Math.ceil(duration)):'—');}
 async function rcWave(blob){
  if(rcWaveBlob===blob)return;rcWaveBlob=blob;rcPeaks=[];rcDuration=0;rcDraw();if(!blob||blob.size>20*1024*1024)return;
  const Context=window.AudioContext||window.webkitAudioContext;if(!Context)return;
@@ -24,9 +24,9 @@ recPaint=function(){
  if(!rcReady)return;const strip=$('rc-strip'),track=auTrack('slide'),capturing=!!recSession,pending=$('rec-start').disabled&&!capturing&&!recTake,review=!!recTake,locked=auLocked('slide'),stale=review&&(recTake.identity!==auIdentity()||recTake.slide!==projectSelected),node=rcNode();
  strip.hidden=projectPlayback||boothActive||!$('full-editor').open;strip.dataset.state=capturing?'recording':pending?'pending':review?'review':track?'attached':'ready';
  $('rc-title').textContent='Slide '+(projectState.slides.findIndex(s=>s.id===projectSelected)+1)+' narration';
- $('rc-hint').textContent=capturing?'● Recording locally':pending?'Waiting for microphone permission…':review?(stale?'Take belongs to its original slide · return there or download/discard':'New take · Ready to review'):track?'Existing narration · '+auTime(track.durationMs/1000):'Ready to record';
+ $('rc-hint').textContent=capturing?(recSession.stopping?'Finishing recording…':'● Recording locally'):pending?'Waiting for microphone permission…':review?(stale?'Take belongs to its original slide · return there or download/discard':'New take · Ready to review'):track?'Existing narration · '+auTime(track.durationMs/1000):'Ready to record';
  $('rc-record').textContent=review?'Retake':track?'Record replacement':'Record narration';$('rc-record').hidden=capturing||pending;$('rc-record').disabled=locked||rcBusy;
- $('rc-stop').hidden=!capturing;$('rc-cancel').hidden=!capturing&&!pending;$('rc-use').hidden=!review;$('rc-discard').hidden=!review;$('rc-download').hidden=!review;
+ $('rc-stop').hidden=!capturing;$('rc-stop').disabled=!!recSession?.stopping;$('rc-cancel').hidden=!capturing&&!pending;$('rc-use').hidden=!review;$('rc-discard').hidden=!review;$('rc-download').hidden=!review;
  $('rc-use').disabled=locked||stale||rcBusy;$('rc-preview-button').hidden=capturing||pending||!review&&!track;$('rc-preview-button').disabled=rcBusy||!review&&locked;$('rc-preview-button').textContent=node&&!node.paused?'Pause':'Play';
  $('rc-level-label').hidden=!capturing;$('rc-elapsed').hidden=!capturing;$('rc-elapsed').textContent=$('rec-timer').textContent;
  $('rc-transport').hidden=capturing||pending||!review&&!node;rcPosition();

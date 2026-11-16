@@ -30,14 +30,14 @@ const audioCore=(()=>{
   }
   function empty(){return {version:1,mode:'none',slides:Object.create(null),overall:null,music:null};}
   function tracks(state){return state?.audio?[...Object.values(state.audio.slides||{}),state.audio.overall,state.audio.music].filter(Boolean):[];}
-  async function probe(blob,name=blob.name,type=blob.type){
+  async function probe(blob,name=blob.name,type=blob.type,{decodeDuration=false}={}){
     const kind=mime(name,type);number(blob.size,1,maxBytes,'size',true);
     const node=document.createElement('audio'),url=URL.createObjectURL(blob);node.preload='metadata';
     try{return await new Promise((resolve,reject)=>{
       const timer=setTimeout(()=>reject(Error('Audio metadata timed out. Choose a supported, complete file.')),15000);
       node.onloadedmetadata=async()=>{try{let duration=node.duration;
         // Measure duration-less recorder WebM without re-encoding the original.
-        if(!Number.isFinite(duration)&&kind==='audio/webm'){
+        if(decodeDuration||!Number.isFinite(duration)&&kind==='audio/webm'){
           const Context=window.AudioContext||window.webkitAudioContext;if(!Context)throw Error('Recording duration is unavailable in this browser.');
           const context=new Context();try{duration=(await context.decodeAudioData(await blob.arrayBuffer())).duration;}finally{await context.close();}
         }
