@@ -10,7 +10,7 @@ or Inspector → Sound. Downloads are author tools, not audience permissions.
 
 1. Open a presentation in the editor and choose **Insert → Project media**. Search
    or filter the list, select an original, preview it and inspect its assignments.
-2. Choose **Record slide narration**, or **Inspector → Sound → Record narration**.
+2. Use **Record narration** directly below the slide canvas, or choose **Record slide narration** in Project media / **Inspector → Sound → Record narration**.
    Select a microphone, record, stop and preview. **Use take** accepts the take;
    **Record / retake** and **Discard take** leave prior narration unchanged.
 3. Choose Per-slide narration in Project settings → Audio to use the accepted take.
@@ -25,6 +25,32 @@ or Inspector → Sound. Downloads are author tools, not audience permissions.
 Save an editable backup from your existing stable build before testing the alpha.
 Opening existing files does not rewrite them. Once library metadata is saved, keep
 the v6 copy for this alpha and retain the older backup for older Studio builds.
+
+## Canvas narration controls
+
+The strip below the canvas stays outside slide content and exports. With no attached
+narration it offers **Record narration**. With an existing track it offers **Play**,
+duration and **Record replacement**. During capture it shows a red recording state,
+live input level, elapsed time, **Stop** and **Cancel**. After Stop, preview the take
+with **Play**, waveform and seek control, then choose **Retake**, **Discard** or
+**Use take**. Waveforms are measured from the audio; unsupported/large sources keep
+the ordinary transport without a fabricated waveform. Waveform decoding is bounded
+to short sources; it does not change original bytes.
+
+The gear menu owns microphone selection, refresh, take download and the shortcut to
+Audio settings. Existing narration remains unchanged until Use take. A replacement
+preserves volume/end settings and uses one Undo step. Closing the editor pauses
+preview and ends microphone access; reopen it to review an interrupted canvas take.
+Leaving the slide or Edit blocks mode stops capture. A take stays bound to its
+original slide and edit revision: a different slide cannot accept it. Return to the
+unchanged original target or download/discard it. Pending microphone permission can
+be cancelled; a later permission grant releases its obsolete tracks immediately.
+
+This refinement does not add saved fields or change native v6. The original modal
+recording flow remains available from Inspector and Project media. The editor
+overview screenshot scene needs fresh human acceptance for this development build;
+other existing scenes have no intentional change. The illustrative POC is not
+evidence of the implemented interface.
 
 ## Storage contract
 

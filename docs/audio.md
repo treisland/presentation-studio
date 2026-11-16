@@ -41,4 +41,9 @@ The design concepts include possible future ducking, fades/trimming and waveform
 
 ## Record and manage originals
 
+The editor also provides immediate narration controls below the canvas: Record,
+Stop/Cancel, then Play/Retake/Discard/Use take. The gear menu contains microphone and
+Audio settings. Existing narration is replaced only after Use take; a take captured
+on one slide cannot be applied to another slide.
+
 Use **Inspector → Sound → Record narration** for a local, reviewable microphone take. Choose **Use take** to replace narration; preview/discard never changes the slide. **Insert → Project media** shows originals, usage and repair/download actions. See [Project media and recording](media-authoring.md) for limits, codecs, compatibility and local review.

@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Add canvas-adjacent narration controls with ready/record/review states, measured waveforms, preview seeking, device settings and explicit take acceptance. Stop capture on slide/mode changes and retain original-target takes for review/download.
 - Add Project media with original previews, usage/health, rename, reviewed shared replacement, repair and original-media ZIP downloads; retain library originals in guarded native v6 projects.
 - Add local per-slide microphone recording with device/level/timer controls, preview, explicit acceptance, portable-budget limits and Undo.
 

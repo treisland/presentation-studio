@@ -87,3 +87,7 @@ The companion site has not been changed or deployed. Follow
 [website-process](website-process.md) for later capture provenance and publication.
 
 **Insert → Project media** opens the project-wide original-media library. **Inspector → Sound** also provides Project media and Record narration actions. These are local author tools; audience playback has no corresponding download controls.
+
+The canvas narration strip offers immediate record, stop/cancel, preview/seek,
+retake/discard and Use take controls without opening a dialog. Its gear menu owns
+microphone selection and a shortcut to narration settings.

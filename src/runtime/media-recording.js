@@ -1,11 +1,13 @@
 // A take is session-only until accepted. No microphone state enters a project pack.
-let recSession=null,recTake=null,recURL='',recGeneration=0,recOrigin=null,recMeter=null;
+let recSession=null,recTake=null,recURL='',recGeneration=0,recOrigin=null,recSurface='dialog',recPaint=()=>{};
 const recMaxMs=600000;
-function recStatus(message){$('rec-status').textContent=message;}
+function recActive(){return recSurface==='canvas'?$('full-editor').open&&!projectPlayback:$('rec-dialog').open;}
+function recStatus(message){if($('rec-status').textContent!==message)$('rec-status').textContent=message;if(recSurface==='canvas'&&$('rc-status')&&$('rc-status').textContent!==message)$('rc-status').textContent=message;recPaint();}
 function recRelease(session){
  clearInterval(session?.timer);cancelAnimationFrame(session?.frame);
  session?.stream?.getTracks().forEach(track=>{track.onended=null;track.stop();});
  session?.context?.close().catch(()=>{});
+ if($('rc-level'))$('rc-level').value=0;
 }
 function recStop(message='Recording stopped. Review the take before accepting.'){
  const session=recSession;if(!session)return;
@@ -14,10 +16,10 @@ function recStop(message='Recording stopped. Review the take before accepting.')
  recRelease(session);recSession=null;
  if($('rec-status'))recStatus(message);
 }
-function recDiscard(){if(recURL)URL.revokeObjectURL(recURL);recURL='';recTake=null;const preview=$('rec-preview');preview.pause();preview.removeAttribute('src');preview.load();$('rec-accept').disabled=true;$('rec-download').disabled=true;}
+function recDiscard(){if(recURL)URL.revokeObjectURL(recURL);recURL='';recTake=null;const preview=$('rec-preview');preview.pause();preview.removeAttribute('src');preview.load();$('rec-accept').disabled=true;$('rec-download').disabled=true;recPaint();}
 function recMime(){return ['audio/webm;codecs=opus','audio/ogg;codecs=opus','audio/mp4'].find(type=>MediaRecorder.isTypeSupported(type));}
 function recOpen(){
- try{pmGuard();if(auLocked('slide'))throw Error('Unlock this slide before recording.');projectFlush();auStopPreview();pmStopPreview();recOrigin=document.activeElement;$('rec-dialog').classList.toggle('editor-dark',document.body.classList.contains('editor-dark'));$('rec-dialog').showModal();$('rec-target').textContent='For slide '+(projectState.slides.indexOf(projectModel())+1)+' · '+projectModel().title;recStatus('Recording stays on this device. Preview and choose Use take to replace narration.');$('rec-start').focus();}
+ try{pmGuard();if(auLocked('slide'))throw Error('Unlock this slide before recording.');if(recSession||$('rec-start').disabled)throw Error('Stop the current recording before opening microphone settings.');recSurface='dialog';projectFlush();auStopPreview();pmStopPreview();recOrigin=document.activeElement;$('rec-dialog').classList.toggle('editor-dark',document.body.classList.contains('editor-dark'));$('rec-dialog').showModal();$('rec-target').textContent='For slide '+(projectState.slides.indexOf(projectModel())+1)+' · '+projectModel().title;recStatus('Recording stays on this device. Preview and choose Use take to replace narration.');$('rec-start').focus();}
  catch(error){pmMessage(error.message);projectMessage(error.message);}
 }
 async function recDevices(){
@@ -34,7 +36,7 @@ async function recStart(){
  try{
   const stream=await navigator.mediaDevices.getUserMedia({audio:device?{deviceId:{exact:device}}:true,video:false});
   session={stream,identity,slide,number:projectState.slides.findIndex(s=>s.id===slide)+1,generation,chunks:[],bytes:0,started:performance.now(),reason:'Recording stopped. Review the take.'};
-  if(generation!==recGeneration||identity!==auIdentity()||document.hidden||!$('rec-dialog').open||auLocked('slide')){recRelease(session);throw Error('The target changed while requesting permission. Start again.');}
+  if(generation!==recGeneration||identity!==auIdentity()||document.hidden||!recActive()||auLocked('slide')){recRelease(session);throw Error('The target changed while requesting permission. Start again.');}
   const recorder=new MediaRecorder(stream,{mimeType:mime,audioBitsPerSecond:96000});session.recorder=recorder;recSession=session;
   session.byteLimit=available;
   recorder.ondataavailable=event=>{if(event.data.size){session.chunks.push(event.data);session.bytes+=event.data.size;if(session.bytes>=session.byteLimit)recStop('Portable byte limit reached. Review or download the take.');}};
@@ -51,10 +53,11 @@ async function recStart(){
   };
   for(const track of stream.getTracks())track.onended=()=>recStop('Microphone disconnected. Review the captured take.');
   const Context=window.AudioContext||window.webkitAudioContext;
-  if(Context){const context=new Context(),analyser=context.createAnalyser();session.context=context;analyser.fftSize=256;context.createMediaStreamSource(stream).connect(analyser);const samples=new Uint8Array(analyser.fftSize);const meter=()=>{if(recSession!==session)return;analyser.getByteTimeDomainData(samples);$('rec-level').value=Math.min(1,Math.sqrt(samples.reduce((sum,n)=>sum+((n-128)/128)**2,0)/samples.length)*4);session.frame=requestAnimationFrame(meter);};meter();}
+  if(Context){const context=new Context(),analyser=context.createAnalyser();session.context=context;analyser.fftSize=256;context.createMediaStreamSource(stream).connect(analyser);const samples=new Uint8Array(analyser.fftSize);const meter=()=>{if(recSession!==session)return;analyser.getByteTimeDomainData(samples);$('rec-level').value=Math.min(1,Math.sqrt(samples.reduce((sum,n)=>sum+((n-128)/128)**2,0)/samples.length)*4);if($('rc-level'))$('rc-level').value=$('rec-level').value;session.frame=requestAnimationFrame(meter);};meter();}
   recorder.start(250);$('rec-stop').disabled=false;$('rec-device').disabled=true;recStatus('Recording locally. Stop to preview; nothing is attached yet.');
   session.timer=setInterval(()=>{
    const elapsed=performance.now()-session.started;$('rec-timer').textContent=auTime(elapsed/1000)+' / 10:00';
+   recPaint();
    if(identity!==auIdentity()||auLocked('slide'))recStop('Target or editing state changed. Download or discard this take.');
    else if(elapsed>=recMaxMs)recStop('Ten-minute limit reached. Review the take.');
    else if(elapsed>=recMaxMs-30000||session.bytes>=available*.85)recStatus('Approaching the recording limit. Recording will stop automatically and keep a reviewable take.');
@@ -65,7 +68,7 @@ async function recStart(){
 async function recAccept(){
  const take=recTake;if(!take)return;pmGuard();if(take.identity!==auIdentity()||take.slide!==projectSelected||auLocked('slide'))throw Error('The project, slide or edit revision changed. Download or discard this take and record again.');
  $('rec-accept').disabled=true;const info=await audioCore.probe(take.blob,take.name,take.blob.type),sha256=await pmHash(take.blob),entries=await pmEntries();
- if(take!==recTake||take.identity!==auIdentity()||!$('rec-dialog').open)throw Error('The target changed. Download or discard this take.');
+ if(take!==recTake||take.identity!==auIdentity()||!recActive())throw Error('The target changed. Download or discard this take.');
  if(info.durationMs>recMaxMs+2000)throw Error('The take exceeds ten minutes. Download it and record a shorter take.');
  pmCheckBudget(take.blob.size+new TextEncoder().encode(JSON.stringify(entries)).length+8192);
  const path='assets/recording-'+projectID('take')+'-'+mediaFilename(take.name),old=auTrack('slide');
@@ -82,6 +85,6 @@ function recMount(){
  $('rec-start').onclick=()=>pmRun(recStart);$('rec-stop').onclick=()=>recStop();$('rec-refresh').onclick=()=>pmRun(recDevices);$('rec-discard').onclick=()=>{recGeneration++;recStop();recDiscard();recStatus('Take discarded. Existing narration is unchanged.');$('rec-start').disabled=false;};
  $('rec-accept').onclick=()=>pmRun(async()=>{try{await recAccept();}finally{if(recTake)$('rec-accept').disabled=false;}});$('rec-download').onclick=()=>{if(recTake)mediaDownload(recTake.blob,recTake.name);};
  const record=componentButton('Record narration…',recOpen);record.id='rec-open';$('au-slide').append(record);
- addEventListener('beforeunload',()=>recStop());document.addEventListener('visibilitychange',()=>{if(document.hidden)recStop('Page hidden. Review the captured take.');});$('full-editor').addEventListener('close',()=>{recGeneration++;recStop('Editor closed.');if(dialog.open)dialog.close();});
+ addEventListener('beforeunload',()=>recStop());document.addEventListener('visibilitychange',()=>{if(document.hidden)recStop('Page hidden. Review the captured take.');});$('full-editor').addEventListener('close',()=>{if(!recSession||recSurface==='dialog')recGeneration++;recStop('Editor closed. Review or download the take when you reopen it.');$('rec-preview').pause();if(dialog.open)dialog.close();recPaint();});
  recDevices().catch(()=>{});
 }

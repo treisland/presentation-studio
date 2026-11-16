@@ -112,3 +112,35 @@ test('import collisions remap retained catalog identities together with their as
 });
 
 test('recording byte limit stops capture without dropping its reviewable original',async()=>{const {page,errors}=await setup();try{await reveal(page,'#rec-open');await page.locator('#rec-open').click();await page.locator('#rec-start').click();await page.waitForFunction(()=>window.__pm.session());await page.waitForTimeout(500);await page.evaluate(()=>window.__pm.byteLimit());await page.waitForFunction(()=>!!window.__pm.take());assert.match(await page.locator('#rec-status').textContent(),/byte limit/);assert.equal(await page.locator('#rec-download').isEnabled(),true);assert.equal(await page.evaluate(()=>window.__pm.session()),false);assert.deepEqual(errors,[]);}finally{await page.close();}});
+
+test('canvas transport records and reviews without a modal, preserves previous narration until acceptance and supports Undo',async()=>{
+ const {page,errors}=await setup();try{
+  const before=await snapshot(page);assert.equal(await page.locator('#rc-strip').isVisible(),true);await page.locator('#rc-record').click();await page.waitForFunction(()=>window.__pm.session());assert.equal(await page.locator('#rec-dialog').evaluate(d=>d.open),false);
+  await page.waitForTimeout(700);await page.screenshot({path:'test-results/canvas-recording-active.png'});await page.locator('#rc-stop').click();await page.waitForFunction(()=>!!window.__pm.take());assert.deepEqual((await snapshot(page)).state,before.state);
+  await page.locator('#rc-preview-button').click();await page.waitForFunction(()=>document.querySelector('#rc-preview-button').textContent==='Pause');await page.locator('#rc-preview-button').click();await page.locator('#rc-seek').focus();await page.keyboard.press('Home');assert.equal(await page.locator('#rc-seek').inputValue(),'0');
+  await page.waitForFunction(()=>!document.querySelector('#rc-wave').hidden);await page.screenshot({path:'test-results/canvas-recording-review.png'});await page.locator('#rc-use').click();await page.waitForFunction(()=>!window.__pm.take());const after=await snapshot(page);assert.notEqual(after.state.audio.slides[after.state.slides[0].id].src,before.state.audio.slides[before.state.slides[0].id].src);
+  await page.locator('#fe-undo').click();assert.deepEqual((await snapshot(page)).state.audio,before.state.audio);assert.deepEqual(errors,[]);
+ }finally{await page.close();}
+});
+test('canvas slide navigation stops capture, retains the original-target take and prevents wrong-slide acceptance',async()=>{
+ const {page,errors}=await setup();try{
+  const before=await snapshot(page),second=before.state.slides[1];await page.locator('#rc-record').click();await page.waitForFunction(()=>window.__pm.session());await page.waitForTimeout(500);await page.locator('.fe-slide-button[data-slide-id="'+second.id+'"]').click();await page.waitForFunction(()=>!window.__pm.session()&&!!window.__pm.take());assert.equal(await page.locator('#rc-use').isDisabled(),true);assert.equal(await page.locator('#rc-download').isEnabled(),true);assert.match(await page.locator('#rc-hint').textContent(),/original slide/);assert.deepEqual((await snapshot(page)).state,before.state);
+  await page.locator('#rc-discard').click();assert.equal(await page.evaluate(()=>!!window.__pm.take()),false);assert.deepEqual((await snapshot(page)).state,before.state);assert.deepEqual(errors,[]);
+ }finally{await page.close();}
+});
+test('canvas cancel releases a permission-delayed microphone and never changes existing narration',async()=>{
+ const {page,errors}=await setup();try{
+  const before=await snapshot(page);await page.evaluate(()=>{const original=navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);navigator.mediaDevices.getUserMedia=async(...args)=>{const stream=await original(...args);window.__lateTracks=stream.getTracks();await new Promise(resolve=>window.__grant=resolve);return stream;};});
+  await page.locator('#rc-record').click();await page.waitForFunction(()=>!!window.__grant);await page.locator('#rc-cancel').click();await page.evaluate(()=>window.__grant());await page.waitForFunction(()=>window.__lateTracks.every(track=>track.readyState==='ended'));assert.equal(await page.evaluate(()=>window.__pm.session()),false);assert.deepEqual((await snapshot(page)).state,before.state);assert.deepEqual(errors,[]);
+ }finally{await page.close();}
+});
+test('canvas controls stay outside the slide, fit laptop/dark/narrow layouts and disable recording for locks',async()=>{
+ const {page,errors}=await setup();try{
+  await page.setViewportSize({width:1366,height:768});await page.screenshot({path:'test-results/canvas-recording-ready.png'});
+  assert.equal(await page.locator('#rc-strip').evaluate(el=>!el.closest('#we-viewport')&&el.getBoundingClientRect().top>=document.querySelector('#we-viewport').getBoundingClientRect().bottom),true);
+  await page.evaluate(()=>document.body.classList.add('editor-dark'));await page.screenshot({path:'test-results/canvas-recording-dark.png'});await page.setViewportSize({width:390,height:844});await page.screenshot({path:'test-results/canvas-recording-narrow.png'});assert.equal(await page.locator('#rc-strip').evaluate(el=>el.scrollWidth<=el.clientWidth+1),true);
+  await page.setViewportSize({width:1366,height:900});await page.locator('#wp-tab-arrange').click();await page.locator('#ce-slide-lock').click();assert.equal(await page.locator('#rc-record').isDisabled(),true);assert.deepEqual(errors,[]);
+ }finally{await page.close();}
+});
+
+test('leaving canvas editing stops microphone access and reopening retains the reviewable take',async()=>{const {page,errors}=await setup();try{await page.locator('#rc-record').click();await page.waitForFunction(()=>window.__pm.session());await page.waitForTimeout(500);await page.locator('#full-editor').evaluate(d=>d.close());await page.waitForFunction(()=>!window.__pm.session()&&!!window.__pm.take());await page.locator('#open-full-editor').click();assert.equal(await page.locator('#rc-use').isVisible(),true);await page.locator('#rc-discard').click();await page.locator('#vb-preview-mode').click();assert.equal(await page.locator('#rc-record').isDisabled(),true);assert.deepEqual(errors,[]);}finally{await page.close();}});
