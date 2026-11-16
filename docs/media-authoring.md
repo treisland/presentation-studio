@@ -205,3 +205,5 @@ Project media audio previews show elapsed/total time before playback using the o
 During playback, Continue without audio releases a narration-driven hold and resumes the slide timer; intentionally Manual advancement stays manual. Navigating to another slide clears that one-slide bypass.
 
 Refreshing local inventory preserves pending name edits and audio preview position when the selected original and its dependencies are unchanged. Changed selections or originals still rebuild their details.
+
+Browsers may classify downloaded audio-only WebM recordings as video/webm. Studio normalizes recognized WebM container MIME types to audio/webm and verifies decodable audio before accepting them. Reattaching or repairing these originals preserves their bytes; unsupported/corrupt audio is still rejected.
