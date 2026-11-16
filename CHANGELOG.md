@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Keep the canvas Advance slide dropdown compact on wide displays while retaining responsive laptop/narrow sizing.
+
 - Add visible narration status and slide advancement controls, project narration defaults and override review/reset, linked silent-slide timing, and Audio immediately after Background. New blank projects start Manual; existing timing and original media remain preserved.
 
 - Drain final recorder chunks before releasing microphone tracks; validate recorded duration from decoded audio and retain incomplete takes for download without replacing narration.
