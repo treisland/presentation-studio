@@ -37,3 +37,9 @@ Double-clicking unmasked media reveals the numeric crop controls without enablin
 ## Project-wide originals
 
 Open **Insert → Project media** to search originals, inspect usage, rename display names, download original bytes, or review replacement of one/all current uses. Removing an assignment retains shared and recovery originals. See [Project media](media-authoring.md).
+
+Project media now defaults to Current project, with an All local projects storage
+view. Bulk assignment removal is undoable; permanent original deletion has a separate
+review and acknowledgement, protects assignments/recovery dependencies and never
+deletes across projects. Identical-file consolidation and copying originals into the
+current project are described in the [media guide](media-authoring.md).

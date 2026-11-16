@@ -44,11 +44,12 @@ function pmSlots(state){
  add(state.backgrounds?.defaults,'asset',null,'Presentation background',true);
  return slots;
 }
-function pmCollect(pack=projectPack()){
- const states=auStates(pack),slots=pmSlots(pack.state),refs=projectReferenced(pack),entries=Object.assign({},...states.filter(state=>state!==pack.state).map(state=>state.assetLibrary?.entries||{}),pack.state.assetLibrary?.entries||{}),eligible=projectReferenced(projectPack(true)),historical=states.flatMap(state=>pmSlots(state));
+function pmCollect(pack=projectPack(),assets=mediaBlobs,eligible=null){
+ const states=auStates(pack),slots=pmSlots(pack.state),refs=projectReferenced(pack),entries=Object.assign({},...states.filter(state=>state!==pack.state).map(state=>state.assetLibrary?.entries||{}),pack.state.assetLibrary?.entries||{}),historical=states.flatMap(state=>pmSlots(state));
+ eligible??=pack.meta?.id===projectMeta.id?projectReferenced(projectPack(true)):new Set(slots.filter(slot=>slot.active).map(slot=>slot.path));
  for(const slot of slots)slot.active=slot.active&&eligible.has(slot.path);
  const retained=new Set(pmReferenced(pack));for(const state of auStates(pack))if(state!==pack.state)for(const path of Object.keys(state.assetLibrary?.entries||{}))retained.add(path);
- return [...refs].sort().map(path=>{const uses=slots.filter(s=>s.path===path),blob=mediaBlobs.get(path),meta=entries[path],track=(uses.find(s=>s.role)||historical.find(s=>s.path===path&&s.role))?.holder;const status=uses.some(s=>s.active)?'In use':uses.length?'Inactive':retained.has(path)?'Retained for recovery':'Unused';return {path,blob,uses,status,name:meta?.name||track?.name||(uses.find(s=>s.key==='src')||historical.find(s=>s.path===path&&s.key==='src'))?.holder.name||path.split('/').pop(),kind:meta?.kind||(track?'audio':pmKind(path,blob)),meta};});
+ return [...refs].sort().map(path=>{const uses=slots.filter(s=>s.path===path),blob=assets.get(path),meta=entries[path],track=(uses.find(s=>s.role)||historical.find(s=>s.path===path&&s.role))?.holder;const status=uses.some(s=>s.active)?'In use':uses.length?'Inactive':retained.has(path)?'Retained for recovery':'Unused';return {path,blob,uses,status,name:meta?.name||track?.name||(uses.find(s=>s.key==='src')||historical.find(s=>s.path===path&&s.key==='src'))?.holder.name||path.split('/').pop(),kind:meta?.kind||(track?'audio':pmKind(path,blob)),meta};});
 }
 function pmGuard(){editingGuard();if(!weEditing()||vbMode!=='edit'||projectState.editLocked)throw Error('Open an unlocked project in Edit blocks mode.');}
 function pmApply(operation){projectFlush();const snapshot=studioEditing.read(),result=studioEditing.apply({apiVersion:1,projectId:snapshot.projectId,expectedRevision:snapshot.revision,operations:[operation]});if(!result.ok)throw Error(result.message);return result;}

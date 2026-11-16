@@ -72,7 +72,7 @@ async function recAccept(){
  if(info.durationMs>recMaxMs+2000)throw Error('The take exceeds ten minutes. Download it and record a shorter take.');
  pmCheckBudget(take.blob.size+new TextEncoder().encode(JSON.stringify(entries)).length+8192);
  const path='assets/recording-'+projectID('take')+'-'+mediaFilename(take.name),old=auTrack('slide');
- entries[path]={name:take.name,kind:'recording',origin:'recorded',bytes:take.blob.size,durationMs:info.durationMs,...sha256?{sha256}:{}};
+ entries[path]={name:((projectModel(take.slide)?.title||'Slide narration')+' · Narration').slice(0,255),kind:'recording',origin:'recorded',bytes:take.blob.size,durationMs:info.durationMs,...sha256?{sha256}:{}};
  const track={src:path,name:take.name,mime:info.mime,bytes:take.blob.size,durationMs:info.durationMs,volume:old?.volume??1,advanceOnEnd:old?.advanceOnEnd??false,paddingMs:old?.paddingMs??500};
  const snapshot=studioEditing.read();mediaRemember(path,take.blob);
  const result=studioEditing.apply({apiVersion:1,projectId:snapshot.projectId,expectedRevision:snapshot.revision,operations:[{type:'media.library',entries},{type:'audio.settings',role:'slide',slideId:take.slide,track}]});

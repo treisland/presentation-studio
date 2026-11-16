@@ -67,7 +67,9 @@ Renaming changes display metadata only. Originals never change in place.
 Editable packs, browser recovery, Undo and checkpoints retain catalog assets,
 including unassigned originals. Playback packs remove the catalog and use existing
 eligible-reference filtering. Missing originals and unsupported decoding are
-separate states. Recovery assets are never deleted by these tools.
+separate states. Ordinary remove/replace/download actions preserve recovery assets.
+Only the separately acknowledged cleanup operation below can discard eligible
+originals and explicitly selected recovery history.
 
 The conservative portable budget is 95 MiB for project JSON plus unique retained
 originals, leaving headroom under the existing 100 MiB input cap. Existing oversized
@@ -105,6 +107,71 @@ collision-safe names and include a usage/provenance manifest. Missing files are
 listed and require acknowledgement before an incomplete download. Downloads and
 preview never remove retained originals. Shared replacements respect slide/object
 locks and preserve crop, volume and playback settings.
+
+## Current project and All local projects
+
+**Current project** is the default each time Project media opens. Filter by assigned,
+unused or recovery-retained media and sort by largest file. The detail pane explains
+Undo, Redo, checkpoint, reset, media-restore and assignment dependencies. Usage buttons navigate to
+the affected slides. New recordings use the slide title as their library display name;
+downloads retain the original recording extension.
+
+**All local projects** reads saved drafts and media available to this Studio site/origin and browser profile, plus
+the current workspace. It does not scan your computer or discover exported files.
+Filter by project, inspect usage and originals, download selections or open a project.
+Unreadable drafts are reported and left untouched. This view offers no deletion.
+Refresh the inventory after another window changes saved drafts.
+
+**Copy to current project** preserves the selected source bytes under a fresh identity
+without changing the source project. The copied original can be added as image/video
+media or assigned as slide narration. Narration replacement keeps volume/end settings
+and existing sources for Undo; select Per-slide narration to use that role in playback.
+
+## Cleanup and deleting media
+
+Select rows individually or use **Select visible**, then download or remove their
+current assignments in one Undo step. **Remove from all slides** includes inactive
+attachments, respects locks and retains the original bytes. Removal does not free
+storage by itself. Original files are shared by references within a project, while
+each saved project's browser media keys are independent.
+
+**Review deletion** is a separate permanent action, limited to Current project:
+
+- In-use, inactive and Trash assignments remain protected. Remove their assignments
+  or manage Trash through project recovery tools first.
+- A genuinely unused original can be deleted without clearing history when no Undo,
+  Redo, checkpoint or reset baseline references it.
+- To delete a recovery-only original, explicitly choose to clear this project's
+  Undo/Redo and checkpoints and replace old presentation/Inspector restore baselines
+  with the current state.
+  Other originals and all active/Trash assignments remain protected.
+- Review the named originals, dependencies and eligible payload size. Download an
+  editable backup first, then acknowledge that deletion cannot be undone. The backup
+  includes browser-only unused originals in a native-v6 catalog; if it exceeds the
+  portable budget, download originals in smaller media selections instead.
+
+Deletion updates the saved project and removes only its selected asset keys in one
+IndexedDB transaction. Memory and URLs change only after commit. Interrupted writes
+leave originals intact, and a concurrent saved-project change aborts cleanup instead
+of overwriting that other version. Current unsaved work remains in memory after a
+failure; export it before reopening another saved version. Other projects, component
+libraries and exported ZIPs are untouched. Reported savings are original-file payload
+bytes, not a guarantee about browser database overhead or physical disk reclamation.
+
+## Identical files and bulk downloads
+
+**Find identical files** compares actual SHA-256 bytes, not filenames. In Current
+project, select a canonical original and review consolidation of duplicate assignments.
+Settings stay unchanged and one Undo restores the prior references. Originals remain
+retained; reclaiming space requires a separate reviewed deletion. All-local results
+are informational and cannot consolidate or delete across projects.
+
+Bulk downloads support used, all-available and selected originals. Duplicate names
+receive collision-safe suffixes; the manifest includes owning project IDs, usage and
+recovery information so identical paths from different projects remain distinguishable.
+Missing originals require acknowledgement for incomplete downloads. One media download
+is bounded to 900 originals and 200 MiB; choose smaller selections for larger libraries.
+No cleanup operation introduces a new saved format, external service or publication.
 
 ## Local review
 

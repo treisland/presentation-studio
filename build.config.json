@@ -49,7 +49,8 @@
     "src/styles/start-screen.css",
     "src/styles/charts.css",
     "src/styles/project-media.css",
-    "src/styles/canvas-recording.css"
+    "src/styles/canvas-recording.css",
+    "src/styles/media-management.css"
   ],
   "scripts": [
     "src/runtime/prelude.js",
@@ -144,6 +145,7 @@
     "src/runtime/project-media.js",
     "src/runtime/media-recording.js",
     "src/runtime/canvas-recording.js",
+    "src/runtime/media-management.js",
     "src/runtime/boot.js"
   ],
   "vendor": "vendor/jszip-3.10.1.min.js"
