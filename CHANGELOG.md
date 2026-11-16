@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.20.0-alpha.1 — 2026-11-16
+
 - Allow Continue without audio to release narration-driven advancement holds while preserving intentionally Manual slides.
 
 - Show measured audio duration before playback in Project media, with consistent elapsed/total, seeking and volume controls in both media scopes; measure older originals in the background without changing their bytes.

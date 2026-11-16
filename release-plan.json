@@ -1,6 +1,6 @@
 {
   "version": "0.20.0-alpha.1",
-  "publish": false,
+  "publish": true,
   "notes": "docs/releases/0.20.0-alpha.1.md",
   "manualGatesPassed": false,
   "evidence": [

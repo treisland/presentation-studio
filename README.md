@@ -14,7 +14,7 @@ A portable HTML presentation player and editor. Start with a short, generic demo
 
 ## 0.20.0-alpha.1 — media authoring preview
 
-The next alpha adds local slide narration recording and a Project media workspace based on the supplied media-management concept. Original-media downloads, reviewed replacement, recovery retention and guarded native v6 editable storage are included. Local microphone/browser/accessibility acceptance is pending; this branch is for maintainer testing. See [Project media](docs/media-authoring.md).
+This alpha adds local slide narration recording, visible advancement defaults/overrides and a Project media workspace with original downloads, reviewed replacement, recovery retention and guarded native v6 editable storage. Maintainer local manual acceptance was reported on 2026-11-16. Broader browser/codec and accessibility coverage remains scoped in the [validation record](docs/releases/0.20.0-alpha.1-validation.md). See [Project media](docs/media-authoring.md).
 
 ## 0.19 production release
 
