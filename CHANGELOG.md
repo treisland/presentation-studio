@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Show measured audio duration before playback in Project media, with consistent elapsed/total, seeking and volume controls in both media scopes; measure older originals in the background without changing their bytes.
+
 - Keep the canvas Advance slide dropdown compact on wide displays while retaining responsive laptop/narrow sizing.
 
 - Add visible narration status and slide advancement controls, project narration defaults and override review/reset, linked silent-slide timing, and Audio immediately after Background. New blank projects start Manual; existing timing and original media remain preserved.

@@ -45,3 +45,5 @@ deletes across projects. Identical-file consolidation and copying originals into
 current project are described in the [media guide](media-authoring.md).
 
 The canvas narration strip and Sound section now show narration presence/duration and an Advance slide dropdown. Project settings → Audio (after Background) owns inherited narration defaults and override review; Presentation settings owns the automatic silent-slide timer. See the media guide for compatibility and override behavior.
+
+Project media audio previews display measured elapsed/total time before Play, including recordings whose WebM container reports no duration. Older files are measured locally when needed. Preview seeking, mute and volume do not change authored audio settings.
