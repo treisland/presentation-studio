@@ -260,3 +260,9 @@
 .ce-existing-grid .ce-placement-cancel {
   grid-column: 1 / -1;
 }
+
+/* In authoring, original text remains selectable above floating/background media.
+   The wrapper stays transparent to clicks in genuinely empty canvas space. */
+#fe-preview [data-block-mode="edit"] .media-original :is(.vb-target,.db-block) {pointer-events:auto;}
+#fe-preview [data-block-mode="edit"] .canvas-hover {outline:calc(1px / var(--db-scale,.4)) dashed #4376b8;outline-offset:2px;}
+#fe-preview [data-block-mode="edit"] :is(.db-selected,.ce-selected).canvas-hover {outline-style:solid;}

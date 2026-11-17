@@ -1010,6 +1010,7 @@ function ceBind() {
   $("fe-preview").addEventListener("pointerdown", ceGesture, true);
   window.addEventListener("pointermove", ceMove);
   window.addEventListener("pointerup", (event) => {
+    if(ceDrag&&ceDrag.pointer!==event.pointerId||ceRelocate?.pointer!=null&&ceRelocate.pointer!==event.pointerId)return;
     if (ceRelocate?.pointer === event.pointerId)
       ceHighlightPlacement(event.clientX, event.clientY);
     if(ceDrag?.pointer===event.pointerId&&(event.clientX!==(ceDrag.lastX??ceDrag.startX)||event.clientY!==(ceDrag.lastY??ceDrag.startY)))ceMove(event);

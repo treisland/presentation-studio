@@ -6,14 +6,14 @@ function mhPaint(){
   const slide=projectPreviewNode?.querySelector('.slide'),viewport=$('we-viewport');
   if(!slide||!viewport||!weEditing()||vbMode!=='edit'){mhHide();return;}
   const roots=[...slide.querySelectorAll('.db-selected,.ce-selected,.gs-bounds')].filter(root=>!slide.classList.contains('gs-multiple')||root.matches('.gs-bounds'));
-  const active=new Set(roots.flatMap(root=>[...root.children].filter(node=>node.matches('.db-handle,.ce-handle,.gs-handle'))));
+  const active=new Set(roots.flatMap(root=>[...root.children].filter(node=>node.matches('.db-handle,.ce-handle,.gs-handle,.an-endpoint'))));
   for(const handle of document.querySelectorAll('.mh-target:popover-open'))if(!active.has(handle))handle.hidePopover();
   const view=viewport.getBoundingClientRect(),canvas=slide.getBoundingClientRect(),scale=weScale();
   const clip={left:Math.max(view.left,canvas.left)+20,right:Math.min(view.right,canvas.right)-20,top:Math.max(view.top,canvas.top)+20,bottom:Math.min(view.bottom,canvas.bottom)-20};
   if(clip.right<=clip.left||clip.bottom<=clip.top){mhHide();return;}
   const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
   for(const root of roots){
-    const handles=[...root.children].filter(node=>node.matches('.db-handle,.ce-handle,.gs-handle'));
+    const handles=[...root.children].filter(node=>node.matches('.db-handle,.ce-handle,.gs-handle,.an-endpoint'));
     if(!handles.length)continue;
     const rect=root.getBoundingClientRect(),visible=rect.right>=view.left&&rect.left<=view.right&&rect.bottom>=view.top&&rect.top<=view.bottom;
     const angle=parseFloat(getComputedStyle(root).rotate)||0,rad=angle*Math.PI/180,c=Math.cos(rad),s=Math.sin(rad);
@@ -28,13 +28,14 @@ function mhPaint(){
       const direction=handle.dataset.dbDirection||handle.dataset.corner||(handle.matches('.gs-resize')?'se':'');
       let x=move?-halfX+30:direction.includes('w')?-halfX:direction.includes('e')?halfX:0;
       let y=move?-halfY-26:direction.includes('n')?-halfY:direction.includes('s')?halfY:0;
+      if(handle.matches('.an-endpoint')){const point=spMeta(handle.dataset.anKey).annotation?.[handle.dataset.anEnd];if(point){x=(point.x-.5)*width*scale;y=(point.y-.5)*height*scale;}}
       let sx=clamp(centerX+c*x-s*y,clip.left,clip.right),sy=clamp(centerY+s*x+c*y,clip.top,clip.bottom);
       return {handle,move,sx,sy};
     });
     const occupied=[];
-    const overlaps=(x,y,move)=>occupied.some(p=>Math.abs(x-p.sx)<(move?15:12)+(p.move?15:12)+2&&Math.abs(y-p.sy)<(move?13:12)+(p.move?13:12)+2);
-    // Reserve resize targets first, then place Move; every grip keeps its own hit area.
-    for(const position of positions.sort((a,b)=>Number(a.move)-Number(b.move))){
+    const overlaps=(x,y,move)=>occupied.some(p=>Math.abs(x-p.sx)<26+(p.move?15:26)+2&&Math.abs(y-p.sy)<(move?13:12)+(p.move?13:12)+2);
+    // Keep arrow endpoints on their geometry; spread resize grips before placing Move.
+    for(const position of positions.sort((a,b)=>Number(b.handle.matches('.an-endpoint'))-Number(a.handle.matches('.an-endpoint'))||Number(a.move)-Number(b.move))){
       const {handle,move}=position;let {sx,sy}=position;
       // Resolve collisions after rotation and clipping, on every canvas edge.
       if(overlaps(sx,sy,move)){

@@ -94,3 +94,13 @@ Manual acceptance: compare representative text, grouped shapes, tables, code,
 masked images and poster/no-poster videos against inserted copies; review laptop
 sizes, theme adaptation and assistive-technology names outside decorative content.
 Large-library automated work bounds do not establish device-specific frame rates.
+
+## Canvas reliability refinement
+
+See [canvas reliability](canvas-reliability.md) for the per-element interaction
+contract and measured limitations. Inspector → Arrange → **Align & space** and
+the Arrange menu share **Align to: Slide / Selection bounds**. Selection alignment
+requires two independent objects or groups; Space evenly requires three. Groups
+count once and keep internal spacing. These are explicit actions; changing the
+alignment target alone does not move content. Existing direct text/table editing,
+media crop modes, template conversion/reset and step numbering are retained.

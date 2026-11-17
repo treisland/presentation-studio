@@ -4,9 +4,9 @@ import {readFile} from 'node:fs/promises';
 import {click} from './ui.mjs';
 export const snapshot=page=>page.evaluate(()=>window.presentationStudioEditing.read());
 export const operations=(page,ops)=>page.evaluate(operations=>{const api=window.presentationStudioEditing,s=api.read();return api.apply({apiVersion:1,projectId:s.projectId,expectedRevision:s.revision,operations});},ops);
-export async function openExample(browser,choice,dark=false){
+export async function openExample(browser,choice,dark=false,file='presentation-studio.html'){
  const page=await browser.newPage({acceptDownloads:true,viewport:{width:1366,height:768}}),errors=[];page.setDefaultTimeout(10000);page.on('pageerror',e=>errors.push(e.message));
- await page.goto(('file://'+resolve('dist/presentation-studio.html')) + '?start=present');await page.locator('#open-full-editor').click();await chooseExample(page,choice,dark);return{page,errors};
+ await page.goto(('file://'+resolve('dist',file)) + '?start=present');await page.locator('#open-full-editor').click();await chooseExample(page,choice,dark);return{page,errors};
 }
 export async function chooseExample(page,choice,dark=false){
  await click(page,'#studio-new-open');if(await page.locator('#hub-switch').evaluate(d=>d.open))await page.locator('#hub-save-switch').click();await page.locator('#nx-wizard').waitFor({state:'visible'});await selectStartingExample(page,choice);

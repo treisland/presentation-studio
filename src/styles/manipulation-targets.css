@@ -12,3 +12,8 @@
 #full-editor .mh-target:popover-open {position:fixed!important;transform:translate(-50%,-50%)!important;rotate:0deg!important;overflow:visible;}
 #full-editor .mh-target::backdrop {pointer-events:none;background:transparent;}
 @media(forced-colors:active){#full-editor [data-block-mode=edit] :is(.db-handle,.ce-handle,.gs-handle){forced-color-adjust:auto;border:2px solid ButtonText!important;}}
+
+#full-editor .an-endpoint.mh-target {box-sizing:border-box;width:48px;height:26px;padding:2px;font:12px Arial;min-height:0;}
+
+#canvas-arrange-actions {display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+#canvas-arrange-reason {font-size:12px;line-height:1.4;}
