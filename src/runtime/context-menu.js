@@ -106,6 +106,7 @@ function cmRender(rows,title,back=null){
       try{Promise.resolve(row.action?.()).catch(error=>projectMessage(error.message));}catch(error){projectMessage(error.message);}
       queueMicrotask(()=>{if(document.activeElement===document.body||document.activeElement===cmMenu){const focus=state.origin?.isConnected&&state.origin.checkVisibility()?state.origin:state.card?$('component-search'):$('cm-selection');focus?.focus({preventScroll:true});}});
     };
+    if(row.preview){button.addEventListener('pointerenter',row.preview);button.addEventListener('focus',row.preview);button.addEventListener('pointerleave',()=>canvasHoverClear());}
     cmMenu.append(button);
   }
   if(!cmState.card&&icSelection().locked){const note=document.createElement('p');note.className='cm-note';note.textContent='Locked or read-only. Unlock permitted items in Layers before editing.';cmMenu.append(note);}

@@ -7,7 +7,7 @@ function icContains(node, predicate) {
   return !!node && projectFind({tree:[node]}, predicate).length > 0;
 }
 function icSelection() {
-  const model = projectModel(), entries = spEntries(), keys = wpKind === 'slide' ? [] : spActiveKeys();
+  const model = projectModel(), entries = spEntries(), keys = wpKind === 'slide' && !spSelected.length ? [] : spActiveKeys();
   const selected = entries.filter(entry => keys.includes(entry.key));
   const target=icInspectorTarget, targetRoot=target&&entries.find(entry=>entry.node===model.tree[Number(target.path.split('.')[0])]);
   const retainedPath=target?.slide===projectSelected&&targetRoot?.key===target.key&&['text','block'].includes(wpKind)?target.path:'';

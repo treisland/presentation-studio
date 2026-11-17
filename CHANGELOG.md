@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+## 0.20.0-beta.1 — 2026-11-16
+
+- Add the full Library manipulation acceptance matrix and testing guide, preserving specialized editing and portable restore (#299).
+
+- Make Slide/Selection alignment explicit, count independent groups for spacing, and label active snap guides (#298).
+
+- Reduce repeated canvas release refresh/layout work and correct endpoint pointer completion (#297).
+
+- Improve canvas object ownership, authoring text hit targets and named overlap selection with preview outlines (#296).
+
+- Begin milestone 34 canvas reliability inventory and test-only release-phase profiling from v0.20.0-alpha.1.
+
 ## 0.20.0-alpha.1 — 2026-11-16
 
 - Accept decodable WebM audio classified as video/webm by the browser, including downloaded narration reattachment and exact-original repair; keep canonical audio MIME and original bytes.

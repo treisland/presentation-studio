@@ -86,8 +86,12 @@ editingRegisterOperation('component.arrange', (state, operation) => {
     return;
   }
   if (!['left','center','right','top','middle','bottom'].includes(operation.action)) editingFail('INVALID','Choose object alignment.');
-  for(const unit of componentUnits(targets)){
-    const rect={...unit.rect};if(operation.action==='left')rect.x=0;if(operation.action==='center')rect.x=(1-rect.w)/2;if(operation.action==='right')rect.x=1-rect.w;if(operation.action==='top')rect.y=0;if(operation.action==='middle')rect.y=(1-rect.h)/2;if(operation.action==='bottom')rect.y=1-rect.h;
+  const units=componentUnits(targets),alignTo=operation.alignTo??'slide';
+  if(!['slide','selection'].includes(alignTo))editingFail('INVALID','Choose Slide or Selection alignment.');
+  if(alignTo==='selection'&&units.length<2)editingFail('INVALID','Select at least two independent objects or groups.');
+  const bounds=alignTo==='slide'?{x:0,y:0,w:1,h:1}:gsBounds(targets);
+  for(const unit of units){
+    const rect={...unit.rect};if(operation.action==='left')rect.x=bounds.x;if(operation.action==='center')rect.x=bounds.x+(bounds.w-rect.w)/2;if(operation.action==='right')rect.x=bounds.x+bounds.w-rect.w;if(operation.action==='top')rect.y=bounds.y;if(operation.action==='middle')rect.y=bounds.y+(bounds.h-rect.h)/2;if(operation.action==='bottom')rect.y=bounds.y+bounds.h-rect.h;
     for(const entry of unit.entries){const original=componentRect(entry);componentPlace(entry,{...original,x:original.x+rect.x-unit.rect.x,y:original.y+rect.y-unit.rect.y});}
   }
 });
@@ -253,11 +257,15 @@ function componentPaint() {
     fields.replaceChildren();fields.dataset.identity=identity;
     if(definition?.fields){const blockId=dbSelected,slideId=projectSelected;definition.fields.forEach(([label],index)=>{const field=document.createElement('label'),input=document.createElement('textarea');field.textContent=label;input.value=projectText(widget.children[index]);input.disabled=locked;input.onchange=()=>componentRun({type:'component.field',slideId,blockId,index,text:input.value});field.append(input);fields.append(field);});}
   }
-  const canvas=projectPreviewNode?.querySelector('.slide');if(canvas){const overflow=[...canvas.querySelectorAll('.db-block')].some(element=>{
-    if(!element.querySelector('.db-handle,.an-endpoint'))return element.scrollHeight>element.clientHeight+2||element.scrollWidth>element.clientWidth+2;
-    const measured=element.cloneNode(true);measured.querySelectorAll('.db-handle,.an-endpoint').forEach(handle=>handle.remove());measured.style.visibility='hidden';measured.style.pointerEvents='none';element.after(measured);
-    const exceeds=measured.scrollHeight>measured.clientHeight+2||measured.scrollWidth>measured.clientWidth+2;measured.remove();return exceeds;
-  });$('component-overflow').textContent=overflow?'Some block content does not fit. Resize the block or shorten its text.':'';}
+  const canvas=projectPreviewNode?.querySelector('.slide');if(canvas){const measured=[];
+    // Batch writes before reads: per-block append/read/remove forced one layout per object.
+    for(const element of canvas.querySelectorAll('.db-block')){
+      const clone=element.cloneNode(true);clone.querySelectorAll('.db-handle,.an-endpoint').forEach(handle=>handle.remove());clone.style.visibility='hidden';clone.style.pointerEvents='none';clone.removeAttribute('id');measured.push(clone);
+    }
+    const fragment=document.createDocumentFragment();measured.forEach(clone=>fragment.append(clone));canvas.append(fragment);
+    let overflow=false;
+    try{overflow=measured.some(element=>element.scrollHeight>element.clientHeight+2||element.scrollWidth>element.clientWidth+2);}finally{measured.forEach(element=>element.remove());}
+    $('component-overflow').textContent=overflow?'Some block content does not fit. Resize the block or shorten its text.':'';}
 }
 editingRegisterOperation('component.field',(state,operation)=>{
   const slide=editingSlide(state,operation.slideId),entry=componentTargets(state,slide,[operation.blockId],false)[0];
@@ -299,7 +307,7 @@ projectInit=function(){
   for(const [id,action]of [['group','component.group'],['ungroup','component.ungroup'],['duplicate','component.duplicate'],['delete','component.remove']])$('component-'+id).onclick=()=>componentRun({type:action,keys:spActiveKeys()});
   $('component-lock').onclick=()=>componentRun({type:'design.meta',keys:spActiveKeys(),changes:{locked:true}});
   for(const direction of ['forward','backward'])$('component-'+direction).onclick=()=>componentRun({type:'component.reorder',keys:spActiveKeys(),direction});
-  $('component-align').onchange=event=>{if(event.target.value)componentRun({type:'component.arrange',keys:spActiveKeys(),action:event.target.value});event.target.value='';};
+  $('component-align').onchange=event=>{if(event.target.value)componentRun({type:'component.arrange',keys:spActiveKeys(),action:event.target.value,alignTo:$('canvas-align-to')?.value||'slide'});event.target.value='';};
   $('component-smaller').onclick=()=>componentRun({type:'component.arrange',keys:spActiveKeys(),action:'resize',scale:.9});$('component-larger').onclick=()=>componentRun({type:'component.arrange',keys:spActiveKeys(),action:'resize',scale:1.1});
   toolbar.addEventListener('mousedown',event=>{if(event.target.closest('button'))event.preventDefault();});
   toolbar.addEventListener('keydown',event=>{if(event.key==='Escape'&&!event.defaultPrevented){vbEnd(true);$('we-viewport').focus();}});

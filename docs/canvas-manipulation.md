@@ -44,3 +44,28 @@ Automated coverage checks small blocks at both slide corners, normal and narrow 
 ### Inspector stability audit
 
 Same-target text refresh retains focus, selection range and Inspector scroll. Explicit panel open/closed choices survive responsive resizing. Color popup resize now repositions the existing popup, retaining unapplied hex/opacity drafts and caret; changing the selected target or model revision still invalidates the draft. Escape returns focus to its color row, or the visible Inspector toggle if responsive layout has hidden that row. Narrow secondary toolbar overlays already return focus to a visible trigger; regression coverage verifies that existing behavior. Automated Chromium checks do not substitute for the release's installed-browser and screen-reader review.
+
+## Selection ownership and overlapping objects
+
+In Edit blocks, blank padding selects its enclosing free block; text fields retain
+their existing direct editing. Original template text remains reachable above
+floating media. A hover outline indicates the eligible object under the pointer.
+Right-click overlapping objects and choose **Select underneath** to inspect named
+candidates; focusing a candidate outlines it. Selecting a candidate changes only
+selection. Layers remains the keyboard alternative, including locked items.
+
+Gesture completion batches dependent Inspector/selection refreshes and overflow
+measurements. Arrow endpoints consume the matching pointer's final release
+coordinates; capture loss, cancellation and Escape discard the preview. Validation,
+recovery and one-step Undo remain synchronous. See the measured limitations in
+[canvas reliability](canvas-reliability.md).
+
+## Canvas reliability refinement
+
+See [canvas reliability](canvas-reliability.md) for the per-element interaction
+contract and measured limitations. Inspector → Arrange → **Align & space** and
+the Arrange menu share **Align to: Slide / Selection bounds**. Selection alignment
+requires two independent objects or groups; Space evenly requires three. Groups
+count once and keep internal spacing. These are explicit actions; changing the
+alignment target alone does not move content. Existing direct text/table editing,
+media crop modes, template conversion/reset and step numbering are retained.

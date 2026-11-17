@@ -13,7 +13,7 @@ function spSnap(input,slide,exclude,resize=false,bypass=false,axes=['x','y']){
   for(const [axis,size,pixels] of [['x','w',bounds.width],['y','h',bounds.height]]){
     if(!axes.includes(axis))continue;
     const guides=[0,.025,.05,.5,.95,.975,1,...rects.flatMap(r=>[r[axis],r[axis]+r[size]/2,r[axis]+r[size]])],anchors=resize?[p[axis]+p[size]]:[p[axis],p[axis]+p[size]/2,p[axis]+p[size]];
-    let best=null;for(const guide of guides)for(const anchor of anchors){const delta=guide-anchor;if(Math.abs(delta)<=6/pixels&&(!best||Math.abs(delta)<Math.abs(best.delta)))best={delta,guide,label:'Alignment'};}
+    let best=null;for(const guide of guides)for(const anchor of anchors){const delta=guide-anchor;if(Math.abs(delta)<=6/pixels&&(!best||Math.abs(delta)<Math.abs(best.delta)))best={delta,guide,label:resize?'Edge aligned':(axis==='x'?['Left aligned','Centered horizontally','Right aligned']:['Top aligned','Centered vertically','Bottom aligned'])[anchors.indexOf(anchor)]};}
     if(!resize)for(let a=0;a<rects.length;a++)for(let b=a+1;b<rects.length;b++){
       const left=rects[a][axis]<rects[b][axis]?rects[a]:rects[b],right=left===rects[a]?rects[b]:rects[a],gap=right[axis]-left[axis]-left[size];
       if(gap<p[size])continue;const target=(left[axis]+left[size]+right[axis]-p[size])/2,delta=target-p[axis];
@@ -22,7 +22,7 @@ function spSnap(input,slide,exclude,resize=false,bypass=false,axes=['x','y']){
     if(best){
       if(resize)p[size]+=best.delta;else p[axis]+=best.delta;
       const line=document.createElement('div');line.className='sp-snap-guide';line.style.cssText=axis==='x'?`left:${best.guide*100}%;top:0;height:100%`:`top:${best.guide*100}%;left:0;width:100%`;slide.append(line);
-      if(best.label==='Equal spacing'){const label=document.createElement('span');label.className='sp-snap-label';label.textContent=best.label;label.style.cssText=`left:${p.x*100}%;top:${p.y*100}%`;slide.append(label);}
+      if(best.label){const label=document.createElement('span');label.className='sp-snap-label';label.textContent=best.label;label.style.cssText=`left:${p.x*100}%;top:${p.y*100}%;transform:translateY(${axis==='x'?-28:-52}px)`;slide.append(label);}
     }
   }
   return resize?cePlacement(p):{...p,x:Math.max(0,Math.min(1-p.w,p.x)),y:Math.max(0,Math.min(1-p.h,p.y))};

@@ -38,3 +38,13 @@ Existing projects retain their layout on open. Optional names/reset/annotation m
 4. Insert steps from Library; try two sequences, manual numbers, duplicates, explicit renumbering, empty optional text, grouping and locks. Save/import a preset in a clean profile and check independent destination numbering.
 5. Insert arrows; drag and keyboard-adjust both endpoints, cancel with Escape, try arrowhead options, stroke, theme/custom colors, rotation, labels/descriptions, layering and group movement. Confirm endpoint/label geometry after resizing and at different zoom levels.
 6. Reopen editable ZIPs in a clean profile and playback/booth exports offline. Check keyboard access, visible focus, screen-reader labels, dark/light themes, laptop sizing, recovery and actual delivery/OBS before authorizing a release.
+
+## Canvas reliability refinement
+
+See [canvas reliability](canvas-reliability.md) for the per-element interaction
+contract and measured limitations. Inspector → Arrange → **Align & space** and
+the Arrange menu share **Align to: Slide / Selection bounds**. Selection alignment
+requires two independent objects or groups; Space evenly requires three. Groups
+count once and keep internal spacing. These are explicit actions; changing the
+alignment target alone does not move content. Existing direct text/table editing,
+media crop modes, template conversion/reset and step numbering are retained.

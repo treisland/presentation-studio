@@ -40,3 +40,13 @@ Automated regression coverage does not substitute for manual screen-reader, real
 ## Wide-screen editor sizing
 
 The editor follows the browser window with an 8 px inset on each side, including displays wider than 1920 px. Its workspace and Fit slide view resize with the available canvas area. Side-panel visibility, widths and zoom remain view preferences; resizing does not alter slide dimensions or saved project content.
+
+## Canvas reliability refinement
+
+See [canvas reliability](canvas-reliability.md) for the per-element interaction
+contract and measured limitations. Inspector → Arrange → **Align & space** and
+the Arrange menu share **Align to: Slide / Selection bounds**. Selection alignment
+requires two independent objects or groups; Space evenly requires three. Groups
+count once and keep internal spacing. These are explicit actions; changing the
+alignment target alone does not move content. Existing direct text/table editing,
+media crop modes, template conversion/reset and step numbering are retained.

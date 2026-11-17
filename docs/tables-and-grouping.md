@@ -39,3 +39,13 @@ Manual review checklist:
 5. Record actual supported browser/OS, keyboard/screen-reader review and real delivery-video/OBS evidence required by [the release process](release-process.md). CI is separate from these manual results.
 
 The maintainer pre-approved beta sign-off conditional on passing CI on 2026-11-11 (America/Denver). This authorizes preparing the beta without another general approval request, but does not assert unperformed manual checks passed. A separate release-preparation PR records actual evidence and the beta plan; release protections and artifact gates remain unchanged.
+
+## Canvas reliability refinement
+
+See [canvas reliability](canvas-reliability.md) for the per-element interaction
+contract and measured limitations. Inspector → Arrange → **Align & space** and
+the Arrange menu share **Align to: Slide / Selection bounds**. Selection alignment
+requires two independent objects or groups; Space evenly requires three. Groups
+count once and keep internal spacing. These are explicit actions; changing the
+alignment target alone does not move content. Existing direct text/table editing,
+media crop modes, template conversion/reset and step numbering are retained.

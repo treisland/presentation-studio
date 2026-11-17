@@ -16,7 +16,7 @@ function emSection(tab,target){
 }
 function emSlide(target){icNavigate('slide');emSection('content',target);}
 function emLibrary(category){$('component-open').click();$('component-search').value='';$('component-category').value=category;componentList();$('component-search').focus();}
-function emSelect(label,value){const control=$('component-align');return {label,disabled:!control||control.disabled||value.startsWith('distribute-')&&spActiveKeys().length<3,action:()=>{control.value=value;control.dispatchEvent(new Event('change',{bubbles:true}));}};}
+function emSelect(label,value){const control=$('component-align');return {label,disabled:!control||control.disabled||(value.startsWith('distribute-')?canvasArrangeUnits().length<3:!canvasArrangeUnits().length||$('canvas-align-to')?.value==='selection'&&canvasArrangeUnits().length<2),action:()=>{control.value=value;control.dispatchEvent(new Event('change',{bubbles:true}));}};}
 function emRows(name){
   const context=icSelection(),placed=cmPlaced(),find=pattern=>placed.find(row=>pattern.test(row.label)),noSelection=context.kind==='slide',locked=context.locked||!weEditing()||vbMode!=='edit';
   const unavailable=label=>({label,disabled:true,reason:'Select an applicable unlocked object in Edit blocks mode.'});
@@ -44,6 +44,7 @@ function emRows(name){
     {label:'Presentation background…',action:()=>weOpenSettings('background')}
   ];
   if(name==='Arrange')return [emButton('Bring forward','component-forward',locked||noSelection),emButton('Send backward','component-backward',locked||noSelection),null,
+    {label:'Align to',children:['slide','selection'].map(target=>({label:target==='slide'?'Slide':'Selection bounds',checked:($('canvas-align-to')?.value||'slide')===target,disabled:target==='selection'&&canvasArrangeUnits().length<2,action:()=>{$('canvas-align-to').value=target;canvasArrangePaint();}}))},
     {label:'Align',children:[['Left','left'],['Center horizontally','center'],['Right','right'],['Top','top'],['Center vertically','middle'],['Bottom','bottom']].map(([label,value])=>emSelect(label,value))},
     {label:'Distribute',children:[emSelect('Horizontally','distribute-x'),emSelect('Vertically','distribute-y')]},null,
     emButton('Group','component-group',locked),emButton('Ungroup','component-ungroup',locked),action('Edit group members',/^Edit group/),action('Finish editing group',/^Finish editing/),null,
