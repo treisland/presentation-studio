@@ -149,6 +149,7 @@
     "src/runtime/slide-advancement.js",
     "src/runtime/canvas-release.js",
     "src/runtime/canvas-targeting.js",
+    "src/runtime/canvas-placement.js",
     "src/runtime/boot.js"
   ],
   "vendor": "vendor/jszip-3.10.1.min.js"

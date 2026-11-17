@@ -59,3 +59,13 @@ measurements. Arrow endpoints consume the matching pointer's final release
 coordinates; capture loss, cancellation and Escape discard the preview. Validation,
 recovery and one-step Undo remain synchronous. See the measured limitations in
 [canvas reliability](canvas-reliability.md).
+
+## Canvas reliability refinement
+
+See [canvas reliability](canvas-reliability.md) for the per-element interaction
+contract and measured limitations. Inspector → Arrange → **Align & space** and
+the Arrange menu share **Align to: Slide / Selection bounds**. Selection alignment
+requires two independent objects or groups; Space evenly requires three. Groups
+count once and keep internal spacing. These are explicit actions; changing the
+alignment target alone does not move content. Existing direct text/table editing,
+media crop modes, template conversion/reset and step numbering are retained.

@@ -25,3 +25,19 @@ test('overlap chooser previews and selects an underlying object without changing
   assert.deepEqual((await snapshot(page)).state,before.state);assert.deepEqual(errors,[]);
  }finally{await page.close();}
 });
+
+
+test('selection alignment uses shared bounds, preserves group spacing, and rejects a single unit',async()=>{
+ const {page,errors}=await openExample(browser,'portfolio-demo');try{
+  const {slideId,key}=await libraryBlock(page,'rectangle');
+  const made=await operations(page,[{type:'block.create',slideId,kind:'text',placement:{x:.6,y:.5,w:.2,h:.2}},{type:'block.create',slideId,kind:'text',placement:{x:.3,y:.4,w:.1,h:.1}}]);const [other,member]=made.created;
+  assert.equal((await operations(page,[{type:'component.group',slideId,keys:[key,member]}])).ok,true);
+  const before=await snapshot(page);
+  const rejected=await operations(page,[{type:'component.arrange',slideId,keys:[key],action:'left',alignTo:'selection'}]);assert.equal(rejected.ok,false);assert.deepEqual((await snapshot(page)).state,before.state);
+  const result=await operations(page,[{type:'component.arrange',slideId,keys:[key,other],action:'left',alignTo:'selection'}]);assert.equal(result.ok,true,result.message);
+  const left=await page.locator('#fe-preview .'+other).evaluate(el=>parseFloat(el.style.left));assert.equal(left,20);
+  assert.equal(await page.locator('#fe-preview .'+member).evaluate(el=>parseFloat(el.style.left)),30);
+  await page.locator('#fe-undo').click();assert.deepEqual((await snapshot(page)).state,before.state);
+  assert.deepEqual(errors,[]);
+ }finally{await page.close();}
+});

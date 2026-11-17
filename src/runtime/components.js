@@ -86,8 +86,12 @@ editingRegisterOperation('component.arrange', (state, operation) => {
     return;
   }
   if (!['left','center','right','top','middle','bottom'].includes(operation.action)) editingFail('INVALID','Choose object alignment.');
-  for(const unit of componentUnits(targets)){
-    const rect={...unit.rect};if(operation.action==='left')rect.x=0;if(operation.action==='center')rect.x=(1-rect.w)/2;if(operation.action==='right')rect.x=1-rect.w;if(operation.action==='top')rect.y=0;if(operation.action==='middle')rect.y=(1-rect.h)/2;if(operation.action==='bottom')rect.y=1-rect.h;
+  const units=componentUnits(targets),alignTo=operation.alignTo??'slide';
+  if(!['slide','selection'].includes(alignTo))editingFail('INVALID','Choose Slide or Selection alignment.');
+  if(alignTo==='selection'&&units.length<2)editingFail('INVALID','Select at least two independent objects or groups.');
+  const bounds=alignTo==='slide'?{x:0,y:0,w:1,h:1}:gsBounds(targets);
+  for(const unit of units){
+    const rect={...unit.rect};if(operation.action==='left')rect.x=bounds.x;if(operation.action==='center')rect.x=bounds.x+(bounds.w-rect.w)/2;if(operation.action==='right')rect.x=bounds.x+bounds.w-rect.w;if(operation.action==='top')rect.y=bounds.y;if(operation.action==='middle')rect.y=bounds.y+(bounds.h-rect.h)/2;if(operation.action==='bottom')rect.y=bounds.y+bounds.h-rect.h;
     for(const entry of unit.entries){const original=componentRect(entry);componentPlace(entry,{...original,x:original.x+rect.x-unit.rect.x,y:original.y+rect.y-unit.rect.y});}
   }
 });
@@ -303,7 +307,7 @@ projectInit=function(){
   for(const [id,action]of [['group','component.group'],['ungroup','component.ungroup'],['duplicate','component.duplicate'],['delete','component.remove']])$('component-'+id).onclick=()=>componentRun({type:action,keys:spActiveKeys()});
   $('component-lock').onclick=()=>componentRun({type:'design.meta',keys:spActiveKeys(),changes:{locked:true}});
   for(const direction of ['forward','backward'])$('component-'+direction).onclick=()=>componentRun({type:'component.reorder',keys:spActiveKeys(),direction});
-  $('component-align').onchange=event=>{if(event.target.value)componentRun({type:'component.arrange',keys:spActiveKeys(),action:event.target.value});event.target.value='';};
+  $('component-align').onchange=event=>{if(event.target.value)componentRun({type:'component.arrange',keys:spActiveKeys(),action:event.target.value,alignTo:$('canvas-align-to')?.value||'slide'});event.target.value='';};
   $('component-smaller').onclick=()=>componentRun({type:'component.arrange',keys:spActiveKeys(),action:'resize',scale:.9});$('component-larger').onclick=()=>componentRun({type:'component.arrange',keys:spActiveKeys(),action:'resize',scale:1.1});
   toolbar.addEventListener('mousedown',event=>{if(event.target.closest('button'))event.preventDefault();});
   toolbar.addEventListener('keydown',event=>{if(event.key==='Escape'&&!event.defaultPrevented){vbEnd(true);$('we-viewport').focus();}});

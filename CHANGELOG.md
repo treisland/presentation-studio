@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Make Slide/Selection alignment explicit, count independent groups for spacing, and label active snap guides (#298).
+
 - Reduce repeated canvas release refresh/layout work and correct endpoint pointer completion (#297).
 
 - Improve canvas object ownership, authoring text hit targets and named overlap selection with preview outlines (#296).

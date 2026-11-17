@@ -91,3 +91,10 @@ refreshes and batches overflow measurement writes before reads. Validation,
 recovery and atomic commit are not deferred. The aspirational 50 ms dense-case
 budget is **not met**; further selected-slide rendering optimization requires
 separate profiling rather than weakening transaction safety.
+
+### Bring into view scope decision
+
+Free geometry validators constrain supported objects to normalized slide bounds.
+An offscreen object at manual zoom is a viewport issue: use Fit/pan or Layers. No
+new Bring into view geometry mutation is added; it would duplicate navigation or
+weaken validation. Rotated/clipped overflow remains inspectable through Layers.
