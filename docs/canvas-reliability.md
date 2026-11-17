@@ -78,7 +78,7 @@ On Windows 10.0.26300, Ryzen 7 7700X, 31 GiB RAM, Node 26.13.0 and headless
 Chromium 151.0.7922.34 at 1366×768, six samples each on the dense 40-block,
 3×3-table, inline-media and 40-extra-slide fixture measured:
 
-| Gesture | Baseline release-to-rAF range | After refresh batching range |
+| Gesture | Original 40-block baseline range | Early batching experiment range |
 | --- | --- | --- |
 | Single block | 1276–1311 ms | 192–259 ms |
 | Batch | 1759–1819 ms | 182–232 ms |
@@ -102,3 +102,39 @@ weaken validation. Rotated/clipped overflow remains inspectable through Layers.
 Selection alignment uses the normalized object/group frame bounds, matching the
 existing movement geometry. Rotated content keeps its rotation; this does not
 reflow text or align individual glyphs.
+
+## Candidate evidence
+
+Runtime source `aa9d2c8` (source tree `775cdb8e76b4be336962069e6400a8510e1f0d05`)
+includes final-wrapper batching and endpoint-first grip placement. Selected arrow
+endpoints stay on their actual geometry; adjacent resize grips move out of the
+way. `dbPanel` remains synchronous because its wrappers also update selection.
+
+Against the untouched alpha, the new selected-endpoint/capture-loss test and
+Layers-to-Inspector test fail and pass on this candidate. The template-text above
+floating-media example passes on both: that specific click-through hypothesis
+was not reproduced. Personal Library examples still require maintainer testing.
+
+The expanded harness measures single, batch, group, media and endpoint gestures,
+three repetitions with Snap off and on. Simple uses five blocks including an
+arrow, a table, media, one group and no extra slides; dense uses 41 blocks including
+an arrow, a table, media, one group and 40 extra slides (46 total). These differ
+from the original 40-block comparison fixture above. Final measured medians:
+
+| Gesture | Simple median (ms) | Dense median (ms) |
+| --- | ---: | ---: |
+| Single block | 94.0 | 253.0 |
+| Batch | 96.6 | 524.7 |
+| Group | 87.8 | 524.8 |
+| Media | 118.2 | 571.8 |
+| Arrow endpoint | 94.4 | 595.2 |
+
+These instrumented runs overlapped local validation and are observations, not a
+controlled benchmark. Simple ranges were 76–122 ms; dense ranges were 239–724 ms.
+The 50 ms target remains unmet. Dense presentations can still feel delayed;
+selected-slide rendering is a proposed follow-up, not an implemented claim.
+
+Automated results, packaging and current CI status are recorded in PR #304.
+Maintainer usability, personal compositions, real installed-browser 200% zoom and
+screen-reader evidence remain pending. Stage PRs #300–#303 are superseded by the
+integrated candidate; #304 is the sole integration PR.

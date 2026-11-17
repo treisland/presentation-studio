@@ -29,8 +29,8 @@ Keep a separate editable ZIP backup of existing projects before testing.
 
 ## Known limits and evidence
 
-The dense-fixture release optimization is substantial but the aspirational 50 ms
-budget is not met. See [measurements and inventory](canvas-reliability.md).
+Release timing remains a limitation: instrumented simple fixtures measured roughly
+80–120 ms and dense fixtures 240–724 ms. The aspirational 50 ms budget is not met. See [measurements and inventory](canvas-reliability.md).
 Report the build commit, browser/OS, zoom, object type, project size and exact
 steps for remaining click-through or release lag. Avoid sharing private project
 content when a neutral reproduction will do.
