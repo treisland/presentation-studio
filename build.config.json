@@ -147,6 +147,7 @@
     "src/runtime/canvas-recording.js",
     "src/runtime/media-management.js",
     "src/runtime/slide-advancement.js",
+    "src/runtime/canvas-release.js",
     "src/runtime/canvas-targeting.js",
     "src/runtime/boot.js"
   ],

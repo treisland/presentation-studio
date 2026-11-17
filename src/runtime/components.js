@@ -253,11 +253,15 @@ function componentPaint() {
     fields.replaceChildren();fields.dataset.identity=identity;
     if(definition?.fields){const blockId=dbSelected,slideId=projectSelected;definition.fields.forEach(([label],index)=>{const field=document.createElement('label'),input=document.createElement('textarea');field.textContent=label;input.value=projectText(widget.children[index]);input.disabled=locked;input.onchange=()=>componentRun({type:'component.field',slideId,blockId,index,text:input.value});field.append(input);fields.append(field);});}
   }
-  const canvas=projectPreviewNode?.querySelector('.slide');if(canvas){const overflow=[...canvas.querySelectorAll('.db-block')].some(element=>{
-    if(!element.querySelector('.db-handle,.an-endpoint'))return element.scrollHeight>element.clientHeight+2||element.scrollWidth>element.clientWidth+2;
-    const measured=element.cloneNode(true);measured.querySelectorAll('.db-handle,.an-endpoint').forEach(handle=>handle.remove());measured.style.visibility='hidden';measured.style.pointerEvents='none';element.after(measured);
-    const exceeds=measured.scrollHeight>measured.clientHeight+2||measured.scrollWidth>measured.clientWidth+2;measured.remove();return exceeds;
-  });$('component-overflow').textContent=overflow?'Some block content does not fit. Resize the block or shorten its text.':'';}
+  const canvas=projectPreviewNode?.querySelector('.slide');if(canvas){const measured=[];
+    // Batch writes before reads: per-block append/read/remove forced one layout per object.
+    for(const element of canvas.querySelectorAll('.db-block')){
+      const clone=element.cloneNode(true);clone.querySelectorAll('.db-handle,.an-endpoint').forEach(handle=>handle.remove());clone.style.visibility='hidden';clone.style.pointerEvents='none';clone.removeAttribute('id');measured.push(clone);
+    }
+    const fragment=document.createDocumentFragment();measured.forEach(clone=>fragment.append(clone));canvas.append(fragment);
+    let overflow=false;
+    try{overflow=measured.some(element=>element.scrollHeight>element.clientHeight+2||element.scrollWidth>element.clientWidth+2);}finally{measured.forEach(element=>element.remove());}
+    $('component-overflow').textContent=overflow?'Some block content does not fit. Resize the block or shorten its text.':'';}
 }
 editingRegisterOperation('component.field',(state,operation)=>{
   const slide=editingSlide(state,operation.slideId),entry=componentTargets(state,slide,[operation.blockId],false)[0];

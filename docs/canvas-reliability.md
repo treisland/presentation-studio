@@ -71,3 +71,23 @@ Affected guides: canvas manipulation, workbench, blocks/components, tables/group
 annotations and media/navigation as applicable. Companion scene `editor overview`
 needs review against the final development SHA; generated concept art is not an
 authentic app capture. Companion deployment remains outside this work.
+
+## Measured release baseline and bounded improvement
+
+On Windows 10.0.26300, Ryzen 7 7700X, 31 GiB RAM, Node 26.13.0 and headless
+Chromium 151.0.7922.34 at 1366×768, six samples each on the dense 40-block,
+3×3-table, inline-media and 40-extra-slide fixture measured:
+
+| Gesture | Baseline release-to-rAF range | After refresh batching range |
+| --- | --- | --- |
+| Single block | 1276–1311 ms | 192–259 ms |
+| Batch | 1759–1819 ms | 182–232 ms |
+
+These observations include instrumentation overhead and concurrent local work;
+they are not a controlled SLA or physical display latency. Baseline validation
+was about 1 ms, with 22/34 Inspector refresh calls per single/batch sample and
+per-object clone/layout reads. Gesture completion now coalesces dependent view
+refreshes and batches overflow measurement writes before reads. Validation,
+recovery and atomic commit are not deferred. The aspirational 50 ms dense-case
+budget is **not met**; further selected-slide rendering optimization requires
+separate profiling rather than weakening transaction safety.

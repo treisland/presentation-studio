@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Reduce repeated canvas release refresh/layout work and correct endpoint pointer completion (#297).
+
 - Improve canvas object ownership, authoring text hit targets and named overlap selection with preview outlines (#296).
 
 - Begin milestone 34 canvas reliability inventory and test-only release-phase profiling from v0.20.0-alpha.1.

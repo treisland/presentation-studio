@@ -53,3 +53,9 @@ floating media. A hover outline indicates the eligible object under the pointer.
 Right-click overlapping objects and choose **Select underneath** to inspect named
 candidates; focusing a candidate outlines it. Selecting a candidate changes only
 selection. Layers remains the keyboard alternative, including locked items.
+
+Gesture completion batches dependent Inspector/selection refreshes and overflow
+measurements. Arrow endpoints consume the matching pointer's final release
+coordinates; capture loss, cancellation and Escape discard the preview. Validation,
+recovery and one-step Undo remain synchronous. See the measured limitations in
+[canvas reliability](canvas-reliability.md).
