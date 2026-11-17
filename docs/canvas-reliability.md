@@ -1,7 +1,9 @@
 # Canvas reliability — milestone 34
 
-Implementation starts from `v0.20.0-alpha.1` (`5de60e4`). This is development
-work, pending maintainer testing; it does not authorize publication.
+Implementation started from `v0.20.0-alpha.1` (`5de60e4`). On 2026-11-16 the
+maintainer reported testing passed and authorized beta sign-off plus production
+promotion after passing CI. Release/deployment authority and observed receipts
+are tracked in [#305](https://github.com/treisland/presentation-studio/issues/305).
 
 ## Interaction inventory
 
@@ -135,6 +137,7 @@ The 50 ms target remains unmet. Dense presentations can still feel delayed;
 selected-slide rendering is a proposed follow-up, not an implemented claim.
 
 Automated results, packaging and current CI status are recorded in PR #304.
-Maintainer usability, personal compositions, real installed-browser 200% zoom and
-screen-reader evidence remain pending. Stage PRs #300–#303 are superseded by the
-integrated candidate; #304 is the sole integration PR.
+Maintainer testing passed and release sign-off is recorded in #305. Individual
+physical device/browser/screen-reader details were not supplied, so no expanded
+certification is claimed. Stage PRs #300–#303 were superseded by #304; release
+integration proceeds through the explicit beta preparation #306.
