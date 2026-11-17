@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Begin milestone 34 canvas reliability inventory and test-only release-phase profiling from v0.20.0-alpha.1.
+
 ## 0.20.0-alpha.1 — 2026-11-16
 
 - Accept decodable WebM audio classified as video/webm by the browser, including downloaded narration reattachment and exact-original repair; keep canonical audio MIME and original bytes.

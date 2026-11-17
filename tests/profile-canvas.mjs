@@ -2,14 +2,22 @@
 import {chromium} from 'playwright';
 import {cpus,platform,release,totalmem} from 'node:os';
 import {execFileSync} from 'node:child_process';
-import {mkdir,writeFile} from 'node:fs/promises';
+import {mkdir,writeFile,readFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
 import assert from 'node:assert/strict';
 import {openExample,snapshot,operations} from './collection-ui.mjs';
 import {addSlide,selectElement,reveal} from './ui.mjs';
 
 const browser=await chromium.launch({headless:true,args:['--no-sandbox'],executablePath:process.env.CHROMIUM_EXECUTABLE_PATH});
-const {page,errors}=await openExample(browser,'portfolio-demo');
+// A separate ignored HTML fixture instruments lexical runtime functions; shipped output is untouched.
+const instrument = `    // Instrument synchronous phases in the test page only. Nested totals overlap.
+    for(const name of ['projectValidateState','projectRender','projectPreview','projectForm','projectList','projectPush','projectScheduleDraft','spPaint','componentPaint','icPaint','dbFinish','gsFinish','ceEnd']){
+      eval(name+' = ((original)=>function(...args){const start=performance.now();try{return original.apply(this,args);}finally{const sample=window.profileSample;if(sample?.recording){sample.phases??={};const phase=sample.phases["'+name+'"]??={calls:0,ms:0};phase.calls++;phase.ms+=performance.now()-start;}}})('+name+')');
+    }
+`;
+const html=await readFile('dist/presentation-studio.html','utf8');
+await writeFile('dist/profile-canvas.html',html.replace('if(window.__studioAudienceBootstrap)pvReceiveAudience(studioBoot);else studioBoot();',instrument+'\nif(window.__studioAudienceBootstrap)pvReceiveAudience(studioBoot);else studioBoot();'));
+const {page,errors}=await openExample(browser,'portfolio-demo',false,'profile-canvas.html');
 const results=[];
 try{
   await addSlide(page,'blank');
@@ -25,6 +33,7 @@ try{
   await page.evaluate(()=>{
     const original=Element.prototype.getBoundingClientRect;
     window.profileSample=null;
+    window.addEventListener('pointerup',event=>{if(window.profileSample?.recording){window.profileSample.releaseTimestamp=event.timeStamp;requestAnimationFrame(()=>{if(window.profileSample?.releaseTimestamp===event.timeStamp)window.profileSample.releaseToFrameMs=performance.now()-event.timeStamp;});}},true);
     Element.prototype.getBoundingClientRect=function(...args){if(window.profileSample?.recording)window.profileSample.geometryReads++;return original.apply(this,args);};
     new PerformanceObserver(list=>{const p=window.profileSample;if(p?.recording)p.longTasks.push(...list.getEntries().map(e=>e.duration));}).observe({type:'longtask',buffered:false});
     new MutationObserver(records=>{const p=window.profileSample;if(p?.recording)for(const r of records)for(const node of r.addedNodes)if(node.nodeType===1){p.domAdds++;if(node.matches('.sp-snap-guide,.sp-snap-label'))p.guideAdds++;if(node.matches('.gs-bounds,.sp-layer-row'))p.selectionAdds++;if(node.matches('.fe-slide-button'))p.thumbnailAdds++;}}).observe(document.querySelector('#full-editor'),{childList:true,subtree:true});
@@ -50,7 +59,7 @@ try{
     const commit=await page.evaluate(()=>{window.profileSample.recording=false;return window.profileSample;});
     assert.notDeepEqual((await snapshot(page)).state,before.state,'The measured gesture must move content before Undo.');
     const frames=gesture.frameIntervals.toSorted((a,b)=>a-b);
-    results.push({batch,snapping,repeat,geometryReads:gesture.geometryReads,guideAdds:gesture.guideAdds,longTasks:gesture.longTasks,pointerSamples:sorted.length,inputToFrameP95Ms:p95,frameIntervalP95Ms:frames[Math.floor((frames.length-1)*.95)]??null,commitToTwoFramesMs:commitToFrame,commit:{geometryReads:commit.geometryReads,domAdds:commit.domAdds,selectionAdds:commit.selectionAdds,thumbnailAdds:commit.thumbnailAdds,longTasks:commit.longTasks}});
+    results.push({batch,snapping,repeat,geometryReads:gesture.geometryReads,guideAdds:gesture.guideAdds,longTasks:gesture.longTasks,pointerSamples:sorted.length,inputToFrameP95Ms:p95,frameIntervalP95Ms:frames[Math.floor((frames.length-1)*.95)]??null,commitToTwoFramesMs:commitToFrame,releaseToFrameMs:commit.releaseToFrameMs,commit:{phases:commit.phases,geometryReads:commit.geometryReads,domAdds:commit.domAdds,selectionAdds:commit.selectionAdds,thumbnailAdds:commit.thumbnailAdds,longTasks:commit.longTasks}});
     console.log('Measured '+(batch?'batch':'single')+', snapping '+snapping+', repetition '+(repeat+1));
     await page.locator('#fe-undo').click();
     assert.deepEqual((await snapshot(page)).state,before.state,'Undo must restore the fixture for the next sample.');
