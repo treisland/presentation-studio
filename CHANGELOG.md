@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 0.20.0 — 2026-11-16
+
+- Promote the maintainer-accepted media authoring and canvas reliability runtime to production after beta/RC validation, with explicit dense-deck latency and compatibility limits.
+
 ## 0.20.0-rc.1 — 2026-11-16
 
 - Stage the accepted beta runtime as a production candidate with unchanged editor behavior, project formats and dependencies.

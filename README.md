@@ -12,11 +12,11 @@
 
 A portable HTML presentation player and editor. Start with a short, generic demo or a blank presentation, then add your own content, branding, questions, and media. No application server or database is required.
 
-## 0.20.0-rc.1 — production candidate
+## 0.20.0 — media authoring and canvas reliability
 
-The maintainer accepted the tested 0.20 candidate on 2026-11-16. This unchanged-runtime release candidate combines local narration recording and Project media management with clearer canvas selection, overlap choices, consistent gesture completion and explicit Slide/Selection alignment. Existing content editing, original media, recovery and portable exports remain intact. Dense decks can still show noticeable release delay; the 50 ms target is not met. See [release validation](docs/releases/0.20.0-rc.1-validation.md), [canvas reliability](docs/canvas-reliability.md) and [Project media](docs/media-authoring.md).
+The maintainer accepted the tested 0.20 candidate on 2026-11-16. This production release combines local narration recording and Project media management with clearer canvas selection, overlap choices, consistent gesture completion and explicit Slide/Selection alignment. Existing content editing, original media, recovery and portable exports remain intact. Dense decks can still show noticeable release delay; the 50 ms target is not met. See [release validation](docs/releases/0.20.0-validation.md), [canvas reliability](docs/canvas-reliability.md) and [Project media](docs/media-authoring.md).
 
-## 0.19 production release
+## Previous 0.19 production release
 
 The maintainer-accepted release adds editable charts, per-series/category color pickers and inline data controls, plus matching native AI authoring schemas, examples and Library capability guidance. It retains the accepted menu/start-screen, recovery and portable workflows. See [Charts & Graphs](docs/charts-and-graphs.md) and [release validation](docs/releases/0.19.0-validation.md).
 
@@ -88,7 +88,7 @@ For a localhost preview, run `npm run serve`, then open `http://127.0.0.1:4173`.
 
 [Quick start](docs/quick-start.md) · [Architecture](docs/architecture.md) · [Contributing](CONTRIBUTING.md) · [Content and branding](docs/content-and-branding.md) · [Open-source release](docs/open-source-release.md) · [Roadmap](docs/roadmap.md) · [Troubleshooting](docs/troubleshooting.md)
 
-Version 0.20.0-rc.1. Media authoring and canvas reliability production candidate. See the [release notes](docs/releases/0.20.0-rc.1.md), [validation record](docs/releases/0.20.0-rc.1-validation.md) and [known issues](docs/known-issues.md). Released under the [Apache License 2.0](LICENSE).
+Version 0.20.0. Media authoring and canvas reliability. See the [release notes](docs/releases/0.20.0.md), [validation record](docs/releases/0.20.0-validation.md) and [known issues](docs/known-issues.md). Released under the [Apache License 2.0](LICENSE).
 
 ## Development process
 
