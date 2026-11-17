@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 0.20.0-rc.1 — 2026-11-16
+
+- Stage the accepted beta runtime as a production candidate with unchanged editor behavior, project formats and dependencies.
+
 ## 0.20.0-beta.1 — 2026-11-16
 
 - Add the full Library manipulation acceptance matrix and testing guide, preserving specialized editing and portable restore (#299).
