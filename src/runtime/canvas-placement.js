@@ -22,5 +22,5 @@ projectInit=function(...args){
   const button=componentButton(label,()=>componentRun({type:'component.arrange',keys:spActiveKeys(),action,alignTo:$('canvas-align-to').value}));
   button.dataset[action.startsWith('distribute-')?'distribute':'align']=action;panel.querySelector('#canvas-arrange-actions').append(button);
  }
- $('wp-fields').append(panel);$('canvas-align-to').onchange=canvasArrangePaint;canvasArrangePaint();return result;
+ $('wp-fields').prepend(panel);$('canvas-align-to').onchange=canvasArrangePaint;canvasArrangePaint();return result;
 };

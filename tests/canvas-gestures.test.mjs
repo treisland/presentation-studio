@@ -85,7 +85,7 @@ test('arrow endpoint ignores unrelated pointers, consumes release coordinates an
   const slideId=(await snapshot(page)).state.slides[0].id;
   const made=await operations(page,[{type:'design.clear',slideId},{type:'block.create',slideId,kind:'arrow'}]);assert.equal(made.ok,true);const key=made.created[0];await selectElement(page,key);
   const handle='#fe-preview [data-an-end=end]',box=await page.locator(handle).boundingBox(),slide=await page.locator('#fe-preview .slide').boundingBox();
-  const before=await snapshot(page);await page.mouse.move(box.x+box.width/2,box.y+box.height/2);await page.mouse.down();
+  const before=await snapshot(page);await page.mouse.move(box.x+box.width/2,box.y+box.height/2);await page.mouse.down();await page.mouse.up();assert.deepEqual((await snapshot(page)).state,before.state);await page.mouse.down();
   await page.evaluate(()=>window.dispatchEvent(new PointerEvent('pointerup',{pointerId:99,clientX:0,clientY:0})));
   assert.equal((await page.locator(handle).count())>0,true);
   await page.evaluate(({x,y})=>window.dispatchEvent(new PointerEvent('pointerup',{pointerId:1,clientX:x,clientY:y,altKey:true})),{x:slide.x+slide.width*.9,y:slide.y+slide.height*.8});await page.mouse.up();

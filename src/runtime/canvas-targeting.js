@@ -45,7 +45,7 @@ cmOpen=function(options={}){
  const x=options.x??(box&&box.left+box.width/2),y=options.y??(box&&box.top+box.height/2);if(x==null)return;
  const candidates=canvasCandidates(x,y);if(candidates.length<2)return;
  const rows=cmPlaced(!!options.node?.closest('td,th'));
- rows.unshift({label:'Select underneath',children:candidates.map(entry=>({label:entry.meta.name||entry.name||entry.key,action:()=>canvasChoose(entry),preview:()=>{canvasHoverClear();ctHover=spElement(projectPreviewNode.querySelector('.slide'),entry);ctHover?.classList.add('canvas-hover');}}))});
+ rows.unshift({label:'Select underneath',children:candidates.map(entry=>({label:enLabel(entry)||entry.key,action:()=>canvasChoose(entry),preview:()=>{canvasHoverClear();ctHover=spElement(projectPreviewNode.querySelector('.slide'),entry);ctHover?.classList.add('canvas-hover');}}))});
  cmRender(rows,icSelection().title);cmPosition(cmState.x,cmState.y);
 };
 const canvasTargetClose=cmClose;

@@ -20,11 +20,11 @@ function canvasViewBatch(action){
   }
  }
 }
+// dbPanel stays synchronous: its selection wrappers depend on spPicking scope.
 const canvasViewSp=spPaint;spPaint=function(...args){return canvasViewCall('layers',canvasViewSp,this,args);};
 const canvasViewComponent=componentPaint;componentPaint=function(...args){return canvasViewCall('components',canvasViewComponent,this,args);};
 const canvasViewInspector=icPaint;icPaint=function(...args){return canvasViewCall('inspector',canvasViewInspector,this,args);};
 const canvasViewGroup=gsPaint;gsPaint=function(...args){return canvasViewCall('groups',canvasViewGroup,this,args);};
-const canvasViewBlock=dbPanel;dbPanel=function(...args){return canvasViewCall('blocks',canvasViewBlock,this,args);};
 const canvasBlockFinish=dbFinish;dbFinish=function(...args){return canvasViewBatch(()=>canvasBlockFinish(...args));};
 const canvasGroupFinish=gsFinish;gsFinish=function(...args){return canvasViewBatch(()=>canvasGroupFinish(...args));};
 const canvasMediaFinish=ceEnd;ceEnd=function(...args){return canvasViewBatch(()=>canvasMediaFinish(...args));};

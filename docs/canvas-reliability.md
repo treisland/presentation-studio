@@ -50,7 +50,7 @@ These are hypotheses until reproduced. Arrow endpoints use their last move sampl
 at release; blocks and groups restore transient styles before a synchronous commit.
 
 Use `npm run profile:canvas` for the dense fixture. Results in ignored
-`test-results/canvas-profile.json` identify hardware, browser, source and timing
+`test-results/canvas-profile-dense.json` identify hardware, browser, source and timing
 limitations. Event-to-frame is an approximation of frame readiness, not physical
 display latency. Timing wrappers are test-only; nested phase times overlap and
 must not be summed. No production telemetry is introduced.
@@ -98,3 +98,7 @@ Free geometry validators constrain supported objects to normalized slide bounds.
 An offscreen object at manual zoom is a viewport issue: use Fit/pan or Layers. No
 new Bring into view geometry mutation is added; it would duplicate navigation or
 weaken validation. Rotated/clipped overflow remains inspectable through Layers.
+
+Selection alignment uses the normalized object/group frame bounds, matching the
+existing movement geometry. Rotated content keeps its rotation; this does not
+reflow text or align individual glyphs.

@@ -19,7 +19,7 @@ test('overlap chooser previews and selects an underlying object without changing
   const {slideId,key}=await libraryBlock(page,'rectangle');const made=await operations(page,[{type:'block.create',slideId,kind:'text',placement:{x:.2,y:.3,w:.3,h:.3}}]);
   const top=made.created[0],before=await snapshot(page);await page.locator('#fe-preview .'+top).click({button:'right',position:{x:10,y:10}});
   await page.getByRole('menuitem',{name:'Select underneath',exact:false}).click();
-  const choice=page.locator('#cm-menu [role=menuitem]').filter({hasText:'Shape'});await choice.focus();
+  const choice=page.locator('#cm-menu [role=menuitem]').filter({hasText:/Rectangle/});await choice.focus();
   assert.equal(await page.locator('#fe-preview .'+key).evaluate(el=>el.classList.contains('canvas-hover')),true);
   await choice.press('Enter');assert.equal(await page.locator('#fe-preview .'+key).getAttribute('data-sp-selected'),'true');
   assert.deepEqual((await snapshot(page)).state,before.state);assert.deepEqual(errors,[]);
@@ -39,5 +39,22 @@ test('selection alignment uses shared bounds, preserves group spacing, and rejec
   assert.equal(await page.locator('#fe-preview .'+member).evaluate(el=>parseFloat(el.style.left)),30);
   await page.locator('#fe-undo').click();assert.deepEqual((await snapshot(page)).state,before.state);
   assert.deepEqual(errors,[]);
+ }finally{await page.close();}
+});
+
+
+test('template text remains a real pointer target above floating media',async()=>{
+ const {page,errors}=await openExample(browser,'template');try{
+  await page.locator('#ce-zone').selectOption('floating',{force:true});await page.locator('#ce-file').setInputFiles({name:'neutral.svg',mimeType:'image/svg+xml',buffer:Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" width="320" height="180"><rect width="320" height="180" fill="#286875"/></svg>')});
+  const text=page.locator('#fe-preview .media-original [data-vb-kind=text]').first();await text.click();assert.equal(await text.getAttribute('contenteditable'),'true');assert.deepEqual(errors,[]);
+ }finally{await page.close();}
+});
+
+
+test('Layers checkboxes retarget Inspector even when starting from slide settings',async()=>{
+ const {page,errors}=await openExample(browser,'portfolio-demo');try{
+  const {slideId,key}=await libraryBlock(page,'rectangle');const result=await operations(page,[{type:'block.create',slideId,kind:'text'}]);
+  await page.locator('#ld-reveal-layers').click();for(const id of [key,result.created[0]])await page.locator('.sp-layer-row[data-key="'+id+'"] input[type=checkbox]').check();
+  assert.match(await page.locator('#wp-selection-title').textContent(),/Multiple objects/);assert.deepEqual(errors,[]);
  }finally{await page.close();}
 });

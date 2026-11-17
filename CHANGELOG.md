@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add the full Library manipulation acceptance matrix and testing guide, preserving specialized editing and portable restore (#299).
+
 - Make Slide/Selection alignment explicit, count independent groups for spacing, and label active snap guides (#298).
 
 - Reduce repeated canvas release refresh/layout work and correct endpoint pointer completion (#297).
