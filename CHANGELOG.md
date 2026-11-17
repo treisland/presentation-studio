@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.20.0-beta.1 — 2026-11-16
+
 - Add the full Library manipulation acceptance matrix and testing guide, preserving specialized editing and portable restore (#299).
 
 - Make Slide/Selection alignment explicit, count independent groups for spacing, and label active snap guides (#298).
