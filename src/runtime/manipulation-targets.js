@@ -34,8 +34,8 @@ function mhPaint(){
     });
     const occupied=[];
     const overlaps=(x,y,move)=>occupied.some(p=>Math.abs(x-p.sx)<26+(p.move?15:26)+2&&Math.abs(y-p.sy)<(move?13:12)+(p.move?13:12)+2);
-    // Reserve resize targets first, then place Move; every grip keeps its own hit area.
-    for(const position of positions.sort((a,b)=>Number(a.move)-Number(b.move))){
+    // Keep arrow endpoints on their geometry; spread resize grips before placing Move.
+    for(const position of positions.sort((a,b)=>Number(b.handle.matches('.an-endpoint'))-Number(a.handle.matches('.an-endpoint'))||Number(a.move)-Number(b.move))){
       const {handle,move}=position;let {sx,sy}=position;
       // Resolve collisions after rotation and clipping, on every canvas edge.
       if(overlaps(sx,sy,move)){
